@@ -11,7 +11,7 @@ namespace VstsService.Tests
         public void Test1()
         {
             var scanner = new VstsScanner($"Basic {encodedPath}", "somecompany");
-            scanner.GetReleasesByTeam();
+            //scanner.GetReleasesByTeam();
 
             
         }

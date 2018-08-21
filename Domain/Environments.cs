@@ -7,6 +7,9 @@ namespace Domain
         public string Name { get; set; }
 
         public bool ArtifactFilter { get; set; }
+
         public IEnumerable<string> PreDeployApprovers { get; set; }
+
+        public IEnumerable<Build> Builds { get; set; } 
     }
 }
