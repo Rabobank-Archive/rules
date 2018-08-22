@@ -28,6 +28,10 @@ namespace Domain
         /// </summary>
         public IEnumerable<Repository> Repositories { get; set; } = new List<Repository>();
 
+        public IEnumerable<Release> Releases { get; set; }
+
+
+
         /// <summary>
         /// Exports the Results to a CSV-string with a delimiter. Defaults to a semicolon (;)
         /// </summary>

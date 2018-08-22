@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace VstsService
 {
@@ -6,12 +7,12 @@ namespace VstsService
     {
         public ProjectScanRapport(string projectName)
         {
-            ReleaseDefinitions = new List<Domain.ReleaseDefinition>();
+            Releases = Enumerable.Empty<Domain.Release>();
             this.ProjectName = projectName;
         }
 
         public string ProjectName { get; }
 
-        public IEnumerable<Domain.ReleaseDefinition> ReleaseDefinitions { get; set; }
+        public IEnumerable<Domain.Release> Releases { get; set; }
     }
 }

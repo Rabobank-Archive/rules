@@ -26,7 +26,7 @@ namespace VstsService
         }
 
         /// <summary>
-        /// Scans the name of the project. Checks if the settings are set correctly.
+        /// Scans the project. Checks if the settings are set correctly.
         /// </summary>
         /// <param name="projectName"></param>
         /// <returns></returns>
@@ -39,11 +39,11 @@ namespace VstsService
                 ReleaseDefinitions = ScanReleaseDefinitions().ToArray()
             };
 
+            result.Releases = GetReleases(projectName).Map();
 
             var builds = result.ReleaseDefinitions.SelectMany(x => x.BuildDefinitions);
 
             result.BuildDefinitions = builds;
-            
 
             return result;
         }
@@ -203,7 +203,7 @@ namespace VstsService
             return gitDef;
         }
 
-        private Releases.RootObject GetReleases(string projecdt)
+        private Releases.RootObject GetReleases(string project)
         {
             IRestResponse response = ExecuteGetRequest(
                 $"https://{accountName}.vsrm.visualstudio.com/{project}/_apis/release/releases?api-version=4.1-preview.6");
@@ -238,7 +238,7 @@ namespace VstsService
 
             var releases = GetReleases(projectName);
 
-            
+            rapport.Releases = releases.Map();
 
             return rapport;
         }

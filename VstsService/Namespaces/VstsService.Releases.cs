@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace VstsService
 {
@@ -134,7 +133,24 @@ namespace VstsService
         {
             public int count { get; set; }
             public List<Value> value { get; set; }
-        }
 
+            public IEnumerable<Domain.Release> Map()
+            {
+                foreach (var release in value)
+                {
+                    yield return new Domain.Release()
+                    {
+                        Id = release.id,
+                        Name = release.name,
+                        CreatedBy = release.createdBy.displayName,
+                        CreatedOn = release.createdOn,
+                        Description = release.description,
+                        Status = release.status,
+                        Tags = string.Join(',', release.tags),
+                        Reason = release.reason,
+                    };
+                }
+            }
+        }
     }
 }
