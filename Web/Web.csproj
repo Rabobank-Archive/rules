@@ -12,4 +12,10 @@
     <ProjectReference Include="..\VstsService\VstsService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Home\ProjectRapport.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>

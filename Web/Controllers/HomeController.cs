@@ -20,6 +20,13 @@ namespace Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult Scan(string projectName)
+        {
+            var model = Scanner.ScanProject(projectName);
+            return View("ProjectRapport",model);
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

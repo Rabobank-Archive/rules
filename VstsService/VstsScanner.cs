@@ -227,22 +227,6 @@ namespace VstsService
             return client.Execute(request);
         }
 
-        /// <summary>
-        /// Checks if all deployments were done correctly.
-        /// </summary>
-        /// <param name="projectName"></param>
-        /// <returns></returns>
-        public ProjectScanRapport CreateRapport(string projectName)
-        {
-            ProjectScanRapport rapport = new ProjectScanRapport(projectName);
-
-            var releases = GetReleases(projectName);
-
-            rapport.Releases = releases.Map();
-
-            return rapport;
-        }
-
         #endregion Everything with API
     }
 }

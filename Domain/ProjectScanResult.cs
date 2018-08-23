@@ -16,21 +16,19 @@ namespace Domain
         /// <summary>
         /// All Release definitions in a Project
         /// </summary>
-        public IEnumerable<ReleaseDefinition> ReleaseDefinitions { get; set; } = new List<ReleaseDefinition>();
+        public IEnumerable<ReleaseDefinition> ReleaseDefinitions { get; set; } = Enumerable.Empty<ReleaseDefinition>();
 
         /// <summary>
         /// All Build Definitions in a Project
         /// </summary>
-        public IEnumerable<BuildDefinition> BuildDefinitions { get; set; } = new List<BuildDefinition>();
+        public IEnumerable<BuildDefinition> BuildDefinitions { get; set; } = Enumerable.Empty<BuildDefinition>();
 
         /// <summary>
         /// All Source Control Repositories in a Project
         /// </summary>
-        public IEnumerable<Repository> Repositories { get; set; } = new List<Repository>();
+        public IEnumerable<Repository> Repositories { get; set; } = Enumerable.Empty<Repository>();
 
-        public IEnumerable<Release> Releases { get; set; }
-
-
+        public IEnumerable<Release> Releases { get; set; } = Enumerable.Empty<Release>();
 
         /// <summary>
         /// Exports the Results to a CSV-string with a delimiter. Defaults to a semicolon (;)
