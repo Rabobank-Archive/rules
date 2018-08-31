@@ -25,19 +25,34 @@ namespace lib.tests
         public void Test1()
         {
             string organization = "somecompany";
-            var client = VsrmClient(organization);
-            var request = Requests.ReleaseDefinitions();
+            var client = new VsrmClient(organization, token);
 
-            request.AddHeader("authorization", GenerateAuthorizationHeader(token));
-            var definitions = client.Execute<JsonCollection<ReleaseDefinition>>(request);
+            var definitions = client.Execute<JsonCollection<ReleaseDefinition>>(Requests.ReleaseDefinitions());
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
-        private static IRestClient VsrmClient(string organization)
+        abstract class AuthorizedClient : RestClient
         {
-            return new RestClient($"https://{organization}.vsrm.visualstudio.com/{{project}}/_apis/{{area}}/{{resource}}/");
+            private readonly string token;
+
+            public AuthorizedClient(string url, string token) : base(url)
+            {
+                this.token = token;
+            }
+
+            public override IRestResponse<T> Execute<T>(IRestRequest request)
+            {
+                return base.Execute<T>(request.AddHeader("authorization", GenerateAuthorizationHeader(token)));
+            }
+        }
+
+        class VsrmClient : AuthorizedClient
+        {
+            public VsrmClient(string organization, string token) : base($"https://{organization}.vsrm.visualstudio.com/{{project}}/_apis/{{area}}/{{resource}}/", token)
+            {
+            }
         }
 
 
@@ -50,9 +65,9 @@ namespace lib.tests
         public void ReleaseDefinitionDetails()
         {
             string organization = "somecompany";
-            var client = VsrmClient(organization);
+            var client = new VsrmClient(organization, token);
 
-            var request = Requests.ReleaseDefinition("2").AddHeader("authorization", GenerateAuthorizationHeader(token));
+            var request = Requests.ReleaseDefinition("2");
             var definition = client.Execute<ReleaseDefinition>(request);
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -100,21 +115,22 @@ namespace lib.tests
         public void QueryServiceConnections()
         {
             string organization = "somecompany";
-            var client = VstsClient(organization);
+            var client = new VstsClient(organization, token);
 
-            var request = Requests.ServiceEndpoints().AddHeader("authorization", GenerateAuthorizationHeader(token));
-            var definition = client.Execute<JsonCollection<ServiceEndpoint>>(request);
+            var definition = client.Execute<JsonCollection<ServiceEndpoint>>(Requests.ServiceEndpoints());
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Value.ShouldContain(e => e.Name == "p02-prd-devautsox-deploy (SPN)");
         }
 
-        private static IRestClient VstsClient(string organization)
+        class VstsClient : AuthorizedClient 
         {
-            return new RestClient($"https://{organization}.visualstudio.com/{{project}}/_apis/{{area}}/{{resource}}/");
+            public VstsClient(string organization, string token) : base($"https://{organization}.visualstudio.com/{{project}}/_apis/{{area}}/{{resource}}/", token)
+            {
+            }
         }
 
-        private string GenerateAuthorizationHeader(string token)
+        private static string GenerateAuthorizationHeader(string token)
         {
             string encoded = Base64Encode($":{token}");
             return ($"Basic {encoded}");
