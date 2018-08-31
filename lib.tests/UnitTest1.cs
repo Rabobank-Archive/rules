@@ -67,7 +67,7 @@ namespace lib.tests
             string organization = "somecompany";
             var client = new VsrmClient(organization, token);
 
-            var request = Requests.ReleaseDefinition("2");
+            var request = Requests.ReleaseDefinition("SOx-compliant-demo", "2");
             var definition = client.Execute<ReleaseDefinition>(request);
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -76,18 +76,18 @@ namespace lib.tests
 
         static class Requests 
         {
-            public static IRestRequest ReleaseDefinition(string id)
+            public static IRestRequest ReleaseDefinition(string project, string id)
             {
                 return new RestRequest(id, Method.GET)
-                    .AddUrlSegment("project", "SOx-compliant-demo")
+                    .AddUrlSegment("project", project)
                     .AddUrlSegment("area", "release")
                     .AddUrlSegment("resource", "definitions");
             }
 
-            public static IRestRequest ServiceEndpoints()
+            public static IRestRequest ServiceEndpoints(string project)
             {
                 return new RestRequest(Method.GET)
-                    .AddUrlSegment("project", "SOx-compliant-demo")
+                    .AddUrlSegment("project", project)
                     .AddUrlSegment("area", "serviceendpoint")
                     .AddUrlSegment("resource", "endpoints");
             }
@@ -117,7 +117,7 @@ namespace lib.tests
             string organization = "somecompany";
             var client = new VstsClient(organization, token);
 
-            var definition = client.Execute<JsonCollection<ServiceEndpoint>>(Requests.ServiceEndpoints());
+            var definition = client.Execute<JsonCollection<ServiceEndpoint>>(Requests.ServiceEndpoints("SOx-compliant-demo"));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Value.ShouldContain(e => e.Name == "p02-prd-devautsox-deploy (SPN)");
