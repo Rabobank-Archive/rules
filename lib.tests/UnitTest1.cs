@@ -10,7 +10,8 @@ namespace lib.tests
 {
     public class UnitTest1
     {
-        private readonly string token;
+        private readonly VsrmClient vsrm;
+        private readonly VstsClient vsts;
 
         public UnitTest1()
         {
@@ -18,29 +19,26 @@ namespace lib.tests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            token = configuration["token"];
+            var token = configuration["token"];
+
+            string organization = "somecompany";
+            vsrm = new VsrmClient(organization, token);
+            vsts = new VstsClient(organization, token);
         }
 
         [Fact]
-        public void Test1()
+        public void QueryReleaseDefinitions()
         {
-            string organization = "somecompany";
-            var client = new VsrmClient(organization, token);
-
-            var definitions = client.Execute<JsonCollection<ReleaseDefinition>>(Requests.ReleaseDefinitions("SOx-compliant-demo"));
+            var definitions = vsrm.Execute<JsonCollection<ReleaseDefinition>>(Requests.ReleaseDefinitions("SOx-compliant-demo"));
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
-        public void ReleaseDefinitionDetails()
+        public void QueryReleaseDefinitionDetails()
         {
-            string organization = "somecompany";
-            var client = new VsrmClient(organization, token);
-
-            var request = Requests.ReleaseDefinition("SOx-compliant-demo", "2");
-            var definition = client.Execute<ReleaseDefinition>(request);
+            var definition = vsrm.Execute<ReleaseDefinition>(Requests.ReleaseDefinition("SOx-compliant-demo", "2"));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Name.ShouldBe("demo SOx");
@@ -49,10 +47,7 @@ namespace lib.tests
         [Fact]
         public void QueryServiceConnections()
         {
-            string organization = "somecompany";
-            var client = new VstsClient(organization, token);
-
-            var definition = client.Execute<JsonCollection<ServiceEndpoint>>(Requests.ServiceEndpoints("SOx-compliant-demo"));
+            var definition = vsts.Execute<JsonCollection<ServiceEndpoint>>(Requests.ServiceEndpoints("SOx-compliant-demo"));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Value.ShouldContain(e => e.Name == "p02-prd-devautsox-deploy (SPN)");
