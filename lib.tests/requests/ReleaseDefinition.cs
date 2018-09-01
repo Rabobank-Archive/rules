@@ -7,12 +7,11 @@ namespace lib.tests.requests
         public string Project { get; }
         public string Id { get; }
 
-        public ReleaseDefinition(string project, string id) : base(id, Method.GET)
+        public ReleaseDefinition(string project, string id) : base("{project}/_apis/release/definitions/{id}", Method.GET)
         {
              base
                 .AddUrlSegment("project", project)
-                .AddUrlSegment("area", "release")
-                .AddUrlSegment("resource", "definitions");
+                .AddUrlSegment("id", id);
 
             Project = project;
             Id = id;

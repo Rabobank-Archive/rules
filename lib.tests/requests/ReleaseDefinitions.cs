@@ -6,12 +6,10 @@ namespace lib.tests.requests
     {
         public string Project { get; }
 
-        public ReleaseDefinitions(string project) : base(Method.GET)
+        public ReleaseDefinitions(string project) : base("{project}/_apis/release/definitions/", Method.GET)
         {
             base
-                .AddUrlSegment("project", project)
-                .AddUrlSegment("area", "release")
-                .AddUrlSegment("resource", "definitions");
+                .AddUrlSegment("project", project);
             
             this.Project = project;
         }

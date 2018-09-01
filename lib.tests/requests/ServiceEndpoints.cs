@@ -6,13 +6,11 @@ namespace lib.tests.requests
     {
         public string Project { get; }
 
-        public ServiceEndpoints(string project) : base(Method.GET)
+        public ServiceEndpoints(string project) : base("{project}/_apis/serviceendpoint/endpoints/", Method.GET)
         {
             base
-                .AddUrlSegment("project", project)
-                .AddUrlSegment("area", "serviceendpoint")
-                .AddUrlSegment("resource", "endpoints");
-                
+                .AddUrlSegment("project", project);
+
             this.Project = project;
         }
     }
