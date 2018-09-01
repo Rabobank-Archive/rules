@@ -1,4 +1,4 @@
-namespace lib.tests.response
+namespace lib.tests.Response
 {
     class ServiceEndpoint
     {

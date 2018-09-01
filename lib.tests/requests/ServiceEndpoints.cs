@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace lib.tests.requests
+namespace lib.tests.Requests
 {
     internal class ServiceEndpoints : RestRequest
     {
