@@ -12,16 +12,11 @@ namespace lib.tests
     public class VstsClientTest
     {
         private const string project = "SOx-compliant-demo";
-        private readonly IRestClient vsts;
+        private readonly IRestClient vsts = VstsClientFactory.Create();
 
         public VstsClientTest()
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
 
-            var token = configuration["token"];
-            vsts = new VstsClient("somecompany", token);
         }
 
         [Fact]
@@ -59,6 +54,9 @@ namespace lib.tests
             var history = vsts.Execute<JsonCollection<Response.ServiceEndpointHistory>>(new Requests.ServiceEndpointHistory(project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
             history.StatusCode.ShouldBe(HttpStatusCode.OK);
             history.Data.Value.ShouldNotBeEmpty();
+            history.Data.Value.ShouldAllBe(e => e.Data != null);
+            history.Data.Value.ShouldAllBe(e => e.Data.Definition != null);
+            history.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
         }
     }
 }
