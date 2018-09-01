@@ -9,12 +9,12 @@ using RestSharp;
 
 namespace lib.tests
 {
-    public class UnitTest1
+    public class VstsClientTest
     {
         private const string project = "SOx-compliant-demo";
         private readonly IRestClient vsts;
 
-        public UnitTest1()
+        public VstsClientTest()
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
