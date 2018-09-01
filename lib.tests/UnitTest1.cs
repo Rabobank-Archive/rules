@@ -52,7 +52,9 @@ namespace lib.tests
             var definition = vsts.Execute<JsonCollection<ServiceEndpoint>>(new Requests.ServiceEndpoints(project));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definition.Data.Value.ShouldContain(e => e.Name == "p02-prd-devautsox-deploy (SPN)");
+            definition.Data.Value.ShouldNotBeEmpty();
+            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
+            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
         }
 
         [Fact]
