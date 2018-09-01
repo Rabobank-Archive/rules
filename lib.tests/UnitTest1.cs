@@ -6,14 +6,14 @@ using Microsoft.Extensions.Configuration;
 using lib.tests.clients;
 using lib.tests.Response;
 using lib.tests.Requests;
+using RestSharp;
 
 namespace lib.tests
 {
     public class UnitTest1
     {
         private const string project = "SOx-compliant-demo";
-        private readonly VsrmClient vsrm;
-        private readonly VstsClient vsts;
+        private readonly IRestClient vsts;
 
         public UnitTest1()
         {
@@ -22,16 +22,13 @@ namespace lib.tests
                 .Build();
 
             var token = configuration["token"];
-
-            string organization = "somecompany";
-            vsrm = new VsrmClient(organization, token);
-            vsts = new VstsClient(organization, token);
+            vsts = new VstsClient("somecompany", token);
         }
 
         [Fact]
         public void QueryReleaseDefinitions()
         {
-            var definitions = vsrm.Execute<JsonCollection<Response.ReleaseDefinition>>(new Requests.ReleaseDefinitions(project));
+            var definitions = vsts.Execute<JsonCollection<Response.ReleaseDefinition>>(new Requests.ReleaseDefinitions(project));
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
@@ -40,7 +37,7 @@ namespace lib.tests
         [Fact]
         public void QueryReleaseDefinitionDetails()
         {
-            var definition = vsrm.Execute<Response.ReleaseDefinition>(new Requests.ReleaseDefinition(project, "2"));
+            var definition = vsts.Execute<Response.ReleaseDefinition>(new Requests.ReleaseDefinition(project, "2"));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Name.ShouldBe("demo SOx");

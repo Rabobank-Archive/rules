@@ -2,7 +2,7 @@ using RestSharp;
 
 namespace lib.tests.Requests
 {
-    internal class ReleaseDefinition : RestRequest
+    internal class ReleaseDefinition : RestRequest, IVsrmRequest
     {
         public string Project { get; }
         public string Id { get; }
