@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace lib.tests
+namespace lib.tests.response
 {
     class JsonCollection<T>
     {
