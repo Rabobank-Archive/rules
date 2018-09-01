@@ -1,6 +1,6 @@
-namespace lib.tests.Response
+namespace lib.Response
 {
-    class ServiceEndpoint
+    public class ServiceEndpoint
     {
         public string Name { get; set; }
         public string Id { get; internal set; }

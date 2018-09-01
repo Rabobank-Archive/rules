@@ -1,8 +1,8 @@
 using RestSharp;
 
-namespace lib.tests.Requests
+namespace lib.Requests
 {
-    internal class ServiceEndpointHistory : RestRequest
+    public class ServiceEndpointHistory : RestRequest
     {
         public string Project { get; }
         public string Id { get; }

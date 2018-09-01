@@ -1,9 +1,9 @@
-using lib.tests.Requests;
+using lib.Requests;
 using RestSharp;
 
-namespace lib.tests.clients
+namespace lib
 {
-    class VstsClient : RestClient
+    public class VstsClient : RestClient
     {
         private readonly string authorization;
         private readonly string organization;

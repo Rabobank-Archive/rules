@@ -1,8 +1,8 @@
 using RestSharp;
 
-namespace lib.tests.Requests
+namespace lib.Requests
 {
-    internal class ReleaseDefinitions : RestRequest, IVsrmRequest
+    public class ReleaseDefinitions : RestRequest, IVsrmRequest
     {
         public string Project { get; }
 

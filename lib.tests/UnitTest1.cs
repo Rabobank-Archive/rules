@@ -3,9 +3,8 @@ using Xunit;
 using Shouldly;
 using System.Net;
 using Microsoft.Extensions.Configuration;
-using lib.tests.clients;
-using lib.tests.Response;
-using lib.tests.Requests;
+using lib.Response;
+using lib.Requests;
 using RestSharp;
 
 namespace lib.tests

@@ -1,8 +1,8 @@
 using RestSharp;
 
-namespace lib.tests.Requests
+namespace lib.Requests
 {
-    internal class ServiceEndpoints : RestRequest
+    public class ServiceEndpoints : RestRequest
     {
         public string Project { get; }
 

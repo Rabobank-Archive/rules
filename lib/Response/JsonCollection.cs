@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace lib.tests.Response
+namespace lib.Response
 {
-    class JsonCollection<T>
+    public class JsonCollection<T>
     {
         public int Count { get; set; }
         public List<T> Value { get; set; }
