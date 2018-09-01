@@ -4,16 +4,16 @@ namespace lib.tests.clients
 {
     abstract class AuthorizedClient : RestClient
     {
-        private readonly string token;
+        private readonly string authorization;
 
         public AuthorizedClient(string url, string token) : base(url)
         {
-            this.token = token;
+            this.authorization = GenerateAuthorizationHeader(token);
         }
 
         public override IRestResponse<T> Execute<T>(IRestRequest request)
         {
-            return base.Execute<T>(request.AddHeader("authorization", GenerateAuthorizationHeader(token)));
+            return base.Execute<T>(request.AddHeader("authorization", authorization));
         }
 
         private static string GenerateAuthorizationHeader(string token)
@@ -22,7 +22,7 @@ namespace lib.tests.clients
             return ($"Basic {encoded}");
         }
 
-        public static string Base64Encode(string plainText)
+        private static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
