@@ -3,7 +3,7 @@ using lib.Response;
 
 namespace lib.Rules.Release
 {
-    public class ApprovedForNotTheSameAsRequestedFor : IReleaseRule
+    public class ApprovedByNotTheSameAsRequestedFor : IReleaseRule
     {
         public bool GetResult(Response.Release release)
         {

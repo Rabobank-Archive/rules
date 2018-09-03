@@ -20,7 +20,6 @@ namespace lib.tests.Rules.Release
             release.Data.Id.ShouldBe(id);
             release.Data.Environments.ShouldNotBeEmpty();
 
-
             var env = release.Data.Environments.First();
             env.Id.ShouldNotBeNullOrEmpty();
             env.PreDeployApprovals.ShouldNotBeEmpty();
@@ -29,6 +28,7 @@ namespace lib.tests.Rules.Release
             var deploy = env.DeploySteps.First();
             deploy.RequestedFor.ShouldNotBeNull();
             deploy.RequestedFor.Id.ShouldNotBeNull();
+            deploy.LastModifiedBy.ShouldNotBeNull();
 
             var predeploy = env.PreDeployApprovals.First();
             predeploy.Status.ShouldNotBeNullOrEmpty();

@@ -6,9 +6,9 @@ using Xunit;
 
 namespace lib.tests.Rules.Release
 {
-    public class ApprovedForNotTheSameAsRequestedForTests
+    public class ApprovedByNotTheSameAsRequestedForTests
     {
-        private readonly IReleaseRule rule = new ApprovedForNotTheSameAsRequestedFor();
+        private readonly IReleaseRule rule = new ApprovedByNotTheSameAsRequestedFor();
 
         [Fact]
         public void GivenPreDeployApprovalIsNotAutomated_WhenApprovedByIsSameAsRequestedFor_ThenResultIsFalse()
@@ -16,35 +16,21 @@ namespace lib.tests.Rules.Release
             var id = Guid.NewGuid();
             var release = NewRelease(id, id);
 
-            //When
-            var result = rule.GetResult(release);
-
-            //Then
-            result.ShouldBe(false);
+            rule.GetResult(release).ShouldBe(false);
         }
 
         [Fact]
         public void GivenPreDeployApprovalIsNotAutomated_WhenApprovedByIsDifferentFromRequestedFor_ThenResultIsTrue()
         {
             var release = NewRelease(Guid.NewGuid(), Guid.NewGuid());
-
-            //When
-            var result = rule.GetResult(release);
-
-            //Then
-            result.ShouldBe(true);
+            rule.GetResult(release).ShouldBe(true);
         }
 
         [Fact]
         public void GivenPreDeployApprovalIsAutomated_WhenScanningRequestedForAndApprovedBy_ThenResultIsTrue()
         {
             var release = NewAutomatedRelease();
-
-            //When
-            var result = rule.GetResult(release);
-
-            //Then
-            result.ShouldBe(true);
+            rule.GetResult(release).ShouldBe(true);
         }
 
         private static Response.Release NewAutomatedRelease()
