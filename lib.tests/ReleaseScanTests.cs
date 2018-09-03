@@ -47,7 +47,7 @@ namespace lib.tests
         public void GivenPreDeployApprovalIsNotAutomated_WhenApprovedByIsSameAsRequestedFor_ThenResultIsFalse()
         {
             var id = Guid.NewGuid();
-            Release release = NewRelease(id, id);
+            var release = NewRelease(id, id);
 
             //When
             var result = GetResult(release);
@@ -59,13 +59,41 @@ namespace lib.tests
         [Fact]
         public void GivenPreDeployApprovalIsNotAutomated_WhenApprovedByIsDifferentFromRequestedFor_ThenResultIsTrue()
         {
-            Release release = NewRelease(Guid.NewGuid(), Guid.NewGuid());
+            var release = NewRelease(Guid.NewGuid(), Guid.NewGuid());
 
             //When
             var result = GetResult(release);
 
             //Then
             result.ShouldBe(true);
+        }
+
+        [Fact]
+        public void GivenPreDeployApprovalIsAutomated_WhenScanningRequestedForAndApprovedBy_ThenResultIsTrue()
+        {
+            var release = NewAutomatedRelease();
+
+            //When
+            var result = GetResult(release);
+
+            //Then
+            result.ShouldBe(true);
+        }
+
+        private static Release NewAutomatedRelease()
+        {
+            return new Response.Release
+            {
+                Environments = new List<Response.Environment> {
+                    new Response.Environment {
+                        PreDeployApprovals = new List<PreDeployApproval> {
+                            new PreDeployApproval {
+                                IsAutomated = true
+                            }
+                        }
+                    }
+                }
+            };
         }
 
         private static Release NewRelease(Guid requestFor, Guid approvedBy)
@@ -96,7 +124,10 @@ namespace lib.tests
 
         private static bool GetResult(Release release)
         {
-            return release.Environments.All(e => e.DeploySteps.All(d => e.PreDeployApprovals.All(p => p.ApprovedBy.Id != d.RequestedFor.Id)));
+            return release.Environments.All(
+                e => e.PreDeployApprovals.All(
+                        p => p.IsAutomated || e.DeploySteps.All(
+                            d =>p.ApprovedBy.Id != d.RequestedFor.Id)));
         }
     }
 }
