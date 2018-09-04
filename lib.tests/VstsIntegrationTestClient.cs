@@ -9,7 +9,8 @@ namespace lib.tests
         public static IVstsRestClient Create()
         {
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", false)
+                .AddJsonFile("appsettings.secrets.json")
                 .Build();
 
             var token = configuration["token"];
