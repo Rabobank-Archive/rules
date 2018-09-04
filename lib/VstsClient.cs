@@ -3,12 +3,10 @@ using RestSharp;
 
 namespace lib
 {
-    public class VstsClient : RestClient
+    public class VstsClient : IVstsClient
     {
         private readonly string authorization;
         private readonly string organization;
-
-        private readonly object mutex = new object();
 
         public VstsClient(string organization, string token) : base()
         {
@@ -16,22 +14,16 @@ namespace lib
             this.organization = organization;
         }
 
-        public override IRestResponse<T> Execute<T>(IRestRequest request)
+        public IRestResponse<TResponse> Execute<TResponse>(IVstsRequest<TResponse> request)
+            where TResponse: new()
         {
-            lock (mutex)
+            var uri = new System.Uri($"https://{organization}.visualstudio.com/");
+            if (request is IVsrmRequest<TResponse>)
             {
-                switch (request)
-                {
-                    case IVsrmRequest r:
-                        BaseUrl = new System.Uri($"https://{organization}.vsrm.visualstudio.com/");
-                        break;
-                    default:
-                        BaseUrl = new System.Uri($"https://{organization}.visualstudio.com/");
-                        break;
-                }
-
-                return base.Execute<T>(request.AddHeader("authorization", authorization));
+                uri = new System.Uri($"https://{organization}.vsrm.visualstudio.com/");
             }
+
+            return new RestClient(uri).Execute<TResponse>(request.AddHeader("authorization", authorization));
         }
 
         private static string GenerateAuthorizationHeader(string token)

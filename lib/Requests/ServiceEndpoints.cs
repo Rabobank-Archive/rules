@@ -2,13 +2,10 @@ using RestSharp;
 
 namespace lib.Requests
 {
-    public class ServiceEndpoints : RestRequest
+    public class ServiceEndpoints : RestRequest, IVstsRequest<Response.Multiple<Response.ServiceEndpoint>>
     {
-        public string Project { get; }
-
         public ServiceEndpoints(string project) : base($"{project}/_apis/serviceendpoint/endpoints/", Method.GET)
         {
-            Project = project;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace lib.tests
 {
     internal static class VstsClientFactory
     {
-        public static IRestClient Create()
+        public static IVstsClient Create()
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")

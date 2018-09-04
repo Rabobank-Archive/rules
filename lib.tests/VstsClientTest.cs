@@ -12,17 +12,12 @@ namespace lib.tests
     public class VstsClientTest
     {
         private const string project = "SOx-compliant-demo";
-        private readonly IRestClient vsts = VstsClientFactory.Create();
-
-        public VstsClientTest()
-        {
-
-        }
+        private readonly IVstsClient vsts = VstsClientFactory.Create();
 
         [Fact]
         public void QueryReleaseDefinitions()
         {
-            var definitions = vsts.Execute<JsonCollection<Response.ReleaseDefinition>>(new Requests.ReleaseDefinitions(project));
+            var definitions = vsts.Execute(new Requests.ReleaseDefinitions(project));
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
@@ -31,7 +26,7 @@ namespace lib.tests
         [Fact]
         public void QueryReleaseDefinitionDetails()
         {
-            var definition = vsts.Execute<Response.ReleaseDefinition>(new Requests.ReleaseDefinition(project, "2"));
+            var definition = vsts.Execute(new Requests.ReleaseDefinition(project, "2"));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Name.ShouldBe("demo SOx");
@@ -40,7 +35,7 @@ namespace lib.tests
         [Fact]
         public void QueryServiceConnections()
         {
-            var definition = vsts.Execute<JsonCollection<ServiceEndpoint>>(new Requests.ServiceEndpoints(project));
+            var definition = vsts.Execute(new Requests.ServiceEndpoints(project));
 
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
             definition.Data.Value.ShouldNotBeEmpty();
@@ -51,7 +46,7 @@ namespace lib.tests
         [Fact]
         public void QueryServiceConnectionHistory()
         {
-            var history = vsts.Execute<JsonCollection<Response.ServiceEndpointHistory>>(new Requests.ServiceEndpointHistory(project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
+            var history = vsts.Execute(new Requests.ServiceEndpointHistory(project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
             history.StatusCode.ShouldBe(HttpStatusCode.OK);
             history.Data.Value.ShouldNotBeEmpty();
             history.Data.Value.ShouldAllBe(e => e.Data != null);
