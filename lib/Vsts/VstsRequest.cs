@@ -4,10 +4,10 @@ using RestSharp;
 
 namespace lib.Vsts
 {
-    public class VstsRequest<TResponse> : RestRequest, IVstsRequest<TResponse>
+    public class VstsRestRequest<TResponse> : RestRequest, IVstsRestRequest<TResponse>
         where TResponse: new()
     {
-        public VstsRequest(string uri, Method method) : base(uri, method)
+        public VstsRestRequest(string uri, Method method) : base(uri, method)
         {
         }
 

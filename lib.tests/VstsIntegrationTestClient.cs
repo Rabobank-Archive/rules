@@ -6,14 +6,14 @@ namespace lib.tests
 {
     internal static class VstsClientFactory
     {
-        public static IVstsClient Create()
+        public static IVstsRestClient Create()
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
 
             var token = configuration["token"];
-            return new VstsClient("somecompany", token);
+            return new VstsRestClient("somecompany", token);
         }
     }
 }

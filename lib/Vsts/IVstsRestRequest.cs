@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace lib.Vsts
 {
-    public interface IVstsRequest<TResponse> : IRestRequest
+    public interface IVstsRestRequest<TResponse> : IRestRequest
         where TResponse: new()
     {
         Uri BaseUri(string organization);

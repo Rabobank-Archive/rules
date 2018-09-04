@@ -2,18 +2,18 @@ using RestSharp;
 
 namespace lib.Vsts
 {
-    public class VstsClient : IVstsClient
+    public class VstsRestClient : IVstsRestClient
     {
         private readonly string authorization;
         private readonly string organization;
 
-        public VstsClient(string organization, string token) : base()
+        public VstsRestClient(string organization, string token) : base()
         {
             this.authorization = GenerateAuthorizationHeader(token);
             this.organization = organization;
         }
 
-        public IRestResponse<TResponse> Execute<TResponse>(IVstsRequest<TResponse> request)
+        public IRestResponse<TResponse> Execute<TResponse>(IVstsRestRequest<TResponse> request)
             where TResponse: new()
         {
             return new RestClient(request.BaseUri(organization)).Execute<TResponse>(request.AddHeader("authorization", authorization));

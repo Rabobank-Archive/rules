@@ -8,10 +8,10 @@ using lib.Vsts;
 
 namespace lib.tests
 {
-    public class VstsClientTest
+    public class VstsRestClientTest
     {
         private const string project = "SOx-compliant-demo";
-        private readonly IVstsClient vsts = VstsClientFactory.Create();
+        private readonly IVstsRestClient vsts = VstsClientFactory.Create();
 
         [Fact]
         public void QueryReleaseDefinitions()

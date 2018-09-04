@@ -4,7 +4,7 @@ using RestSharp;
 
 namespace lib.Vsts
 {
-    public class VsrmRequest<TResponse> : RestRequest, IVstsRequest<TResponse>
+    public class VsrmRequest<TResponse> : RestRequest, IVstsRestRequest<TResponse>
         where TResponse: new()
     {
         public VsrmRequest(string uri, Method method) : base(uri, method)
