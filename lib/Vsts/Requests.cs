@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace lib
+namespace lib.Vsts
 {
     public static class Requests
     {

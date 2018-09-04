@@ -2,7 +2,7 @@ using System;
 using lib.Response;
 using RestSharp;
 
-namespace lib
+namespace lib.Vsts
 {
     public class VsrmRequest<TResponse> : RestRequest, IVstsRequest<TResponse>
         where TResponse: new()

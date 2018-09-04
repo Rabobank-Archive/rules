@@ -4,7 +4,7 @@ using Shouldly;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
-using static lib.Requests;
+using lib.Vsts;
 
 namespace lib.tests
 {
@@ -16,7 +16,7 @@ namespace lib.tests
         [Fact]
         public void QueryReleaseDefinitions()
         {
-            var definitions = vsts.Execute(Release.Definitions(project));
+            var definitions = vsts.Execute(Requests.Release.Definitions(project));
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));

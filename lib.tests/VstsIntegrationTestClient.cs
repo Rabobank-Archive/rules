@@ -1,3 +1,4 @@
+using lib.Vsts;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 
