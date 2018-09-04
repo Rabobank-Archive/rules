@@ -6,13 +6,18 @@ using Xunit;
 
 namespace lib.tests.Rules.Release
 {
-    public class IntegrationTests
+    public class IntegrationTests : IClassFixture<TestConfig>
     {
+        private readonly TestConfig config;
+        public IntegrationTests(TestConfig config)
+        {
+            this.config = config;
+        }
         [Fact]
         public void ReleaseWithApproval()
         {
             const string id = "616";
-            var vsts = VstsClientFactory.Create();
+            var vsts = new VstsRestClient(config.Organization, config.Token);
 
             var release = vsts.Execute<Response.Release>(Requests.Release.Releases("TAS", id));
             release.ErrorMessage.ShouldBeNull();
