@@ -13,7 +13,7 @@ namespace lib.tests.Rules.Release
             const string id = "616";
             var vsts = VstsClientFactory.Create();
 
-            var release = vsts.Execute<Response.Release>(new Requests.Release("TAS", id));
+            var release = vsts.Execute<Response.Release>(Requests.Release.Releases("TAS", id));
             release.ErrorMessage.ShouldBeNull();
 
             release.StatusCode.ShouldBe(HttpStatusCode.OK);

@@ -1,4 +1,3 @@
-using lib.Requests;
 using RestSharp;
 
 namespace lib
@@ -17,13 +16,7 @@ namespace lib
         public IRestResponse<TResponse> Execute<TResponse>(IVstsRequest<TResponse> request)
             where TResponse: new()
         {
-            var uri = new System.Uri($"https://{organization}.visualstudio.com/");
-            if (request is IVsrmRequest<TResponse>)
-            {
-                uri = new System.Uri($"https://{organization}.vsrm.visualstudio.com/");
-            }
-
-            return new RestClient(uri).Execute<TResponse>(request.AddHeader("authorization", authorization));
+            return new RestClient(request.BaseUri(organization)).Execute<TResponse>(request.AddHeader("authorization", authorization));
         }
 
         private static string GenerateAuthorizationHeader(string token)
