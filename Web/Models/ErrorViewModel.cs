@@ -1,6 +1,6 @@
 using System;
 
-namespace Web.Models
+namespace SecurePipelineScan.Web.Models
 {
     public class ErrorViewModel
     {
