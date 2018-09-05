@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using lib.Rules.Release;
+using Rules.Rules.Release;
 using Shouldly;
 using Xunit;
 
-namespace lib.tests.Rules.Release
+namespace Rules.Tests.Rules.Release
 {
     public class LastModifiedByNotTheSameAsApprovedByTests
     {
@@ -27,29 +27,29 @@ namespace lib.tests.Rules.Release
             rule.GetResult(release).ShouldBeTrue();
         }
 
-        private static vsts.Response.Release NewRelease(Guid id, Guid modified)
+        private static Vsts.Response.Release NewRelease(Guid id, Guid modified)
         {
-            return new vsts.Response.Release
+            return new Vsts.Response.Release
             {
-                Environments = new List<vsts.Response.Environment>
+                Environments = new List<Vsts.Response.Environment>
                 {
-                    new vsts.Response.Environment
+                    new Vsts.Response.Environment
                     {
-                        DeploySteps = new List<vsts.Response.DeployStep>
+                        DeploySteps = new List<Vsts.Response.DeployStep>
                         {
-                            new vsts.Response.DeployStep
+                            new Vsts.Response.DeployStep
                             {
-                                LastModifiedBy = new vsts.Response.Identity
+                                LastModifiedBy = new Vsts.Response.Identity
                                 {
                                     Id = modified
                                 }
                             }
                         },
-                        PreDeployApprovals = new List<vsts.Response.PreDeployApproval>
+                        PreDeployApprovals = new List<Vsts.Response.PreDeployApproval>
                         {
-                            new vsts.Response.PreDeployApproval
+                            new Vsts.Response.PreDeployApproval
                             {
-                                ApprovedBy = new vsts.Response.Identity
+                                ApprovedBy = new Vsts.Response.Identity
                                 {
                                     Id = id
                                 }

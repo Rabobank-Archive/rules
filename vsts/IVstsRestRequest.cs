@@ -1,7 +1,7 @@
 using System;
 using RestSharp;
 
-namespace vsts
+namespace Vsts
 {
     public interface IVstsRestRequest<TResponse> : IRestRequest
         where TResponse: new()

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\vsts\vsts.csproj" />
+    <ProjectReference Include="..\Vsts\Vsts.csproj" />
   </ItemGroup>
 
 </Project>

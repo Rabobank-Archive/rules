@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace vsts.tests
+namespace Vsts.Tests
 {
     public class TestConfig
     {

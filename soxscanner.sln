@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lib.tests", "lib.tests\lib.tests.csproj", "{E5F1938E-52DC-4777-B26B-4788BFA1AD38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rules.tests", "Rules.Tests\Rules.Tests.csproj", "{E5F1938E-52DC-4777-B26B-4788BFA1AD38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lib", "lib\lib.csproj", "{488D73F8-4667-4616-8945-B04AF604DC02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rules", "Rules\Rules.csproj", "{488D73F8-4667-4616-8945-B04AF604DC02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vsts.tests", "vsts.tests\vsts.tests.csproj", "{9C635B25-407F-4DA4-B0D8-96D7BA6A529F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vsts.tests", "Vsts.Tests\Vsts.Tests.csproj", "{9C635B25-407F-4DA4-B0D8-96D7BA6A529F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vsts", "vsts\vsts.csproj", "{E5167CD5-367F-48FB-8CF3-A822FDCC5129}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vsts", "Vsts\Vsts.csproj", "{E5167CD5-367F-48FB-8CF3-A822FDCC5129}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

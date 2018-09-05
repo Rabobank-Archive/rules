@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace vsts
+namespace Vsts
 {
     public class VstsRestClient : IVstsRestClient
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using lib.Rules.Release;
+using Rules.Rules.Release;
 using Shouldly;
 using Xunit;
 
-namespace lib.tests.Rules.Release
+namespace Rules.Tests.Rules.Release
 {
     public class ApprovedByNotTheSameAsRequestedForTests
     {
@@ -33,14 +33,14 @@ namespace lib.tests.Rules.Release
             rule.GetResult(release).ShouldBe(true);
         }
 
-        private static vsts.Response.Release NewAutomatedRelease()
+        private static Vsts.Response.Release NewAutomatedRelease()
         {
-            return new vsts.Response.Release
+            return new Vsts.Response.Release
             {
-                Environments = new List<vsts.Response.Environment> {
-                    new vsts.Response.Environment {
-                        PreDeployApprovals = new List<vsts.Response.PreDeployApproval> {
-                            new vsts.Response.PreDeployApproval {
+                Environments = new List<Vsts.Response.Environment> {
+                    new Vsts.Response.Environment {
+                        PreDeployApprovals = new List<Vsts.Response.PreDeployApproval> {
+                            new Vsts.Response.PreDeployApproval {
                                 IsAutomated = true
                             }
                         }
@@ -49,23 +49,23 @@ namespace lib.tests.Rules.Release
             };
         }
 
-        private static vsts.Response.Release NewRelease(Guid requestFor, Guid approvedBy)
+        private static Vsts.Response.Release NewRelease(Guid requestFor, Guid approvedBy)
         {
             //Given
-            return new vsts.Response.Release
+            return new Vsts.Response.Release
             {
-                Environments = new List<vsts.Response.Environment> {
-                    new vsts.Response.Environment {
-                        DeploySteps = new List<vsts.Response.DeployStep> {
-                            new vsts.Response.DeployStep {
-                                RequestedFor = new vsts.Response.Identity {
+                Environments = new List<Vsts.Response.Environment> {
+                    new Vsts.Response.Environment {
+                        DeploySteps = new List<Vsts.Response.DeployStep> {
+                            new Vsts.Response.DeployStep {
+                                RequestedFor = new Vsts.Response.Identity {
                                     Id = requestFor
                                 }
                             }
                         },
-                        PreDeployApprovals = new List<vsts.Response.PreDeployApproval>{
-                            new vsts.Response.PreDeployApproval {
-                                ApprovedBy = new vsts.Response.Identity {
+                        PreDeployApprovals = new List<Vsts.Response.PreDeployApproval>{
+                            new Vsts.Response.PreDeployApproval {
+                                ApprovedBy = new Vsts.Response.Identity {
                                     Id = approvedBy
                                 }
                             }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace vsts.Response
+namespace Vsts.Response
 {
     public class Release
     {

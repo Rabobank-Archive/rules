@@ -1,6 +1,6 @@
 using System;
 
-namespace vsts.Response
+namespace Vsts.Response
 {
     public class Identity
     {

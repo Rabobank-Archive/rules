@@ -1,4 +1,4 @@
-namespace vsts.Response
+namespace Vsts.Response
 {
     public class ReleaseDefinition
     {

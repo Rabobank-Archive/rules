@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using lib.Rules.Release;
+using Rules.Rules.Release;
 using Shouldly;
 using Xunit;
 
-namespace lib.tests.Rules.Release
+namespace Rules.Tests.Rules.Release
 {
     public class ManualApproverRequiredTests
     {
@@ -24,14 +24,14 @@ namespace lib.tests.Rules.Release
             rule.GetResult(release).ShouldBeTrue();
         }
 
-        private static vsts.Response.Release NewRelease()
+        private static Vsts.Response.Release NewRelease()
         {
-            return new vsts.Response.Release
+            return new Vsts.Response.Release
             {
-                Environments = new List<vsts.Response.Environment> {
-                    new vsts.Response.Environment {
-                        PreDeployApprovals = new List<vsts.Response.PreDeployApproval> {
-                            new vsts.Response.PreDeployApproval {
+                Environments = new List<Vsts.Response.Environment> {
+                    new Vsts.Response.Environment {
+                        PreDeployApprovals = new List<Vsts.Response.PreDeployApproval> {
+                            new Vsts.Response.PreDeployApproval {
                                 IsAutomated = false
                             }
                         }
@@ -40,16 +40,16 @@ namespace lib.tests.Rules.Release
             };
         }
 
-        private static vsts.Response.Release NewAutomatedRelease()
+        private static Vsts.Response.Release NewAutomatedRelease()
         {
-            return new vsts.Response.Release
+            return new Vsts.Response.Release
             {
-                Environments = new List<vsts.Response.Environment>
+                Environments = new List<Vsts.Response.Environment>
                 {
-                    new vsts.Response.Environment {
-                        PreDeployApprovals = new List<vsts.Response.PreDeployApproval>
+                    new Vsts.Response.Environment {
+                        PreDeployApprovals = new List<Vsts.Response.PreDeployApproval>
                         {
-                            new vsts.Response.PreDeployApproval {
+                            new Vsts.Response.PreDeployApproval {
                                 IsAutomated = true
                             }
                         }

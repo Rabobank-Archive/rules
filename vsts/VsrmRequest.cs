@@ -1,8 +1,8 @@
 using System;
-using vsts.Response;
+using Vsts.Response;
 using RestSharp;
 
-namespace vsts
+namespace Vsts
 {
     public class VsrmRequest<TResponse> : RestRequest, IVstsRestRequest<TResponse>
         where TResponse: new()

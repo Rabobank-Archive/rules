@@ -1,11 +1,11 @@
 using System.Linq;
-using vsts.Response;
+using Vsts.Response;
 
-namespace lib.Rules.Release
+namespace Rules.Rules.Release
 {
     public class ApprovedByNotTheSameAsRequestedFor : IReleaseRule
     {
-        public bool GetResult(vsts.Response.Release release)
+        public bool GetResult(Vsts.Response.Release release)
         {
             return release.Environments.All(
                 e => e.PreDeployApprovals.All(

@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lib\lib.csproj" />
+    <ProjectReference Include="..\Rules\Rules.csproj" />
   </ItemGroup>
 </Project>
