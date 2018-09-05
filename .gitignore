@@ -262,3 +262,7 @@ __pycache__/
 *.pyc
 /ProjectScanner/run.ps1
 *.csv
+
+bin/
+obj/
+**/appsettings.user.json

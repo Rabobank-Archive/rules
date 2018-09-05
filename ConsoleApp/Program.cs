@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
-using VstsService;
 
-namespace ProjectScanner
+namespace SecurePipelineScan.ConsoleApp
 {
     internal class Program
     {
@@ -24,22 +23,11 @@ namespace ProjectScanner
                 {
                     Console.WriteLine("Please add your PAT using -t");
                 }
-                var projectName = projectNameOption.Value();
 
-                string encodedPath = Base64Encode($":{token}");
-                var scanner = new VstsScanner($"Basic {encodedPath}", "somecompany");
-                var result = scanner.ScanProject(projectName);
-                
-                Console.Write(result.ToCsv($"\t"));
-
+                await System.Threading.Tasks.Task.CompletedTask;
                 return 0;
             });
             app.Execute(args);
-        }
-        public static string Base64Encode(string plainText)
-        {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
         }
     }
 }

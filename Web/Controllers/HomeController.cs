@@ -1,30 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using VstsService;
-using Web.Models;
+using SecurePipelineScan.Web.Models;
 
-namespace Web.Controllers
+namespace SecurePipelineScan.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IVstsScanner Scanner { get; }
-
-        public HomeController(IVstsScanner scanner)
+        public HomeController()
         {
-            Scanner = scanner;
         }
 
         public IActionResult Index()
         {
-            var model = Scanner.ScanProject("SOx-compliant-demo");
-            return View(model);
+            return View();
         }
 
         [HttpGet]
         public IActionResult Scan(string projectName)
         {
-            var model = Scanner.ScanProject(projectName);
-            return View("ProjectRapport",model);
+            return View();
         }
 
         public IActionResult About()

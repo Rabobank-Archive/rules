@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using VstsService;
 
-namespace Web
+namespace SecurePipelineScan.Web
 {
     public class Startup
     {
@@ -28,16 +27,6 @@ namespace Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            string pat64Encoded = Configuration.GetValue<string>("Base64PAT", string.Empty);
-            string accountName = Configuration.GetValue<string>("Accountname", string.Empty);
-
-            if (string.IsNullOrEmpty(pat64Encoded) || string.IsNullOrEmpty(accountName))
-            {
-                throw new ArgumentNullException($"{nameof(pat64Encoded)} or {nameof(accountName)}", "The pat or accountname was empty or not found. Please configure in appsettings.machinename.json");
-            }
-
-            services.AddTransient<IVstsScanner>((serviceProvider) => new VstsScanner($"Basic {pat64Encoded}", accountName));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
