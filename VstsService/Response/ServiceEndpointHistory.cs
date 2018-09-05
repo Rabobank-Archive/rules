@@ -10,5 +10,6 @@ namespace SecurePipelineScan.VstsService.Response
     public class ServiceEndpointHistoryData
     {
         public ReleaseDefinition Definition { get; set; }
+        public Owner Owner { get; set; }
     }
 }

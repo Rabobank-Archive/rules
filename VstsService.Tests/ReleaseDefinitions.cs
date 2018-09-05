@@ -39,7 +39,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             const string id = "616";
 
-            var release = client.Execute<Response.Release>(Requests.Release.Releases("TAS", id));
+            var release = client.Execute(Requests.Release.Releases("TAS", id));
             release.ErrorMessage.ShouldBeNull();
 
             release.StatusCode.ShouldBe(HttpStatusCode.OK);
