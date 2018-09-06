@@ -1,8 +1,8 @@
-using System.Linq;
+﻿using System.Linq;
 
-namespace SecurePipelineScan.Rules.Helpers
+namespace SecurePipelineScan.Rules.Checks
 {
-    public static class EnvironmentExtensions
+    public static class Environment
     {
         public static bool IsApprovedBySomeoneElse(this SecurePipelineScan.VstsService.Response.Environment env)
         {

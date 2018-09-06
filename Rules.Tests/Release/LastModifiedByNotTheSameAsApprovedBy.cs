@@ -4,11 +4,11 @@ using Shouldly;
 using Xunit;
 using Rules.Tests.Helpers;
 
-namespace SecurePipelineScan.Tests.Rules.Release
+namespace SecurePipelineScan.Rules.Release.Tests
 {
     public class LastModifiedByNotTheSameAsApprovedByTests
     {
-        private readonly IReleaseRule rule = new LastModifiedByNotTheSameAsApprovedBy();
+        private readonly LastModifiedByNotTheSameAsApprovedBy rule = new LastModifiedByNotTheSameAsApprovedBy();
         
         [Fact]
         public void GivenReleaseModified_ApprovedByEqualsLastModifiedBy_ThenResultFalse()
