@@ -1,5 +1,4 @@
 using System.Linq;
-using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release
 {
@@ -9,7 +8,7 @@ namespace SecurePipelineScan.Rules.Release
         {
             return release.Environments.All(
                 e => e.PreDeployApprovals == null || e.PreDeployApprovals.All(
-                        p => p.IsAutomated || p.Status=="Pending" || e.DeploySteps.All(
+                        p => p.IsAutomated || p.Status == "Pending" || e.DeploySteps.All(
                             d => p.ApprovedBy?.Id != d.RequestedFor?.Id)));
         }
     }

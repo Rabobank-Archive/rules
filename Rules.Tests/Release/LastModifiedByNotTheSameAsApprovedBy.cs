@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using SecurePipelineScan.Rules.Release;
-using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
-using Rules.Tests.Release;
+using Rules.Tests.Helpers;
 
 namespace SecurePipelineScan.Tests.Rules.Release
 {
@@ -17,7 +14,7 @@ namespace SecurePipelineScan.Tests.Rules.Release
         public void GivenReleaseModified_ApprovedByEqualsLastModifiedBy_ThenResultFalse()
         {
             var id = Guid.NewGuid();
-            var release = ReleaseHelper.NewRelease(id, id);
+            var release = ReleaseBuilder.Create(id, id);
 
             rule.GetResult(release).ShouldBeFalse();
         }
@@ -25,7 +22,7 @@ namespace SecurePipelineScan.Tests.Rules.Release
         [Fact]
         public void GivenReleaseModified_ApprovedByNotEqualsLastModifiedBy_ThenResultTrue()
         {
-            var release = ReleaseHelper.NewRelease(Guid.NewGuid(), Guid.NewGuid());
+            var release = ReleaseBuilder.Create();
             rule.GetResult(release).ShouldBeTrue();
         }
 
