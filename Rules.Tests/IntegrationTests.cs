@@ -33,7 +33,6 @@ namespace Rules.Tests
             var client = new VstsRestClient(organization, token);
 
             var response = client.Execute(Requests.ServiceEndpoint.Endpoints(Project));
-            IReleaseRule[] rules = { new ApprovedByNotTheSameAsRequestedFor(), new ManualApproverRequired(), new LastModifiedByNotTheSameAsApprovedBy() };
             foreach (var item in response.Data.Value)
             {
                 output.WriteLine($"Service endpoint found: {item.Id} with name: {item.Name}");
@@ -46,16 +45,13 @@ namespace Rules.Tests
 
                     var release = client.Execute(new VstsRestRequest<SecurePipelineScan.VstsService.Response.Release>(history.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET));
                     release.ErrorMessage.ShouldBeNullOrEmpty();
-                    foreach (var rule in rules)
-                    {
-                        output.WriteLine($"  {rule.GetType().Name} {rule.GetResult(release.Data)}");
-                    }
 
+                    // foreach (var rule in rules)
+                    // {
+                    //     output.WriteLine($"  {rule.GetType().Name} {rule.GetResult(release.Data)}");
+                    // }
                 }
             }
-            
-
         }
-
     }
 }
