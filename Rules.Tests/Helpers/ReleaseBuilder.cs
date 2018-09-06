@@ -55,7 +55,6 @@ namespace Rules.Tests.Helpers
             };
         }
 
-
         public ReleaseBuilder WithPreDeployApprovalStatus(string status)
         {
             release.Environments.First().
