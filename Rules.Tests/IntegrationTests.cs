@@ -11,21 +11,25 @@ namespace Rules.Tests
     /// <summary>
     /// This is a test
     /// </summary>
-    public class Class1
+    public class IntegrationTests : IClassFixture<TestConfig>
     {
         private const string Project = "SOx-compliant-demo";
         private readonly ITestOutputHelper output;
 
-        public Class1(ITestOutputHelper output)
+        public IntegrationTests(ITestOutputHelper output, TestConfig config)
         {
             this.output = output;
+            Config = config;
         }
 
+        public TestConfig Config { get; }
+
         [Fact]
-        public void MyTestMethod()
+        public void GetAllRules()
         {
-            var organization = "somecompany";
-            string token = "<pat>";
+            var organization = Config.Organization;
+            string token = Config.Token;
+
             var client = new VstsRestClient(organization, token);
 
             var response = client.Execute(Requests.ServiceEndpoint.Endpoints(Project));
