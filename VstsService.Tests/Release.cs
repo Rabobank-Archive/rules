@@ -33,7 +33,7 @@ namespace SecurePipelineScan.VstsService.Tests
             env.Id.ShouldNotBeNullOrEmpty();
             env.PreDeployApprovals.ShouldNotBeEmpty();
             env.DeploySteps.ShouldNotBeEmpty();
-            
+            env.Name.ShouldNotBeNullOrEmpty();
 
             var deploy = env.DeploySteps.First();
             deploy.RequestedFor.ShouldNotBeNull();
@@ -46,6 +46,15 @@ namespace SecurePipelineScan.VstsService.Tests
             predeploy.IsAutomated.ShouldBe(false);
             predeploy.ApprovedBy.ShouldNotBeNull();
             predeploy.ApprovedBy.DisplayName.ShouldNotBeNullOrEmpty();
+
+            var conditions = env.Conditions;
+            conditions.ShouldNotBeEmpty();
+
+            var condition = conditions.First();
+            condition.Result.ShouldBeTrue();
+            condition.Name.ShouldNotBeNullOrEmpty();
+            condition.ConditionType.ShouldNotBeEmpty();
+            condition.Value.ShouldNotBeNull();
         }
     }
 }
