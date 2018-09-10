@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using r = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release
 {
-    public class IsApprovedBySomeoneElseInCurrentOrPreviousDeployment
+    public class FourEyesOnAllBuildArtefacts
     {
         private readonly Func<r.Environment, bool> approved;
 
-        public IsApprovedBySomeoneElseInCurrentOrPreviousDeployment() :
+        public FourEyesOnAllBuildArtefacts() :
             this(SecurePipelineScan.Rules.Checks.Environment.IsApprovedBySomeoneElse)
         {
         }
 
-        internal IsApprovedBySomeoneElseInCurrentOrPreviousDeployment(Func<r.Environment, bool> approved)
+        internal FourEyesOnAllBuildArtefacts(Func<r.Environment, bool> approved)
         {
             if (approved == null)
             {

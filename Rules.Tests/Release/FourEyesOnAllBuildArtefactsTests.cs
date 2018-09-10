@@ -7,7 +7,7 @@ using r = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release.Tests
 {
-    public class IsApprovedBySomeoneElseInCurrentOrPreviousDeploymentTests
+    public class FourEyesOnAllBuildArtefactsTests
     {
         [Fact]
         public void EmpyReleaseIsNotApproved()
@@ -15,7 +15,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
             };
 
-            var rule = new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment();
+            var rule = new FourEyesOnAllBuildArtefacts();
             rule.GetResult(release, "110").ShouldBeFalse();
         }
 
@@ -25,12 +25,13 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110"
+                        Id = "110",
+                        Name = "single"
                     }
                 }
             };
 
-            var rule = new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment(_ => true);
+            var rule = new FourEyesOnAllBuildArtefacts(_ => true);
             rule.GetResult(release, "110").ShouldBeTrue();
         }
 
@@ -45,7 +46,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
                 }
             };
 
-            var rule = new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment();
+            var rule = new FourEyesOnAllBuildArtefacts();
             rule.GetResult(release, "111").ShouldBeFalse();
         }
 
@@ -56,12 +57,13 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110"
+                        Id = "110",
+                        Name = "single"
                     }
                 }
             };
 
-            var rule = new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment(_ => false);
+            var rule = new FourEyesOnAllBuildArtefacts(_ => false);
             rule.GetResult(release, "110").ShouldBeFalse();
         }
 
@@ -93,7 +95,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             approved.Invoke(Arg.Is<r.Environment>(e => e.Name == "first")).Returns(true);
 
 
-            var rule = new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment(approved);
+            var rule = new FourEyesOnAllBuildArtefacts(approved);
             rule.GetResult(release, "110").ShouldBeTrue();
             approved.Received().Invoke(Arg.Is<r.Environment>(e => e.Name == "first"));
         }
@@ -101,13 +103,13 @@ namespace SecurePipelineScan.Rules.Release.Tests
         [Fact]
         public void UsingDefaultIsApprovedFunction()
         {
-            new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment();
+            new FourEyesOnAllBuildArtefacts();
         }
 
         [Fact]
         public void UsingOverloadedTestConstructorThrowsWhenNoFunctionSpecified()
         {
-            Assert.Throws<ArgumentNullException>(() => new IsApprovedBySomeoneElseInCurrentOrPreviousDeployment(null));
+            Assert.Throws<ArgumentNullException>(() => new FourEyesOnAllBuildArtefacts(null));
         }
     }
 }

@@ -264,3 +264,4 @@ __pycache__/
 bin/
 obj/
 **/appsettings.user.json
+.DS_Store
