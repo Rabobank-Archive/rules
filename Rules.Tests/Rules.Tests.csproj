@@ -18,9 +18,14 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <DotNetCliToolReference Include="StrykerMutator.DotNetCoreCli" Version="*" />
+    <PackageReference Include="StrykerMutator.DotNetCoreCli" Version="*" />
+  </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Rules\Rules.csproj" />
+    <ProjectReference Include="../Rules/Rules.csproj" />
   </ItemGroup>
 
   <ItemGroup>
