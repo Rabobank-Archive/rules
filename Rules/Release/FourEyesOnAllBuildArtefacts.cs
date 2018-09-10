@@ -23,16 +23,13 @@ namespace SecurePipelineScan.Rules.Release
 
             this.approved = approved;
         }
-        
+
         public bool GetResult(r.Release release, string environmentId)
         {
-            if (release.Environments != null)
+            var env = release.Environments?.SingleOrDefault(e => e.Id == environmentId);
+            if (env != null)
             {
-                var env = release.Environments.SingleOrDefault(e => e.Id == environmentId);
-                if (env != null)
-                {
-                    return IsApproved(env, release.Environments.ToDictionary(e => e.Name));
-                }
+                return IsApproved(env, release.Environments.ToDictionary(e => e.Name));
             }
 
             return false;
@@ -46,13 +43,10 @@ namespace SecurePipelineScan.Rules.Release
 
         private bool IsApprovedByPreviousEnvironments(r.Environment env, IDictionary<string, r.Environment> all)
         {
-            if (env.Conditions == null)
-            {
-                return false;
-            }
-
-            var previous = env.Conditions.Where(c => c.ConditionType == "environmentState");
-            return previous.Any() && previous.All(c => IsApproved(all[c.Name], all));
+            var previous = env.Conditions?.Where(c => c.ConditionType == "environmentState");
+            return previous != null && 
+                previous.Any() && 
+                previous.All(c => IsApproved(all[c.Name], all));
         }
     }
 }
