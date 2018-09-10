@@ -101,6 +101,30 @@ namespace SecurePipelineScan.Rules.Release.Tests
         }
 
         [Fact]
+        public void GivenCurrentEnvironmentIsNotApproved_WhenConditionsAreNotPreviousEnvironment_ThenResultIsFalse()
+        {
+            var release = new r.Release {
+                Environments = new [] {
+                    new r.Environment {
+                        Id = "109",
+                        Name = "doesn't-really-matter",
+                        Conditions = new [] {
+                            new r.Condition {
+                                Result = true,
+                                Name = "ReleaseStarted",
+                                ConditionType = "event",
+                                Value = ""
+                            }
+                        }
+                    }
+                }
+            };
+
+            var rule = new FourEyesOnAllBuildArtefacts(_ => false);
+            rule.GetResult(release, "109").ShouldBeFalse();
+        }
+
+        [Fact]
         public void UsingDefaultIsApprovedFunction()
         {
             new FourEyesOnAllBuildArtefacts();

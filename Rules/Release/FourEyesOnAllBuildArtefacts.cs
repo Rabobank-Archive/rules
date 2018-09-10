@@ -40,8 +40,19 @@ namespace SecurePipelineScan.Rules.Release
 
         private bool IsApproved(r.Environment env, IDictionary<string, r.Environment> all)
         {
-            return (approved(env) || 
-                env.Conditions != null && env.Conditions.All(c => IsApproved(all[c.Name], all)));
+            return (approved(env) ||
+                IsApprovedByPreviousEnvironments(env, all));
+        }
+
+        private bool IsApprovedByPreviousEnvironments(r.Environment env, IDictionary<string, r.Environment> all)
+        {
+            if (env.Conditions == null)
+            {
+                return false;
+            }
+
+            var previous = env.Conditions.Where(c => c.ConditionType == "environmentState");
+            return previous.Any() && previous.All(c => IsApproved(all[c.Name], all));
         }
     }
 }
