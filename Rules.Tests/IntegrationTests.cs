@@ -1,4 +1,5 @@
 ﻿
+using System;
 using RestSharp;
 using SecurePipelineScan.Rules.Release;
 using SecurePipelineScan.VstsService;
@@ -31,8 +32,8 @@ namespace SecurePipelineScan.Rules.Tests
             string token = Config.Token;
 
             var client = new VstsRestClient(organization, token);
-
-            Scan.Execute(client, Config.Project);
+            var scan = new Scan(client, Console.WriteLine);
+            scan.Execute(Config.Project);
         }
 
         [Fact]
@@ -43,7 +44,6 @@ namespace SecurePipelineScan.Rules.Tests
             
             var release = client.Execute(new VstsRestRequest<SecurePipelineScan.VstsService.Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET));
             rule.GetResult(release.Data, 1915).ShouldBeTrue();
-            
         }
     }
 }

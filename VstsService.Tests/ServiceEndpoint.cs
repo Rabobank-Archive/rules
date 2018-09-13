@@ -46,6 +46,7 @@ namespace SecurePipelineScan.VstsService.Tests
             data.Owner.Links.Web.ShouldNotBeNull();
             data.Owner.Links.Self.ShouldNotBeNull();
             data.Owner.Links.Self.Href.ShouldNotBeNull();
+            data.PlanType.ShouldNotBeNullOrEmpty();
         }
     }
 }
