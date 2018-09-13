@@ -20,10 +20,13 @@ namespace SecurePipelineScan.Rules
         public void Execute(string project)
         {
             var endpoints = client.Execute(Requests.ServiceEndpoint.Endpoints(project));
-            foreach (var endpoint in endpoints.Data.Value)
+            foreach (var endpoint in endpoints.ThrowOnError().Data.Value)
             {
                 output(endpoint.Name);
-                foreach (var history in client.Execute(Requests.ServiceEndpoint.History(project, endpoint.Id)).Data.Value.GroupBy(h => h.Data.Definition.Name))
+                foreach (var history in client
+                    .Execute(Requests.ServiceEndpoint.History(project, endpoint.Id))
+                    .ThrowOnError()
+                    .Data.Value.GroupBy(h => h.Data.Definition.Name))
                 {
                     output($"  {history.Key}");
                     foreach (var item in history)
