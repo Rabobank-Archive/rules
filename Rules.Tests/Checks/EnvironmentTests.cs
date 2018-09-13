@@ -38,6 +38,29 @@ namespace SecurePipelineScan.Rules.Checks.Tests
             approved.ShouldBeFalse();
         }
 
+        [Fact]
+        public void GivenAutomaticApproved_WhenCheckForApprovalBySomeoneElse_ThenResultIsFalse()
+        {
+            var env = new Response.Environment {
+                PreDeployApprovals = new [] {
+                    new Response.PreDeployApproval {
+                        ApprovalType = "preDeploy",
+                        Status = "approved",
+                        IsAutomated = true
+                    }
+                },
+                DeploySteps = new [] {
+                    new Response.DeployStep {
+                        RequestedFor = new Response.Identity {
+                            Id = Guid.NewGuid()
+                        }
+                    }
+                }
+            };
+
+            env.IsApprovedBySomeoneElse().ShouldBeFalse();
+        }
+
         private static Response.Environment NewEnvironment(Guid approvedBy, Guid requestedFor)
         {
             return new Response.Environment

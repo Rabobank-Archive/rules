@@ -6,7 +6,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Rules.Tests
+namespace SecurePipelineScan.Rules.Tests
 {
     /// <summary>
     /// This is a test
@@ -32,26 +32,18 @@ namespace Rules.Tests
 
             var client = new VstsRestClient(organization, token);
 
-            var response = client.Execute(Requests.ServiceEndpoint.Endpoints(Project));
-            foreach (var item in response.Data.Value)
-            {
-                output.WriteLine($"Service endpoint found: {item.Id} with name: {item.Name}");
+            Scan.Execute(client, Config.Project);
+        }
 
-
-                foreach (var history in client.Execute(Requests.ServiceEndpoint.History(Project, item.Id)).Data.Value)
-                {
-
-                    output.WriteLine($"Releases found: {history.Data.Definition.Id} with name: {history.Data.Definition.Name}");
-
-                    var release = client.Execute(new VstsRestRequest<SecurePipelineScan.VstsService.Response.Release>(history.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET));
-                    release.ErrorMessage.ShouldBeNullOrEmpty();
-
-                    // foreach (var rule in rules)
-                    // {
-                    //     output.WriteLine($"  {rule.GetType().Name} {rule.GetResult(release.Data)}");
-                    // }
-                }
-            }
+        [Fact]
+        public void Test714()
+        {
+            var client = new VstsRestClient(Config.Organization, Config.Token);
+            var rule =  new FourEyesOnAllBuildArtefacts();
+            
+            var release = client.Execute(new VstsRestRequest<SecurePipelineScan.VstsService.Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET));
+            rule.GetResult(release.Data, 1915).ShouldBeTrue();
+            
         }
     }
 }

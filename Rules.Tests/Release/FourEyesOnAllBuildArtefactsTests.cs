@@ -16,7 +16,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             };
 
             var rule = new FourEyesOnAllBuildArtefacts();
-            rule.GetResult(release, "110").ShouldBeFalse();
+            rule.GetResult(release, 110).ShouldBeFalse();
         }
 
         [Fact]
@@ -25,14 +25,14 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110",
+                        Id = 110,
                         Name = "single"
                     }
                 }
             };
 
             var rule = new FourEyesOnAllBuildArtefacts(_ => true);
-            rule.GetResult(release, "110").ShouldBeTrue();
+            rule.GetResult(release, 110).ShouldBeTrue();
         }
 
         [Fact]
@@ -41,13 +41,13 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110"
+                        Id = 110
                     }
                 }
             };
 
             var rule = new FourEyesOnAllBuildArtefacts();
-            rule.GetResult(release, "111").ShouldBeFalse();
+            rule.GetResult(release, 111).ShouldBeFalse();
         }
 
 
@@ -57,14 +57,14 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110",
+                        Id = 110,
                         Name = "single"
                     }
                 }
             };
 
             var rule = new FourEyesOnAllBuildArtefacts(_ => false);
-            rule.GetResult(release, "110").ShouldBeFalse();
+            rule.GetResult(release, 110).ShouldBeFalse();
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new[] {
                     new r.Environment {
-                        Id = "110",
+                        Id = 110,
                         Name = "validation-this-one",
                         Conditions = new [] {
                             new r.Condition {
@@ -96,7 +96,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
 
 
             var rule = new FourEyesOnAllBuildArtefacts(approved);
-            rule.GetResult(release, "110").ShouldBeTrue();
+            rule.GetResult(release, 110).ShouldBeTrue();
             approved.Received().Invoke(Arg.Is<r.Environment>(e => e.Name == "first"));
         }
 
@@ -106,7 +106,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var release = new r.Release {
                 Environments = new [] {
                     new r.Environment {
-                        Id = "109",
+                        Id = 109,
                         Name = "doesn't-really-matter",
                         Conditions = new [] {
                             new r.Condition {
@@ -121,7 +121,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
             };
 
             var rule = new FourEyesOnAllBuildArtefacts(_ => false);
-            rule.GetResult(release, "109").ShouldBeFalse();
+            rule.GetResult(release, 109).ShouldBeFalse();
         }
 
         [Fact]

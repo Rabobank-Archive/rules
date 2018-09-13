@@ -9,7 +9,7 @@ namespace SecurePipelineScan.Rules.Checks
             if (env.PreDeployApprovals != null)
             {
                 return env.PreDeployApprovals.Any(
-                    p => env.DeploySteps.Any(
+                    p => p.ApprovedBy != null && env.DeploySteps.Any(
                         d => d.RequestedFor.Id != p.ApprovedBy.Id)
                     );
             }

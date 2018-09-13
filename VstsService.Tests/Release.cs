@@ -30,7 +30,7 @@ namespace SecurePipelineScan.VstsService.Tests
             release.Data.Environments.ShouldNotBeEmpty();
 
             var env = release.Data.Environments.First();
-            env.Id.ShouldNotBeNullOrEmpty();
+            env.Id.ShouldNotBe(0);
             env.PreDeployApprovals.ShouldNotBeEmpty();
             env.DeploySteps.ShouldNotBeEmpty();
             env.Name.ShouldNotBeNullOrEmpty();

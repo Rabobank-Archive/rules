@@ -24,7 +24,7 @@ namespace SecurePipelineScan.Rules.Release
             this.approved = approved;
         }
 
-        public bool GetResult(r.Release release, string environmentId)
+        public bool GetResult(r.Release release, int environmentId)
         {
             var env = release.Environments?.SingleOrDefault(e => e.Id == environmentId);
             if (env != null)
