@@ -34,6 +34,20 @@ namespace SecurePipelineScan.Tests.Rules.Release
             rule.GetResult(release).ShouldBe(true);
         }
 
+        [Fact]
+        public void WhenNoApprovers_ResultIsTrue()
+        {
+            var release = new Response.Release
+            {
+                Environments = new List<Response.Environment>
+                {
+                    new Response.Environment {}
+                }
+            };
+
+            rule.GetResult(release).ShouldBeTrue();
+        }
+
         private static Response.Release NewAutomatedRelease()
         {
             return new Response.Release

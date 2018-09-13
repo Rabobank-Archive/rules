@@ -1,6 +1,7 @@
 using Xunit;
 using Shouldly;
 using System.Net;
+using System.Linq;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -35,6 +36,13 @@ namespace SecurePipelineScan.VstsService.Tests
             history.Data.Value.ShouldAllBe(e => e.Data != null);
             history.Data.Value.ShouldAllBe(e => e.Data.Definition != null);
             history.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
+
+            var data = history.Data.Value.First().Data;
+            data.Owner.ShouldNotBeNull();
+            data.Owner.Links.ShouldNotBeNull();
+            data.Owner.Links.Web.ShouldNotBeNull();
+            data.Owner.Links.Self.ShouldNotBeNull();
+            data.Owner.Links.Self.Href.ShouldNotBeNull();
         }
     }
 }

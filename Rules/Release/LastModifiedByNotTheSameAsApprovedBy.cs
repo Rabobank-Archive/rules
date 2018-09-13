@@ -4,12 +4,12 @@ namespace SecurePipelineScan.Rules.Release
 {
     public class LastModifiedByNotTheSameAsApprovedBy : IReleaseRule
     {
-        public bool GetResult(SecurePipelineScan.VstsService.Response.Release release)
+        public bool GetResult(VstsService.Response.Release release)
         {
-            return release.Environments.All(
+            return release.Environments == null || release.Environments.All(
                 e => e.DeploySteps.All(
                     d => e.PreDeployApprovals.All(
-                        p => p.ApprovedBy.Id != d.LastModifiedBy.Id)));
+                        p => p.ApprovedBy?.Id != d.LastModifiedBy.Id)));
         }
     }
 }

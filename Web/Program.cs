@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Web
             WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
-                config.AddJsonFile($"appsettings.{Environment.MachineName}.json", optional: true);
+                config.AddJsonFile($"appsettings.user.json", optional: true);
             })
             .UseStartup<Startup>();
     }
