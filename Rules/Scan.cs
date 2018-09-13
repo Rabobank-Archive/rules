@@ -37,7 +37,6 @@ namespace SecurePipelineScan.Rules
                                 PrintOther(client, item);
                                 break;
                         }
-                        
                     }
                 }
             }

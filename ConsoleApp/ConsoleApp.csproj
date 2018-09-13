@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VstsService\VstsService.csproj" />
+    <ProjectReference Include="..\Rules\Rules.csproj" />
   </ItemGroup>
 
 </Project>
