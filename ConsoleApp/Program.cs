@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
-using SecurePipelineScan.Rules;
+﻿using SecurePipelineScan.Rules;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.Rules.Reports;
+using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Threading.Tasks;
 
@@ -14,6 +14,8 @@ namespace SecurePipelineScan.ConsoleApp
 
         private static void Main(string[] args)
         {
+            ColorsOnWindows.Enable();
+
             var app = new CommandLineApplication();
             var tokenOption = app.Option("-t|--token <token>", "The personal access token",
                 CommandOptionType.SingleValue);
@@ -26,7 +28,7 @@ namespace SecurePipelineScan.ConsoleApp
                 var token = tokenOption.Value();
                 var organization = organizationOption.Value();
 
-                if (String.IsNullOrWhiteSpace(token))
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     Console.WriteLine("Please add your PAT using -t");
                 }
