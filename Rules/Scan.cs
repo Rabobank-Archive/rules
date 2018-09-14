@@ -3,41 +3,42 @@ using SecurePipelineScan.Rules.Release;
 using System;
 using RestSharp;
 using System.Linq;
-using SecurePipelineScan.VstsService.Response;
+using Response = SecurePipelineScan.VstsService.Response;
+using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules
 {
     public class Scan
     {
         private readonly IVstsRestClient client;
-        private readonly Action<string> output;
+        private readonly Action<ScanReport> progress;
 
-        public Scan(IVstsRestClient client, Action<string> output)
+        public Scan(IVstsRestClient client, Action<ScanReport> progress)
         {
             this.client = client;
-            this.output = output;
+            this.progress = progress;
         }
         public void Execute(string project)
         {
             var endpoints = client.Execute(Requests.ServiceEndpoint.Endpoints(project));
             foreach (var endpoint in endpoints.ThrowOnError().Data.Value)
             {
-                output(endpoint.Name);
+                // progress(endpoint.Name);
                 foreach (var history in client
                     .Execute(Requests.ServiceEndpoint.History(project, endpoint.Id))
                     .ThrowOnError()
                     .Data.Value.GroupBy(h => h.Data.Definition.Name))
                 {
-                    output($"  {history.Key}");
+                    // progress($"  {history.Key}");
                     foreach (var item in history)
                     {
                         switch (item.Data.PlanType)
                         {
                             case "Release":
-                                PrintRelease(client, item);
+                                PrintRelease(client, endpoint, item);
                                 break;
                             default:
-                                PrintOther(client, item);
+                                PrintOther(endpoint, item);
                                 break;
                         }
                     }
@@ -45,24 +46,29 @@ namespace SecurePipelineScan.Rules
             }
         }
 
-        private void PrintOther(IVstsRestClient client, ServiceEndpointHistory item)
+        private void PrintOther(Response.ServiceEndpoint endpoint, Response.ServiceEndpointHistory item)
         {
-            output($"    {item.Data.Definition.Name} {item.Data.Owner.Name}: \u001b[93m?\u001b[0m");
+            progress(new Unknown
+            {
+                Endpoint = endpoint,
+                Request = item.Data
+            });
         }
 
-        private void PrintRelease(IVstsRestClient client, VstsService.Response.ServiceEndpointHistory item)
+        private void PrintRelease(IVstsRestClient client, Response.ServiceEndpoint endpoint, Response.ServiceEndpointHistory item)
         {
             var release = client
                 .Execute(new VstsRestRequest<VstsService.Response.Release>(item.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET))
                 .ThrowOnError();
 
             var rule = new FourEyesOnAllBuildArtefacts();
-            output($"    {release.Data.Id} {item.Data.Owner.Name}: {ColorCode(rule.GetResult(release.Data, item.Data.Owner.Id))}");
-        }
-
-        private static string ColorCode(bool result)
-        {
-            return result ? "\u001b[32mV\u001b[0m" : "\u001b[31mX\u001b[0m";
+            progress(new ReleaseReport
+            {
+                Release = release.Data,
+                Endpoint = endpoint,
+                Request = item.Data,
+                Result = rule.GetResult(release.Data, item.Data.Owner.Id)
+            });
         }
     }
 }

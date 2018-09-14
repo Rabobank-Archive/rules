@@ -10,6 +10,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 using Response = SecurePipelineScan.VstsService.Response;
+using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -95,13 +96,13 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
-            
+
             fixture.Customize<RestResponse<Response.Multiple<Response.ServiceEndpoint>>>(
                 e => e.Without(x => x.ErrorMessage));
 
             fixture.Customize<RestResponse<Response.Multiple<Response.ServiceEndpointHistory>>>(
                 e => e.Without(x => x.ErrorMessage));
-            
+
             fixture.Customize<Response.ServiceEndpointHistoryData>(
                 e => e.With(x => x.PlanType, "Release"));
 
@@ -127,6 +128,49 @@ namespace SecurePipelineScan.Rules.Tests
             var scan = new Scan(client, _ => { });
             var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
             ex.Message.ShouldBe("fail");
+        }
+
+        [Fact]
+        public void ReportsProgress()
+        {
+            var fixture = new Fixture();
+            fixture.Customize(new AutoNSubstituteCustomization());
+
+            fixture.Customize<RestResponse<Response.Multiple<Response.ServiceEndpoint>>>(
+                e => e.Without(x => x.ErrorMessage));
+
+            fixture.Customize<RestResponse<Response.Multiple<Response.ServiceEndpointHistory>>>(
+                e => e.Without(x => x.ErrorMessage));
+
+            fixture.Customize<RestResponse<Response.Release>>(
+                e => e.Without(x => x.ErrorMessage));
+
+            fixture.Customize<Response.ServiceEndpointHistoryData>(
+                e => e.With(x => x.PlanType, "Release"));
+
+            var endpoints = fixture.Create<RestResponse<Response.Multiple<Response.ServiceEndpoint>>>();
+            var history = fixture.Create<RestResponse<Response.Multiple<Response.ServiceEndpointHistory>>>();
+            var release = fixture.Create<RestResponse<Response.Release>>();
+
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.ServiceEndpoint>>>())
+                .Returns(endpoints);
+
+            client
+                .Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.ServiceEndpointHistory>>>())
+                .Returns(history);
+
+            client
+                .Execute(Arg.Any<IVstsRestRequest<Response.Release>>())
+                .Returns(release);
+
+
+            var progress = Substitute.For<Action<ScanReport>>();
+            var scan = new Scan(client, progress);
+            scan.Execute("dummy");
+
+            progress.Received().Invoke(Arg.Any<ScanReport>());
         }
     }
 }
