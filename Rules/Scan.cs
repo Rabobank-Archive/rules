@@ -52,11 +52,9 @@ namespace SecurePipelineScan.Rules
 
         private void PrintRelease(IVstsRestClient client, VstsService.Response.ServiceEndpointHistory item)
         {
-            var release = client.Execute(new VstsRestRequest<VstsService.Response.Release>(item.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET));
-            if (!string.IsNullOrEmpty(release.ErrorMessage))
-            {
-                throw new Exception(release.ErrorMessage);
-            };
+            var release = client
+                .Execute(new VstsRestRequest<VstsService.Response.Release>(item.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET))
+                .ThrowOnError();
 
             var rule = new FourEyesOnAllBuildArtefacts();
             output($"    {release.Data.Id} {item.Data.Owner.Name}: {ColorCode(rule.GetResult(release.Data, item.Data.Owner.Id))}");
