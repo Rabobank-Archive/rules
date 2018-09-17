@@ -9,6 +9,7 @@ namespace SecurePipelineScan.Rules.Tests
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false)
                 .AddJsonFile("appsettings.user.json", true)
+                .AddEnvironmentVariables()
                 .Build();
 
             Token = configuration["token"];
