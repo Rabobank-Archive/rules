@@ -10,7 +10,7 @@ steps:
     dotnet test --configuration $(buildConfiguration) --logger trx
     dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
   env:
-    token: $(System.AccessToken)
+    token: $(token)
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
