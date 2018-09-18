@@ -3,17 +3,19 @@ pool:
   
 variables:
   buildConfiguration: 'Release'
+  version: 0.0.1.$(Build.BuildId)
 
 steps:
 - script: |
     dotnet build --configuration $(buildConfiguration)
     dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
-    dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
-  env:
-    token: $(token)
+    dotnet pack --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY /p:PackageVersion=$(version)
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
-
-- task: PublishBuildArtifacts@1
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet push'
+  inputs:
+    command: push
+    publishVstsFeed: 'ea1adc59-f67e-40d5-8539-4c897a894647'
