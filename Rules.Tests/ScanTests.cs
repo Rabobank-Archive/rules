@@ -31,6 +31,7 @@ namespace SecurePipelineScan.Rules.Tests
         public TestConfig Config { get; }
 
         [Fact]
+        [Trait("category", "integration")]
         public void GetAllRules()
         {
             var organization = Config.Organization;
@@ -42,12 +43,13 @@ namespace SecurePipelineScan.Rules.Tests
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public void Test714()
         {
             var client = new VstsRestClient(Config.Organization, Config.Token);
             var rule = new FourEyesOnAllBuildArtefacts();
 
-            var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET));
+            var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
             rule.GetResult(release.Data, 1915).ShouldBeTrue();
         }
 

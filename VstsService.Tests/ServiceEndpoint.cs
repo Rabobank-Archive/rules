@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
+    [Trait("category", "integration")]
     public class ServiceEndpoint : IClassFixture<TestConfig>
     {
         private readonly TestConfig config;

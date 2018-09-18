@@ -7,7 +7,7 @@ variables:
 steps:
 - script: |
     dotnet build --configuration $(buildConfiguration)
-    dotnet test --configuration $(buildConfiguration) --logger trx
+    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
     dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
   env:
     token: $(token)
