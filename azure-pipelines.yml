@@ -11,6 +11,10 @@ steps:
     buildToolOptions: '-dotnet-version 2.1'
     fortifyBuildId: test
     runFortifyClean: false
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/sca_artifacts' 
+    artifactName: 'sca'
 - script: |
     dotnet build --configuration $(buildConfiguration)
     dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
