@@ -15,8 +15,11 @@ steps:
     testResultsFiles: '**/*.trx'
 - task: fortifyvsts.hpe-security-fortify-vsts.build-task-fortify-sca.FortifySCA@1
   inputs:
+    applicationType: other
+    buildToolOptions: '-dotnet-version 2.1'
     fortifyBuildId: test
     runFortifyClean: false
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet push'
   inputs:
