@@ -1,0 +1,34 @@
+pool: 'Rabo-Build-Azure-Windows-Preview'
+  
+variables:
+  buildConfiguration: 'Release'
+  version: 0.0.1.$(Build.BuildId)
+
+steps:
+- checkout: self
+  clean: true
+- task: fortifyvsts.hpe-security-fortify-vsts.build-task-fortify-sca.FortifySCA@1
+  inputs:
+    applicationType: other
+    buildToolOptions: '-dotnet-version 2.1'
+    fortifyBuildId: test
+    runFortifyClean: true
+- script: |
+    BIRTReportGenerator -template "DISA STIG" -source $(Build.ArtifactStagingDirectory)/sca_artifacts/test.fpr -output "$(Build.ArtifactStagingDirectory)/sca_artifacts/fortify.pdf" -format PDF -showSuppressed --Version "DISA STIG 3.9" -UseFortifyPriorityOrder
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/sca_artifacts' 
+    artifactName: 'sca'
+- script: |
+    dotnet build --configuration $(buildConfiguration)
+    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
+    dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version)
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet push'
+  inputs:
+    command: push
+    publishVstsFeed: 'ea1adc59-f67e-40d5-8539-4c897a894647'

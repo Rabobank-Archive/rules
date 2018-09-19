@@ -4,6 +4,7 @@ using System.Net;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
+    [Trait("category", "integration")]
     public class ReleaseDefinitions : IClassFixture<TestConfig>
     {
         private readonly TestConfig config;

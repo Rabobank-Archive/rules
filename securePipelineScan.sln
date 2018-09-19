@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rules", "Rules\Rules.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rules.Tests", "Rules.Tests\Rules.Tests.csproj", "{E5F1938E-52DC-4777-B26B-4788BFA1AD38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{E93BBA2F-8E3F-4CE0-9A3D-080C1289287F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VstsService", "VstsService\VstsService.csproj", "{517B9A2F-E234-4BD5-9BA0-F58C08107A00}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VstsService.Tests", "VstsService.Tests\VstsService.Tests.csproj", "{0333B6F3-C84F-4B67-B548-4AEAE81EBC27}"
@@ -18,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		ASP.Net-Code-ci.yml = ASP.Net-Code-ci.yml
 		readme.md = readme.md
+		azure-pipelines.yml = azure-pipelines.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{E516D1B5-4697-4052-B768-235538F560E9}"
@@ -36,10 +35,6 @@ Global
 		{E5F1938E-52DC-4777-B26B-4788BFA1AD38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5F1938E-52DC-4777-B26B-4788BFA1AD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5F1938E-52DC-4777-B26B-4788BFA1AD38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E93BBA2F-8E3F-4CE0-9A3D-080C1289287F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E93BBA2F-8E3F-4CE0-9A3D-080C1289287F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E93BBA2F-8E3F-4CE0-9A3D-080C1289287F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E93BBA2F-8E3F-4CE0-9A3D-080C1289287F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{517B9A2F-E234-4BD5-9BA0-F58C08107A00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{517B9A2F-E234-4BD5-9BA0-F58C08107A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{517B9A2F-E234-4BD5-9BA0-F58C08107A00}.Release|Any CPU.ActiveCfg = Release|Any CPU

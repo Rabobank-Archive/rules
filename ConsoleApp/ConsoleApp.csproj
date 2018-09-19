@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,11 +21,6 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <AssemblyName>SecurePipelineScan.ConsoleApp</AssemblyName>
     <Description>Secure Pipelines Scanner</Description>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageTags>pipellines; build; release; azure devops; vsts; sox; compliance</PackageTags>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://dev.azure.com/somecompany/TAS/_git/ProjectScanner</RepositoryUrl>
     <Version>0.0.1</Version>
   </PropertyGroup>
 </Project>
