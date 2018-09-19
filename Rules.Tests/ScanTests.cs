@@ -19,7 +19,6 @@ namespace SecurePipelineScan.Rules.Tests
     /// </summary>
     public class ScanTests : IClassFixture<TestConfig>
     {
-        private const string Project = "SOx-compliant-demo";
         private readonly ITestOutputHelper output;
 
         public ScanTests(ITestOutputHelper output, TestConfig config)
@@ -38,7 +37,7 @@ namespace SecurePipelineScan.Rules.Tests
             string token = Config.Token;
 
             var client = new VstsRestClient(organization, token);
-            var scan = new Scan(client, Console.WriteLine);
+            var scan = new Scan(client, x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
             scan.Execute(Config.Project);
         }
 
