@@ -12,7 +12,7 @@ namespace SecurePipelineScan.VstsService
 
         public Uri BaseUri(string organization)
         {
-            return new System.Uri($"https://{organization}.visualstudio.com/");
+            return new System.Uri($"https://dev.azure.com/{organization}/");
         }
     }
 }

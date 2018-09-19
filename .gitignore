@@ -14,8 +14,6 @@ appsettings.LEON.json
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
 x64/
 x86/
 bld/
@@ -266,3 +264,4 @@ __pycache__/
 bin/
 obj/
 **/appsettings.user.json
+.DS_Store

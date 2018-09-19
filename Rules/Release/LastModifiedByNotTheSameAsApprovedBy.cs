@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace SecurePipelineScan.Rules.Release
 {
-    public class LastModifiedByNotTheSameAsApprovedBy : IReleaseRule
+    public class LastModifiedByNotTheSameAsApprovedBy
     {
         public bool GetResult(VstsService.Response.Release release)
         {

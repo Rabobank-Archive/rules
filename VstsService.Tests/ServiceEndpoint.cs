@@ -38,11 +38,15 @@ namespace SecurePipelineScan.VstsService.Tests
             history.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
 
             var data = history.Data.Value.First().Data;
+            data.Id.ShouldNotBe(0);
             data.Owner.ShouldNotBeNull();
+            data.Owner.Id.ShouldNotBe(0);
+            data.Owner.Name.ShouldNotBeNullOrEmpty();
             data.Owner.Links.ShouldNotBeNull();
             data.Owner.Links.Web.ShouldNotBeNull();
             data.Owner.Links.Self.ShouldNotBeNull();
             data.Owner.Links.Self.Href.ShouldNotBeNull();
+            data.PlanType.ShouldNotBeNullOrEmpty();
         }
     }
 }

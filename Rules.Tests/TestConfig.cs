@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Rules.Tests
+namespace SecurePipelineScan.Rules.Tests
 {
     public class TestConfig
     {
