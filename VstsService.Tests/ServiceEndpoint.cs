@@ -30,6 +30,9 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryServiceConnectionHistory()
         {
+            //your user needs to be endpoint admin in the project you are running this.
+            //your PAT needs "ALL scope". selecting all checkboxes does not work.
+
             var history = Vsts.Execute(Requests.ServiceEndpoint.History(config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
             history.StatusCode.ShouldBe(HttpStatusCode.OK);
             history.Data.Value.ShouldNotBeEmpty();
