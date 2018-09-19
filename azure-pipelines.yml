@@ -9,6 +9,7 @@ steps:
   clean: true
   
 - task: fortifyvsts.hpe-security-fortify-vsts.build-task-fortify-sca.FortifySCA@1
+  displayName: 'Fortify: local scan'
   inputs:
     applicationType: other
     buildToolOptions: '-dotnet-version 2.1'
@@ -17,6 +18,7 @@ steps:
 
 - script: |
     BIRTReportGenerator -template "DISA STIG" -source $(Build.ArtifactStagingDirectory)/sca_artifacts/test.fpr -output "$(Build.ArtifactStagingDirectory)/sca_artifacts/fortify.pdf" -format PDF -showSuppressed --Version "DISA STIG 3.9" -UseFortifyPriorityOrder
+  displayName: 'Fortify: export PDF report'
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -26,7 +28,7 @@ steps:
 - task: SonarSource.sonarqube.15B84CA1-B62F-4A2A-A403-89B77A063157.SonarQubePrepare@4
   displayName: 'SonarQube: Prepare analysis on SonarQube'
   inputs:
-    SonarQube: 'SonarQube Production On Prem'
+    SonarQube: 'SonarQube TEST On Prem - with Token'
     projectKey: TAS.SecurePipelineScanner
 
 - script: |
@@ -36,6 +38,7 @@ steps:
     dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
     dotnet sonarscanner end
     dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version)
+  displayName: 'Build, test & pack'
 
 - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
   displayName: 'SonarQube: Publish Quality Gate Result'
