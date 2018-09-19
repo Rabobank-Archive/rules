@@ -11,6 +11,8 @@ steps:
     buildToolOptions: '-dotnet-version 2.1'
     fortifyBuildId: test
     runFortifyClean: false
+- script: |
+    BIRTReportGenerator -template "DISA STIG" -source $(Build.ArtifactStagingDirectory)/sca_artifacts/test.fpr -output "$(Build.ArtifactStagingDirectory)/sca_artifacts/fortify.pdf" -format PDF -showSuppressed --Version "DISA STIG 3.9" -UseFortifyPriorityOrder
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)/sca_artifacts' 
