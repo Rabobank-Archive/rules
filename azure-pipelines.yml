@@ -23,6 +23,12 @@ steps:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)/sca_artifacts' 
     artifactName: 'sca'
 
+- task: SonarSource.sonarqube.15B84CA1-B62F-4A2A-A403-89B77A063157.SonarQubePrepare@4
+  displayName: 'SonarQube: Prepare analysis on SonarQube'
+  inputs:
+    SonarQube: 'SonarQube Production On Prem'
+    projectKey: TAS.SecurePipelineScanner
+
 - script: |
     dotnet tool install --global dotnet-sonarscanner
     dotnet sonarscanner begin /k:"TAS.SecurePipelineScanner"
@@ -30,6 +36,10 @@ steps:
     dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
     dotnet sonarscanner end
     dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version)
+
+- task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
+  displayName: 'SonarQube: Publish Quality Gate Result'
+
 
 - task: PublishTestResults@2
   inputs:
