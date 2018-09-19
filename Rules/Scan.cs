@@ -1,6 +1,7 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.Rules.Release;
 using System;
+using System.Collections.Generic;
 using RestSharp;
 using System.Linq;
 using Response = SecurePipelineScan.VstsService.Response;
@@ -18,31 +19,42 @@ namespace SecurePipelineScan.Rules
             this.client = client;
             this.progress = progress;
         }
+        
         public void Execute(string project)
         {
             var endpoints = client.Execute(Requests.ServiceEndpoint.Endpoints(project));
-            foreach (var endpoint in endpoints.ThrowOnError().Data.Value)
+            Execute(project, endpoints.ThrowOnError().Data.Value);
+        }
+
+        private void Execute(string project, IEnumerable<Response.ServiceEndpoint> endpoints)
+        {
+            foreach (var endpoint in endpoints)
             {
-                // progress(endpoint.Name);
-                foreach (var history in client
-                    .Execute(Requests.ServiceEndpoint.History(project, endpoint.Id))
-                    .ThrowOnError()
-                    .Data.Value.GroupBy(h => h.Data.Definition.Name))
-                {
-                    // progress($"  {history.Key}");
-                    foreach (var item in history)
-                    {
-                        switch (item.Data.PlanType)
-                        {
-                            case "Release":
-                                PrintRelease(client, endpoint, item);
-                                break;
-                            default:
-                                PrintOther(endpoint, item);
-                                break;
-                        }
-                    }
-                }
+                Execute(project, endpoint);
+            }
+        }
+
+        private void Execute(string project, Response.ServiceEndpoint endpoint)
+        {
+            foreach (var history in client
+                .Execute(Requests.ServiceEndpoint.History(project, endpoint.Id))
+                .ThrowOnError()
+                .Data.Value.OrderBy(h => h.Data.Definition.Name))
+            {
+                Execute(endpoint, history);
+            }
+        }
+
+        private void Execute(Response.ServiceEndpoint endpoint, Response.ServiceEndpointHistory history)
+        {
+            switch (history.Data.PlanType)
+            {
+                case "Release":
+                    PrintRelease(client, endpoint, history);
+                    break;
+                default:
+                    PrintOther(endpoint, history);
+                    break;
             }
         }
 

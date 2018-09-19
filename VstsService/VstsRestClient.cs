@@ -7,7 +7,7 @@ namespace SecurePipelineScan.VstsService
         private readonly string authorization;
         private readonly string organization;
 
-        public VstsRestClient(string organization, string token) : base()
+        public VstsRestClient(string organization, string token)
         {
             this.authorization = GenerateAuthorizationHeader(token);
             this.organization = organization;

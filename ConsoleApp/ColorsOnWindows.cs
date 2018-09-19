@@ -15,7 +15,7 @@ namespace SecurePipelineScan.ConsoleApp
 
             var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             return GetConsoleMode(iStdOut, out uint outConsoleMode) &&
-                SetConsoleMode(iStdOut, outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN);
+                SetConsoleMode(iStdOut, outConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN);
         }
 
         private const int STD_OUTPUT_HANDLE = -11;

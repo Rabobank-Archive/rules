@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SecurePipelineScan.ConsoleApp
 {
-    internal class Program
+    internal static class Program
     {
         private static string endpoint;
         private static string definition;

@@ -9,6 +9,7 @@ using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
+    [Trait("category", "integration")]
     public class Policies: IClassFixture<TestConfig>
     {
         private readonly TestConfig config;

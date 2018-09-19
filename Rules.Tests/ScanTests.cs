@@ -14,42 +14,28 @@ using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Tests
 {
-    /// <summary>
-    /// This is a test
-    /// </summary>
     public class ScanTests : IClassFixture<TestConfig>
     {
         private readonly ITestOutputHelper output;
+        private readonly TestConfig config;
 
         public ScanTests(ITestOutputHelper output, TestConfig config)
         {
             this.output = output;
-            Config = config;
+            this.config = config;
         }
 
-        public TestConfig Config { get; }
 
         [Fact]
         [Trait("category", "integration")]
-        public void GetAllRules()
+        public void IntegrationTestOnScan()
         {
-            var organization = Config.Organization;
-            string token = Config.Token;
+            var organization = config.Organization;
+            string token = config.Token;
 
             var client = new VstsRestClient(organization, token);
             var scan = new Scan(client, x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
-            scan.Execute(Config.Project);
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
-        public void Test714()
-        {
-            var client = new VstsRestClient(Config.Organization, Config.Token);
-            var rule = new FourEyesOnAllBuildArtefacts();
-
-            var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
-            rule.GetResult(release.Data, 1915).ShouldBeTrue();
+            scan.Execute(config.Project);
         }
 
         [Fact]
