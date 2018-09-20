@@ -1,18 +1,39 @@
 ﻿using System;
 using NSubstitute;
-using SecurePipelineScan.Rules.Checks;
+using RestSharp;
+using SecurePipelineScan.Rules.Tests;
+using SecurePipelineScan.VstsService;
 using Shouldly;
 using Xunit;
-using r = SecurePipelineScan.VstsService.Response;
+using Xunit.Abstractions;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release.Tests
 {
-    public class FourEyesOnAllBuildArtefactsTests
+    public class FourEyesOnAllBuildArtefactsTests : IClassFixture<TestConfig>
     {
+        private readonly TestConfig config;
+
+        public FourEyesOnAllBuildArtefactsTests(ITestOutputHelper output, TestConfig config)
+        {
+            this.config = config;
+        }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public void IntegrationTest714()
+        {
+            var client = new VstsRestClient(config.Organization, config.Token);
+            var rule = new FourEyesOnAllBuildArtefacts();
+
+            var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
+            rule.GetResult(release.Data, 1915).ShouldBeTrue();
+        }
+
         [Fact]
         public void EmpyReleaseIsNotApproved()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
             };
 
             var rule = new FourEyesOnAllBuildArtefacts();
@@ -22,9 +43,9 @@ namespace SecurePipelineScan.Rules.Release.Tests
         [Fact]
         public void OneEnvironmentAndApproved()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
                 Environments = new[] {
-                    new r.Environment {
+                    new Response.Environment {
                         Id = 110,
                         Name = "single"
                     }
@@ -38,9 +59,9 @@ namespace SecurePipelineScan.Rules.Release.Tests
         [Fact]
         public void WrongEnvironmentIsNotApproved()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
                 Environments = new[] {
-                    new r.Environment {
+                    new Response.Environment {
                         Id = 110
                     }
                 }
@@ -54,9 +75,9 @@ namespace SecurePipelineScan.Rules.Release.Tests
         [Fact]
         public void ProperEnvironemntButNotApproved()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
                 Environments = new[] {
-                    new r.Environment {
+                    new Response.Environment {
                         Id = 110,
                         Name = "single"
                     }
@@ -70,13 +91,13 @@ namespace SecurePipelineScan.Rules.Release.Tests
         [Fact]
         public void CheckAllPreviousEnvironments()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
                 Environments = new[] {
-                    new r.Environment {
+                    new Response.Environment {
                         Id = 110,
                         Name = "validation-this-one",
                         Conditions = new [] {
-                            new r.Condition {
+                            new Response.Condition {
                                 Result = true,
                                 Name =  "first",
                                 ConditionType =  "environmentState",
@@ -84,32 +105,32 @@ namespace SecurePipelineScan.Rules.Release.Tests
                             }
                         }
                     },
-                    new r.Environment {
+                    new Response.Environment {
                         Name = "first"
                     }
                 }
             };
 
-            var approved = Substitute.For<Func<r.Environment, bool>>();
-            approved.Invoke(Arg.Any<r.Environment>()).Returns(false);
-            approved.Invoke(Arg.Is<r.Environment>(e => e.Name == "first")).Returns(true);
+            var approved = Substitute.For<Func<Response.Environment, bool>>();
+            approved.Invoke(Arg.Any<Response.Environment>()).Returns(false);
+            approved.Invoke(Arg.Is<Response.Environment>(e => e.Name == "first")).Returns(true);
 
 
             var rule = new FourEyesOnAllBuildArtefacts(approved);
             rule.GetResult(release, 110).ShouldBeTrue();
-            approved.Received().Invoke(Arg.Is<r.Environment>(e => e.Name == "first"));
+            approved.Received().Invoke(Arg.Is<Response.Environment>(e => e.Name == "first"));
         }
 
         [Fact]
         public void GivenCurrentEnvironmentIsNotApproved_WhenConditionsAreNotPreviousEnvironment_ThenResultIsFalse()
         {
-            var release = new r.Release {
+            var release = new Response.Release {
                 Environments = new [] {
-                    new r.Environment {
+                    new Response.Environment {
                         Id = 109,
                         Name = "doesn't-really-matter",
                         Conditions = new [] {
-                            new r.Condition {
+                            new Response.Condition {
                                 Result = true,
                                 Name = "ReleaseStarted",
                                 ConditionType = "event",
