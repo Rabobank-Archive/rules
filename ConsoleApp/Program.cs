@@ -1,7 +1,8 @@
-﻿using SecurePipelineScan.Rules;
-using SecurePipelineScan.VstsService;
+﻿using Microsoft.Extensions.CommandLineUtils;
+using Rules.Reports;
+using SecurePipelineScan.Rules;
 using SecurePipelineScan.Rules.Reports;
-using Microsoft.Extensions.CommandLineUtils;
+using SecurePipelineScan.VstsService;
 using System;
 using System.Threading.Tasks;
 
@@ -36,8 +37,11 @@ namespace SecurePipelineScan.ConsoleApp
                 await Task.Run(() =>
                 {
                     var client = new VstsRestClient(organization, token);
-                    var scan = new Scan(client, Print);
-                    scan.Execute(projectNameOption.Value());
+                    var endPointScan = new EndPointScan(client, Print);
+                    endPointScan.Execute(projectNameOption.Value());
+
+                    var policyScan = new PolicyScan(client, Print);
+                    policyScan.Execute(projectNameOption.Value());
                 });
                 return 0;
             });
@@ -46,22 +50,27 @@ namespace SecurePipelineScan.ConsoleApp
 
         private static void Print(ScanReport progress)
         {
-            if (endpoint != progress.Endpoint.Id)
-            {
-                Console.WriteLine(progress.Endpoint.Name);
-                endpoint = progress.Endpoint.Id;
-            }
-
-            if (definition != progress.Request.Definition.Id)
-            {
-                Console.WriteLine($"  {progress.Request.Definition.Name}");
-                definition = progress.Request.Definition.Id;
-            }
-
             switch (progress)
             {
                 case ReleaseReport r:
+                    if (endpoint != progress.Endpoint.Id)
+                    {
+                        Console.WriteLine(progress.Endpoint.Name);
+                        endpoint = progress.Endpoint.Id;
+                    }
+
+                    if (definition != progress.Request.Definition.Id)
+                    {
+                        Console.WriteLine($"  {progress.Request.Definition.Name}");
+                        definition = progress.Request.Definition.Id;
+                    }
+
                     Console.WriteLine($"    {progress.Request.Id} {progress.Request.Owner.Name}: {ColorCode(r.Result)}");
+                    break;
+
+                case BranchPolicyReport r:
+                    Console.WriteLine($"Rep.Id-Enabled-Deleted-IsBlocking-Allow Downvotes-creator can vote-min.Approvers-ResetOnSourcePush");
+                    Console.WriteLine($" {r.BranchPolicy.Id} -   {ColorCode(r.BranchPolicy.IsEnabled)}   -   {ColorCode(r.BranchPolicy.IsDeleted)}   -    {ColorCode(r.BranchPolicy.IsBlocking)}     -       {ColorCode(r.BranchPolicy.Settings.AllowDownvotes)}       -       {ColorCode(r.BranchPolicy.Settings.CreatorVoteCounts)}        -    {(r.BranchPolicy.Settings.MinimumApproverCount)}        -        {ColorCode(r.BranchPolicy.Settings.ResetOnSourcePush)}        ");
                     break;
 
                 default:
@@ -69,9 +78,15 @@ namespace SecurePipelineScan.ConsoleApp
                     break;
             }
         }
+
         private static string ColorCode(bool result)
         {
             return result ? "\u001b[32mV\u001b[0m" : "\u001b[31mX\u001b[0m";
+        }
+
+        private static string ColorCode(bool? result)
+        {
+            return result.HasValue ? ColorCode(result.Value) : "\u001b[31m-\u001b[0m";
         }
     }
 }

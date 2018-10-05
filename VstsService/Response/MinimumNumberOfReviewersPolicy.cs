@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SecurePipelineScan.VstsService.Response
+﻿namespace SecurePipelineScan.VstsService.Response
 {
     public class MinimumNumberOfReviewersPolicy
     {
@@ -13,17 +9,5 @@ namespace SecurePipelineScan.VstsService.Response
         public bool? IsDeleted { get; set; }
 
         public MinimumNumberOfReviewersPolicySettings Settings { get; set; }
-
-    }
-
-    public class MinimumNumberOfReviewersPolicySettings
-    {
-        public int? MinimumApproverCount { get; set; }
-        public bool? CreatorVoteCounts { get; set; }
-        public bool? AllowDownvotes { get; set; }
-        public bool? ResetOnSourcePush { get; set; }
-
-        public List<Scope> Scope { get; set; }
-
     }
 }

@@ -1,30 +1,27 @@
-﻿
-using System;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using RestSharp;
-using SecurePipelineScan.Rules.Release;
+using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using Shouldly;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 using Response = SecurePipelineScan.VstsService.Response;
-using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Tests
 {
-    public class ScanTests : IClassFixture<TestConfig>
+    public class EndPointScanTests : IClassFixture<TestConfig>
     {
         private readonly ITestOutputHelper output;
         private readonly TestConfig config;
 
-        public ScanTests(ITestOutputHelper output, TestConfig config)
+        public EndPointScanTests(ITestOutputHelper output, TestConfig config)
         {
             this.output = output;
             this.config = config;
         }
-
 
         [Fact]
         [Trait("category", "integration")]
@@ -34,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests
             string token = config.Token;
 
             var client = new VstsRestClient(organization, token);
-            var scan = new Scan(client, x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
+            var scan = new EndPointScan(client, x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
             scan.Execute(config.Project);
         }
 
@@ -47,7 +44,7 @@ namespace SecurePipelineScan.Rules.Tests
                 ErrorMessage = "fail"
             });
 
-            var scan = new Scan(client, _ => { });
+            var scan = new EndPointScan(client, _ => { });
             var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
             ex.Message.ShouldBe("fail");
         }
@@ -73,7 +70,7 @@ namespace SecurePipelineScan.Rules.Tests
                 ErrorMessage = "fail"
             });
 
-            var scan = new Scan(client, _ => { });
+            var scan = new EndPointScan(client, _ => { });
             var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
             ex.Message.ShouldBe("fail");
         }
@@ -111,8 +108,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Execute(Arg.Any<IVstsRestRequest<Response.Release>>())
                 .Returns(release);
 
-
-            var scan = new Scan(client, _ => { });
+            var scan = new EndPointScan(client, _ => { });
             var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
             ex.Message.ShouldBe("fail");
         }
@@ -152,9 +148,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Execute(Arg.Any<IVstsRestRequest<Response.Release>>())
                 .Returns(release);
 
-
             var progress = Substitute.For<Action<ScanReport>>();
-            var scan = new Scan(client, progress);
+            var scan = new EndPointScan(client, progress);
             scan.Execute("dummy");
 
             progress.Received().Invoke(Arg.Any<ScanReport>());

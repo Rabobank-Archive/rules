@@ -1,25 +1,25 @@
-using SecurePipelineScan.VstsService;
+using RestSharp;
 using SecurePipelineScan.Rules.Release;
+using SecurePipelineScan.Rules.Reports;
+using SecurePipelineScan.VstsService;
 using System;
 using System.Collections.Generic;
-using RestSharp;
 using System.Linq;
 using Response = SecurePipelineScan.VstsService.Response;
-using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules
 {
-    public class Scan
+    public class EndPointScan : IScan
     {
         private readonly IVstsRestClient client;
         private readonly Action<ScanReport> progress;
 
-        public Scan(IVstsRestClient client, Action<ScanReport> progress)
+        public EndPointScan(IVstsRestClient client, Action<ScanReport> progress)
         {
             this.client = client;
             this.progress = progress;
         }
-        
+
         public void Execute(string project)
         {
             var endpoints = client.Execute(Requests.ServiceEndpoint.Endpoints(project));
@@ -52,6 +52,7 @@ namespace SecurePipelineScan.Rules
                 case "Release":
                     PrintRelease(client, endpoint, history);
                     break;
+
                 default:
                     PrintOther(endpoint, history);
                     break;

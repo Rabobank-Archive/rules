@@ -265,3 +265,4 @@ bin/
 obj/
 **/appsettings.user.json
 .DS_Store
+/ConsoleApp/Properties/launchSettings.json
