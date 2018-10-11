@@ -5,6 +5,8 @@ namespace Rules.Reports
 {
     public class BranchPolicyReport : ScanReport
     {
-        public MinimumNumberOfReviewersPolicy BranchPolicy { get; set; }
+        public string Project { get; set; }
+        public string Repository { get; set; }
+        public bool HasRequiredReviewerPolicy { get; set; }
     }
 }
