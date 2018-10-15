@@ -38,11 +38,11 @@ namespace SecurePipelineScan.ConsoleApp
                 await Task.Run(() =>
                 {
                     var client = new VstsRestClient(organization, token);
-                    //var endPointScan = new EndPointScan(client, Print);
-                    //endPointScan.Execute(projectNameOption.Value());
+                    var endPointScan = new EndPointScan(client, Print);
+                    endPointScan.Execute(projectNameOption.Value());
 
-                    var policyScan = new PolicyScan(client, PrintMultiple);
-                    policyScan.Execute(projectNameOption.Value());
+                    var repoScan = new RepositoryScan(client, PrintMultiple);
+                    repoScan.Execute(projectNameOption.Value());
                 });
                 return 0;
             });
@@ -71,7 +71,7 @@ namespace SecurePipelineScan.ConsoleApp
                     Console.WriteLine($"    {progress.Request.Id} {progress.Request.Owner.Name}: {ColorCode(r.Result)}");
                     break;
 
-                case BranchPolicyReport r:
+                case RepositoryReport r:
                     //Console.WriteLine($"project - repository - HasRequiredReviewerPolicy");
                     Console.WriteLine($" {r.Project} - {r.Repository} - {ColorCode(r.HasRequiredReviewerPolicy)}");
                     break;

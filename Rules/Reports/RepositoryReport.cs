@@ -3,7 +3,7 @@ using SecurePipelineScan.VstsService.Response;
 
 namespace Rules.Reports
 {
-    public class BranchPolicyReport : ScanReport
+    public class RepositoryReport : ScanReport
     {
         public string Project { get; set; }
         public string Repository { get; set; }

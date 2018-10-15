@@ -8,12 +8,12 @@ using SecurePipelineScan.Rules.Checks;
 
 namespace SecurePipelineScan.Rules
 {
-    public class PolicyScan : IScan
+    public class RepositoryScan : IScan
     {
         private readonly IVstsRestClient client;
         private readonly Action<IEnumerable<ScanReport>> progress;
 
-        public PolicyScan(IVstsRestClient client, Action<IEnumerable<ScanReport>> progress)
+        public RepositoryScan(IVstsRestClient client, Action<IEnumerable<ScanReport>> progress)
         {
             this.client = client;
             this.progress = progress;
@@ -26,11 +26,11 @@ namespace SecurePipelineScan.Rules
 
 
 
-            List<BranchPolicyReport> report = new List<BranchPolicyReport>(); 
+            List<RepositoryReport> report = new List<RepositoryReport>(); 
 
             foreach (var repo in repos)
             {
-                var repoReport = new BranchPolicyReport();
+                var repoReport = new RepositoryReport();
                 repoReport.Project = project;
                 repoReport.Repository = repo.Name;
                 repoReport.HasRequiredReviewerPolicy = repo.HasRequiredReviewerPolicy(minimumNumberOfReviewersPolicies.Data.Value);

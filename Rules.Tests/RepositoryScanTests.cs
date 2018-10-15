@@ -15,12 +15,12 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests
 {
-    public class PolicyScanTests : IClassFixture<TestConfig>
+    public class RepositoryScanTests : IClassFixture<TestConfig>
     {
         private readonly ITestOutputHelper output;
         private readonly TestConfig config;
 
-        public PolicyScanTests(ITestOutputHelper output, TestConfig config)
+        public RepositoryScanTests(ITestOutputHelper output, TestConfig config)
         {
             this.output = output;
             this.config = config;
@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Tests
             string token = config.Token;
 
             var client = new VstsRestClient(organization, token);
-            var scan = new PolicyScan(client, x => output.WriteLine($"Repositories: {(x as IEnumerable<BranchPolicyReport>).Count()}"));
+            var scan = new RepositoryScan(client, x => output.WriteLine($"Repositories: {(x as IEnumerable<RepositoryReport>).Count()}"));
             scan.Execute(config.Project);
         }
 
@@ -61,7 +61,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(repos);
 
             var progress = Substitute.For<Action<IEnumerable<ScanReport>>>();
-            var scan = new PolicyScan(client, progress);
+            var scan = new RepositoryScan(client, progress);
             scan.Execute("dummy");
 
             progress.Received().Invoke(Arg.Any<IEnumerable<ScanReport>>());
