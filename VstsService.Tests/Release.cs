@@ -8,12 +8,10 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Release : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
         private readonly IVstsRestClient client;
 
         public Release(TestConfig config)
         {
-            this.config = config;
             client = new VstsRestClient(config.Organization, config.Token);
         }
     
@@ -21,9 +19,9 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void ReleaseWithApproval()
         {
-            const string id = "616";
+            const string id = "978"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
 
-            var release = client.Execute<Response.Release>(Requests.Release.Releases("TAS", id));
+            var release = client.Execute(Requests.Release.Releases("TAS", id));
             release.ErrorMessage.ShouldBeNull();
 
             release.StatusCode.ShouldBe(HttpStatusCode.OK);
