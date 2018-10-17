@@ -4,6 +4,7 @@ using SecurePipelineScan.Rules;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.ConsoleApp
@@ -40,12 +41,14 @@ namespace SecurePipelineScan.ConsoleApp
                     var endPointScan = new EndPointScan(client, Print);
                     endPointScan.Execute(projectNameOption.Value());
 
-                    var policyScan = new PolicyScan(client, Print);
-                    policyScan.Execute(projectNameOption.Value());
+                    var repoScan = new RepositoryScan(client, PrintMultiple);
+                    repoScan.Execute(projectNameOption.Value());
                 });
                 return 0;
             });
             app.Execute(args);
+
+            Console.ReadLine();
         }
 
         private static void Print(ScanReport progress)
@@ -68,14 +71,22 @@ namespace SecurePipelineScan.ConsoleApp
                     Console.WriteLine($"    {progress.Request.Id} {progress.Request.Owner.Name}: {ColorCode(r.Result)}");
                     break;
 
-                case BranchPolicyReport r:
-                    Console.WriteLine($"Rep.Id-Enabled-Deleted-IsBlocking-Allow Downvotes-creator can vote-min.Approvers-ResetOnSourcePush");
-                    Console.WriteLine($" {r.BranchPolicy.Id} -   {ColorCode(r.BranchPolicy.IsEnabled)}   -   {ColorCode(r.BranchPolicy.IsDeleted)}   -    {ColorCode(r.BranchPolicy.IsBlocking)}     -       {ColorCode(r.BranchPolicy.Settings.AllowDownvotes)}       -       {ColorCode(r.BranchPolicy.Settings.CreatorVoteCounts)}        -    {(r.BranchPolicy.Settings.MinimumApproverCount)}        -        {ColorCode(r.BranchPolicy.Settings.ResetOnSourcePush)}        ");
+                case RepositoryReport r:
+                    //Console.WriteLine($"project - repository - HasRequiredReviewerPolicy");
+                    Console.WriteLine($" {r.Project} - {r.Repository} - {ColorCode(r.HasRequiredReviewerPolicy)}");
                     break;
 
                 default:
                     Console.WriteLine($"    {progress.Request.Definition.Name} {progress.Request.Owner.Name}: \u001b[93m?\u001b[0m");
                     break;
+            }
+        }
+
+        private static void PrintMultiple(IEnumerable<ScanReport> progress)
+        {
+            foreach (var item in progress)
+            {
+                Print(item);
             }
         }
 
