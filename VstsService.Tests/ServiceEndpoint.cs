@@ -20,12 +20,15 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryServiceConnections()
         {
-            var definition = Vsts.Execute(Requests.ServiceEndpoint.Endpoints(config.Project));
+            var endpoints = Vsts.Execute(Requests.ServiceEndpoint.Endpoints(config.Project));
 
-            definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definition.Data.Value.ShouldNotBeEmpty();
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            endpoints.StatusCode.ShouldBe(HttpStatusCode.OK);
+            endpoints.Data.Value.ShouldNotBeEmpty();
+
+            var endpoint = endpoints.Data.Value.First();
+            endpoint.Name.ShouldNotBeNullOrEmpty();
+            endpoint.Id.ShouldNotBeNullOrEmpty();
+            endpoint.Type.ShouldNotBeNullOrEmpty();
         }
 
         [Fact]
