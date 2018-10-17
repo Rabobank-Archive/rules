@@ -6,6 +6,7 @@ using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using Shouldly;
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using Response = SecurePipelineScan.VstsService.Response;
@@ -31,8 +32,8 @@ namespace SecurePipelineScan.Rules.Tests
             string token = config.Token;
 
             var client = new VstsRestClient(organization, token);
-            var scan = new EndPointScan(client, x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
-            scan.Execute(config.Project);
+            var scan = new EndPointScan(client);
+            scan.Execute(config.Project).ToList().ForEach(x => output.WriteLine($"{x.Request.Definition.Name}: {(x as ReleaseReport)?.Result}"));
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace SecurePipelineScan.Rules.Tests
                 ErrorMessage = "fail"
             });
 
-            var scan = new EndPointScan(client, _ => { });
+            var scan = new EndPointScan(client);
             var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
             ex.Message.ShouldBe("fail");
         }
@@ -70,8 +71,8 @@ namespace SecurePipelineScan.Rules.Tests
                 ErrorMessage = "fail"
             });
 
-            var scan = new EndPointScan(client, _ => { });
-            var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
+            var scan = new EndPointScan(client);
+            var ex = Assert.Throws<Exception>(() => scan.Execute("dummy").ToList());
             ex.Message.ShouldBe("fail");
         }
 
@@ -108,8 +109,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Execute(Arg.Any<IVstsRestRequest<Response.Release>>())
                 .Returns(release);
 
-            var scan = new EndPointScan(client, _ => { });
-            var ex = Assert.Throws<Exception>(() => scan.Execute("dummy"));
+            var scan = new EndPointScan(client);
+            var ex = Assert.Throws<Exception>(() => scan.Execute("dummy").ToList());
             ex.Message.ShouldBe("fail");
         }
 
@@ -148,11 +149,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Execute(Arg.Any<IVstsRestRequest<Response.Release>>())
                 .Returns(release);
 
-            var progress = Substitute.For<Action<ScanReport>>();
-            var scan = new EndPointScan(client, progress);
-            scan.Execute("dummy");
-
-            progress.Received().Invoke(Arg.Any<ScanReport>());
+            var scan = new EndPointScan(client);
+            scan.Execute("dummy").ShouldNotBeEmpty();
         }
     }
 }

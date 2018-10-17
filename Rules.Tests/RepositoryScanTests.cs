@@ -34,8 +34,8 @@ namespace SecurePipelineScan.Rules.Tests
             string token = config.Token;
 
             var client = new VstsRestClient(organization, token);
-            var scan = new RepositoryScan(client, x => output.WriteLine($"Repositories: {(x as IEnumerable<RepositoryReport>).Count()}"));
-            scan.Execute(config.Project);
+            var scan = new RepositoryScan(client);
+            scan.Execute(config.Project).ToList().ForEach(x => output.WriteLine($"Repository: {x.Repository}, Result: {x.HasRequiredReviewerPolicy}"));
         }
 
         [Fact]
@@ -60,11 +60,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>())
                 .Returns(repos);
 
-            var progress = Substitute.For<Action<IEnumerable<ScanReport>>>();
-            var scan = new RepositoryScan(client, progress);
-            scan.Execute("dummy");
-
-            progress.Received().Invoke(Arg.Any<IEnumerable<ScanReport>>());
+            var scan = new RepositoryScan(client);
+            scan.Execute("dummy").ShouldNotBeEmpty();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SecurePipelineScan.Rules.Reports
 {
-    public class Unknown : ScanReport
+    public class Unknown : EndpointReport
     {
     }
 }

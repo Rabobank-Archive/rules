@@ -2,7 +2,7 @@
 
 namespace SecurePipelineScan.Rules.Reports
 {
-    public abstract class ScanReport
+    public abstract class EndpointReport
     {
         public ServiceEndpoint Endpoint { get; set; }
         public ServiceEndpointHistoryData Request { get; set; }

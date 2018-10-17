@@ -38,11 +38,11 @@ namespace SecurePipelineScan.ConsoleApp
                 await Task.Run(() =>
                 {
                     var client = new VstsRestClient(organization, token);
-                    var endPointScan = new EndPointScan(client, Print);
+                    var endPointScan = new EndPointScan(client);
                     endPointScan.Execute(projectNameOption.Value());
 
-                    var repoScan = new RepositoryScan(client, PrintMultiple);
-                    repoScan.Execute(projectNameOption.Value());
+                    var repoScan = new RepositoryScan(client);
+                    PrintMultiple(repoScan.Execute(projectNameOption.Value()));
                 });
                 return 0;
             });
@@ -51,7 +51,7 @@ namespace SecurePipelineScan.ConsoleApp
             Console.ReadLine();
         }
 
-        private static void Print(ScanReport progress)
+        private static void Print(EndpointReport progress)
         {
             switch (progress)
             {
@@ -82,7 +82,7 @@ namespace SecurePipelineScan.ConsoleApp
             }
         }
 
-        private static void PrintMultiple(IEnumerable<ScanReport> progress)
+        private static void PrintMultiple(IEnumerable<EndpointReport> progress)
         {
             foreach (var item in progress)
             {
