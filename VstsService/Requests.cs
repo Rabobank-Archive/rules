@@ -1,3 +1,4 @@
+using System;
 using RestSharp;
 
 namespace SecurePipelineScan.VstsService
@@ -20,6 +21,11 @@ namespace SecurePipelineScan.VstsService
             {
                 return new VsrmRequest<Response.Multiple<Response.ReleaseDefinition>>($"{project}/_apis/release/definitions/", Method.GET);
             }
+        }
+
+        public static IVstsRestRequest<Response.Multiple<Response.Project>> Projects()
+        {
+            return new VstsRestRequest<Response.Multiple<Response.Project>>($"_apis/projects?`$top=1000&api-version=4.1-preview.2",Method.GET);
         }
 
         public static class ServiceEndpoint
