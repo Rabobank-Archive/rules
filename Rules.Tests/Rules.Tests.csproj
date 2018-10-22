@@ -35,6 +35,7 @@
     </None>
     <None Update="appsettings.user.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>appsettings.json</DependentUpon>
     </None>
   </ItemGroup>
 </Project>

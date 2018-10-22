@@ -6,17 +6,21 @@ namespace SecurePipelineScan.VstsService
     {
         private readonly string authorization;
         private readonly string organization;
+        private RestClient restClient;
 
         public VstsRestClient(string organization, string token)
         {
             this.authorization = GenerateAuthorizationHeader(token);
             this.organization = organization;
+            restClient = new RestClient();
         }
 
         public IRestResponse<TResponse> Execute<TResponse>(IVstsRestRequest<TResponse> request)
-            where TResponse: new()
+            where TResponse : new()
         {
-            return new RestClient(request.BaseUri(organization)).Execute<TResponse>(request.AddHeader("authorization", authorization));
+            restClient.BaseUrl = request.BaseUri(organization);
+
+            return restClient.Execute<TResponse>(request.AddHeader("authorization", authorization));
         }
 
         private static string GenerateAuthorizationHeader(string token)
@@ -32,4 +36,3 @@ namespace SecurePipelineScan.VstsService
         }
     }
 }
-
