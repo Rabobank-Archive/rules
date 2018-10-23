@@ -61,5 +61,24 @@ namespace SecurePipelineScan.VstsService
                 return new VstsRestRequest<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>($"{project}/_apis/policy/configurations?policyType=fa4e907d-c16b-4a4c-9dfa-4906e5d171dd", Method.GET);
             }
         }
+
+        public static class DistributedTask
+        {
+            public static IVstsRestRequest<Response.Multiple<Response.AgentPoolInfo>> OrganizationalAgentPools()
+            {
+                return new VstsRestRequest<Response.Multiple<Response.AgentPoolInfo>>($"_apis/distributedtask/pools",Method.GET);
+            }
+
+            public static IVstsRestRequest<Response.AgentPoolInfo> AgentPool(int id)
+            {
+                return new VstsRestRequest<Response.AgentPoolInfo>($"_apis/distributedtask/pools/{id}", Method.GET);
+            }
+
+            public static IVstsRestRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
+            {
+                return new VstsRestRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents?includeCapabilities=false&includeAssignedRequest=true", Method.GET);
+            }
+
+        }
     }
 }
