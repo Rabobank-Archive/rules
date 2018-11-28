@@ -4,7 +4,7 @@ namespace SecurePipelineScan.Rules.Checks
 {
     public static class Environment
     {
-        public static bool IsApprovedBySomeoneElse(this SecurePipelineScan.VstsService.Response.Environment env)
+        public static bool IsApprovedBySomeoneElse(this VstsService.Response.Environment env)
         {
             if (env.PreDeployApprovals != null)
             {

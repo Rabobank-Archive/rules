@@ -1,10 +1,8 @@
 ﻿using Rules.Reports;
-using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
-using System;
 using System.Collections.Generic;
-using Response = SecurePipelineScan.VstsService.Response;
 using SecurePipelineScan.Rules.Checks;
+using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules
 {
@@ -24,10 +22,12 @@ namespace SecurePipelineScan.Rules
 
             foreach (var repo in repos)
             {
-                var repoReport = new RepositoryReport();
-                repoReport.Project = project;
-                repoReport.Repository = repo.Name;
-                repoReport.HasRequiredReviewerPolicy = repo.HasRequiredReviewerPolicy(minimumNumberOfReviewersPolicies.Data.Value);
+                var repoReport = new RepositoryReport
+                {
+                    Project = project,
+                    Repository = repo.Name,
+                    HasRequiredReviewerPolicy = repo.HasRequiredReviewerPolicy(minimumNumberOfReviewersPolicies.Data.Value)
+                };
 
                 yield return repoReport;
             }

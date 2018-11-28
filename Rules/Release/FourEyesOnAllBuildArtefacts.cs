@@ -10,18 +10,13 @@ namespace SecurePipelineScan.Rules.Release
         private readonly Func<r.Environment, bool> approved;
 
         public FourEyesOnAllBuildArtefacts() :
-            this(SecurePipelineScan.Rules.Checks.Environment.IsApprovedBySomeoneElse)
+            this(Checks.Environment.IsApprovedBySomeoneElse)
         {
         }
 
         internal FourEyesOnAllBuildArtefacts(Func<r.Environment, bool> approved)
         {
-            if (approved == null)
-            {
-                throw new ArgumentNullException(nameof(approved));
-            }
-
-            this.approved = approved;
+            this.approved = approved ?? throw new ArgumentNullException(nameof(approved));
         }
 
         public bool GetResult(r.Release release, int environmentId)

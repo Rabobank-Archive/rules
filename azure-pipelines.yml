@@ -37,12 +37,18 @@ steps:
     dotnet build --configuration $(buildConfiguration)
     dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
     dotnet sonarscanner end
+    dotnet publish .\Subscriptions.Console\ --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps
     dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version)
   displayName: 'Build, test & pack'
 
 - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
   displayName: 'SonarQube: Publish Quality Gate Result'
 
+- task: PublishBuildArtifacts@1
+  displayName: publish console apps
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/ConsoleApps' 
+    artifactName: 'ConsoleApps'
 
 - task: PublishTestResults@2
   inputs:

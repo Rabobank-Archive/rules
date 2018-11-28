@@ -40,7 +40,7 @@ namespace SecurePipelineScan.ConsoleApp
                     var client = new VstsRestClient(organization, token);
                     var endPointScan = new EndPointScan(client);
                     endPointScan.Execute(projectNameOption.Value());
-
+                    
                     var repoScan = new RepositoryScan(client);
                     PrintMultiple(repoScan.Execute(projectNameOption.Value()));
                 });

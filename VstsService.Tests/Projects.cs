@@ -1,6 +1,9 @@
-﻿using SecurePipelineScan.VstsService;
+﻿using SecurePipelineScan.Rules;
+using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Tests;
+using Requests = SecurePipelineScan.VstsService.Requests;
 using Shouldly;
+using System.Diagnostics;
 using System.Net;
 using Xunit;
 
@@ -24,10 +27,29 @@ namespace VstsService.Tests
         [Fact]
         public void QueryProjects()
         {
-            var definitions = client.Execute(Requests.Projects());
+            var definitions = client.Execute(Requests.Project.Projects());
 
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+        }
+
+        [Fact]
+        public void GetAppReports()
+        {
+            var projects = client.Execute(Requests.Project.Projects()).Data;
+
+            foreach (var p in projects.Value)
+            {
+                Debug.WriteLine($"{p.Name} {p.Description}");
+                var scan = new RepositoryScan(client);
+
+                var results = scan.Execute(p.Name);
+
+                foreach (var r in results)
+                {
+                    Debug.WriteLine($"{r.Project} {r.Repository} {r.HasRequiredReviewerPolicy}");
+                }
+            }
         }
     }
 }

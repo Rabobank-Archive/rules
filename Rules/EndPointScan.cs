@@ -5,6 +5,7 @@ using SecurePipelineScan.VstsService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules
@@ -20,7 +21,7 @@ namespace SecurePipelineScan.Rules
 
         public IEnumerable<EndpointReport> Execute(string project)
         {
-            var endpoints = client.Execute(Requests.ServiceEndpoint.Endpoints(project));
+            var endpoints = client.Execute(ServiceEndpoint.Endpoints(project));
             return Execute(project, endpoints.ThrowOnError().Data.Value);
         }
 
@@ -38,7 +39,7 @@ namespace SecurePipelineScan.Rules
         private IEnumerable<EndpointReport> Execute(string project, Response.ServiceEndpoint endpoint)
         {
             foreach (var history in client
-                .Execute(Requests.ServiceEndpoint.History(project, endpoint.Id))
+                .Execute(ServiceEndpoint.History(project, endpoint.Id))
                 .ThrowOnError()
                 .Data.Value.OrderBy(h => h.Data.Definition.Name))
             {
