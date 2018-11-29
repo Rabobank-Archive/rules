@@ -32,6 +32,9 @@ steps:
     projectKey: TAS.SecurePipelineScanner
 
 - script: |
+    #!/bin/bash
+    set -e
+    
     dotnet tool install --global dotnet-sonarscanner
     dotnet sonarscanner begin /k:"TAS.SecurePipelineScanner"
     dotnet build --configuration $(buildConfiguration)
