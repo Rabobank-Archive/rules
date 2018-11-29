@@ -3,6 +3,7 @@ using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
 using System.Net;
 using Xunit;
+using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace VstsService.Tests
 {
