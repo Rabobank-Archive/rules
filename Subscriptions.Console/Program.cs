@@ -9,7 +9,7 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace Subscriptions.Console
 {
-    internal class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {
@@ -32,20 +32,17 @@ namespace Subscriptions.Console
                 }
 
                 var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
+                var subscriptions = client
+                    .Execute(Requests.Hooks.Subscriptions())
+                    .ThrowOnError().Data.Value
+                    .Where(_ => _.ConsumerId == "azureStorageQueue");
 
-                var subscriptions = client.Execute(Requests.Hooks.Subscriptions());
-
-                if (subscriptions.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new System.Exception($"Could not retrieve subscriptions: StatusCode {subscriptions.StatusCode }");
-                }
-
-                var allProjects = client.Execute(Requests.Project.Projects()).Data.Value;
-
-                var projectInfos = allProjects.Select(x => new ProjectInfo { Id = x.Id }).ToList();
-
-                UpdateProjectInfoStatus(projectInfos, subscriptions.Data.Value);
-                AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, projectInfos);
+                var projects = client
+                    .Execute(Requests.Project.Projects())
+                    .ThrowOnError().Data.Value;
+                
+                var items = SubscriptionsPerProject(subscriptions, projects);
+                AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
 
                 return 0;
             });
@@ -53,9 +50,9 @@ namespace Subscriptions.Console
             app.Execute(args);
         }
 
-        private static void AddHooksToProjects(string accountName, string accountKey, VstsRestClient client, IEnumerable<ProjectInfo> projectInfos)
+        internal static void AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
         {
-            foreach (var item in projectInfos)
+            foreach (var item in items)
             {
                 if (!item.BuildComplete)
                 {
@@ -80,21 +77,19 @@ namespace Subscriptions.Console
             }
         }
 
-        /// <summary>
-        /// Update Projectinfo with subscriptions
-        /// </summary>
-        /// <param name="projectInfos">List of project information to update</param>
-        /// <param name="subscriptions">Actual subscriptions found in the system</param>
-        public static void UpdateProjectInfoStatus(IList<ProjectInfo> projectInfos, IEnumerable<Response.Hook> subscriptions)
+        public static IEnumerable<ProjectInfo> SubscriptionsPerProject(IEnumerable<Response.Hook> subscriptions, IEnumerable<Response.Project> projects)
         {
-            foreach (var subscription in subscriptions.Where(_ => _.ConsumerId == "azureStorageQueue"))
+            var items = projects.Select(x => new ProjectInfo {Id = x.Id}).ToList();            
+            foreach (var subscription in subscriptions)
             {
-                var projectId = subscription.PublisherInputs.ProjectId;
-                if (projectId != null && projectInfos.Any(x => x.Id == projectId))
-                {
-                    UpdateProjectInfo(projectInfos.Single(x => x.Id == projectId), subscription.EventType);
+                var item = items.SingleOrDefault(x => x.Id == subscription.PublisherInputs.ProjectId);
+                if (item != null)
+                {                    
+                    UpdateProjectInfo(item, subscription.EventType);
                 }
             }
+
+            return items;
         }
 
         private static void UpdateProjectInfo(ProjectInfo projectInfo, string eventType)
