@@ -5,16 +5,16 @@ using r = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release
 {
-    public class FourEyesOnAllBuildArtefacts
+    public class IsStageApproved
     {
         private readonly Func<r.Environment, bool> approved;
 
-        public FourEyesOnAllBuildArtefacts() :
+        public IsStageApproved() :
             this(Checks.Environment.IsApprovedBySomeoneElse)
         {
         }
 
-        internal FourEyesOnAllBuildArtefacts(Func<r.Environment, bool> approved)
+        internal IsStageApproved(Func<r.Environment, bool> approved)
         {
             this.approved = approved ?? throw new ArgumentNullException(nameof(approved));
         }
