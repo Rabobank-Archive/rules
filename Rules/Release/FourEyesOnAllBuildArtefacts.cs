@@ -22,26 +22,7 @@ namespace SecurePipelineScan.Rules.Release
         public bool GetResult(r.Release release, int environmentId)
         {
             var env = release.Environments?.SingleOrDefault(e => e.Id == environmentId);
-            if (env != null)
-            {
-                return IsApproved(env, release.Environments.ToDictionary(e => e.Name));
-            }
-
-            return false;
-        }
-
-        private bool IsApproved(r.Environment env, IDictionary<string, r.Environment> all)
-        {
-            return (approved(env) ||
-                IsApprovedByPreviousEnvironments(env, all));
-        }
-
-        private bool IsApprovedByPreviousEnvironments(r.Environment env, IDictionary<string, r.Environment> all)
-        {
-            var previous = env.Conditions?.Where(c => c.ConditionType == "environmentState");
-            return previous != null && 
-                previous.Any() && 
-                previous.All(c => IsApproved(all[c.Name], all));
+            return env != null && approved(env);
         }
     }
 }

@@ -27,11 +27,11 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var rule = new FourEyesOnAllBuildArtefacts();
 
             var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
-            rule.GetResult(release.Data, 1915).ShouldBeTrue();
+            rule.GetResult(release.Data, 1916).ShouldBeTrue();
         }
 
         [Fact]
-        public void EmpyReleaseIsNotApproved()
+        public void EmptyReleaseIsNotApproved()
         {
             var release = new Response.Release {
             };
@@ -86,39 +86,6 @@ namespace SecurePipelineScan.Rules.Release.Tests
 
             var rule = new FourEyesOnAllBuildArtefacts(_ => false);
             rule.GetResult(release, 110).ShouldBeFalse();
-        }
-
-        [Fact]
-        public void CheckAllPreviousEnvironments()
-        {
-            var release = new Response.Release {
-                Environments = new[] {
-                    new Response.Environment {
-                        Id = 110,
-                        Name = "validation-this-one",
-                        Conditions = new [] {
-                            new Response.Condition {
-                                Result = true,
-                                Name =  "first",
-                                ConditionType =  "environmentState",
-                                Value =  "4"
-                            }
-                        }
-                    },
-                    new Response.Environment {
-                        Name = "first"
-                    }
-                }
-            };
-
-            var approved = Substitute.For<Func<Response.Environment, bool>>();
-            approved.Invoke(Arg.Any<Response.Environment>()).Returns(false);
-            approved.Invoke(Arg.Is<Response.Environment>(e => e.Name == "first")).Returns(true);
-
-
-            var rule = new FourEyesOnAllBuildArtefacts(approved);
-            rule.GetResult(release, 110).ShouldBeTrue();
-            approved.Received().Invoke(Arg.Is<Response.Environment>(e => e.Name == "first"));
         }
 
         [Fact]
