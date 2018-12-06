@@ -10,7 +10,7 @@ namespace SecurePipelineScan.Rules.Checks
 {
     public static class ProjectApplicationGroup
     {
-        public static bool HasRequiredReviewerPolicy(IEnumerable<ApplicationGroup> groups)
+        public static bool ApplicationGroupContainsProductionEnvironmentOwner(IEnumerable<ApplicationGroup> groups)
         {
             return groups.Any(g => g.FriendlyDisplayName == "Production Environment Owners");
         }

@@ -12,13 +12,13 @@ namespace Rules.Tests
         [Fact]
         public void EmptyGroupsShouldBeFalse()
         {
-            ProjectApplicationGroup.HasRequiredReviewerPolicy(new List<ApplicationGroup>()).ShouldBeFalse();
+            ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(new List<ApplicationGroup>()).ShouldBeFalse();
         }
 
         [Fact]
         public void ContainingProductionEnvironmentOwnersShouldBeTrue()
         {
-            ProjectApplicationGroup.HasRequiredReviewerPolicy(new[] { new ApplicationGroup { FriendlyDisplayName = "Production Environment Owners" } }).ShouldBeTrue();
+            ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(new[] { new ApplicationGroup { FriendlyDisplayName = "Production Environment Owners" } }).ShouldBeTrue();
         }
     }
 }

@@ -10,7 +10,7 @@ using Xunit;
 namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
-    public class ApplicationGroup: IClassFixture<TestConfig>
+    public class ApplicationGroup : IClassFixture<TestConfig>
     {
         private readonly TestConfig config;
         private readonly IVstsRestClient Vsts;
@@ -22,42 +22,12 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryRequiredReviewersPolicies()
+        public void QueryTASApplicationGroupDataReturnsGroupData()
         {
             var definition = Vsts.Execute(Requests.ApplicationGroup.ApplicationGroups(config.Project));
-
             definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            //definition.Data.Value.ShouldNotBeEmpty();
-            //definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            //definition.Data.Value.ShouldAllBe(e => e.IsBlocking.HasValue);
-            //definition.Data.Value.ShouldAllBe(e => e.IsDeleted.HasValue);
-            //definition.Data.Value.ShouldAllBe(e => e.IsEnabled.HasValue);
-            //definition.Data.Value.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
-            //definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            //definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            //definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+            definition.Content.ShouldNotBeEmpty();
+            definition.Content.Contains("Production Environment Owners");
         }
-
-        //[Fact]
-        //public void QueryMinimumNumberOfReviewersPolicies()
-        //{
-        //    var definition = Vsts.Execute(Requests.Policies.MinimumNumberOfReviewersPolicies(config.Project));
-
-        //    definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-        //    definition.Data.Value.ShouldNotBeEmpty();
-        //    definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-        //    definition.Data.Value.ShouldAllBe(e => e.IsBlocking.HasValue);
-        //    definition.Data.Value.ShouldAllBe(e => e.IsDeleted.HasValue);
-        //    definition.Data.Value.ShouldAllBe(e => e.IsEnabled.HasValue);
-
-        //    definition.Data.Value.ShouldAllBe(e => e.Settings.MinimumApproverCount.HasValue);
-        //    definition.Data.Value.ShouldAllBe(e => e.Settings.AllowDownvotes.HasValue);
-        //    definition.Data.Value.ShouldAllBe(e => e.Settings.CreatorVoteCounts.HasValue);
-        //    definition.Data.Value.ShouldAllBe(e => e.Settings.ResetOnSourcePush.HasValue);
-
-        //    definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-        //    definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-        //    definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
-        //}
     }
 }
