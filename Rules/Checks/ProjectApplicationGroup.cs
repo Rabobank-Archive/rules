@@ -12,11 +12,7 @@ namespace SecurePipelineScan.Rules.Checks
     {
         public static bool HasRequiredReviewerPolicy(IEnumerable<ApplicationGroup> groups)
         {
-            if (groups.Any(g => g.FriendlyDisplayName == "Production Environment Owners"))
-            {
-                return true;
-            }
-            return false;
+            return groups.Any(g => g.FriendlyDisplayName == "Production Environment Owners");
         }
     }
 }
