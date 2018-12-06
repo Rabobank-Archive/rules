@@ -10,11 +10,11 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Release.Tests
 {
-    public class FourEyesOnAllBuildArtefactsTests : IClassFixture<TestConfig>
+    public class IsStageApprovedTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig config;
 
-        public FourEyesOnAllBuildArtefactsTests(ITestOutputHelper output, TestConfig config)
+        public IsStageApprovedTests(ITestOutputHelper output, TestConfig config)
         {
             this.config = config;
         }
@@ -24,19 +24,19 @@ namespace SecurePipelineScan.Rules.Release.Tests
         public void IntegrationTest714()
         {
             var client = new VstsRestClient(config.Organization, config.Token);
-            var rule = new FourEyesOnAllBuildArtefacts();
+            var rule = new IsStageApproved();
 
             var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
-            rule.GetResult(release.Data, 1915).ShouldBeTrue();
+            rule.GetResult(release.Data, 1916).ShouldBeTrue();
         }
 
         [Fact]
-        public void EmpyReleaseIsNotApproved()
+        public void EmptyReleaseIsNotApproved()
         {
             var release = new Response.Release {
             };
 
-            var rule = new FourEyesOnAllBuildArtefacts();
+            var rule = new IsStageApproved();
             rule.GetResult(release, 110).ShouldBeFalse();
         }
 
@@ -52,7 +52,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
                 }
             };
 
-            var rule = new FourEyesOnAllBuildArtefacts(_ => true);
+            var rule = new IsStageApproved(_ => true);
             rule.GetResult(release, 110).ShouldBeTrue();
         }
 
@@ -67,7 +67,7 @@ namespace SecurePipelineScan.Rules.Release.Tests
                 }
             };
 
-            var rule = new FourEyesOnAllBuildArtefacts();
+            var rule = new IsStageApproved();
             rule.GetResult(release, 111).ShouldBeFalse();
         }
 
@@ -84,41 +84,8 @@ namespace SecurePipelineScan.Rules.Release.Tests
                 }
             };
 
-            var rule = new FourEyesOnAllBuildArtefacts(_ => false);
+            var rule = new IsStageApproved(_ => false);
             rule.GetResult(release, 110).ShouldBeFalse();
-        }
-
-        [Fact]
-        public void CheckAllPreviousEnvironments()
-        {
-            var release = new Response.Release {
-                Environments = new[] {
-                    new Response.Environment {
-                        Id = 110,
-                        Name = "validation-this-one",
-                        Conditions = new [] {
-                            new Response.Condition {
-                                Result = true,
-                                Name =  "first",
-                                ConditionType =  "environmentState",
-                                Value =  "4"
-                            }
-                        }
-                    },
-                    new Response.Environment {
-                        Name = "first"
-                    }
-                }
-            };
-
-            var approved = Substitute.For<Func<Response.Environment, bool>>();
-            approved.Invoke(Arg.Any<Response.Environment>()).Returns(false);
-            approved.Invoke(Arg.Is<Response.Environment>(e => e.Name == "first")).Returns(true);
-
-
-            var rule = new FourEyesOnAllBuildArtefacts(approved);
-            rule.GetResult(release, 110).ShouldBeTrue();
-            approved.Received().Invoke(Arg.Is<Response.Environment>(e => e.Name == "first"));
         }
 
         [Fact]
@@ -141,20 +108,20 @@ namespace SecurePipelineScan.Rules.Release.Tests
                 }
             };
 
-            var rule = new FourEyesOnAllBuildArtefacts(_ => false);
+            var rule = new IsStageApproved(_ => false);
             rule.GetResult(release, 109).ShouldBeFalse();
         }
 
         [Fact]
         public void UsingDefaultIsApprovedFunction()
         {
-            new FourEyesOnAllBuildArtefacts();
+            new IsStageApproved();
         }
 
         [Fact]
         public void UsingOverloadedTestConstructorThrowsWhenNoFunctionSpecified()
         {
-            Assert.Throws<ArgumentNullException>(() => new FourEyesOnAllBuildArtefacts(null));
+            Assert.Throws<ArgumentNullException>(() => new IsStageApproved(null));
         }
     }
 }

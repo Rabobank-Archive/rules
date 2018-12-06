@@ -39,8 +39,8 @@ namespace SecurePipelineScan.ConsoleApp
                 {
                     var client = new VstsRestClient(organization, token);
                     var endPointScan = new EndPointScan(client);
-                    endPointScan.Execute(projectNameOption.Value());
-                    
+                    PrintMultiple(endPointScan.Execute(projectNameOption.Value()));
+
                     var repoScan = new RepositoryScan(client);
                     PrintMultiple(repoScan.Execute(projectNameOption.Value()));
                 });
@@ -93,11 +93,6 @@ namespace SecurePipelineScan.ConsoleApp
         private static string ColorCode(bool result)
         {
             return result ? "\u001b[32mV\u001b[0m" : "\u001b[31mX\u001b[0m";
-        }
-
-        private static string ColorCode(bool? result)
-        {
-            return result.HasValue ? ColorCode(result.Value) : "\u001b[31m-\u001b[0m";
         }
     }
 }

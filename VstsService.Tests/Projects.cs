@@ -32,24 +32,5 @@ namespace VstsService.Tests
             definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
             definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
-
-        [Fact]
-        public void GetAppReports()
-        {
-            var projects = client.Execute(Requests.Project.Projects()).Data;
-
-            foreach (var p in projects.Value)
-            {
-                Debug.WriteLine($"{p.Name} {p.Description}");
-                var scan = new RepositoryScan(client);
-
-                var results = scan.Execute(p.Name);
-
-                foreach (var r in results)
-                {
-                    Debug.WriteLine($"{r.Project} {r.Repository} {r.HasRequiredReviewerPolicy}");
-                }
-            }
-        }
     }
 }

@@ -74,7 +74,7 @@ namespace SecurePipelineScan.Rules
                 .Execute(new VstsRestRequest<VstsService.Response.Release>(item.Data.Owner.Links.Self.Href.AbsoluteUri, Method.GET))
                 .ThrowOnError();
 
-            var rule = new FourEyesOnAllBuildArtefacts();
+            var rule = new IsStageApproved();
             return new ReleaseReport
             {
                 Release = release.Data,
