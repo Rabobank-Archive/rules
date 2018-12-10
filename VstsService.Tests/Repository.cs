@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using RestSharp;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -25,12 +26,12 @@ namespace SecurePipelineScan.VstsService.Tests
         public void QueryRepository()
         {
             var definition = Vsts.Get(Requests.Repository.Repositories(config.Project));
-            definition.Value.ShouldNotBeEmpty();
-            definition.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
-            definition.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
-            definition.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
-            definition.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
+            definition.ShouldNotBeEmpty();
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
         }
     }
 }

@@ -5,6 +5,7 @@ using Requests = SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using System.Diagnostics;
 using System.Net;
+using RestSharp;
 using Xunit;
 
 namespace VstsService.Tests
@@ -28,7 +29,7 @@ namespace VstsService.Tests
         public void QueryProjects()
         {
             var definitions = client.Get(Requests.Project.Projects());
-            definitions.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
     }
 }

@@ -4,6 +4,7 @@ using Requests = SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using System.Linq;
 using System.Net;
+using RestSharp;
 using Xunit;
 
 namespace VstsService.Tests
@@ -28,12 +29,12 @@ namespace VstsService.Tests
         {
             var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
 
             var addHook = client.Post(Requests.Hooks.Add.BuildCompleted(
                 accountName,
@@ -60,12 +61,12 @@ namespace VstsService.Tests
         {
             var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
 
             var addHook = client.Post(Requests.Hooks.Add.GitPushed(
                 accountName,
@@ -95,12 +96,12 @@ namespace VstsService.Tests
         {
             var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
 
             var addHook = client.Post(Requests.Hooks.Add.GitPullRequestCreated(
                 accountName,
@@ -127,12 +128,12 @@ namespace VstsService.Tests
         public void QueryAddDelete_ReleaseDeploymentCompleted_Subscription()
         {
             var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
-            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
 
             var addHook = client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(
                 accountName,

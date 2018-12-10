@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Rules
 
         public IEnumerable<RepositoryReport> Execute(string project)
         {
-            var repos = client.Get(Requests.Repository.Repositories(project)).Value;
+            var repos = client.Get(Requests.Repository.Repositories(project));
             var minimumNumberOfReviewersPolicies = client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
 
             foreach (var repo in repos)

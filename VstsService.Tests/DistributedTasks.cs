@@ -2,6 +2,7 @@
 using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
 using System.Net;
+using RestSharp;
 using Xunit;
 using Requests = SecurePipelineScan.VstsService.Requests;
 
@@ -24,8 +25,8 @@ namespace VstsService.Tests
         {
             var orgPools = client.Get(Requests.DistributedTask.OrganizationalAgentPools());
 
-            orgPools.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
-            orgPools.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
+            orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
         }
 
         [Fact]
@@ -41,7 +42,7 @@ namespace VstsService.Tests
         {
             var agentStatus = client.Get(Requests.DistributedTask.AgentPoolStatus(119));
 
-            agentStatus.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
     }
 }

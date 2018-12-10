@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules
         public IEnumerable<EndpointReport> Execute(string project)
         {
             var endpoints = client.Get(ServiceEndpoint.Endpoints(project));
-            return Execute(project, endpoints.Value);
+            return Execute(project, endpoints);
         }
 
         private IEnumerable<EndpointReport> Execute(string project, IEnumerable<Response.ServiceEndpoint> endpoints)
@@ -37,7 +37,7 @@ namespace SecurePipelineScan.Rules
         private IEnumerable<EndpointReport> Execute(string project, Response.ServiceEndpoint endpoint)
         {
             foreach (var history in client
-                .Get(ServiceEndpoint.History(project, endpoint.Id)).Value.OrderBy(h => h.Data.Definition.Name))
+                .Get(ServiceEndpoint.History(project, endpoint.Id)).OrderBy(h => h.Data.Definition.Name))
             {
                 yield return Execute(endpoint, history);
             }

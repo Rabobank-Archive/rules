@@ -2,6 +2,7 @@ using Xunit;
 using Shouldly;
 using System.Net;
 using System.Linq;
+using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {

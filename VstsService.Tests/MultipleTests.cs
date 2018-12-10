@@ -1,3 +1,4 @@
+using System.Linq;
 using ExpectedObjects;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
@@ -14,6 +15,13 @@ namespace VstsService.Tests
             
             new[] {"one", "two", "three"}.ToExpectedObject().ShouldEqual(multiple.Value);
             multiple.Count.ShouldBe(3);
+        }
+
+        [Fact]
+        public void TreatMultipleAsEnumerable()
+        {
+            var multiple = new Multiple<string>("one", "two", "three");
+            new[] {"one", "two", "three"}.ToExpectedObject().ShouldEqual(multiple.ToArray());
         }
     }
 }

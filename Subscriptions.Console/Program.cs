@@ -2,6 +2,7 @@
 using SecurePipelineScan.VstsService;
 using System.Collections.Generic;
 using System.Linq;
+using RestSharp;
 using Requests = SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
@@ -34,11 +35,10 @@ namespace Subscriptions.Console
                 var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
                 var subscriptions = client
                     .Get(Requests.Hooks.Subscriptions())
-                    .Value
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
                 var projects = client
-                    .Get(Requests.Project.Projects()).Value;
+                    .Get(Requests.Project.Projects());
                 
                 var items = SubscriptionsPerProject(subscriptions, projects);
                 AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);

@@ -1,6 +1,7 @@
 using Xunit;
 using Shouldly;
 using System.Net;
+using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -20,7 +21,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public void QueryReleaseDefinitions()
         {
             var definitions = client.Get(Requests.Release.Definitions(config.Project));
-            definitions.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
