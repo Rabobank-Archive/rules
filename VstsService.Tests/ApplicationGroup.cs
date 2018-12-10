@@ -3,6 +3,7 @@ using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Xunit;
@@ -24,10 +25,13 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryTASApplicationGroupDataReturnsGroupData()
         {
-            var definition = Vsts.Execute(Requests.ApplicationGroup.ApplicationGroups(config.Project));
-            definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definition.Content.ShouldNotBeEmpty();
-            definition.Content.Contains("Production Environment Owners");
+            var identity = Vsts.Execute(Requests.ApplicationGroup.ApplicationGroups(config.Project));
+            identity.StatusCode.ShouldBe(HttpStatusCode.OK);
+            identity.Data.ShouldNotBeNull();
+            identity.Data.Identities.ShouldNotBeEmpty();
+
+            var group = identity.Data.Identities.First();
+            group.DisplayName.ShouldNotBeNullOrEmpty();
         }
     }
 }

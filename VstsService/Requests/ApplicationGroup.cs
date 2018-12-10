@@ -4,9 +4,9 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class ApplicationGroup
     {
-        public static IVstsRestRequest<Response.Multiple<Response.ApplicationGroup>> ApplicationGroups(string project)
+        public static IVstsRestRequest<Response.ApplicationGroups> ApplicationGroups(string project)
         {
-            return new VstsRestRequest<Response.Multiple<Response.ApplicationGroup>>($"{project}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5", Method.GET);
+            return new VstsRestRequest<Response.ApplicationGroups>($"{project}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5", Method.GET);
         }
     }
 }
