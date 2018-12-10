@@ -7,9 +7,9 @@ namespace SecurePipelineScan.VstsService
     {
         public static IRestResponse<T> ThrowOnError<T>(this IRestResponse<T> response)
         {
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            if (!response.IsSuccessful)
             {
-                throw new Exception(response.ErrorMessage);
+                throw new Exception(response.ErrorMessage ?? response.Content);
             }
 
             return response;
