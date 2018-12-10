@@ -1,11 +1,9 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
-using RestSharp;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using Shouldly;
-using System;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;

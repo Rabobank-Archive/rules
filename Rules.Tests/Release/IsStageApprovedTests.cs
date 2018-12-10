@@ -1,6 +1,4 @@
 ﻿using System;
-using NSubstitute;
-using RestSharp;
 using SecurePipelineScan.Rules.Tests;
 using SecurePipelineScan.VstsService;
 using Shouldly;

@@ -54,5 +54,15 @@ namespace SecurePipelineScan.VstsService.Tests
 
             Assert.Throws<Exception>(() => response.ThrowOnError());
         }
+        
+        [Fact]
+        public void ThrowsNothingOnNotFound()
+        {
+            var response = Substitute.For<IRestResponse<Release>>();
+            response.IsSuccessful.Returns(false);
+            response.StatusCode.Returns(HttpStatusCode.NotFound);
+
+            response.ThrowOnError().Data.ShouldBeNull();
+        }
     }
 }

@@ -1,8 +1,6 @@
-using RestSharp;
 using SecurePipelineScan.Rules.Release;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SecurePipelineScan.VstsService.Requests;

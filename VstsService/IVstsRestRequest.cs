@@ -1,5 +1,4 @@
 using System;
-using RestSharp;
 
 namespace SecurePipelineScan.VstsService
 {

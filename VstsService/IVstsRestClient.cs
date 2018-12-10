@@ -1,6 +1,3 @@
-using RestSharp;
-using SecurePipelineScan.VstsService.Response;
-
 namespace SecurePipelineScan.VstsService
 {
     public interface IVstsRestClient

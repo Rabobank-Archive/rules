@@ -1,5 +1,3 @@
-using RestSharp;
-
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Project
