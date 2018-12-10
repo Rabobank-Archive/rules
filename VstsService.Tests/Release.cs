@@ -8,27 +8,29 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Release : IClassFixture<TestConfig>
     {
-        private readonly IVstsRestClient client;
+        private readonly IVstsRestClient _client;
+        private readonly string _project;
 
         public Release(TestConfig config)
         {
-            client = new VstsRestClient(config.Organization, config.Token);
+            _client = new VstsRestClient(config.Organization, config.Token);
+            _project = config.Project;
         }
     
 
         [Fact]
         public void ReleaseWithApproval()
         {
-            const string id = "978"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
+            const string id = "42"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
 
-            var release = client.Execute(Requests.Release.Releases("TAS", id));
+            var release = _client.Execute(Requests.Release.Releases(_project, id));
             release.ErrorMessage.ShouldBeNull();
 
             release.StatusCode.ShouldBe(HttpStatusCode.OK);
             release.Data.Id.ShouldBe(id);
             release.Data.Environments.ShouldNotBeEmpty();
 
-            var env = release.Data.Environments.First();
+            var env = release.Data.Environments.Skip(1).First();
             env.Id.ShouldNotBe(0);
             env.PreDeployApprovals.ShouldNotBeEmpty();
             env.DeploySteps.ShouldNotBeEmpty();
