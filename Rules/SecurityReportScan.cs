@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules
 
         public void Execute()
         {
-            var projects = client.Execute(Project.Projects()).Data.Value;
+            var projects = client.Get(Project.Projects()).Value;
             foreach (var project in projects)
             {
                 Execute(project.Name);
@@ -28,7 +28,8 @@ namespace SecurePipelineScan.Rules
 
         public SecurityReport Execute(string project)
         {
-            var applicationGroups = client.Execute(ApplicationGroup.ApplicationGroups(project)).Data.Identities;
+            var applicationGroups =
+                client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
 
             var securityReport = new SecurityReport
             {

@@ -26,161 +26,135 @@ namespace VstsService.Tests
         [Fact]
         public void QueryAddDelete_BuildComplete_Subscription()
         {
-            var subscribtionsBefore = client.Execute(Requests.Hooks.Subscriptions());
+            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.StatusCode.ShouldBe(HttpStatusCode.OK);
-            subscribtionsBefore.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Execute(Requests.Project.Projects()).Data.Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
 
-            var addHook = client.Execute(Requests.Hooks.Add.BuildCompleted(
+            var addHook = client.Post(Requests.Hooks.Add.BuildCompleted(
                 accountName,
                 accountKey,
                 queueName,
                 projectId
                 ));
 
-            addHook.StatusCode.ShouldBe(HttpStatusCode.OK);
-            addHook.Data.Id.ShouldNotBeNullOrEmpty();
+            addHook.Id.ShouldNotBeNullOrEmpty();
 
-            var addedHookId = addHook.Data.Id;
+            var addedHookId = addHook.Id;
 
-            var subscribtionsAfter = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsAfter.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Data.Count.ShouldBeLessThan(subscribtionsAfter.Data.Count);
+            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
+            client.Delete(Requests.Hooks.Subscription(addedHookId));
 
-            var deleteHook = client.Execute(Requests.Hooks.Delete(addedHookId));
-
-            deleteHook.ResponseStatus.ShouldBe(RestSharp.ResponseStatus.Completed);
-
-            var subscribtionsFinal = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.StatusCode.ShouldBe(HttpStatusCode.OK);
-
-            subscribtionsFinal.Data.Count.ShouldBe(subscribtionsBefore.Data.Count);
+            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
+            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
         }
 
         [Fact]
         public void QueryAddDelete_GitPushed_Subscription()
         {
-            var subscribtionsBefore = client.Execute(Requests.Hooks.Subscriptions());
+            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.StatusCode.ShouldBe(HttpStatusCode.OK);
-            subscribtionsBefore.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Execute(Requests.Project.Projects()).Data.Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
 
-            var addHook = client.Execute(Requests.Hooks.Add.GitPushed(
+            var addHook = client.Post(Requests.Hooks.Add.GitPushed(
                 accountName,
                 accountKey,
                 queueName,
                 projectId
                 ));
 
-            addHook.StatusCode.ShouldBe(HttpStatusCode.OK);
-            addHook.Data.Id.ShouldNotBeNullOrEmpty();
+            addHook.Id.ShouldNotBeNullOrEmpty();
 
-            var addedHookId = addHook.Data.Id;
+            var addedHookId = addHook.Id;
 
-            var subscribtionsAfter = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsAfter.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Data.Count.ShouldBeLessThan(subscribtionsAfter.Data.Count);
+            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
 
-            var deleteHook = client.Execute(Requests.Hooks.Delete(addedHookId));
+            client.Delete(Requests.Hooks.Subscription(addedHookId));
 
-            deleteHook.ResponseStatus.ShouldBe(RestSharp.ResponseStatus.Completed);
 
-            var subscribtionsFinal = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsFinal.Data.Count.ShouldBe(subscribtionsBefore.Data.Count);
+            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
         }
 
         [Fact]
         public void QueryAddDelete_GitPullRequestCreated_Subscription()
         {
-            var subscribtionsBefore = client.Execute(Requests.Hooks.Subscriptions());
+            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.StatusCode.ShouldBe(HttpStatusCode.OK);
-            subscribtionsBefore.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Execute(Requests.Project.Projects()).Data.Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
 
-            var addHook = client.Execute(Requests.Hooks.Add.GitPullRequestCreated(
+            var addHook = client.Post(Requests.Hooks.Add.GitPullRequestCreated(
                 accountName,
                 accountKey,
                 queueName,
                 projectId
                 ));
 
-            addHook.StatusCode.ShouldBe(HttpStatusCode.OK);
-            addHook.Data.Id.ShouldNotBeNullOrEmpty();
+            addHook.Id.ShouldNotBeNullOrEmpty();
 
-            var addedHookId = addHook.Data.Id;
+            var addedHookId = addHook.Id;
 
-            var subscribtionsAfter = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsAfter.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Data.Count.ShouldBeLessThan(subscribtionsAfter.Data.Count);
+            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
+            client.Delete(Requests.Hooks.Subscription(addedHookId));
 
-            var deleteHook = client.Execute(Requests.Hooks.Delete(addedHookId));
 
-            deleteHook.ResponseStatus.ShouldBe(RestSharp.ResponseStatus.Completed);
-
-            var subscribtionsFinal = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.StatusCode.ShouldBe(HttpStatusCode.OK);
-
-            subscribtionsFinal.Data.Count.ShouldBe(subscribtionsBefore.Data.Count);
+            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
+            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
         }
 
         [Fact]
         public void QueryAddDelete_ReleaseDeploymentCompleted_Subscription()
         {
-            var subscribtionsBefore = client.Execute(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.StatusCode.ShouldBe(HttpStatusCode.OK);
-            subscribtionsBefore.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
+            subscribtionsBefore.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
 
             string accountName = "rabovstslog";
             string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
             string queueName = "queuename";
-            var projectId = client.Execute(Requests.Project.Projects()).Data.Value.Single(p => p.Name == config.Project).Id;
+            var projectId = client.Get(Requests.Project.Projects()).Value.Single(p => p.Name == config.Project).Id;
 
-            var addHook = client.Execute(Requests.Hooks.Add.ReleaseDeploymentCompleted(
+            var addHook = client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(
                 accountName,
                 accountKey,
                 queueName,
                 projectId
                 ));
 
-            addHook.StatusCode.ShouldBe(HttpStatusCode.OK);
-            addHook.Data.Id.ShouldNotBeNullOrEmpty();
+            addHook.Id.ShouldNotBeNullOrEmpty();
 
-            var addedHookId = addHook.Data.Id;
+            var addedHookId = addHook.Id;
 
-            var subscribtionsAfter = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsAfter.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsBefore.Data.Count.ShouldBeLessThan(subscribtionsAfter.Data.Count);
+            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
 
-            var deleteHook = client.Execute(Requests.Hooks.Delete(addedHookId));
+            client.Delete(Requests.Hooks.Subscription(addedHookId));
 
-            deleteHook.ResponseStatus.ShouldBe(RestSharp.ResponseStatus.Completed);
 
-            var subscribtionsFinal = client.Execute(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
 
-            subscribtionsFinal.Data.Count.ShouldBe(subscribtionsBefore.Data.Count);
+            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
         }
     }
 }

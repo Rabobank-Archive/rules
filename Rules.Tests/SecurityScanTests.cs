@@ -46,11 +46,11 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            var applicationGroups = fixture.Create<RestResponse<Response.ApplicationGroups>>();
+            var applicationGroups = fixture.Create<Response.ApplicationGroups>();
 
             var client = Substitute.For<IVstsRestClient>();
             
-            client.Execute(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
+            client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
 
 
             var scan = new SecurityReportScan(client);

@@ -7,17 +7,14 @@ using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
 {
-    public class VstsRestRequest<TResponse> : RestRequest, IVstsRestRequest<TResponse>
+    public class VstsRestRequest<TResponse> : IVstsRestRequest<TResponse>
         where TResponse: new()
     {
-        public VstsRestRequest(string uri, Method method) : base(uri, method)
-        {
-        }
+        public string Uri { get; }
 
-        public VstsRestRequest(string uri, Method method, object body) : this(uri, method)
+        public VstsRestRequest(string uri)
         {
-            JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            AddJsonBody(body);
+            Uri = uri;
         }
 
         public Uri BaseUri(string organization)

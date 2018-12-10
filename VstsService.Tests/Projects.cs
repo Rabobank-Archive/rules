@@ -27,10 +27,8 @@ namespace VstsService.Tests
         [Fact]
         public void QueryProjects()
         {
-            var definitions = client.Execute(Requests.Project.Projects());
-
-            definitions.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definitions.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            var definitions = client.Get(Requests.Project.Projects());
+            definitions.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
     }
 }

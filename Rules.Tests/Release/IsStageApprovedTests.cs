@@ -26,8 +26,8 @@ namespace SecurePipelineScan.Rules.Release.Tests
             var client = new VstsRestClient(config.Organization, config.Token);
             var rule = new IsStageApproved();
 
-            var release = client.Execute(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741", Method.GET)).ThrowOnError();
-            rule.GetResult(release.Data, 1916).ShouldBeTrue();
+            var release = client.Get(new VstsRestRequest<Response.Release>("https://somecompany.vsrm.visualstudio.com/f64ffdfa-0c4e-40d9-980d-bb8479366fc5/_apis/Release/releases/741"));
+            rule.GetResult(release, 1916).ShouldBeTrue();
         }
 
         [Fact]

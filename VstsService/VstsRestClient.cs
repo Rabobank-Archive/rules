@@ -1,4 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using RestSharp;
+using RestSharp.Serializers.Newtonsoft.Json;
+using SecurePipelineScan.VstsService.Response;
+using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -15,13 +20,37 @@ namespace SecurePipelineScan.VstsService
             restClient = new RestClient();
         }
 
-        public IRestResponse<TResponse> Execute<TResponse>(IVstsRestRequest<TResponse> request)
+        public TResponse Get<TResponse>(IVstsRestRequest<TResponse> request)
             where TResponse : new()
         {
             restClient.BaseUrl = request.BaseUri(organization);
+            var wrapper = new RestRequest(request.Uri)
+                .AddHeader("authorization", authorization);
 
-            return restClient.Execute<TResponse>(request.AddHeader("authorization", authorization));
+            return restClient.Execute<TResponse>(wrapper).Data;
         }
+        
+        public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
+        {
+            restClient.BaseUrl = request.BaseUri(organization);
+            var wrapper = new RestRequest(request.Uri, Method.POST)
+            {
+                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })
+            }.AddHeader("authorization", authorization)
+             .AddJsonBody(request.Body);
+
+            return restClient.Execute<TResponse>(wrapper).ThrowOnError().Data;
+        }
+
+        public void Delete(IVstsRestRequest request)
+        {
+            restClient.BaseUrl = request.BaseUri(organization);
+            var wrapper = new RestRequest(request.Uri, Method.DELETE)
+                .AddHeader("authorization", authorization);
+
+            restClient.Execute(wrapper);
+        }
+
 
         private static string GenerateAuthorizationHeader(string token)
         {

@@ -44,20 +44,16 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            fixture.Customize<RestResponse<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>>(
-            e => e.Without(x => x.ErrorMessage));
-
-            var minimumNumberOfReviewersPolicy = fixture.Create<RestResponse<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>>();
-
-            var repos = fixture.Create<RestResponse<Response.Multiple<Response.Repository>>>();
+            var minimumNumberOfReviewersPolicy = fixture.Create<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>();
+            var repos = fixture.Create<Response.Multiple<Response.Repository>>();
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>>())
+                .Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.MinimumNumberOfReviewersPolicy>>>())
                 .Returns(minimumNumberOfReviewersPolicy);
 
             client
-                .Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>())
+                .Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>())
                 .Returns(repos);
 
             var scan = new RepositoryScan(client);
