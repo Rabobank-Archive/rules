@@ -1,14 +1,7 @@
-﻿using SecurePipelineScan.Rules;
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
-using Requests = SecurePipelineScan.VstsService.Requests;
-using Shouldly;
-using System.Diagnostics;
-using System.Net;
-using RestSharp;
+﻿using Shouldly;
 using Xunit;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
     public class Projects : IClassFixture<TestConfig>

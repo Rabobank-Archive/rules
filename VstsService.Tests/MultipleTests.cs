@@ -4,7 +4,7 @@ using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     public class MultipleTests
     {

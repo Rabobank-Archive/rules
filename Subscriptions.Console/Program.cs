@@ -2,7 +2,6 @@
 using SecurePipelineScan.VstsService;
 using System.Collections.Generic;
 using System.Linq;
-using RestSharp;
 using Requests = SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 

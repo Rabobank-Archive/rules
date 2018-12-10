@@ -1,12 +1,8 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
+﻿using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
-using System.Net;
-using RestSharp;
 using Xunit;
-using Requests = SecurePipelineScan.VstsService.Requests;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
     public class DistributedTasks : IClassFixture<TestConfig>

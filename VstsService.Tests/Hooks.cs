@@ -1,13 +1,8 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
-using Requests = SecurePipelineScan.VstsService.Requests;
+﻿using System.Linq;
 using Shouldly;
-using System.Linq;
-using System.Net;
-using RestSharp;
 using Xunit;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
     public class Hooks : IClassFixture<TestConfig>

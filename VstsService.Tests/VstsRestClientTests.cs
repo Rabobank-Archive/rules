@@ -2,10 +2,9 @@ using System;
 using System.Net;
 using NSubstitute;
 using RestSharp;
-using SecurePipelineScan.VstsService;
 using Xunit;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     public class VstsRestClientTests
     {
