@@ -1,22 +1,17 @@
 ## What it does ##
 
-It scans a VSTS-Project.
+It scans a Azure DevOps project.
 
 ## Things you need ##
 
-You need to configure the accountname and PAT for your project. The accountname is the part of the url before .visualstudio.com. For example: **somecompany** for https://somecompany.visualstudio.com. Another thing is your PAT, the Personal Access Token. This needs to  be Base64 encoded and configured in appsettings.machinename.json where **machinename** is the name of your machine. You can find it by executing *hostname* in a shell. For example my appsettings.LEON.json contains:
+You need to configure the organization, team project and PAT for your project. 
+The organization is the part of the url dev.azure.com/<organization> or <organization>.visualstudio.com. For example: **somecompany** for https://somecompany.visualstudio.com. 
+Another thing is your PAT, the Personal Access Token. This needs to  be _unencoded_ and configured in appsettings.user.json in the test projects:
 
 ```
 {
-  "Base64PAT": "OmxQWTQWIOUTQWITWIUHREWHHWOIEHOIEWH=",
-  "Accountname": "somecompany"
+  "token": "asdfjlkjasdf834234lkadf234us02sdf3"
 }
 ```
 
-LEON is my machinename btw.
-
-
-
-## How to use ##
-
-By running the Web application the default project will be scanned. It shows the Releasedefinitions found with the Environments and the Builds from the Artifacts.
+You can also override the organization and/or project from there.
