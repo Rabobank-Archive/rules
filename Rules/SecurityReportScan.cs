@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
@@ -14,6 +15,16 @@ namespace SecurePipelineScan.Rules
         {
             this.client = client;
         }
+
+        public void Execute()
+        {
+            var projects = client.Execute(Project.Projects()).Data.Value;
+            foreach (var project in projects)
+            {
+                Execute(project.Name);
+            }
+        }
+        
 
         public IEnumerable<SecurityReport> Execute(string project)
         {

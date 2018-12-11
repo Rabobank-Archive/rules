@@ -58,5 +58,25 @@ namespace SecurePipelineScan.Rules.Tests
             scan.Execute("dummy").ShouldNotBeEmpty();
         }
 
+        [Fact]
+        public void SecurityReportScanExecuteShouldGetAllProjects()
+        {
+            var fixture = new Fixture();
+            fixture.Customize(new AutoNSubstituteCustomization());
+
+            var projects = fixture.Create<RestResponse<Response.Multiple<Response.Project>>>();
+            
+            var client = Substitute.For<IVstsRestClient>();
+            client.Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>()).Returns(projects);
+            
+            var scan = new SecurityReportScan(client);
+
+            scan.Execute();
+
+            client.Received().Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>());
+        }
+        
+        
+
     }
 }
