@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>full</DebugType>
     <IsPackable>false</IsPackable>
+    <RootNamespace>SecurePipelineScan.Rules.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
