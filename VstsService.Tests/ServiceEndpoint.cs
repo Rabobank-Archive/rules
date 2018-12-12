@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using Shouldly;
 using System.Net;
@@ -9,25 +10,26 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class ServiceEndpoint : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient Vsts;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _vsts;
 
         public ServiceEndpoint(TestConfig config)
         {
-            this.config = config;
-            Vsts = new VstsRestClient(config.Organization, config.Token);
+            _config = config;
+            _vsts = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
         public void QueryServiceConnections()
         {
-            var endpoints = Vsts.Get(Requests.ServiceEndpoint.Endpoints(config.Project));
+            var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project));
             endpoints.ShouldNotBeEmpty();
 
             var endpoint = endpoints.First();
             endpoint.Name.ShouldNotBeNullOrEmpty();
-            endpoint.Id.ShouldNotBeNullOrEmpty();
+            endpoint.Id.ShouldNotBe(Guid.Empty);
             endpoint.Type.ShouldNotBeNullOrEmpty();
+            endpoint.Url.ShouldNotBeNullOrEmpty();
         }
 
         [Fact]
@@ -36,7 +38,7 @@ namespace SecurePipelineScan.VstsService.Tests
             //your user needs to be endpoint admin in the project you are running this.
             //your PAT needs "ALL scope". selecting all checkboxes does not work.
 
-            var history = Vsts.Get(Requests.ServiceEndpoint.History(config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
+            var history = _vsts.Get(Requests.ServiceEndpoint.History(_config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
             history.ShouldNotBeEmpty();
             history.ShouldAllBe(e => e.Data != null);
             history.ShouldAllBe(e => e.Data.Definition != null);
