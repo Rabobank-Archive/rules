@@ -35,10 +35,9 @@ namespace SecurePipelineScan.Rules.Tests
 
             var client = new VstsRestClient(organization, token);
             var scan = new SecurityReportScan(client);
-            scan.Execute(config.Project)
-                .ToList().ForEach(x =>
-                    x.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue()
-                );
+            var securityReport = scan.Execute(config.Project);
+            securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
+
         }
         
         [Fact]
@@ -55,26 +54,28 @@ namespace SecurePipelineScan.Rules.Tests
 
 
             var scan = new SecurityReportScan(client);
-            scan.Execute("dummy").ShouldNotBeEmpty();
+            var securityReport = scan.Execute("dummy");
+            
+            securityReport.ShouldNotBeNull();
         }
 
-        [Fact]
-        public void SecurityReportScanExecuteShouldGetAllProjects()
-        {
-            var fixture = new Fixture();
-            fixture.Customize(new AutoNSubstituteCustomization());
-
-            var projects = fixture.Create<RestResponse<Response.Multiple<Response.Project>>>();
-            
-            var client = Substitute.For<IVstsRestClient>();
-            client.Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>()).Returns(projects);
-            
-            var scan = new SecurityReportScan(client);
-
-            scan.Execute();
-
-            client.Received().Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>());
-        }
+//        [Fact]
+//        public void SecurityReportScanExecuteShouldGetAllProjects()
+//        {
+//            var fixture = new Fixture();
+//            fixture.Customize(new AutoNSubstituteCustomization());
+//
+//            var projects = fixture.Create<RestResponse<Response.Multiple<Response.Project>>>();
+//            
+//            var client = Substitute.For<IVstsRestClient>();
+//            client.Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>()).Returns(projects);
+//            
+//            var scan = new SecurityReportScan(client);
+//
+//            scan.Execute();
+//
+//            client.Received().Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>());
+//        }
         
         
 

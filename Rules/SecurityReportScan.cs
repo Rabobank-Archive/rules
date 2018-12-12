@@ -26,10 +26,9 @@ namespace SecurePipelineScan.Rules
         }
         
 
-        public IEnumerable<SecurityReport> Execute(string project)
+        public SecurityReport Execute(string project)
         {
-            var applicationGroups =
-                client.Execute(ApplicationGroup.ApplicationGroups(project)).Data.Identities;
+            var applicationGroups = client.Execute(ApplicationGroup.ApplicationGroups(project)).Data.Identities;
 
             var securityReport = new SecurityReport
             {
@@ -37,8 +36,8 @@ namespace SecurePipelineScan.Rules
                 ApplicationGroupContainsProductionEnvironmentOwner =
                     ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups)
             };
-
-            yield return securityReport;
+            
+           return securityReport;
         }
     }
 }
