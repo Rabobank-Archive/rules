@@ -4,11 +4,13 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>full</DebugType>
     <IsPackable>false</IsPackable>
+    <RootNamespace>SecurePipelineScan.Rules.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="autofixture" Version="4.5.0" />
     <PackageReference Include="autofixture.autonsubstitute" Version="4.5.0" />
+    <PackageReference Include="ExpectedObjects" Version="2.3.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
@@ -36,6 +38,9 @@
     <None Update="appsettings.user.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>appsettings.json</DependentUpon>
+    </None>
+    <None Update="Assets/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>
