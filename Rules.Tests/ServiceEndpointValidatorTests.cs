@@ -82,7 +82,6 @@ namespace SecurePipelineScan.Rules.Tests
             fixture.Customize<ServiceEndpoint>(e => e.With(x => x.Url, "test.somecompany.nl").With(x => x.Id, id));
 
             var validator = new ServiceEndpointValidator(VstsRestClient(fixture), new MemoryCache(new MemoryCacheOptions()));
-
             validator
                 .IsProduction(fixture.Create<string>(), id)
                 .ShouldBeFalse();
