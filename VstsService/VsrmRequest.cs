@@ -1,25 +1,16 @@
 
 using System;
-using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using RestSharp;
-using RestSharp.Serializers.Newtonsoft.Json;
-using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
 {
-    public class VsrmRequest<TResponse> : RestRequest, IVstsRestRequest<TResponse>
+    public class VsrmRequest<TResponse> : IVstsRestRequest<TResponse>
         where TResponse: new()
     {
-        public VsrmRequest(string uri, Method method) : base(uri, method)
-        {
-        }
+        public string Uri { get; }
 
-        public VsrmRequest(string uri, Method method, object body) : this(uri, method)
+        public VsrmRequest(string uri)
         {
-            JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            AddJsonBody(body);
+            Uri = uri;
         }
 
         public Uri BaseUri(string organization)

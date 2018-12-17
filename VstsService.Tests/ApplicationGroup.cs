@@ -25,12 +25,11 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryTASApplicationGroupDataReturnsGroupData()
         {
-            var identity = Vsts.Execute(Requests.ApplicationGroup.ApplicationGroups(config.Project));
-            identity.StatusCode.ShouldBe(HttpStatusCode.OK);
-            identity.Data.ShouldNotBeNull();
-            identity.Data.Identities.ShouldNotBeEmpty();
+            var identity = Vsts.Get(Requests.ApplicationGroup.ApplicationGroups(config.Project));
+            identity.ShouldNotBeNull();
+            identity.Identities.ShouldNotBeEmpty();
 
-            var group = identity.Data.Identities.First();
+            var group = identity.Identities.First();
             group.DisplayName.ShouldNotBeNullOrEmpty();
         }
     }

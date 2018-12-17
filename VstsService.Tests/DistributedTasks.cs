@@ -1,11 +1,8 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
+﻿using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
-using System.Net;
 using Xunit;
-using Requests = SecurePipelineScan.VstsService.Requests;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
     public class DistributedTasks : IClassFixture<TestConfig>
@@ -22,29 +19,26 @@ namespace VstsService.Tests
         [Fact]
         public void GetAllOrganizationalPools()
         {
-            var orgPools = client.Execute(Requests.DistributedTask.OrganizationalAgentPools());
+            var orgPools = client.Get(Requests.DistributedTask.OrganizationalAgentPools());
 
-            orgPools.StatusCode.ShouldBe(HttpStatusCode.OK);
-            orgPools.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
-            orgPools.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
+            orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
         }
 
         [Fact]
         public void GetAgentPool()
         {
-            var agentPool = client.Execute(Requests.DistributedTask.AgentPool(119));
+            var agentPool = client.Get(Requests.DistributedTask.AgentPool(119));
 
-            agentPool.StatusCode.ShouldBe(HttpStatusCode.OK);
-            agentPool.Data.Name.ShouldBe("Rabo-Build-Azure-Windows");
+            agentPool.Name.ShouldBe("Rabo-Build-Azure-Windows");
         }
 
         [Fact]
         public void GetAgentStatus()
         {
-            var agentStatus = client.Execute(Requests.DistributedTask.AgentPoolStatus(119));
+            var agentStatus = client.Get(Requests.DistributedTask.AgentPoolStatus(119));
 
-            agentStatus.StatusCode.ShouldBe(HttpStatusCode.OK);
-            agentStatus.Data.Value.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+            agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
     }
 }

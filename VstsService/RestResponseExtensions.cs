@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using RestSharp;
 
 namespace SecurePipelineScan.VstsService
@@ -7,9 +8,19 @@ namespace SecurePipelineScan.VstsService
     {
         public static IRestResponse<T> ThrowOnError<T>(this IRestResponse<T> response)
         {
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
+            if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.NotFound)
             {
-                throw new Exception(response.ErrorMessage);
+                throw new Exception(response.ErrorMessage ?? response.Content);
+            }
+
+            return response;
+        }
+
+        public static IRestResponse ThrowOnError(this IRestResponse response)
+        {
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.ErrorMessage ?? response.Content);
             }
 
             return response;

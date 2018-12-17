@@ -1,50 +1,43 @@
 using RestSharp;
+using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Hooks
     {
-        public static IVstsRestRequest<Response.Multiple<Response.Hook>> Subscriptions()
+        public static IVstsRestRequest<Multiple<Hook>> Subscriptions()
         {
-            return new VstsRestRequest<Response.Multiple<Response.Hook>>(
-                $"_apis/hooks/subscriptions?api-version=5.0-preview.1", Method.GET);
+            return new VstsRestRequest<Multiple<Hook>>(
+                $"_apis/hooks/subscriptions?api-version=5.0-preview.1");
         }
 
         public static class Add
         {
-            public static IVstsRestRequest<Response.Hook> BuildCompleted(string accountName, string accountKey,
+            public static IVstsPostRequest<Hook> BuildCompleted(string accountName, string accountKey,
                 string queueName, string projectId)
             {
-                var body = Body.CreateBuildComplete(accountName, accountKey, queueName, projectId);
-                return new VstsRestRequest<Response.Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1",
-                    Method.POST, body);
+                return new VstsPostRequest<Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1", Body.CreateBuildComplete(accountName, accountKey, queueName, projectId));
             }
 
-            public static IVstsRestRequest<Response.Hook> GitPullRequestCreated(string accountName, string accountKey,
+            public static IVstsPostRequest<Hook> GitPullRequestCreated(string accountName, string accountKey,
                 string queueName, string projectId)
             {
-                var body = Body.CreateGitPullRequestCreated(accountName, accountKey, queueName, projectId);
-                return new VstsRestRequest<Response.Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1",
-                    Method.POST, body);
+                return new VstsPostRequest<Hook>("_apis/hooks/subscriptions?api-version=5.0-preview.1", Body.CreateGitPullRequestCreated(accountName, accountKey, queueName, projectId));
             }
 
-            public static IVstsRestRequest<Response.Hook> GitPushed(string accountName, string accountKey,
+            public static IVstsPostRequest<Hook> GitPushed(string accountName, string accountKey,
                 string queueName, string projectId)
             {
-                var body = Body.CreateGitPush(accountName, accountKey, queueName, projectId);
-                return new VstsRestRequest<Response.Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1",
-                    Method.POST, body);
+                return new VstsPostRequest<Hook>("_apis/hooks/subscriptions?api-version=5.0-preview.1", Body.CreateGitPush(accountName, accountKey, queueName, projectId));
             }
 
-            public static IVstsRestRequest<Response.Hook> ReleaseDeploymentCompleted(string accountName,
+            public static IVstsPostRequest<Hook> ReleaseDeploymentCompleted(string accountName,
                 string accountKey, string queueName, string projectId)
             {
-                var body = Body.CreateReleaseDeploymentCompleted(accountName, accountKey, queueName, projectId);
-                return new VsrmRequest<Response.Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1",
-                    Method.POST, body);
+                return new VsrmPostRequest<Hook>("_apis/hooks/subscriptions?api-version=5.0-preview.1", Body.CreateReleaseDeploymentCompleted(accountName, accountKey, queueName, projectId));
             }
 
-            private class ConsumerInputs
+            public class ConsumerInputs
             {
                 public string AccountName { get; set; }
                 public string AccountKey { get; set; }
@@ -53,12 +46,12 @@ namespace SecurePipelineScan.VstsService.Requests
                 public string Ttl { get; set; }
             }
 
-            private abstract class PublisherInputs
+            public abstract class PublisherInputs
             {
                 public string ProjectId { get; set; }
             }
 
-            private class Body
+            public class Body
             {
                 public string ConsumerActionId { get; set; }
                 public string ConsumerId { get; set; }
@@ -215,10 +208,9 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
         
-        public static IVstsRestRequest<Response.Empty> Delete(string id)
+        public static IVstsRestRequest<Hook> Subscription(string id)
         {
-            return new VstsRestRequest<Response.Empty>($"_apis/hooks/subscriptions/{id}?api-version=5.0-preview.1",
-                Method.DELETE);
+            return new VstsRestRequest<Hook>($"_apis/hooks/subscriptions/{id}?api-version=5.0-preview.1");
         }
     }
 }

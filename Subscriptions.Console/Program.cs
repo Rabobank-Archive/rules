@@ -33,13 +33,11 @@ namespace Subscriptions.Console
 
                 var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
                 var subscriptions = client
-                    .Execute(Requests.Hooks.Subscriptions())
-                    .ThrowOnError().Data.Value
+                    .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
                 var projects = client
-                    .Execute(Requests.Project.Projects())
-                    .ThrowOnError().Data.Value;
+                    .Get(Requests.Project.Projects());
                 
                 var items = SubscriptionsPerProject(subscriptions, projects);
                 AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
@@ -57,22 +55,22 @@ namespace Subscriptions.Console
                 if (!item.BuildComplete)
                 {
                     System.Console.WriteLine($"Add build.completed subscription to project: {item.Id}");
-                    client.Execute(Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
+                    client.Post(Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
                 }
                 if (!item.GitPullRequestCreated)
                 {
                     System.Console.WriteLine($"Add GitPullRequestCreated subscription to project: {item.Id}");
-                    client.Execute(Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
+                    client.Post(Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
                 }
                 if (!item.GitPushed)
                 {
                     System.Console.WriteLine($"Add GitPushed subscription to project: {item.Id}");
-                    client.Execute(Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
+                    client.Post(Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
                 }
                 if (!item.ReleaseDeploymentCompleted)
                 {
                     System.Console.WriteLine($"Add Release deployment completed subscription to project: {item.Id}");
-                    client.Execute(Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
+                    client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
                 }
             }
         }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using RestSharp;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -24,40 +25,38 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryRequiredReviewersPolicies()
         {
-            var definition = Vsts.Execute(Requests.Policies.RequiredReviewersPolicies(config.Project));
+            var definition = Vsts.Get(Requests.Policies.RequiredReviewersPolicies(config.Project));
 
-            definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definition.Data.Value.ShouldNotBeEmpty();
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.Data.Value.ShouldAllBe(e => e.IsBlocking.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.IsDeleted.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.IsEnabled.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+            definition.ShouldNotBeEmpty();
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            definition.ShouldAllBe(e => e.IsBlocking.HasValue);
+            definition.ShouldAllBe(e => e.IsDeleted.HasValue);
+            definition.ShouldAllBe(e => e.IsEnabled.HasValue);
+            definition.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
         }
 
         [Fact]
         public void QueryMinimumNumberOfReviewersPolicies()
         {
-            var definition = Vsts.Execute(Requests.Policies.MinimumNumberOfReviewersPolicies(config.Project));
+            var definition = Vsts.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(config.Project));
 
-            definition.StatusCode.ShouldBe(HttpStatusCode.OK);
-            definition.Data.Value.ShouldNotBeEmpty();
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.Data.Value.ShouldAllBe(e => e.IsBlocking.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.IsDeleted.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.IsEnabled.HasValue);
+            definition.ShouldNotBeEmpty();
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            definition.ShouldAllBe(e => e.IsBlocking.HasValue);
+            definition.ShouldAllBe(e => e.IsDeleted.HasValue);
+            definition.ShouldAllBe(e => e.IsEnabled.HasValue);
 
-            definition.Data.Value.ShouldAllBe(e => e.Settings.MinimumApproverCount.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.Settings.AllowDownvotes.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.Settings.CreatorVoteCounts.HasValue);
-            definition.Data.Value.ShouldAllBe(e => e.Settings.ResetOnSourcePush.HasValue);
+            definition.ShouldAllBe(e => e.Settings.MinimumApproverCount.HasValue);
+            definition.ShouldAllBe(e => e.Settings.AllowDownvotes.HasValue);
+            definition.ShouldAllBe(e => e.Settings.CreatorVoteCounts.HasValue);
+            definition.ShouldAllBe(e => e.Settings.ResetOnSourcePush.HasValue);
 
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            definition.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
         }
     }
 }

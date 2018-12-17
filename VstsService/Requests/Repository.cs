@@ -6,7 +6,7 @@ namespace SecurePipelineScan.VstsService.Requests
     {
         public static IVstsRestRequest<Response.Multiple<Response.Repository>> Repositories(string project)
         {
-            return new VstsRestRequest<Response.Multiple<Response.Repository>>($"{project}/_apis/git/repositories", Method.GET);
+            return new VstsRestRequest<Response.Multiple<Response.Repository>>($"{project}/_apis/git/repositories");
         }
     }
 }

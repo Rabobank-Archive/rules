@@ -2,6 +2,7 @@ using Xunit;
 using Shouldly;
 using System.Net;
 using System.Linq;
+using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -20,12 +21,10 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryServiceConnections()
         {
-            var endpoints = Vsts.Execute(Requests.ServiceEndpoint.Endpoints(config.Project));
+            var endpoints = Vsts.Get(Requests.ServiceEndpoint.Endpoints(config.Project));
+            endpoints.ShouldNotBeEmpty();
 
-            endpoints.StatusCode.ShouldBe(HttpStatusCode.OK);
-            endpoints.Data.Value.ShouldNotBeEmpty();
-
-            var endpoint = endpoints.Data.Value.First();
+            var endpoint = endpoints.First();
             endpoint.Name.ShouldNotBeNullOrEmpty();
             endpoint.Id.ShouldNotBeNullOrEmpty();
             endpoint.Type.ShouldNotBeNullOrEmpty();
@@ -37,14 +36,13 @@ namespace SecurePipelineScan.VstsService.Tests
             //your user needs to be endpoint admin in the project you are running this.
             //your PAT needs "ALL scope". selecting all checkboxes does not work.
 
-            var history = Vsts.Execute(Requests.ServiceEndpoint.History(config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
-            history.StatusCode.ShouldBe(HttpStatusCode.OK);
-            history.Data.Value.ShouldNotBeEmpty();
-            history.Data.Value.ShouldAllBe(e => e.Data != null);
-            history.Data.Value.ShouldAllBe(e => e.Data.Definition != null);
-            history.Data.Value.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
+            var history = Vsts.Get(Requests.ServiceEndpoint.History(config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
+            history.ShouldNotBeEmpty();
+            history.ShouldAllBe(e => e.Data != null);
+            history.ShouldAllBe(e => e.Data.Definition != null);
+            history.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
 
-            var data = history.Data.Value.First().Data;
+            var data = history.First().Data;
             data.Id.ShouldNotBe(0);
             data.Owner.ShouldNotBeNull();
             data.Owner.Id.ShouldNotBe(0);

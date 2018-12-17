@@ -2,6 +2,7 @@ using Xunit;
 using Shouldly;
 using System.Net;
 using System.Linq;
+using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -23,14 +24,11 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             const string id = "42"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
 
-            var release = _client.Execute(Requests.Release.Releases(_project, id));
-            release.ErrorMessage.ShouldBeNull();
+            var release = _client.Get(Requests.Release.Releases(_project, id));
+            release.Id.ShouldBe(id);
+            release.Environments.ShouldNotBeEmpty();
 
-            release.StatusCode.ShouldBe(HttpStatusCode.OK);
-            release.Data.Id.ShouldBe(id);
-            release.Data.Environments.ShouldNotBeEmpty();
-
-            var env = release.Data.Environments.Skip(1).First();
+            var env = release.Environments.Skip(1).First();
             env.Id.ShouldNotBe(0);
             env.PreDeployApprovals.ShouldNotBeEmpty();
             env.DeploySteps.ShouldNotBeEmpty();
