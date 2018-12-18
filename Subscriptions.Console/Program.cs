@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using SecurePipelineScan.VstsService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Requests = SecurePipelineScan.VstsService.Requests;
@@ -38,7 +39,7 @@ namespace Subscriptions.Console
 
                 var projects = client
                     .Get(Requests.Project.Projects());
-                
+
                 var items = SubscriptionsPerProject(subscriptions, projects);
                 AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
 
@@ -50,39 +51,59 @@ namespace Subscriptions.Console
 
         internal static void AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
         {
+            List<Exception> aggregateExceptions = new List<Exception>();
             foreach (var item in items)
             {
-                if (!item.BuildComplete)
+                try
                 {
-                    System.Console.WriteLine($"Add build.completed subscription to project: {item.Id}");
-                    client.Post(Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
+                    AddHooksToProject(accountName, accountKey, client, item);
                 }
-                if (!item.GitPullRequestCreated)
+                catch (Exception e)
                 {
-                    System.Console.WriteLine($"Add GitPullRequestCreated subscription to project: {item.Id}");
-                    client.Post(Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
+                    aggregateExceptions.Add(e);
                 }
-                if (!item.GitPushed)
-                {
-                    System.Console.WriteLine($"Add GitPushed subscription to project: {item.Id}");
-                    client.Post(Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
-                }
-                if (!item.ReleaseDeploymentCompleted)
-                {
-                    System.Console.WriteLine($"Add Release deployment completed subscription to project: {item.Id}");
-                    client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
-                }
+            }
+            if (aggregateExceptions.Count > 0)
+            {
+                throw new AggregateException(aggregateExceptions);
+            }
+        }
+
+        private static void AddHooksToProject(string accountName, string accountKey, IVstsRestClient client, ProjectInfo item)
+        {
+            if (!item.BuildComplete)
+            {
+                System.Console.WriteLine($"Add build.completed subscription to project: {item.Id}");
+                client.Post(Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
+            }
+            if (!item.GitPullRequestCreated)
+            {
+                System.Console.WriteLine($"Add GitPullRequestCreated subscription to project: {item.Id}");
+                client.Post(Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
+            }
+            if (!item.GitPushed)
+            {
+                System.Console.WriteLine($"Add GitPushed subscription to project: {item.Id}");
+                client.Post(Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
+            }
+            if (!item.ReleaseDeploymentCompleted)
+            {
+                System.Console.WriteLine($"Add Release deployment completed subscription to project: {item.Id}");
+
+                // We make sure the Release definition module is loaded.
+                client.Get(Requests.Release.Definitions(item.Id));
+                client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
             }
         }
 
         public static IEnumerable<ProjectInfo> SubscriptionsPerProject(IEnumerable<Response.Hook> subscriptions, IEnumerable<Response.Project> projects)
         {
-            var items = projects.Select(x => new ProjectInfo {Id = x.Id}).ToList();            
+            var items = projects.Select(x => new ProjectInfo { Id = x.Id }).ToList();
             foreach (var subscription in subscriptions)
             {
                 var item = items.SingleOrDefault(x => x.Id == subscription.PublisherInputs.ProjectId);
                 if (item != null)
-                {                    
+                {
                     UpdateProjectInfo(item, subscription.EventType);
                 }
             }
