@@ -25,7 +25,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryNameSpaces()
         {
-            var nameSpaces = _client.Get(Requests.Namespace.SecurityNamespaces()).Value;
+            var nameSpaces = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
             
             nameSpaces.ShouldNotBeEmpty();
         }

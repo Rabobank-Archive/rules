@@ -11,7 +11,7 @@ namespace SecurePipelineScan.VstsService.Requests
                 $"_apis/projects?$top=1000&api-version=4.1-preview.2");
         }
 
-        public static IVstsRestRequest<Response.ProjectProperties> ProjectProperties(string project)
+        public static IVstsRestRequest<Response.ProjectProperties> Properties(string project)
         {
             return new VstsRestRequest<Response.ProjectProperties>(
                 $"_apis/projects/{project}?api-version=5.1-preview.2");

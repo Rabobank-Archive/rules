@@ -32,7 +32,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var projects = client.Get(Requests.Project.Projects());
             var firstProjectName = projects.First().Name;
 
-            var id = client.Get(Requests.Project.ProjectProperties(firstProjectName));
+            var id = client.Get(Requests.Project.Properties(firstProjectName));
             id.ShouldNotBeNull();
         }
     }

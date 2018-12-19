@@ -1,6 +1,6 @@
 namespace SecurePipelineScan.VstsService.Response
 {
-    public class Namespace
+    public class SecurityNamespace
     {
         public string Name { get; set; }
 

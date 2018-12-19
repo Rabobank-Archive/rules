@@ -26,7 +26,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public void QueryPermissionsGroupRepositorySetReturnsPermissions()
         {
     
-            var namespaces = _client.Get(Requests.Namespace.SecurityNamespaces()).Value;
+            var namespaces = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
 
             var queryNamespaceId =
                 from ns in namespaces
@@ -40,7 +40,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 where gi.DisplayName == $"[{_config.Project}]\\Project Administrators"
                 select gi.TeamFoundationId;
          
-            var projectId = _client.Get(Requests.Project.ProjectProperties(_config.Project)).Id;
+            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
             
             
             var permissionsGitRepositorySet = _client.Get(Requests.PermissionsGroupRepoSet.PermissionsGitRepositorySet(
