@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using System.Linq;
+using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -23,6 +24,16 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var definitions = client.Get(Requests.Project.Projects());
             definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
+        }
+
+        [Fact]
+        public void QueryProjectProperties()
+        {
+            var projects = client.Get(Requests.Project.Projects());
+            var firstProjectName = projects.First().Name;
+
+            var id = client.Get(Requests.Project.Properties(firstProjectName));
+            id.ShouldNotBeNull();
         }
     }
 }

@@ -268,3 +268,5 @@ obj/
 .DS_Store
 /ConsoleApp/Properties/launchSettings.json
 /Subscriptions.Console/Properties/launchSettings.json
+.vscode/launch.json
+.vscode/tasks.json

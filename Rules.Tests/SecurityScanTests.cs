@@ -15,12 +15,12 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests
 {
-    public class SecurityScanTest : IClassFixture<TestConfig>
+    public class SecurityReportScanTest : IClassFixture<TestConfig>
     {
         private readonly ITestOutputHelper output;
         private readonly TestConfig config;
 
-        public SecurityScanTest(ITestOutputHelper output, TestConfig config)
+        public SecurityReportScanTest(ITestOutputHelper output, TestConfig config)
         {
             this.output = output;
             this.config = config;
@@ -36,7 +36,10 @@ namespace SecurePipelineScan.Rules.Tests
             var client = new VstsRestClient(organization, token);
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute(config.Project);
+            
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionsToDeleteRepositorySet.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
 
         }
         
