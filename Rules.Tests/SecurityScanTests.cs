@@ -38,6 +38,7 @@ namespace SecurePipelineScan.Rules.Tests
             var securityReport = scan.Execute(config.Project);
             
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
+            securityReport.ApplicationGroupContainsRabobankProjectAdministrators.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionsToDeleteRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
 
@@ -61,26 +62,6 @@ namespace SecurePipelineScan.Rules.Tests
             
             securityReport.ShouldNotBeNull();
         }
-
-//        [Fact]
-//        public void SecurityReportScanExecuteShouldGetAllProjects()
-//        {
-//            var fixture = new Fixture();
-//            fixture.Customize(new AutoNSubstituteCustomization());
-//
-//            var projects = fixture.Create<RestResponse<Response.Multiple<Response.Project>>>();
-//            
-//            var client = Substitute.For<IVstsRestClient>();
-//            client.Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>()).Returns(projects);
-//            
-//            var scan = new SecurityReportScan(client);
-//
-//            scan.Execute();
-//
-//            client.Received().Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>());
-//        }
-        
-        
 
     }
 }
