@@ -1,9 +1,8 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using NSubstitute;
 using RestSharp;
 using Shouldly;
+using System;
+using System.Net;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -20,7 +19,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var ex = Assert.Throws<Exception>(() => response.ThrowOnError());
             ex.Message.ShouldBe("fail");
         }
-        
+
         [Fact]
         public void IncludesContentOtherwise()
         {
@@ -38,7 +37,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var response = new RestResponse<int>
             {
-                StatusCode =  HttpStatusCode.OK,
+                StatusCode = HttpStatusCode.OK,
                 ResponseStatus = ResponseStatus.Completed,
                 Data = 4
             };
@@ -54,7 +53,29 @@ namespace SecurePipelineScan.VstsService.Tests
 
             Assert.Throws<Exception>(() => response.ThrowOnError());
         }
-        
+
+        [Fact]
+        public void ThrowsOn203()
+        {
+            var response = Substitute.For<IRestResponse<int>>();
+            response.IsSuccessful.Returns(true);
+            response.StatusCode.Returns(HttpStatusCode.NonAuthoritativeInformation);
+            response.StatusDescription.Returns("Non-Authoritative Information");
+
+            Assert.Throws<Exception>(() => response.ThrowOnError());
+        }
+
+        [Fact]
+        public void ThrowsOn203_NonGeneric()
+        {
+            var response = Substitute.For<IRestResponse>();
+            response.IsSuccessful.Returns(true);
+            response.StatusCode.Returns(HttpStatusCode.NonAuthoritativeInformation);
+            response.StatusDescription.Returns("Non-Authoritative Information");
+
+            Assert.Throws<Exception>(() => response.ThrowOnError());
+        }
+
         [Fact]
         public void ThrowsNothingOnNotFound()
         {
