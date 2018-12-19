@@ -11,21 +11,21 @@ using Xunit;
 namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("Category","integration")]
-    public class NameSpaces : IClassFixture<TestConfig>
+    public class Namespaces : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient Vsts;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _client;
 
-        public NameSpaces(TestConfig config)
+        public Namespaces(TestConfig config)
         {
-            this.config = config;
-            Vsts = new VstsRestClient(config.Organization, config.Token);
+            this._config = config;
+            _client = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
         public void QueryNameSpaces()
         {
-            var nameSpaces = Vsts.Get(Requests.NameSpace.NameSpaces()).Value;
+            var nameSpaces = _client.Get(Requests.Namespace.SecurityNamespaces()).Value;
             
             nameSpaces.ShouldNotBeEmpty();
         }

@@ -30,19 +30,19 @@ namespace SecurePipelineScan.Rules
 
         public SecurityReport Execute(string project)
         {
-            var nameSpaces = client.Get(NameSpace.NameSpaces()).Value;
+            var nameSpaces = client.Get(Namespace.SecurityNamespaces()).Value;
 
             var queryNameSpaceId =
-                from ids in nameSpaces
-                where ids.DisplayName == "Git Repositories"
-                select ids.namespaceId;
+                from ns in nameSpaces
+                where ns.DisplayName == "Git Repositories"
+                select ns.NamespaceId;
             
             var groupIdentities = client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
             
             var queryApplicationGroupId = 
-                from ids in groupIdentities
-                where ids.DisplayName == $"[{project}]\\Project Administrators"
-                select ids.TeamFoundationId;
+                from gi in groupIdentities
+                where gi.DisplayName == $"[{project}]\\Project Administrators"
+                select gi.TeamFoundationId;
          
             var projectId = client.Get(Project.ProjectProperties(project)).Id;
             

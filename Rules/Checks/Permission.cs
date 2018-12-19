@@ -11,14 +11,14 @@ namespace SecurePipelineScan.Rules.Checks
     {
         public static bool HasNoPermissionToDeleteRepository (IEnumerable<Response.Permission> permissions)
         {
-            return permissions.Any(p =>    p.PermissionBit.ToString() == "512" && 
-                                           p.PermissionId.ToString() == "2");
+            return permissions.Any(p =>    p.PermissionBit == 512 && 
+                                           p.PermissionId == 2);
         }
 
         public static bool HasNoPermissionToManageRepositoryPermissions (IEnumerable<Response.Permission> permissions)
         {
-            return permissions.Any(p =>    p.PermissionBit.ToString() == "8192" &&
-                                           p.PermissionId.ToString() == "2");
+            return permissions.Any(p =>    p.PermissionBit == 8192 &&
+                                           p.PermissionId == 2);
         }
 
     }
