@@ -11,12 +11,12 @@ using Xunit;
 namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("Category","integration")]
-    public class Namespaces : IClassFixture<TestConfig>
+    public class SecurityNamespaces : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
         private readonly IVstsRestClient _client;
 
-        public Namespaces(TestConfig config)
+        public SecurityNamespaces(TestConfig config)
         {
             this._config = config;
             _client = new VstsRestClient(config.Organization, config.Token);
