@@ -3,6 +3,7 @@
 
 appsettings.LEON.json
 appsettings.Dennys-MacBook-Pro.local.json
+appsettings.franks-MacBook-Pro-3.local.json
 # User-specific files
 *.suo
 *.user
@@ -89,6 +90,9 @@ ipch/
 *.vsp
 *.vspx
 *.sap
+
+# Visual Code files
+.vscode
 
 # TFS 2012 Local Workspace
 $tf/
