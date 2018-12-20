@@ -32,6 +32,8 @@ namespace SecurePipelineScan.Rules
         {
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
+            
+            var groupMembers = getGroupMembersFromApplicationGroup(project, applicationGroups);
 
             var namespaceId = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
@@ -44,7 +46,7 @@ namespace SecurePipelineScan.Rules
             var permissionsGitRepositorySet = client.Get(PermissionsGroupRepositories.PermissionsGroupRepositorySet(
                 projectId, namespaceId, applicationGroupId));
             
-            var repositories = client.Get(VstsService.Requests.Repository.Repositories(project)).Value;
+            var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
 
             
             var securityReport = new SecurityReport
@@ -61,7 +63,10 @@ namespace SecurePipelineScan.Rules
                 ProjectAdminHasNoPermissionToManagePermissionsRepositorySet = 
                     Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions),
                 ProjectAdminHasNoPermissionToManagePermissionsRepositories = 
-                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId)
+                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                    
+                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(groupMembers)
+                    
             };
 
             securityReport.ProjectIsSecure = (
@@ -74,21 +79,11 @@ namespace SecurePipelineScan.Rules
            return securityReport;
         }
 
-        private bool CheckRabobankProjectAdminInProjectAdminGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+        private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
         {
-            bool projectAdminHasOnlyRaboProjectAdminGroup = false;
-            var groupid = applicationGroups.Single(x => x.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
-            var groupmembers = client.Get(ApplicationGroup.GroupMembers(project, groupid)).Identities;
-            var count = groupmembers.Count();
-
-
-            if (count == 1)
-            {
-                var applicationGroup = groupmembers.First(x => x.FriendlyDisplayName == "Rabobank Project Administrators");
-                projectAdminHasOnlyRaboProjectAdminGroup = applicationGroup != null;
-            }
-
-            return projectAdminHasOnlyRaboProjectAdminGroup;
+            var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
+            var groupMembers = client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
+            return groupMembers;
         }
 
         private bool ProjectAdminHasNoPermissionToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)

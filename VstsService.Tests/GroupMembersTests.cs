@@ -35,7 +35,7 @@ namespace VstsService.Tests
             Guid.TryParse(groupId,  out var guidResult).ShouldBeTrue();
 
             var groupMembers = client.Get(Requests.Security.GroupMembers(projectId, groupId));
-            groupMembers.TotalIdentityCount.ShouldBeGreaterThan(4);
+            groupMembers.TotalIdentityCount.ShouldBe(1);
         }
     }
 }

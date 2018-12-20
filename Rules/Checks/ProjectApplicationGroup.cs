@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Xml.Linq;
 using Response = SecurePipelineScan.VstsService.Response;
 
 
@@ -17,7 +18,18 @@ namespace SecurePipelineScan.Rules.Checks
 
         public static bool ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(IEnumerable<ApplicationGroup> groups)
         {
-            return groups.Any(g => g.FriendlyDisplayName == "Rabobank Project Administrators");
+            if (groups.Count() == 1)
+            {
+                var test = groups.First();
+                if (test.FriendlyDisplayName == "Rabobank Project Administrators")
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
         }
     }
 }

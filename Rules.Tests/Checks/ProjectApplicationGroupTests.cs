@@ -31,7 +31,7 @@ namespace Rules.Tests
         }
         
         [Fact]
-        public void ApplicationGroupNotContainingRabobankProjectAdministratorShouldBeTrue()
+        public void ApplicationGroupNotContainingRabobankProjectAdministratorShouldBeFalse()
         {
             ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new[]
                 {new ApplicationGroup {FriendlyDisplayName = "No Rabo Project Admins"}}).ShouldBeFalse();
