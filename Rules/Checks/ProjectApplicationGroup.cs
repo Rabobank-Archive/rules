@@ -15,7 +15,7 @@ namespace SecurePipelineScan.Rules.Checks
             return groups.Any(g => g.FriendlyDisplayName == "Production Environment Owners");
         }
 
-        public static bool ApplicationGroupContainsRabobankProjectAdministrators(IEnumerable<ApplicationGroup> groups)
+        public static bool ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(IEnumerable<ApplicationGroup> groups)
         {
             return groups.Any(g => g.FriendlyDisplayName == "Rabobank Project Administrators");
         }

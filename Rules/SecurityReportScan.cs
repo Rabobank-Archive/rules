@@ -31,6 +31,8 @@ namespace SecurePipelineScan.Rules
         {
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
+            
+            
 
             var nameSpaces = client.Get(SecurityNamespace.SecurityNamespaces()).Value;
 
@@ -51,11 +53,12 @@ namespace SecurePipelineScan.Rules
             var permissionsGitRepositorySet = client.Get(PermissionsGroupRepoSet.PermissionsGitRepositorySet(
                 projectId, queryNameSpaceId.First(), queryApplicationGroupId.First()));
 
+            var applicationGroupList = applicationGroups.ToList();
             var securityReport = new SecurityReport
             {
                 Project = project,
                 ApplicationGroupContainsProductionEnvironmentOwner =
-                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
+                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroupList),
 
                 ProjectAdminHasNoPermissionsToDeleteRepositorySet =
                     Permission.HasNoPermissionToDeleteRepository(permissionsGitRepositorySet.Permissions),
@@ -63,11 +66,28 @@ namespace SecurePipelineScan.Rules
                 ProjectAdminHasNoPermissionToManagePermissionsRepositorySet =
                     Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions),
 
-                ApplicationGroupContainsRabobankProjectAdministrators =
-                    ProjectApplicationGroup.ApplicationGroupContainsRabobankProjectAdministrators(applicationGroups),
+                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = CheckRabobankProjectAdminInProjectAdminGroup(project, applicationGroupList),
+                    
             };
 
             return securityReport;
+        }
+
+        private bool CheckRabobankProjectAdminInProjectAdminGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+        {
+            bool projectAdminHasOnlyRaboProjectAdminGroup = false;
+            var groupid = applicationGroups.Single(x => x.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
+            var groupmembers = client.Get(ApplicationGroup.GroupMembers(project, groupid)).Identities;
+            var count = groupmembers.Count();
+
+
+            if (count == 1)
+            {
+                var applicationGroup = groupmembers.First(x => x.FriendlyDisplayName == "Rabobank Project Administrators");
+                projectAdminHasOnlyRaboProjectAdminGroup = applicationGroup != null;
+            }
+
+            return projectAdminHasOnlyRaboProjectAdminGroup;
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Rules.Reports
         public bool ApplicationGroupContainsProductionEnvironmentOwner { get; set; }
         public bool ProjectAdminHasNoPermissionsToDeleteRepositorySet { get; set; }
         public bool ProjectAdminHasNoPermissionToManagePermissionsRepositorySet { get; set; }
-        public bool ApplicationGroupContainsRabobankProjectAdministrators { get; set; }
+        public bool ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup { get; set; }
     }
 }

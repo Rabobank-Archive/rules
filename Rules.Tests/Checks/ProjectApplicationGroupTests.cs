@@ -26,14 +26,14 @@ namespace Rules.Tests
         [Fact]
         public void ApplicationGroupContainingRabobankProjectAdministratorShouldBeTrue()
         {
-            ProjectApplicationGroup.ApplicationGroupContainsRabobankProjectAdministrators(new []
+            ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new []
                 {new ApplicationGroup {FriendlyDisplayName = "Rabobank Project Administrators"}}).ShouldBeTrue();
         }
         
         [Fact]
         public void ApplicationGroupNotContainingRabobankProjectAdministratorShouldBeTrue()
         {
-            ProjectApplicationGroup.ApplicationGroupContainsRabobankProjectAdministrators(new[]
+            ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new[]
                 {new ApplicationGroup {FriendlyDisplayName = "No Rabo Project Admins"}}).ShouldBeFalse();
         }
     }

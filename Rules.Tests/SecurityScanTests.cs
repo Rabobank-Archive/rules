@@ -7,11 +7,14 @@ using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using Shouldly;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using Xunit.Abstractions;
 using Response = SecurePipelineScan.VstsService.Response;
+using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -38,7 +41,7 @@ namespace SecurePipelineScan.Rules.Tests
             var securityReport = scan.Execute(config.Project);
             
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
-            securityReport.ApplicationGroupContainsRabobankProjectAdministrators.ShouldBeTrue();
+            securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionsToDeleteRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
 
@@ -62,6 +65,35 @@ namespace SecurePipelineScan.Rules.Tests
             
             securityReport.ShouldNotBeNull();
         }
+
+//        [Fact]
+//        public void Bkbkbkbk()
+//        {
+//            var fixture = new Fixture();
+//            fixture.Customize(new AutoNSubstituteCustomization());
+//            
+//            
+//            var applicationGroups = fixture.Create<Response.ApplicationGroups>();
+//            var securityNameSpace = fixture.Create<Response.SecurityNamespace>();
+//
+//            var client = Substitute.For<IVstsRestClient>();
+//            
+//            client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
+//            client.Get(Arg.Any<IVstsRestRequest<Response.SecurityNamespace>>()).Returns(securityNameSpace);
+//            
+//            
+//            var scan = new SecurityReportScan(client);
+//            var securityReport = scan.Execute("dummy");
+//            
+////            client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
+////
+////            
+////            
+////            
+////            
+//            securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeFalse();
+//            
+//        }
 
     }
 }
