@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+
 namespace SecurePipelineScan.VstsService
 {
     public interface IVstsRestClient

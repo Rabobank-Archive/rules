@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Serializers.Newtonsoft.Json;
 using RestRequest = RestSharp.RestRequest;
@@ -26,13 +27,23 @@ namespace SecurePipelineScan.VstsService
         public TResponse Get<TResponse>(IVstsRestRequest<TResponse> request)
             where TResponse : new()
         {
-            _client.BaseUrl = request.BaseUri(_organization);
-            var wrapper = new RestRequest(request.Uri)
-                .AddHeader("authorization", _authorization);
-
-            return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            var wrapper = SetupClient(request);
+            switch (request)
+            {
+                case IVstsRestRequest<JObject> _:
+                    return (TResponse)(object)JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content); 
+                default:
+                    return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            }
         }
-        
+
+        private IRestRequest SetupClient<TResponse>(IVstsRestRequest<TResponse> request) where TResponse : new()
+        {
+            _client.BaseUrl = request.BaseUri(_organization);
+            return new RestRequest(request.Uri)
+                .AddHeader("authorization", _authorization);
+        }
+
         public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
         {
             _client.BaseUrl = request.BaseUri(_organization);
@@ -44,6 +55,7 @@ namespace SecurePipelineScan.VstsService
 
             return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
+        
 
         public void Delete(IVstsRestRequest request)
         {
