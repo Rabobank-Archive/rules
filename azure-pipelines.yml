@@ -31,17 +31,28 @@ steps:
     SonarQube: 'SonarQube TEST On Prem - with Token'
     projectKey: TAS.SecurePipelineScanner
 
+# inspired by: https://stackoverflow.com/a/46813196/129269
 - script: |
-    #!/bin/bash
-    set -e
+    #!/bin/bash 2> nul
     
-    dotnet tool install --global dotnet-sonarscanner
-    dotnet sonarscanner begin /k:"TAS.SecurePipelineScanner"
-    dotnet build --configuration $(buildConfiguration)
-    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration"
-    dotnet sonarscanner end
-    dotnet publish .\Subscriptions.Console\ --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps
-    dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version)
+    :; set -o errexit
+    :; function goto() { return $?; }
+      
+    dotnet tool install --global dotnet-sonarscanner | echo
+    dotnet sonarscanner begin /key:"TAS.SecurePipelineScanner" || goto :error
+    dotnet build --configuration $(buildConfiguration) || goto :error
+    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration" || goto :error
+    dotnet sonarscanner end || goto :error
+    dotnet publish ./Subscriptions.Console --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps || goto :error
+    dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version) || goto :error
+
+    :error
+  
+    :; exit 0
+    exit /b 0
+  
+    :error
+    exit /b %errorlevel%
   displayName: 'Build, test & pack'
 
 - task: SonarSource.sonarqube.291ed61f-1ee4-45d3-b1b0-bf822d9095ef.SonarQubePublish@4
@@ -57,6 +68,7 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+  condition: succeededOrFailed()
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet push'
