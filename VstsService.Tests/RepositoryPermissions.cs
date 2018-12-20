@@ -25,31 +25,44 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryPermissionsGroupRepositorySetReturnsPermissions()
         {
-    
-            var namespaces = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
-
-            var queryNamespaceId =
-                from ns in namespaces
-                where ns.DisplayName == "Git Repositories"
-                select ns.NamespaceId;
-            
-            var groupIdentities = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities;
-            
-            var queryApplicationGroupId = 
-                from gi in groupIdentities
-                where gi.DisplayName == $"[{_config.Project}]\\Project Administrators"
-                select gi.TeamFoundationId;
+            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+                .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
+                
+            var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities
+                .First(gi => gi.DisplayName == $"[{_config.Project}]\\Project Administrators").TeamFoundationId;
          
             var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
             
             
-            var permissionsGitRepositorySet = _client.Get(Requests.PermissionsGroupRepoSet.PermissionsGitRepositorySet(
-                projectId, queryNamespaceId.First(), queryApplicationGroupId.First()));
+            var permissionsGitRepositorySet = _client.Get(Requests.PermissionsGroupRepositories.PermissionsGroupRepositorySet(
+                projectId, namespaceId, applicationGroupId));
 
             permissionsGitRepositorySet.ShouldNotBeNull();
-            var firstPermission = permissionsGitRepositorySet.Permissions.First();
-            firstPermission.PermissionBit.ShouldNotBeNull();
+            permissionsGitRepositorySet.Permissions.First().ShouldNotBeNull();
         }
         
+        [Fact]
+        public void QueryPermissionsGroupRepositoryReturnsPermissions()
+        {   
+            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+                .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
+                
+            var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities
+                .First(gi => gi.DisplayName == $"[{_config.Project}]\\Project Administrators").TeamFoundationId;
+         
+            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
+
+            
+            var repositories = _client.Get(Requests.Repository.Repositories(_config.Project)).Value;
+
+            foreach (var repository in repositories) 
+            {
+                var permissionsGitRepository = _client.Get(Requests.PermissionsGroupRepositories.PermissionsGroupRepository(
+                    projectId, namespaceId, applicationGroupId, repository.Id));
+
+                permissionsGitRepository.ShouldNotBeNull();
+                permissionsGitRepository.Permissions.First().ShouldNotBeNull();
+            }
+        }
     }
 }

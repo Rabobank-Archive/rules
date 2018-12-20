@@ -5,6 +5,7 @@ using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using System.Linq;
+using Repository = SecurePipelineScan.VstsService.Response.Repository;
 
 namespace SecurePipelineScan.Rules
 {
@@ -25,52 +26,52 @@ namespace SecurePipelineScan.Rules
                 Execute(project.Name);
             }
         }
-
+        
 
         public SecurityReport Execute(string project)
         {
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
+
+            var namespaceId = client.Get(SecurityNamespace.SecurityNamespaces()).Value
+                .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
+                
+            var applicationGroupId = applicationGroups
+                .First(gi => gi.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
+         
+            var projectId = client.Get(Project.Properties(project)).Id;           
             
+            var permissionsGitRepositorySet = client.Get(PermissionsGroupRepositories.PermissionsGroupRepositorySet(
+                projectId, namespaceId, applicationGroupId));
             
+            var repositories = client.Get(VstsService.Requests.Repository.Repositories(project)).Value;
 
-            var nameSpaces = client.Get(SecurityNamespace.SecurityNamespaces()).Value;
-
-            var queryNameSpaceId =
-                from ns in nameSpaces
-                where ns.DisplayName == "Git Repositories"
-                select ns.NamespaceId;
-
-            var groupIdentities = client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
-
-            var queryApplicationGroupId =
-                from gi in groupIdentities
-                where gi.DisplayName == $"[{project}]\\Project Administrators"
-                select gi.TeamFoundationId;
-
-            var projectId = client.Get(Project.Properties(project)).Id;
-
-            var permissionsGitRepositorySet = client.Get(PermissionsGroupRepoSet.PermissionsGitRepositorySet(
-                projectId, queryNameSpaceId.First(), queryApplicationGroupId.First()));
-
-            var applicationGroupList = applicationGroups.ToList();
+            
             var securityReport = new SecurityReport
             {
                 Project = project,
                 ApplicationGroupContainsProductionEnvironmentOwner =
-                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroupList),
-
-                ProjectAdminHasNoPermissionsToDeleteRepositorySet =
+                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
+                
+                ProjectAdminHasNoPermissionToDeleteRepositorySet = 
                     Permission.HasNoPermissionToDeleteRepository(permissionsGitRepositorySet.Permissions),
-
-                ProjectAdminHasNoPermissionToManagePermissionsRepositorySet =
+                ProjectAdminHasNoPermissionToDeleteRepositories = 
+                    ProjectAdminHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                
+                ProjectAdminHasNoPermissionToManagePermissionsRepositorySet = 
                     Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions),
-
-                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = CheckRabobankProjectAdminInProjectAdminGroup(project, applicationGroupList),
-                    
+                ProjectAdminHasNoPermissionToManagePermissionsRepositories = 
+                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId)
             };
 
-            return securityReport;
+            securityReport.ProjectIsSecure = (
+                securityReport.ApplicationGroupContainsProductionEnvironmentOwner &&
+                securityReport.ProjectAdminHasNoPermissionToDeleteRepositories &&
+                securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet &&
+                securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositories &&
+                securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet);
+
+           return securityReport;
         }
 
         private bool CheckRabobankProjectAdminInProjectAdminGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
@@ -88,6 +89,28 @@ namespace SecurePipelineScan.Rules
             }
 
             return projectAdminHasOnlyRaboProjectAdminGroup;
+        }
+
+        private bool ProjectAdminHasNoPermissionToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return repositories.All
+            (r => 
+                Permission.HasNoPermissionToManageRepositoryPermissions(
+                    client.Get(PermissionsGroupRepositories.PermissionsGroupRepository(
+                            projectId, namespaceId, applicationGroupId, r.Id))
+                        .Permissions)
+                == true);
+        }
+
+        private bool ProjectAdminHasNoPermissionToDeleteRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return repositories.All
+            (r => 
+                Permission.HasNoPermissionToDeleteRepository(
+                    client.Get(PermissionsGroupRepositories.PermissionsGroupRepository(
+                            projectId, namespaceId, applicationGroupId, r.Id))
+                        .Permissions)
+                == true);
         }
     }
 }

@@ -53,8 +53,8 @@ namespace Rules.Tests.Checks
                     PermissionBit = 512,
                     DisplayName = "Delete Repository",
 
-                    PermissionId = 2,
-                    PermissionDisplayString = "Deny"
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
                 }
             };
             

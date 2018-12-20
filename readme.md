@@ -15,3 +15,8 @@ Another thing is your PAT, the Personal Access Token. This needs to  be _unencod
 ```
 
 You can also override the organization and/or project from there.
+LEON is my machinename btw.
+
+## How to use ##
+
+By running the Web application the default project will be scanned. It shows the Releasedefinitions found with the Environments and the Builds from the Artifacts.
