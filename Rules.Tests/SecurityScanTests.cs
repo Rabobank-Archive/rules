@@ -37,9 +37,13 @@ namespace SecurePipelineScan.Rules.Tests
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute(config.Project);
             
+            securityReport.ProjectIsSecure.ShouldBeTrue();
+            
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionsToDeleteRepositorySet.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositories.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionToDeleteRepositories.ShouldBeTrue();
 
         }
         
@@ -49,38 +53,35 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            var applicationGroups = fixture.Create<Response.ApplicationGroups>();
-
+            var applicationGroup = new Response.ApplicationGroup { DisplayName = "[dummy]\\Project Administrators"};
+            var applicationGroups = new Response.ApplicationGroups { Identities = new[] { applicationGroup } };
+       
+            
+            var names = new Response.Multiple<Response.SecurityNamespace>(new Response.SecurityNamespace
+            {
+                DisplayName = "Git Repositories",
+                NamespaceId = "123456"
+            });
+            
+            
             var client = Substitute.For<IVstsRestClient>();
             
             client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
 
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(names);
+            client.Get(Arg.Any<IVstsRestRequest<Response.ProjectProperties>>())
+                .Returns(fixture.Create<Response.ProjectProperties>());
 
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>())
+                .Returns(fixture.Create<Response.Multiple<Response.Repository>>());
+
+            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsRepository>>())
+                .Returns(fixture.Create<Response.PermissionsRepository>());
+            
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute("dummy");
             
             securityReport.ShouldNotBeNull();
         }
-
-//        [Fact]
-//        public void SecurityReportScanExecuteShouldGetAllProjects()
-//        {
-//            var fixture = new Fixture();
-//            fixture.Customize(new AutoNSubstituteCustomization());
-//
-//            var projects = fixture.Create<RestResponse<Response.Multiple<Response.Project>>>();
-//            
-//            var client = Substitute.For<IVstsRestClient>();
-//            client.Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>()).Returns(projects);
-//            
-//            var scan = new SecurityReportScan(client);
-//
-//            scan.Execute();
-//
-//            client.Received().Execute(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Project>>>());
-//        }
-        
-        
-
     }
 }
