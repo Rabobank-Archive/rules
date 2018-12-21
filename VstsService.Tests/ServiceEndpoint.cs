@@ -1,7 +1,9 @@
 using System;
 using Xunit;
 using Shouldly;
+using System.Net;
 using System.Linq;
+using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -35,9 +37,9 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             //your user needs to be endpoint admin in the project you are running this.
             //your PAT needs "ALL scope". selecting all checkboxes does not work.
-
-            var history =
-                _vsts.Get(Requests.ServiceEndpoint.History(_config.Project, "975b3603-9939-4f22-a5a9-baebb39b5dad"));
+            
+            var history = _vsts.Get(Requests.ServiceEndpoint.History(_config.Project, 
+                _config.ServiceEndpointId));
             history.ShouldNotBeEmpty();
             history.ShouldAllBe(e => e.Data != null);
             history.ShouldAllBe(e => e.Data.Definition != null);

@@ -1,7 +1,5 @@
-using Xunit;
 using Shouldly;
-using System.Net;
-using RestSharp;
+using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -27,8 +25,8 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryReleaseDefinitionDetails()
         {
-            var definition = client.Get(Requests.Release.Definition(config.Project, "2"));
-            definition.Name.ShouldBe("demo SOx");
+            var definition = client.Get(Requests.Release.Definition(config.Project, config.ReleaseDefinitionId));
+            definition.Name.ShouldBe(config.ReleaseDefinitionName);
         }
     }
 }

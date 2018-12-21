@@ -1,5 +1,4 @@
-﻿using SecurePipelineScan.VstsService.Tests;
-using Shouldly;
+﻿using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -28,15 +27,14 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void GetAgentPool()
         {
-            var agentPool = client.Get(Requests.DistributedTask.AgentPool(119));
-
-            agentPool.Name.ShouldBe("Rabo-Build-Azure-Windows");
+            var agentPool = client.Get(Requests.DistributedTask.AgentPool(config.AgentPoolId));
+            agentPool.Name.ShouldBe(config.ExpectedAgentPoolName);
         }
 
         [Fact]
         public void GetAgentStatus()
         {
-            var agentStatus = client.Get(Requests.DistributedTask.AgentPoolStatus(119));
+            var agentStatus = client.Get(Requests.DistributedTask.AgentPoolStatus(config.AgentPoolId));
 
             agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }

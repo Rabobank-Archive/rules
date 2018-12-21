@@ -25,6 +25,7 @@ namespace SecurePipelineScan.VstsService.Tests
             const string id = "42"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
 
             var release = _client.Get(Requests.Release.Releases(_project, id));
+
             release.Id.ShouldBe(id);
             release.Environments.ShouldNotBeEmpty();
 
