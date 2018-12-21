@@ -274,3 +274,8 @@ obj/
 /Subscriptions.Console/Properties/launchSettings.json
 .vscode/launch.json
 .vscode/tasks.json
+
+/reports/
+cobertura.xml
+*.cobertura.xml
+/tools/

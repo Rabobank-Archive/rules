@@ -23,19 +23,22 @@ namespace VstsService.Tests
         [Fact]
         public void ReadGroupMembers()
         {
-            string projectName = "SOx-compliant-demo";
-            string groupName = "Project Administrators";
+            var projectId = client
+                .Get(Requests.Project.Projects())
+                .Single(x => x.Name == "SOx-compliant-demo").Id;
 
-            var projectId = client.Get(Requests.Project.Projects()).Value.
-                Single(x => x.Name == projectName).Id;
+            var groupId = client
+                .Get(Requests.Security.Groups(projectId))
+                .Identities
+                .Single(x => x.FriendlyDisplayName == "Project Administrators")
+                .TeamFoundationId;
 
-            var groupId = client.Get(Requests.Security.Groups(projectId)).Identities.
-                Single(x => x.FriendlyDisplayName == groupName).TeamFoundationId;
+            Guid.TryParse(groupId,  out _).ShouldBeTrue();
 
-            Guid.TryParse(groupId,  out var guidResult).ShouldBeTrue();
-
-            var groupMembers = client.Get(Requests.Security.GroupMembers(projectId, groupId));
-            groupMembers.TotalIdentityCount.ShouldBeGreaterThan(4);
+            var groupMembers = client
+                .Get(Requests.Security.GroupMembers(projectId, groupId));
+            
+            groupMembers.TotalIdentityCount.ShouldNotBe(0);
         }
     }
 }

@@ -38,11 +38,15 @@ steps:
     :; set -o errexit
     :; function goto() { return $?; }
       
-    dotnet tool install --global dotnet-sonarscanner | echo
-    dotnet sonarscanner begin /key:"TAS.SecurePipelineScanner" || goto :error
+    dotnet tool install dotnet-sonarscanner --tool-path tools || goto :error
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools || goto :error
+    tools\dotnet-sonarscanner begin /key:"TAS.SecurePipelineScanner" || goto :error
     dotnet build --configuration $(buildConfiguration) || goto :error
-    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration" || goto :error
-    dotnet sonarscanner end || goto :error
+    dotnet test --configuration $(buildConfiguration) --logger trx --filter "category!=integration" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura || goto :error
+    tools\dotnet-sonarscanner end || goto :error
+
+    tools\reportgenerator -reports:*\coverage.cobertura.xml -reporttypes:cobertura -targetDir:.
+    tools\reportgenerator -reports:Cobertura.xml -reporttypes:HTMLInline;HTMLChart -targetDir:reports
     dotnet publish ./Subscriptions.Console --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps || goto :error
     dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version) || goto :error
 
@@ -69,6 +73,12 @@ steps:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
   condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    summaryFileLocation: $(Build.SourcesDirectory)\Cobertura.xml
+    reportDirectory: $(Build.SourcesDirectory)\reports
+    codecoverageTool: cobertura
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet push'
