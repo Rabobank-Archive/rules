@@ -25,10 +25,7 @@ namespace SecurePipelineScan.Rules.Checks
                 {
                     return true;
                 }
-
-                return false;
             }
-
             return false;
         }
     }
