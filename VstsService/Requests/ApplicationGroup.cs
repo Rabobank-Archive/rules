@@ -8,5 +8,10 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VstsRestRequest<Response.ApplicationGroups>($"{project}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5");
         }
+        
+        public static IVstsRestRequest<Response.ApplicationGroups> GroupMembers(string project, string groupId)
+        {
+            return new VstsRestRequest<Response.ApplicationGroups>($"/{project}/_api/_identity/ReadGroupMembers?__v=5&scope={groupId}&readMembers=true");
+        }
     }
 }

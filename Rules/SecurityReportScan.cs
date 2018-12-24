@@ -32,6 +32,8 @@ namespace SecurePipelineScan.Rules
         {
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
+            
+            var groupMembers = getGroupMembersFromApplicationGroup(project, applicationGroups);
 
             var namespaceId = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
@@ -44,13 +46,12 @@ namespace SecurePipelineScan.Rules
             var permissionsGitRepositorySet = client.Get(PermissionsGroupRepositories.PermissionsGroupRepositorySet(
                 projectId, namespaceId, applicationGroupId));
             
-            var repositories = client.Get(VstsService.Requests.Repository.Repositories(project)).Value;
+            var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
 
             
             var securityReport = new SecurityReport
             {
                 Project = project,
-                
                 ApplicationGroupContainsProductionEnvironmentOwner =
                     ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
                 
@@ -62,7 +63,10 @@ namespace SecurePipelineScan.Rules
                 ProjectAdminHasNoPermissionToManagePermissionsRepositorySet = 
                     Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions),
                 ProjectAdminHasNoPermissionToManagePermissionsRepositories = 
-                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId)
+                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                    
+                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(groupMembers)
+                    
             };
 
             securityReport.ProjectIsSecure = (
@@ -73,6 +77,13 @@ namespace SecurePipelineScan.Rules
                 securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet);
 
            return securityReport;
+        }
+
+        private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+        {
+            var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
+            var groupMembers = client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
+            return groupMembers;
         }
 
         private bool ProjectAdminHasNoPermissionToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)

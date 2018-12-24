@@ -16,5 +16,6 @@ namespace Rules.Reports
         public bool ProjectAdminHasNoPermissionToManagePermissionsRepositories { get; set; }
         
         
+        public bool ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup { get; set; }
     }
 }
