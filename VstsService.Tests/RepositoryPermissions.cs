@@ -34,7 +34,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
             
             
-            var permissionsGitRepositorySet = _client.Get(Requests.PermissionsGroupRepositories.PermissionsGroupRepositorySet(
+            var permissionsGitRepositorySet = _client.Get(Requests.Permissions.PermissionsGroupRepositorySet(
                 projectId, namespaceId, applicationGroupId));
 
             permissionsGitRepositorySet.ShouldNotBeNull();
@@ -57,7 +57,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             foreach (var repository in repositories) 
             {
-                var permissionsGitRepository = _client.Get(Requests.PermissionsGroupRepositories.PermissionsGroupRepository(
+                var permissionsGitRepository = _client.Get(Requests.Permissions.PermissionsGroupRepository(
                     projectId, namespaceId, applicationGroupId, repository.Id));
 
                 permissionsGitRepository.ShouldNotBeNull();

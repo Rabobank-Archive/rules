@@ -43,7 +43,7 @@ namespace SecurePipelineScan.Rules
          
             var projectId = client.Get(Project.Properties(project)).Id;           
             
-            var permissionsGitRepositorySet = client.Get(PermissionsGroupRepositories.PermissionsGroupRepositorySet(
+            var permissionsGitRepositorySet = client.Get(Permissions.PermissionsGroupRepositorySet(
                 projectId, namespaceId, applicationGroupId));
             
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
@@ -91,7 +91,7 @@ namespace SecurePipelineScan.Rules
             return repositories.All
             (r => 
                 Permission.HasNoPermissionToManageRepositoryPermissions(
-                    client.Get(PermissionsGroupRepositories.PermissionsGroupRepository(
+                    client.Get(Permissions.PermissionsGroupRepository(
                             projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions)
                 == true);
@@ -102,7 +102,7 @@ namespace SecurePipelineScan.Rules
             return repositories.All
             (r => 
                 Permission.HasNoPermissionToDeleteRepository(
-                    client.Get(PermissionsGroupRepositories.PermissionsGroupRepository(
+                    client.Get(Permissions.PermissionsGroupRepository(
                             projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions)
                 == true);
