@@ -21,5 +21,29 @@ namespace SecurePipelineScan.Rules.Checks
                                            (p.PermissionId == 2 || p.PermissionId == 4));
         }
 
+        public static bool HasNoPermissionToAdministerBuildPermissions (IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 16384 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+        
+        public static bool HasNoPermissionToDeleteBuildDefinition (IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 4096 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
+        public static bool HasNoPermissionToDeleteBuilds (IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 8 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+ 
+        public static bool HasNoPermissionToDestroyBuilds (IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 32 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
     }
 }
