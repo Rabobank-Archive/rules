@@ -40,7 +40,6 @@ namespace SecurePipelineScan.Rules
 
             var namespaceIdBuild = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.Name == "Build").NamespaceId;
-
             
             var applicationGroupIdProjectAdmins = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;

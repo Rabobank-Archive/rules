@@ -57,7 +57,6 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.BuildAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
             
             securityReport.ProjectIsSecure.ShouldBeTrue();
-
         }
 
         [Fact]
