@@ -129,6 +129,5 @@ namespace SecurePipelineScan.Rules.Tests.Checks
 
             Permission.HasNoPermissionToDeleteBuilds(permissions).ShouldBeTrue();
         }
-
     }
 }
