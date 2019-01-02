@@ -2,7 +2,6 @@ name: $(Build.BuildId)
 pool: 'Rabo-Build-Azure-Windows-Preview'
 variables:
   buildConfiguration: 'Release'
-  version: 0.0.1.$(Build.BuildId)
 
 steps:
 - checkout: self
@@ -45,10 +44,8 @@ steps:
 
     dotnet test --configuration $(buildConfiguration) --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura || goto :error
     dotnet publish ./Subscriptions.Console --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps || goto :error
-    dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(version) || goto :error
+    dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error
 
-    :error
-  
     :; exit 0
     exit /b 0
   
