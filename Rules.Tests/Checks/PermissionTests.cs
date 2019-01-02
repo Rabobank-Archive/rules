@@ -112,5 +112,23 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDestroyBuilds(permissions).ShouldBeTrue();
         }
 
+        [Fact]
+        public void NoPermissionToDeleteBuildsShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 8,
+                    DisplayName = "Delete builds",
+
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
+                }
+            };
+
+            Permission.HasNoPermissionToDeleteBuilds(permissions).ShouldBeTrue();
+        }
+
     }
 }
