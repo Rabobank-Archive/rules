@@ -41,10 +41,20 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.ProjectIsSecure.ShouldBeTrue();
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
+            
             securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositories.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToDeleteRepositories.ShouldBeTrue();
+
+            securityReport.ProjectAdminHasNoPermissionsToAdministerBuildPermissions.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionsToDeleteBuildDefinition.ShouldBeTrue();
+            securityReport.ProjectAdminHasNoPermissionsToDeleteBuilds.ShouldBeTrue(); 
+            securityReport.ProjectAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
+            securityReport.BuildAdminHasNoPermissionsToAdministerBuildPermissions.ShouldBeTrue();
+            securityReport.BuildAdminHasNoPermissionsToDeleteBuildDefinition.ShouldBeTrue(); 
+            securityReport.BuildAdminHasNoPermissionsToDeleteBuilds.ShouldBeTrue(); 
+            securityReport.BuildAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
         }
 
         [Fact]
