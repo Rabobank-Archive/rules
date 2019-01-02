@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SecurePipelineScan.Rules.Checks;
+﻿using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using System.Collections.Generic;
 using Xunit;
 
-namespace Rules.Tests
+namespace SecurePipelineScan.Rules.Tests.Checks
 {
     public class ProjectApplicationGroupTests
     {

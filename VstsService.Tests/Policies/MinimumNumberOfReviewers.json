@@ -1,0 +1,48 @@
+{
+  "createdBy": {
+    "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+    "url": "https://app.vssps.visualstudio.com/Ab0ae02f6-64d2-439b-a771-4ec43a2465a2/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "_links": {
+      "avatar": {
+        "href": "https://somecompany-test.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      }
+    },
+    "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+    "imageUrl": "https://somecompany-test.visualstudio.com/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+  },
+  "createdDate": "2018-09-12T14:28:18.7235161Z",
+  "isEnabled": true,
+  "isBlocking": true,
+  "isDeleted": false,
+  "settings": {
+    "minimumApproverCount": 1,
+    "creatorVoteCounts": false,
+    "allowDownvotes": false,
+    "resetOnSourcePush": true,
+    "scope": [
+      {
+        "refName": "refs/heads/master",
+        "matchKind": "Exact",
+        "repositoryId": "97d7b870-a21b-461c-8085-208d84d1a1c1"
+      }
+    ]
+  },
+  "_links": {
+    "self": {
+      "href": "https://somecompany-test.visualstudio.com/53410703-e2e5-4238-9025-233bd7c811b3/_apis/policy/configurations/11"
+    },
+    "policyType": {
+      "href": "https://somecompany-test.visualstudio.com/53410703-e2e5-4238-9025-233bd7c811b3/_apis/policy/types/fa4e907d-c16b-4a4c-9dfa-4906e5d171dd"
+    }
+  },
+  "revision": 1,
+  "id": 11,
+  "url": "https://somecompany-test.visualstudio.com/53410703-e2e5-4238-9025-233bd7c811b3/_apis/policy/configurations/11",
+  "type": {
+    "id": "fa4e907d-c16b-4a4c-9dfa-4906e5d171dd",
+    "url": "https://somecompany-test.visualstudio.com/53410703-e2e5-4238-9025-233bd7c811b3/_apis/policy/types/fa4e907d-c16b-4a4c-9dfa-4906e5d171dd",
+    "displayName": "Minimum number of reviewers"
+  }
+}

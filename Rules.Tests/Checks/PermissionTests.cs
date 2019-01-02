@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using RestSharp.Extensions;
-using SecurePipelineScan.Rules.Checks;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using System.Collections.Generic;
 using Xunit;
 using Permission = SecurePipelineScan.Rules.Checks.Permission;
 using Response = SecurePipelineScan.VstsService.Response;
 
-namespace Rules.Tests.Checks
+namespace SecurePipelineScan.Rules.Tests.Checks
 {
     public class PermissionTests
     {
@@ -29,13 +25,13 @@ namespace Rules.Tests.Checks
         [Fact]
         public void NoPermissionToManageRepositoryPermissionsShouldBeTrue()
         {
-            var permissions = new []
+            var permissions = new[]
             {
                 new Response.Permission
                 {
                     PermissionBit = 8192,
                     DisplayName = "Manage permissions",
-                    
+
                     PermissionId = 2,
                     PermissionDisplayString = "Deny"
                     }
@@ -57,7 +53,7 @@ namespace Rules.Tests.Checks
                     PermissionDisplayString = "Deny (inherited)"
                 }
             };
-            
+
             Permission.HasNoPermissionToDeleteRepository(permissions).ShouldBeTrue();
         }
     }

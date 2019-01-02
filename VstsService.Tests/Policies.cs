@@ -1,62 +1,80 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
+﻿using Newtonsoft.Json;
+using SecurePipelineScan.VstsService.Converters;
+using SecurePipelineScan.VstsService.Response;
 using Shouldly;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using RestSharp;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
-    public class Policies: IClassFixture<TestConfig>
+    public class Policies : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient Vsts;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _vsts;
 
         public Policies(TestConfig config)
         {
-            this.config = config;
-            Vsts = new VstsRestClient(config.Organization, config.Token);
+            this._config = config;
+            _vsts = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
         public void QueryRequiredReviewersPolicies()
         {
-            var definition = Vsts.Get(Requests.Policies.RequiredReviewersPolicies(config.Project));
+            var result = _vsts.Get(Requests.Policies.RequiredReviewersPolicies(_config.Project));
 
-            definition.ShouldNotBeEmpty();
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.ShouldAllBe(e => e.IsBlocking.HasValue);
-            definition.ShouldAllBe(e => e.IsDeleted.HasValue);
-            definition.ShouldAllBe(e => e.IsEnabled.HasValue);
-            definition.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+            result.ShouldNotBeEmpty();
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            result.ShouldAllBe(e => e.IsBlocking.HasValue);
+            result.ShouldAllBe(e => e.IsDeleted.HasValue);
+            result.ShouldAllBe(e => e.IsEnabled.HasValue);
+            result.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
         }
 
         [Fact]
         public void QueryMinimumNumberOfReviewersPolicies()
         {
-            var definition = Vsts.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(config.Project));
+            var result = _vsts.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project));
 
-            definition.ShouldNotBeEmpty();
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.ShouldAllBe(e => e.IsBlocking.HasValue);
-            definition.ShouldAllBe(e => e.IsDeleted.HasValue);
-            definition.ShouldAllBe(e => e.IsEnabled.HasValue);
+            result.ShouldNotBeEmpty();
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            result.ShouldAllBe(e => e.IsBlocking.HasValue);
+            result.ShouldAllBe(e => e.IsDeleted.HasValue);
+            result.ShouldAllBe(e => e.IsEnabled.HasValue);
 
-            definition.ShouldAllBe(e => e.Settings.MinimumApproverCount.HasValue);
-            definition.ShouldAllBe(e => e.Settings.AllowDownvotes.HasValue);
-            definition.ShouldAllBe(e => e.Settings.CreatorVoteCounts.HasValue);
-            definition.ShouldAllBe(e => e.Settings.ResetOnSourcePush.HasValue);
+            result.ShouldAllBe(e => e.Settings.MinimumApproverCount.HasValue);
+            result.ShouldAllBe(e => e.Settings.AllowDownvotes.HasValue);
+            result.ShouldAllBe(e => e.Settings.CreatorVoteCounts.HasValue);
+            result.ShouldAllBe(e => e.Settings.ResetOnSourcePush.HasValue);
 
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RepositoryId.ToString()));
+        }
+
+        [Fact]
+        public void GetAllPoliciesForProject()
+        {
+            var result = _vsts.Get(Requests.Policies.All(_config.Project));
+
+            result.ShouldNotBeEmpty();
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            result.ShouldAllBe(e => e.IsBlocking.HasValue);
+            result.ShouldAllBe(e => e.IsDeleted.HasValue);
+            result.ShouldAllBe(e => e.IsEnabled.HasValue);
+        }
+
+        [Fact]
+        public void GetAllPoliciesConvertsToSpecific()
+        {
+            var policies = _vsts.Get(Requests.Policies.All(_config.Project));
+
+            policies.ShouldContain(p => p is RequiredReviewersPolicy);
+            policies.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);
         }
     }
 }

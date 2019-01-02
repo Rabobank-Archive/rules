@@ -1,7 +1,11 @@
-﻿using Rules.Reports;
-using SecurePipelineScan.VstsService;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
+using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Converters;
+using SecurePipelineScan.VstsService.Response;
+using System.Collections.Generic;
+using System.Linq;
 using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules
@@ -18,7 +22,8 @@ namespace SecurePipelineScan.Rules
         public IEnumerable<RepositoryReport> Execute(string project)
         {
             var repos = client.Get(Requests.Repository.Repositories(project));
-            var minimumNumberOfReviewersPolicies = client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
+            var policies = client.Get(Requests.Policies.All(project));
+            var minimumNumberOfReviewersPolicies = policies.OfType<MinimumNumberOfReviewersPolicy>();
 
             foreach (var repo in repos)
             {
@@ -26,7 +31,7 @@ namespace SecurePipelineScan.Rules
                 {
                     Project = project,
                     Repository = repo.Name,
-                    HasRequiredReviewerPolicy = repo.HasRequiredReviewerPolicy(minimumNumberOfReviewersPolicies.Value)
+                    HasRequiredReviewerPolicy = repo.HasRequiredReviewerPolicy(minimumNumberOfReviewersPolicies),
                 };
 
                 yield return repoReport;

@@ -1,0 +1,45 @@
+{
+  "count": 1,
+  "value": [
+    {
+      "createdBy": {
+        "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "_links": { "avatar": { "href": "https://somecompany.visualstudio.com/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh" } },
+        "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+        "imageUrl": "https://somecompany.visualstudio.com/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      },
+      "createdDate": "2018-12-31T12:38:56.3247313Z",
+      "isEnabled": true,
+      "isBlocking": true,
+      "isDeleted": false,
+      "settings": {
+        "minimumApproverCount": 2,
+        "creatorVoteCounts": true,
+        "allowDownvotes": false,
+        "resetOnSourcePush": false,
+        "scope": [
+          {
+            "refName": "refs/heads/master",
+            "matchKind": "Exact",
+            "repositoryId": "033b0fce-afa0-4b4b-adac-521d1d11db14"
+          }
+        ]
+      },
+      "_links": {
+        "self": { "href": "https://somecompany.visualstudio.com/9d4319ec-ea6e-4130-937f-8da676679749/_apis/policy/configurations/4243" },
+        "policyType": { "href": "https://somecompany.visualstudio.com/9d4319ec-ea6e-4130-937f-8da676679749/_apis/policy/types/fa4e907d-c16b-4a4c-9dfa-4906e5d171dd" }
+      },
+      "revision": 6,
+      "id": 4243,
+      "url": "https://somecompany.visualstudio.com/9d4319ec-ea6e-4130-937f-8da676679749/_apis/policy/configurations/4243",
+      "type": {
+        "id": "fa4e907d-c16b-4a4c-9dfa-4906e5d171dd",
+        "url": "https://somecompany.visualstudio.com/9d4319ec-ea6e-4130-937f-8da676679749/_apis/policy/types/fa4e907d-c16b-4a4c-9dfa-4906e5d171dd",
+        "displayName": "Minimum number of reviewers"
+      }
+    }
+  ]
+}

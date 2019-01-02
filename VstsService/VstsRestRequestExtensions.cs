@@ -1,5 +1,5 @@
-using System;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -7,7 +7,7 @@ namespace SecurePipelineScan.VstsService
     {
         public static IVstsRestRequest<JObject> AsJson<TResponse>(
             this IVstsRestRequest<TResponse> request)
-            where TResponse: new()
+            where TResponse : new()
         {
             return new JsonRequest(request);
         }

@@ -3,7 +3,7 @@
     public class Repository
     {
         public string Name { get; set; }
-        public string Id { get; internal set; }
+        public string Id { get; set; }
 
         public string DefaultBranch { get; set; }
 
