@@ -74,6 +74,13 @@ namespace SecurePipelineScan.Rules.Tests.Checks
 
             Permission.HasNoPermissionToAdministerBuildPermissions(permissions).ShouldBeTrue();
         }
+
+        [Fact]
+        public void EmptyPermissionToAdministerBuildPermissionsShouldBeFalse()
+        {
+            Permission.HasNoPermissionToAdministerBuildPermissions(new List<Response.Permission>())
+                .ShouldBeFalse();
+        }
         
         [Fact]
         public void NoPermissionToDeleteBuildDefinitionShouldBeTrue()
@@ -93,6 +100,12 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDeleteBuildDefinition(permissions).ShouldBeTrue();
         }
 
+        [Fact]
+        public void EmptyPermissionToDeleteBuildDefinitionShouldBeFalse()
+        {
+            Permission.HasNoPermissionToDeleteBuildDefinition(new List<Response.Permission>())
+                .ShouldBeFalse();
+        }
 
         [Fact]
         public void NoPermissionToDestroyBuildsShouldBeTrue()
@@ -113,6 +126,13 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         }
 
         [Fact]
+        public void EmptyPermissionToDestroyBuildsShouldBeFalse()
+        {
+            Permission.HasNoPermissionToDestroyBuilds(new List<Response.Permission>())
+                .ShouldBeFalse();
+        }
+        
+        [Fact]
         public void NoPermissionToDeleteBuildsShouldBeTrue()
         {
             var permissions = new[]
@@ -128,6 +148,13 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             };
 
             Permission.HasNoPermissionToDeleteBuilds(permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void EmptyPermissionToDeleteBuildsShouldBeFalse()
+        {
+            Permission.HasNoPermissionToDeleteBuilds(new List<Response.Permission>())
+                .ShouldBeFalse();
         }
     }
 }
