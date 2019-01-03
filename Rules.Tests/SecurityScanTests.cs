@@ -38,9 +38,9 @@ namespace SecurePipelineScan.Rules.Tests
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute(config.Project);
 
-            securityReport.ProjectIsSecure.ShouldBeTrue();
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
+            securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
             
             securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet.ShouldBeTrue();
             securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
@@ -55,6 +55,9 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.BuildAdminHasNoPermissionsToDeleteBuildDefinition.ShouldBeTrue(); 
             securityReport.BuildAdminHasNoPermissionsToDeleteBuilds.ShouldBeTrue(); 
             securityReport.BuildAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
+            
+            securityReport.ProjectIsSecure.ShouldBeTrue();
+
         }
 
         [Fact]
@@ -65,20 +68,19 @@ namespace SecurePipelineScan.Rules.Tests
 
             var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1234",};
             var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[TAS]\\Rabobank Project Administrators"};
-            var applicationGroups = new Response.ApplicationGroups {Identities = new[] {applicationGroup1 , applicationGroup2}};
+            var applicationGroup3 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Build Administrators", TeamFoundationId = "4321",};
+            var applicationGroups = new Response.ApplicationGroups {Identities = new[] {applicationGroup1 , applicationGroup2, applicationGroup3}};
 
-            var names = new Response.Multiple<Response.SecurityNamespace>(new Response.SecurityNamespace
-            {
-                DisplayName = "Git Repositories",
-                NamespaceId = "123456"
-            });
-
+            var securityNamespace1 = new Response.SecurityNamespace {DisplayName = "Git Repositories", NamespaceId = "123456"};
+            var securityNamespace2 = new Response.SecurityNamespace {Name = "Build", NamespaceId = "54321"};
+            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace>(securityNamespace1, securityNamespace2);
+            
 
             var client = Substitute.For<IVstsRestClient>();
 
             client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
             
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(names);
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(securityNamespaces);
             client.Get(Arg.Any<IVstsRestRequest<Response.ProjectProperties>>()).Returns(fixture.Create<Response.ProjectProperties>());
 
             client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>()).Returns(fixture.Create<Response.Multiple<Response.Repository>>());

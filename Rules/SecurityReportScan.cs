@@ -39,7 +39,7 @@ namespace SecurePipelineScan.Rules
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var namespaceIdBuild = client.Get(SecurityNamespace.SecurityNamespaces()).Value
-                .First(ns => ns.DisplayName == "Build").NamespaceId;
+                .First(ns => ns.Name == "Build").NamespaceId;
 
             
             var applicationGroupIdProjectAdmins = applicationGroups
