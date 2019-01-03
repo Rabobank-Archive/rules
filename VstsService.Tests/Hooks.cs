@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using AutoFixture;
+using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -7,150 +9,102 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Hooks : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
+        private readonly Fixture _fixture = new Fixture();
+        private readonly string _accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
+        private readonly string _queueName = "queuename";
+        private readonly string _projectId;
         private readonly IVstsRestClient client;
 
         public Hooks(TestConfig config)
         {
-            this.config = config;
             client = new VstsRestClient(config.Organization, config.Token);
+            _projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
         }
 
-        /// <summary>
-        /// Test if query, add and delete subscriptions work
-        /// </summary>
         [Fact]
-        public void QueryAddDelete_BuildComplete_Subscription()
+        public void QuerySubscriptions()
         {
-            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
+            var subscriptions = client.Get(Requests.Hooks.Subscriptions());
+            subscriptions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
+        }
 
-            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
-
-            string accountName = "rabovstslog";
-            string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
-            string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
-
-            var addHook = client.Post(Requests.Hooks.Add.BuildCompleted(
+        [Fact]
+        public void AddAndDelete_BuildComplete_Subscription()
+        {
+            var accountName = _fixture.Create("integration-test-hook");
+            var body = Requests.Hooks.Add.BuildCompleted(
                 accountName,
-                accountKey,
-                queueName,
-                projectId
-                ));
-
-            addHook.Id.ShouldNotBeNullOrEmpty();
-
-            var addedHookId = addHook.Id;
-
-            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
-            client.Delete(Requests.Hooks.Subscription(addedHookId));
-
-            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
+                _accountKey,
+                _queueName,
+                _projectId
+            );
+            
+            var hook = CreateHook(body);
+            DeleteHook(hook, accountName);
         }
 
         [Fact]
         public void QueryAddDelete_GitPushed_Subscription()
         {
-            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
-
-            string accountName = "rabovstslog";
-            string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
-            string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
-
-            var addHook = client.Post(Requests.Hooks.Add.GitPushed(
+            var accountName = _fixture.Create("integration-test-hook");
+            var body = Requests.Hooks.Add.GitPushed(
                 accountName,
-                accountKey,
-                queueName,
-                projectId
-                ));
+                _accountKey,
+                _queueName,
+                _projectId
+            );
 
-            addHook.Id.ShouldNotBeNullOrEmpty();
-
-            var addedHookId = addHook.Id;
-
-            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
-
-            client.Delete(Requests.Hooks.Subscription(addedHookId));
-
-
-            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
+            var hook = CreateHook(body);
+            DeleteHook(hook, accountName);
         }
 
         [Fact]
         public void QueryAddDelete_GitPullRequestCreated_Subscription()
         {
-            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
-
-            string accountName = "rabovstslog";
-            string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
-            string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
-
-            var addHook = client.Post(Requests.Hooks.Add.GitPullRequestCreated(
+            var accountName = _fixture.Create("integration-test-hook");
+            var body = Requests.Hooks.Add.GitPullRequestCreated(
                 accountName,
-                accountKey,
-                queueName,
-                projectId
-                ));
+                _accountKey,
+                _queueName,
+                _projectId
+            );
 
-            addHook.Id.ShouldNotBeNullOrEmpty();
-
-            var addedHookId = addHook.Id;
-
-            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
-            client.Delete(Requests.Hooks.Subscription(addedHookId));
-
-
-            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
-            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
+            var hook = CreateHook(body);
+            DeleteHook(hook, accountName);
         }
 
         [Fact]
         public void QueryAddDelete_ReleaseDeploymentCompleted_Subscription()
         {
-            var subscribtionsBefore = client.Get(Requests.Hooks.Subscriptions());
-            subscribtionsBefore.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
-
-            string accountName = "rabovstslog";
-            string accountKey = "01234156789123456784564560123415678912345678456456123456789123456";
-            string queueName = "queuename";
-            var projectId = client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
-
-            var addHook = client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(
+            var accountName = _fixture.Create("integration-test-hook");
+            var body = Requests.Hooks.Add.ReleaseDeploymentCompleted(
                 accountName,
-                accountKey,
-                queueName,
-                projectId
-                ));
+                _accountKey,
+                _queueName,
+                _projectId
+            );
 
-            addHook.Id.ShouldNotBeNullOrEmpty();
+            var hook = CreateHook(body);
+            DeleteHook(hook, accountName);
+        }
 
-            var addedHookId = addHook.Id;
+        private Hook CreateHook(IVstsPostRequest<Hook> body)
+        {
+            var hook = client.Post(body);
+            hook.Id.ShouldNotBeNullOrEmpty();
 
-            var subscribtionsAfter = client.Get(Requests.Hooks.Subscriptions());
+            var subscriptions = client.Get(Requests.Hooks.Subscriptions());
+            subscriptions.ShouldContain(_ => _.Id == hook.Id);
+            
+            return hook;
+        }
 
-            subscribtionsBefore.Count.ShouldBeLessThan(subscribtionsAfter.Count);
-
-            client.Delete(Requests.Hooks.Subscription(addedHookId));
-
-
-            var subscribtionsFinal = client.Get(Requests.Hooks.Subscriptions());
-
-            subscribtionsFinal.Count.ShouldBe(subscribtionsBefore.Count);
+        private void DeleteHook(Hook hook, string accountName)
+        {
+            client.Delete(Requests.Hooks.Subscription(hook.Id));
+            var subscriptions = client.Get(Requests.Hooks.Subscriptions());
+            subscriptions.ShouldNotContain(_ => _.ConsumerInputs.AccountName == accountName);
+            subscriptions.ShouldNotContain(_ => _.Id == hook.Id);
         }
     }
 }
