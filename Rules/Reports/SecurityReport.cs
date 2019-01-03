@@ -9,22 +9,37 @@ namespace Rules.Reports
         
         public bool ApplicationGroupContainsProductionEnvironmentOwner { get; set; }
         public bool ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup { get; set; }
-
-        public bool ProjectAdminHasNoPermissionToDeleteRepositorySet { get; set; }
-        public bool ProjectAdminHasNoPermissionToDeleteRepositories { get; set; }
         
-        public bool ProjectAdminHasNoPermissionToManagePermissionsRepositorySet { get; set; }
-        public bool ProjectAdminHasNoPermissionToManagePermissionsRepositories { get; set; }
+        public RepositoryRights RepositoryRightsProjectAdmin { get; set; }
         
-        public bool ProjectAdminHasNoPermissionsToAdministerBuildPermissions { get; set; }
-        public bool ProjectAdminHasNoPermissionsToDeleteBuildDefinition { get; set; }
-        public bool ProjectAdminHasNoPermissionsToDeleteBuilds { get; set; }
-        public bool ProjectAdminHasNoPermissionsToDeDestroyBuilds { get; set; }
+        public BuildRights BuildRightsProjectAdmin { get; set; }
+        public BuildRights BuildRightsBuildAdmin { get; set; }
 
-        public bool BuildAdminHasNoPermissionsToAdministerBuildPermissions { get; set; }
-        public bool BuildAdminHasNoPermissionsToDeleteBuildDefinition { get; set; }
-        public bool BuildAdminHasNoPermissionsToDeleteBuilds { get; set; }
-        public bool BuildAdminHasNoPermissionsToDeDestroyBuilds { get; set; }
+    }
 
+    public class BuildRights
+    {
+        public bool HasNoPermissionsToAdministerBuildPermissions { get; set; }
+        public bool HasNoPermissionsToDeleteBuildDefinition { get; set; }
+        public bool HasNoPermissionsToDeleteBuilds { get; set; }
+        public bool HasNoPermissionsToDeDestroyBuilds { get; set; }
+
+        public bool BuildRightsIsSecure => HasNoPermissionsToDeleteBuilds && 
+                                           HasNoPermissionsToDeleteBuildDefinition &&
+                                           HasNoPermissionsToDeDestroyBuilds && 
+                                           HasNoPermissionsToAdministerBuildPermissions;
+    }
+
+    public class RepositoryRights
+    {
+        public bool HasNoPermissionToDeleteRepositorySet { get; set; }
+        public bool HasNoPermissionToDeleteRepositories { get; set; }
+        public bool HasNoPermissionToManagePermissionsRepositorySet { get; set; }
+        public bool HasNoPermissionToManagePermissionsRepositories { get; set; }
+
+        public bool RepositoryRightsIsSecure => HasNoPermissionToDeleteRepositories &&
+                                                HasNoPermissionToDeleteRepositorySet &&
+                                                HasNoPermissionToManagePermissionsRepositories &&
+                                                HasNoPermissionToManagePermissionsRepositorySet;
     }
 }

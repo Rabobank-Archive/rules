@@ -42,19 +42,9 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
             securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
             
-            securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositories.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionToDeleteRepositories.ShouldBeTrue();
-
-            securityReport.ProjectAdminHasNoPermissionsToAdministerBuildPermissions.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionsToDeleteBuildDefinition.ShouldBeTrue();
-            securityReport.ProjectAdminHasNoPermissionsToDeleteBuilds.ShouldBeTrue(); 
-            securityReport.ProjectAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
-            securityReport.BuildAdminHasNoPermissionsToAdministerBuildPermissions.ShouldBeTrue();
-            securityReport.BuildAdminHasNoPermissionsToDeleteBuildDefinition.ShouldBeTrue(); 
-            securityReport.BuildAdminHasNoPermissionsToDeleteBuilds.ShouldBeTrue(); 
-            securityReport.BuildAdminHasNoPermissionsToDeDestroyBuilds.ShouldBeTrue();
+            securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
             
             securityReport.ProjectIsSecure.ShouldBeTrue();
         }

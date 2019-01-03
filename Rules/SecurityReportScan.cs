@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rules.Reports;
@@ -68,66 +69,58 @@ namespace SecurePipelineScan.Rules
             {
                 Project = project,
                 
-                //Groupmembers
                 ApplicationGroupContainsProductionEnvironmentOwner =
                     ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
                 ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = 
                     ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(groupMembers),
 
-                //Repositories rights
-                ProjectAdminHasNoPermissionToDeleteRepositorySet = 
-                    Permission.HasNoPermissionToDeleteRepository(permissionsGitRepositorySet.Permissions),
-                ProjectAdminHasNoPermissionToDeleteRepositories = 
-                    ProjectAdminHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
                 
-                ProjectAdminHasNoPermissionToManagePermissionsRepositorySet = 
-                    Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions),
-                ProjectAdminHasNoPermissionToManagePermissionsRepositories = 
-                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
+                RepositoryRightsProjectAdmin = new RepositoryRights
+                {
+                    HasNoPermissionToDeleteRepositories = 
+                        ProjectAdminHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
+                    HasNoPermissionToDeleteRepositorySet = 
+                        Permission.HasNoPermissionToDeleteRepository(permissionsGitRepositorySet.Permissions),
+                    HasNoPermissionToManagePermissionsRepositories = 
+                        ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
+                    HasNoPermissionToManagePermissionsRepositorySet = 
+                        Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions)
+                },
                 
-                //Builds rights
-                ProjectAdminHasNoPermissionsToAdministerBuildPermissions = 
-                    Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildProjectAdmins.Permissions),
-                BuildAdminHasNoPermissionsToAdministerBuildPermissions = 
-                    Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildBuildAdmins.Permissions),
-
-                ProjectAdminHasNoPermissionsToDeleteBuildDefinition = 
-                    Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildProjectAdmins.Permissions),
-                BuildAdminHasNoPermissionsToDeleteBuildDefinition = 
-                    Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildBuildAdmins.Permissions),
-
-                ProjectAdminHasNoPermissionsToDeleteBuilds = 
-                    Permission.HasNoPermissionToDeleteBuilds(permissionsBuildProjectAdmins.Permissions),
-                BuildAdminHasNoPermissionsToDeleteBuilds = 
-                    Permission.HasNoPermissionToDeleteBuilds(permissionsBuildBuildAdmins.Permissions),
+                BuildRightsProjectAdmin = new BuildRights
+                {
+                    HasNoPermissionsToAdministerBuildPermissions = 
+                        Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildProjectAdmins.Permissions),
+                    HasNoPermissionsToDeleteBuilds = 
+                        Permission.HasNoPermissionToDeleteBuilds(permissionsBuildProjectAdmins.Permissions),
+                    HasNoPermissionsToDeDestroyBuilds = 
+                        Permission.HasNoPermissionToDestroyBuilds(permissionsBuildProjectAdmins.Permissions),
+                    HasNoPermissionsToDeleteBuildDefinition = 
+                        Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildProjectAdmins.Permissions)
+                },
                 
-                ProjectAdminHasNoPermissionsToDeDestroyBuilds =
-                    Permission.HasNoPermissionToDestroyBuilds(permissionsBuildProjectAdmins.Permissions),
-                BuildAdminHasNoPermissionsToDeDestroyBuilds = 
-                    Permission.HasNoPermissionToDestroyBuilds(permissionsBuildBuildAdmins.Permissions)
-                    
+                BuildRightsBuildAdmin = new BuildRights
+                {
+                    HasNoPermissionsToAdministerBuildPermissions = 
+                        Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildBuildAdmins.Permissions),
+                    HasNoPermissionsToDeleteBuilds = 
+                        Permission.HasNoPermissionToDeleteBuilds(permissionsBuildBuildAdmins.Permissions),
+                    HasNoPermissionsToDeDestroyBuilds = 
+                        Permission.HasNoPermissionToDestroyBuilds(permissionsBuildBuildAdmins.Permissions),
+                    HasNoPermissionsToDeleteBuildDefinition = 
+                        Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildBuildAdmins.Permissions)
+                },
                     
             };
 
+            
             securityReport.ProjectIsSecure = (
-                //Groupmembers
                 securityReport.ApplicationGroupContainsProductionEnvironmentOwner &&
                 securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
-                //Repositories rights
-                securityReport.ProjectAdminHasNoPermissionToDeleteRepositories &&
-                securityReport.ProjectAdminHasNoPermissionToDeleteRepositorySet &&
-                securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositories &&
-                securityReport.ProjectAdminHasNoPermissionToManagePermissionsRepositorySet &&
-                //Builds rights
-                securityReport.ProjectAdminHasNoPermissionsToAdministerBuildPermissions &&
-                securityReport.BuildAdminHasNoPermissionsToAdministerBuildPermissions &&
-                securityReport.ProjectAdminHasNoPermissionsToDeleteBuildDefinition &&
-                securityReport.BuildAdminHasNoPermissionsToDeleteBuildDefinition &&
-                securityReport.ProjectAdminHasNoPermissionsToDeleteBuilds &&
-                securityReport.BuildAdminHasNoPermissionsToDeleteBuilds &&
-                securityReport.ProjectAdminHasNoPermissionsToDeDestroyBuilds &&
-                securityReport.BuildAdminHasNoPermissionsToDeDestroyBuilds
                 
+                securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure &&
+                securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure &&
+                securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure
                 );
 
            return securityReport;
