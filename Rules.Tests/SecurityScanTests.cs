@@ -119,27 +119,28 @@ namespace SecurePipelineScan.Rules.Tests
 
             report.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeFalse();
         }
-
+        
+        [Fact]
+        public void EmptyRepositoryRightsProjectAdminShouldBeFalse()
+        {
+            var report = new SecurityReport
+            {
+                BuildRightsBuildAdmin = new BuildRights(),
+                BuildRightsProjectAdmin = new BuildRights(),
+                RepositoryRightsProjectAdmin = new RepositoryRights(),
+            };
+            
+            report.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeFalse();
+        }
+        
         [Fact]
         public void EmptyBuildRightsBuildAdminShouldBeFalse()
         {
             var report = new SecurityReport
             {
                 BuildRightsBuildAdmin = new BuildRights(),
-                BuildRightsProjectAdmin = new BuildRights
-                {
-                    HasNoPermissionsToDeleteBuilds = true,
-                    HasNoPermissionsToDeDestroyBuilds = true,
-                    HasNoPermissionsToDeleteBuildDefinition = true,
-                    HasNoPermissionsToAdministerBuildPermissions = true
-                },
-                RepositoryRightsProjectAdmin = new RepositoryRights
-                {
-                    HasNoPermissionToManagePermissionsRepositories = true,
-                    HasNoPermissionToManagePermissionsRepositorySet = true,
-                    HasNoPermissionToDeleteRepositorySet = true,
-                    HasNoPermissionToDeleteRepositories = true
-                }
+                BuildRightsProjectAdmin = new BuildRights(),
+                RepositoryRightsProjectAdmin = new RepositoryRights(),
             };
             
             report.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeFalse();
