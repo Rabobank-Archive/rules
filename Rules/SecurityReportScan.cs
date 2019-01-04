@@ -113,16 +113,7 @@ namespace SecurePipelineScan.Rules
                     
             };
 
-            
-            securityReport.ProjectIsSecure = (
-                securityReport.ApplicationGroupContainsProductionEnvironmentOwner &&
-                securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
-                
-                securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure &&
-                securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure &&
-                securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure
-                );
-
+          
            return securityReport;
         }
 

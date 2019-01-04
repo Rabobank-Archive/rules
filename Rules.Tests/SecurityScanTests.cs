@@ -82,43 +82,6 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.ShouldNotBeNull();
         }
         
-        [Fact]
-        public void CorrectRepositoryRightsProjectAdminShouldBeTrue()
-        {
-            var report = new SecurityReport
-            {
-                BuildRightsBuildAdmin = new BuildRights(),
-                BuildRightsProjectAdmin = new BuildRights(),
-                RepositoryRightsProjectAdmin = new RepositoryRights
-                {
-                    HasNoPermissionToManagePermissionsRepositories = true,
-                    HasNoPermissionToManagePermissionsRepositorySet = true,
-                    HasNoPermissionToDeleteRepositorySet = true,
-                    HasNoPermissionToDeleteRepositories = true
-                }
-            };
-            
-            report.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
-        }
-
-        [Fact]
-        public void InCorrectRepositoryRightsProjectAdminShouldBeFalse()
-        {
-            var report = new SecurityReport
-            {
-                BuildRightsBuildAdmin = new BuildRights(),
-                BuildRightsProjectAdmin = new BuildRights(),
-                RepositoryRightsProjectAdmin = new RepositoryRights
-                {
-                    HasNoPermissionToManagePermissionsRepositories = false,
-                    HasNoPermissionToManagePermissionsRepositorySet = true,
-                    HasNoPermissionToDeleteRepositorySet = true,
-                    HasNoPermissionToDeleteRepositories = true
-                }
-            };
-
-            report.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeFalse();
-        }
         
         [Fact]
         public void EmptyRepositoryRightsProjectAdminShouldBeFalse()
@@ -146,44 +109,93 @@ namespace SecurePipelineScan.Rules.Tests
             report.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeFalse();
         }
 
-        [Fact]
-        public void InCorrectBuildRightsProjectAdminShouldBeFalse()
-        {
-            var report = new SecurityReport
-            {
-                BuildRightsBuildAdmin = new BuildRights(),
-                RepositoryRightsProjectAdmin = new RepositoryRights(),
-                BuildRightsProjectAdmin = new BuildRights
-                {
-                    HasNoPermissionsToDeleteBuilds = false,
-                    HasNoPermissionsToDeDestroyBuilds = true,
-                    HasNoPermissionsToDeleteBuildDefinition = true,
-                    HasNoPermissionsToAdministerBuildPermissions = true
-
-                }
-            };
-
-            report.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeFalse();
-        }
         
-        [Fact]
-        public void CorrectBuildRightsProjectAdminShouldBeTrue()
+        
+        [Theory]
+        [InlineData(
+            true, true, 
+            true, true, true, true, true,
+            true, true, true, true, true,
+            true, true, true, true, true,
+            true)]
+        [InlineData(
+            false, true, 
+            true, true, true, true, true,
+            true, true, true, true, true,
+            true, true, true, true, true,
+            false)]
+        [InlineData(
+            true, false, 
+            true, true, true, true, true,
+            true, true, true, true, true,
+            true, true, true, true, true,
+            false)]
+        [InlineData(
+            false, false, 
+            true, true, true, true, true,
+            true, true, true, true, true,
+            true, true, true, true, true,
+            false)]
+        [InlineData(
+            true, true, 
+            false, true, true, true, false,
+            true, true, true, true, true,
+            true, true, true, true, true,
+            false)]       
+        [InlineData(
+            true, true, 
+            true, true, true, true, true,
+            false, true, true, true, false,
+            true, true, true, true, true,
+            false)]       
+        [InlineData(
+            true, true, 
+            true, true, true, true, true,
+            true, true, true, true, true,
+            false, true, true, true, false,
+            false)]       
+        public void CheckBuildRightsProjectAdmin(
+            bool a, bool b,
+            bool aa, bool ab, bool ac, bool ad, bool ae,
+            bool ba, bool bb, bool bc, bool bd, bool be,
+            bool ca, bool cb, bool cc, bool cd, bool ce,
+            bool isSecure)
         {
+            //Arrange
             var report = new SecurityReport
             {
-                BuildRightsBuildAdmin = new BuildRights(),
-                RepositoryRightsProjectAdmin = new RepositoryRights(),
+                ApplicationGroupContainsProductionEnvironmentOwner = a,
+                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = b,
+                
+                BuildRightsBuildAdmin = new BuildRights
+                {
+                    HasNoPermissionsToDeleteBuilds = aa,
+                    HasNoPermissionsToDeDestroyBuilds = ab,
+                    HasNoPermissionsToDeleteBuildDefinition = ac,
+                    HasNoPermissionsToAdministerBuildPermissions = ad
+                },
                 BuildRightsProjectAdmin = new BuildRights
                 {
-                    HasNoPermissionsToDeleteBuilds = true,
-                    HasNoPermissionsToDeDestroyBuilds = true,
-                    HasNoPermissionsToDeleteBuildDefinition = true,
-                    HasNoPermissionsToAdministerBuildPermissions = true
+                    HasNoPermissionsToDeleteBuilds = ba,
+                    HasNoPermissionsToDeDestroyBuilds = bb,
+                    HasNoPermissionsToDeleteBuildDefinition = bc,
+                    HasNoPermissionsToAdministerBuildPermissions = bd
+                },
 
-                }
+                RepositoryRightsProjectAdmin = new RepositoryRights
+                {
+                    HasNoPermissionToManagePermissionsRepositories = ca,
+                    HasNoPermissionToManagePermissionsRepositorySet = cb,
+                    HasNoPermissionToDeleteRepositorySet = cc,
+                    HasNoPermissionToDeleteRepositories = cd
+                },
             };
-
-            report.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            
+            //Act & Assert
+            report.BuildRightsProjectAdmin.BuildRightsIsSecure.Equals(be).ShouldBeTrue();
+            report.BuildRightsBuildAdmin.BuildRightsIsSecure.Equals(ae).ShouldBeTrue();
+            report.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.Equals(ce).ShouldBeTrue();
+            report.ProjectIsSecure.Equals(isSecure).ShouldBeTrue();
         }
     }
 }
