@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using Shouldly;
 using System.Net;
@@ -55,6 +56,22 @@ namespace SecurePipelineScan.VstsService.Tests
             condition.Name.ShouldNotBeNullOrEmpty();
             condition.ConditionType.ShouldNotBeEmpty();
             condition.Value.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void QueryEnvironment()
+        {
+            var environment = _client.Get(Requests.Release.Environment(_project, "62", "115"));
+
+            environment.ShouldNotBeNull();
+            environment.DeployPhasesSnapshot.ShouldNotBeEmpty();
+
+            var snapshot = environment.DeployPhasesSnapshot.First();
+            snapshot.WorkflowTasks.ShouldNotBeEmpty();
+
+            var task = snapshot.WorkflowTasks.First();
+            task.TaskId.ShouldNotBe(Guid.Empty);
+            task.Inputs.ShouldNotBeEmpty();
         }
     }
 }
