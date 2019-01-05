@@ -3,11 +3,9 @@ using System.IO;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
-using RestSharp;
 using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -15,8 +13,17 @@ namespace SecurePipelineScan.Rules.Tests
 {
     public class ReleaseDeploymentScanTests
     {
-        public class Completed
+        public class Completed : IClassFixture<TestConfig>
         {
+            private readonly TestConfig _config;
+            private VstsRestClient _client;
+
+            public Completed(TestConfig config)
+            {
+                _config = config;
+                _client = new VstsRestClient(config.Organization, config.Token);
+            }
+            
             [Fact]
             public void ApprovalNotRequired()
             {
