@@ -7,10 +7,13 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     public class SecurityReportTests
     {
         [Theory]
-        [InlineData(true, true, true, true)]
-        [InlineData(false, true, true, false)]
-        [InlineData(true, false, true, false)]
-        public void CheckSecurityReport(bool a, bool b, bool c, bool d)
+        [InlineData(true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, false)]
+        [InlineData(true, true, false, true, true, false)]
+        [InlineData(true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, false, false)]
+        public void CheckSecurityReport(bool a, bool b, bool c, bool d, bool e, bool expected)
         {
             var securityReport = new SecurityReport
             {
@@ -26,22 +29,22 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 },
                 BuildRightsProjectAdmin = new BuildRights
                 {
-                    HasNoPermissionsToDeleteBuilds = c,
-                    HasNoPermissionsToDeDestroyBuilds = c,
-                    HasNoPermissionsToDeleteBuildDefinition = c,
-                    HasNoPermissionsToAdministerBuildPermissions = c
+                    HasNoPermissionsToDeleteBuilds = d,
+                    HasNoPermissionsToDeDestroyBuilds = d,
+                    HasNoPermissionsToDeleteBuildDefinition = d,
+                    HasNoPermissionsToAdministerBuildPermissions = d
                 },
 
                 RepositoryRightsProjectAdmin = new RepositoryRights
                 {
-                    HasNoPermissionToManagePermissionsRepositories = c,
-                    HasNoPermissionToManagePermissionsRepositorySet = c,
-                    HasNoPermissionToDeleteRepositorySet = c,
-                    HasNoPermissionToDeleteRepositories = c
+                    HasNoPermissionToManagePermissionsRepositories = e,
+                    HasNoPermissionToManagePermissionsRepositorySet = e,
+                    HasNoPermissionToDeleteRepositorySet = e,
+                    HasNoPermissionToDeleteRepositories = e
                 },
             };
             
-            securityReport.ProjectIsSecure.Equals(d).ShouldBeTrue();
+            securityReport.ProjectIsSecure.ShouldBe(expected);
 
         }
 

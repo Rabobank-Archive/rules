@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 HasNoPermissionsToAdministerBuildPermissions = d
             };
 
-            buildRights.BuildRightsIsSecure.Equals(e).ShouldBeTrue();
+            buildRights.BuildRightsIsSecure.ShouldBe(e);
             
         }
         
