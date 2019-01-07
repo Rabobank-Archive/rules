@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules
             };
         }
 
-        public bool CheckReleaseEnvironment(string project, string releaseId, string environmentId)
+        public bool IsProductionEnvironment(string project, string releaseId, string environmentId)
         {
             var environment = _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
             return environment

@@ -80,7 +80,7 @@ namespace SecurePipelineScan.Rules.Tests
         }
 
         [Fact]
-        public void CheckReleaseEnvironment()
+        public void IsProductionEnvironment_UsingProductionEndpoint_ShouldReturnTrue()
         {
             var fixture = Fixture();
             var endpointId = fixture.Create<Guid>();
@@ -111,7 +111,7 @@ namespace SecurePipelineScan.Rules.Tests
             
             var validator = new ServiceEndpointValidator(client, _cache);
             validator
-                .CheckReleaseEnvironment(project, releaseId, environmentId)
+                .IsProductionEnvironment(project, releaseId, environmentId)
                 .ShouldBeTrue();
             
             client
@@ -127,7 +127,7 @@ namespace SecurePipelineScan.Rules.Tests
         }
         
         [Fact]
-        public void CheckReleaseEnvironmentUsingNoEndpoint()
+        public void IsProductionEnvironment_NotUsingEndpoints_ShouldReturnFalse()
         {
             var fixture = Fixture();
 
@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var validator = new ServiceEndpointValidator(client, _cache);
             validator
-                .CheckReleaseEnvironment(fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>())
+                .IsProductionEnvironment(fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>())
                 .ShouldBeFalse();
         }
 

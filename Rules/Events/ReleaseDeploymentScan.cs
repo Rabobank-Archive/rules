@@ -37,7 +37,7 @@ namespace SecurePipelineScan.Rules.Events
             var releaseId = (string)input.SelectToken("resource.environment.releaseId");
             var environmentId = (string)input.SelectToken("resource.environment.id");
             
-            return _endpoints.CheckReleaseEnvironment(project, releaseId, environmentId);
+            return _endpoints.IsProductionEnvironment(project, releaseId, environmentId);
         }
 
         private static bool CheckApprovalOptions(JToken input)

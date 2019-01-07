@@ -82,7 +82,7 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var input = ReadInput("Completed", "ReleaseCreatorCanBeApprover.json");
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
-                endpoints.CheckReleaseEnvironment(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+                endpoints.IsProductionEnvironment(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
                 
                 var scan = new ReleaseDeploymentScan(endpoints);
                 var report = scan.Completed(input);
@@ -90,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests
                 report.UsesProductionEndpoints.ShouldBeTrue();
                 endpoints
                     .Received()
-                    .CheckReleaseEnvironment("Fabrikam", "0", "5");
+                    .IsProductionEnvironment("Fabrikam", "0", "5");
             }
 
             [Fact]
