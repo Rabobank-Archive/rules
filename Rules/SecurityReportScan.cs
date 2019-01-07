@@ -74,58 +74,49 @@ namespace SecurePipelineScan.Rules
                 ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = 
                     ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(groupMembers),
 
+                RepositoryRightsProjectAdmin = checkRepositoryRights(permissionsGitRepositorySet.Permissions, 
+                            repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
                 
-                RepositoryRightsProjectAdmin = new RepositoryRights
-                {
-                    HasNoPermissionToDeleteRepositories = 
-                        ProjectAdminHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
-                    HasNoPermissionToDeleteRepositorySet = 
-                        Permission.HasNoPermissionToDeleteRepository(permissionsGitRepositorySet.Permissions),
-                    HasNoPermissionToManagePermissionsRepositories = 
-                        ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins),
-                    HasNoPermissionToManagePermissionsRepositorySet = 
-                        Permission.HasNoPermissionToManageRepositoryPermissions(permissionsGitRepositorySet.Permissions)
-                },
-                
-                BuildRightsProjectAdmin = new BuildRights
-                {
-                    HasNoPermissionsToAdministerBuildPermissions = 
-                        Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildProjectAdmins.Permissions),
-                    HasNoPermissionsToDeleteBuilds = 
-                        Permission.HasNoPermissionToDeleteBuilds(permissionsBuildProjectAdmins.Permissions),
-                    HasNoPermissionsToDeDestroyBuilds = 
-                        Permission.HasNoPermissionToDestroyBuilds(permissionsBuildProjectAdmins.Permissions),
-                    HasNoPermissionsToDeleteBuildDefinition = 
-                        Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildProjectAdmins.Permissions)
-                },
-                
-                BuildRightsBuildAdmin = new BuildRights
-                {
-                    HasNoPermissionsToAdministerBuildPermissions = 
-                        Permission.HasNoPermissionToAdministerBuildPermissions(permissionsBuildBuildAdmins.Permissions),
-                    HasNoPermissionsToDeleteBuilds = 
-                        Permission.HasNoPermissionToDeleteBuilds(permissionsBuildBuildAdmins.Permissions),
-                    HasNoPermissionsToDeDestroyBuilds = 
-                        Permission.HasNoPermissionToDestroyBuilds(permissionsBuildBuildAdmins.Permissions),
-                    HasNoPermissionsToDeleteBuildDefinition = 
-                        Permission.HasNoPermissionToDeleteBuildDefinition(permissionsBuildBuildAdmins.Permissions)
-                },
-                    
+                BuildRightsBuildAdmin = checkBuildRights(permissionsBuildBuildAdmins.Permissions),
+                BuildRightsProjectAdmin = checkBuildRights(permissionsBuildProjectAdmins.Permissions), 
             };
-
-            
-            securityReport.ProjectIsSecure = (
-                securityReport.ApplicationGroupContainsProductionEnvironmentOwner &&
-                securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
-                
-                securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure &&
-                securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure &&
-                securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure
-                );
-
+          
            return securityReport;
         }
 
+        private RepositoryRights checkRepositoryRights(
+            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions, 
+            IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return new RepositoryRights
+            {
+                HasNoPermissionToDeleteRepositories = 
+                    ProjectAdminHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                HasNoPermissionToDeleteRepositorySet = 
+                    Permission.HasNoPermissionToDeleteRepository(permissions),
+                HasNoPermissionToManagePermissionsRepositories = 
+                    ProjectAdminHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                HasNoPermissionToManagePermissionsRepositorySet = 
+                    Permission.HasNoPermissionToManageRepositoryPermissions(permissions)
+            };
+        }
+        
+        private BuildRights checkBuildRights(
+            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+        {
+            return new BuildRights
+            {
+                HasNoPermissionsToAdministerBuildPermissions = 
+                    Permission.HasNoPermissionToAdministerBuildPermissions(permissions),
+                HasNoPermissionsToDeleteBuilds = 
+                    Permission.HasNoPermissionToDeleteBuilds(permissions),
+                HasNoPermissionsToDeDestroyBuilds = 
+                    Permission.HasNoPermissionToDestroyBuilds(permissions),
+                HasNoPermissionsToDeleteBuildDefinition = 
+                    Permission.HasNoPermissionToDeleteBuildDefinition(permissions)
+            };
+        }
+        
         private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
         {
             var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
