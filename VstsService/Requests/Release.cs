@@ -1,4 +1,6 @@
+using System;
 using RestSharp;
+using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
@@ -17,6 +19,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRestRequest<Response.Multiple<Response.ReleaseDefinition>> Definitions(string project)
         {
             return new VsrmRequest<Response.Multiple<Response.ReleaseDefinition>>($"{project}/_apis/release/definitions/");
+        }
+
+        public static IVstsRestRequest<Response.Environment> Environment(string project, string release, string id)
+        {
+            return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
         }
     }
 }

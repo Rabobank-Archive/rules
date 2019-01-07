@@ -46,25 +46,7 @@
       "demands": [],
       "conditions": [],
       "modifiedOn": "2016-01-21T08:19:17.26Z",
-      "workflowTasks": [
-        {
-          "taskId": "00000000-0000-0000-0000-000000000000",
-          "version": "*",
-          "name": "Deploy Website to Azure",
-          "enabled": true,
-          "alwaysRun": false,
-          "continueOnError": false,
-          "timeoutInMinutes": 0,
-          "definitionType": null,
-          "inputs": {
-            "ConnectedServiceName": "b460b0f8-fe23-4dc2-a99c-fd8b0633fe1c",
-            "WebSiteName": "$(webAppName)",
-            "WebSiteLocation": "Southeast Asia",
-            "Slot": "",
-            "Package": "$(System.DefaultWorkingDirectory)\\**\\*.zip"
-          }
-        }
-      ],
+      "workflowTasks": [],
       "deployPhasesSnapshot": [],
       "owner": {
         "id": "4247c988-4060-4712-abca-ff44681dd78a",

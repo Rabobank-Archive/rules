@@ -3,11 +3,9 @@ using System.IO;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
-using RestSharp;
 using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -15,8 +13,17 @@ namespace SecurePipelineScan.Rules.Tests
 {
     public class ReleaseDeploymentScanTests
     {
-        public class Completed
+        public class Completed : IClassFixture<TestConfig>
         {
+            private readonly TestConfig _config;
+            private VstsRestClient _client;
+
+            public Completed(TestConfig config)
+            {
+                _config = config;
+                _client = new VstsRestClient(config.Organization, config.Token);
+            }
+            
             [Fact]
             public void ApprovalNotRequired()
             {
@@ -75,7 +82,7 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var input = ReadInput("Completed", "ReleaseCreatorCanBeApprover.json");
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
-                endpoints.IsProduction(Arg.Any<string>(), Arg.Any<Guid>()).Returns(true);
+                endpoints.IsProductionEnvironment(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
                 
                 var scan = new ReleaseDeploymentScan(endpoints);
                 var report = scan.Completed(input);
@@ -83,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests
                 report.UsesProductionEndpoints.ShouldBeTrue();
                 endpoints
                     .Received()
-                    .IsProduction("Fabrikam", new Guid("b460b0f8-fe23-4dc2-a99c-fd8b0633fe1c"));
+                    .IsProductionEnvironment("Fabrikam", "0", "5");
             }
 
             [Fact]

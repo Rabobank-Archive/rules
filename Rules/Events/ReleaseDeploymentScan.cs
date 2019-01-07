@@ -34,9 +34,10 @@ namespace SecurePipelineScan.Rules.Events
         {
             // Could reuse the project name as resolved earlier but I like the idea of autonomy here
             var project = (string)input.SelectToken("resource.project.name");
-            var inputs = input.SelectTokens("resource.environment.workflowTasks[*].inputs.*").Values<string>();
+            var releaseId = (string)input.SelectToken("resource.environment.releaseId");
+            var environmentId = (string)input.SelectToken("resource.environment.id");
             
-            return inputs.Any(x => Guid.TryParse(x, out var id) && _endpoints.IsProduction(project, id));
+            return _endpoints.IsProductionEnvironment(project, releaseId, environmentId);
         }
 
         private static bool CheckApprovalOptions(JToken input)
