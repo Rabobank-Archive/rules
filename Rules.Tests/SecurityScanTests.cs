@@ -44,7 +44,14 @@ namespace SecurePipelineScan.Rules.Tests
             
             securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeTrue();
             securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            securityReport.BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            securityReport.BuildDefinitionsRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
+            
+            securityReport.ReleaseRightsContributor.ReleaseRightsIsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsProductionEnvOwner.ReleaseRightsProductEnvOwnerIsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsRaboProjectAdmin.ReleaseRightsIsSecure.ShouldBeTrue();
             
             securityReport.ProjectIsSecure.ShouldBeTrue();
         }
@@ -55,14 +62,21 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1234",};
-            var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[TAS]\\Rabobank Project Administrators"};
-            var applicationGroup3 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Build Administrators", TeamFoundationId = "4321",};
-            var applicationGroups = new Response.ApplicationGroups {Identities = new[] {applicationGroup1 , applicationGroup2, applicationGroup3}};
+            var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1",};
+            var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2"};
+            var applicationGroup3 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Build Administrators", TeamFoundationId = "3",};
+            var applicationGroup4 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Production Environment Owners", TeamFoundationId = "4",};
+            var applicationGroup5 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Release Administrators", TeamFoundationId = "5",};
+            var applicationGroup6 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Contributors", TeamFoundationId = "6",};
+            var applicationGroups = new Response.ApplicationGroups {Identities = new[]
+            {
+                applicationGroup1 , applicationGroup2, applicationGroup3, applicationGroup4, applicationGroup5, applicationGroup6
+            }};
 
             var securityNamespace1 = new Response.SecurityNamespace {DisplayName = "Git Repositories", NamespaceId = "123456"};
             var securityNamespace2 = new Response.SecurityNamespace {Name = "Build", NamespaceId = "54321"};
-            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace>(securityNamespace1, securityNamespace2);
+            var securityNamespace3 = new Response.SecurityNamespace {Name = "ReleaseManagement", NamespaceId = "54454321", Actions = new []{ new Response.NamespaceAction{ Name = "ViewReleaseDefinition"} }};
+            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace>(securityNamespace1, securityNamespace2, securityNamespace3);
             
 
             var client = Substitute.For<IVstsRestClient>();
@@ -74,7 +88,9 @@ namespace SecurePipelineScan.Rules.Tests
 
             client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>()).Returns(fixture.Create<Response.Multiple<Response.Repository>>());
             client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.BuildDefinition>>>()).Returns(fixture.Create<Response.Multiple<Response.BuildDefinition>>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.ReleaseDefinition>>>()).Returns(fixture.Create<Response.Multiple<Response.ReleaseDefinition>>());
 
+            
             client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>()).Returns(fixture.Create<Response.PermissionsSetId>());
 
             var scan = new SecurityReportScan(client);

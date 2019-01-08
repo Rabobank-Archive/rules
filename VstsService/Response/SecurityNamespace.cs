@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Transactions;
+
 namespace SecurePipelineScan.VstsService.Response
 {
     public class SecurityNamespace
@@ -11,5 +14,7 @@ namespace SecurePipelineScan.VstsService.Response
         public string ReadPermission { get; set; }
         
         public string WritePermission { get; set; }
+        
+        public IEnumerable<NamespaceAction> Actions { get; set; }
     }
 }

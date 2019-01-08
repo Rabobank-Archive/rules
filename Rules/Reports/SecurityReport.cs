@@ -15,12 +15,22 @@ namespace Rules.Reports
         public BuildRights BuildRightsBuildAdmin { get; set; }
         public BuildRights BuildDefinitionsRightsProjectAdmin { get; set; }
         public BuildRights BuildDefinitionsRightsBuildAdmin { get; set; }
+        
+        public ReleaseRights ReleaseRightsRaboProjectAdmin { get; set; }
+        public ReleaseRights ReleaseRightsContributor { get; set; }
+        public ReleaseRightsProductionEnvOwner ReleaseRightsProductionEnvOwner { get; set; }
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
                                        BuildRightsBuildAdmin.BuildRightsIsSecure &&
                                        BuildRightsProjectAdmin.BuildRightsIsSecure &&
-                                       RepositoryRightsProjectAdmin.RepositoryRightsIsSecure;
+                                       BuildDefinitionsRightsProjectAdmin.BuildRightsIsSecure &&
+                                       BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure &&
+                                       RepositoryRightsProjectAdmin.RepositoryRightsIsSecure &&
+                                       ReleaseRightsRaboProjectAdmin.ReleaseRightsIsSecure &&
+                                       ReleaseRightsContributor.ReleaseRightsIsSecure &&
+                                       ReleaseRightsProductionEnvOwner.ReleaseRightsProductEnvOwnerIsSecure
+        ;
 
     }
 }

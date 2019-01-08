@@ -156,5 +156,108 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDeleteBuilds(new List<Response.Permission>())
                 .ShouldBeFalse();
         }
+
+        [Fact]
+        public void NoPermissionsToAdministerReleasePermissionsShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 512,
+                    DisplayName = "Administer release permissions",
+
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
+                }
+            };
+            
+            Permission.HasNoPermissionToAdministerReleasePermissions(permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void NoPermissionsToDeleteReleasePipelineShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 4,
+                    DisplayName = "Delete release pipeline",
+
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
+                }
+            };
+            Permission.HasNoPermissionToDeleteReleasePipeline(permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void NoPermissionsToDeleteReleaseShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 1024,
+                    DisplayName = "Delete releases",
+
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
+                }
+            };
+            Permission.HasNoPermissionToDeleteReleases(permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void NoPermissionToManageReleaseApproversShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 8,
+                    DisplayName = "Manage release approvers",
+
+                    PermissionId = 2,
+                    PermissionDisplayString = "Deny"
+                }
+            };
+            Permission.HasNoPermissionToManageReleaseApprovers(permissions).ShouldBeTrue();   
+        }
+        
+        [Fact]
+        public void HasPermissionToManageReleaseApproversShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 8,
+                    DisplayName = "Manage release approvers",
+
+                    PermissionId = 1,
+                    PermissionDisplayString = "Allow"
+                }
+            };
+            Permission.HasPermissionToManageReleaseApprovers(permissions).ShouldBeTrue();   
+        }
+        
+        [Fact]
+        public void NoPermissionToCreateReleasesShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 64,
+                    DisplayName = "Create releases",
+
+                    PermissionId = 4,
+                    PermissionDisplayString = "Deny (inherited)"
+                }
+            };
+            Permission.HasNoPermissionToCreateReleases(permissions).ShouldBeTrue();   
+        }
     }
 }

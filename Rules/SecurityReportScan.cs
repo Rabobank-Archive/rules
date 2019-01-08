@@ -6,6 +6,7 @@ using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using System.Linq;
+using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Requests.ApplicationGroup;
 using Permission = SecurePipelineScan.Rules.Checks.Permission;
@@ -31,11 +32,17 @@ namespace SecurePipelineScan.Rules
             
             var groupMembers = getGroupMembersFromApplicationGroup(project, applicationGroups);
 
+            
             var namespaceIdGitRepositories = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var namespaceIdBuild = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.Name == "Build").NamespaceId;
+            
+            var namespaceIdRelease = client.Get(SecurityNamespace.SecurityNamespaces()).Value
+                .First(ns => ns.Name == "ReleaseManagement" && 
+                             ns.Actions.
+                                 Any(action => action.Name.Equals("ViewReleaseDefinition"))).NamespaceId;
             
             var applicationGroupIdProjectAdmins = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
@@ -43,6 +50,18 @@ namespace SecurePipelineScan.Rules
             var applicationGroupIdBuildAdmins = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Build Administrators").TeamFoundationId;
             
+            var applicationGroupIdReleaseAdmins = applicationGroups
+                .First(gi => gi.DisplayName == $"[{project}]\\Release Administrators").TeamFoundationId;
+            
+            var applicationGroupIdProdEnvOwners = applicationGroups
+                .First(gi => gi.DisplayName == $"[{project}]\\Production Environment Owners").TeamFoundationId;
+            
+            var applicationGroupIdRaboProjAdmins = applicationGroups
+                .First(gi => gi.DisplayName == $"[{project}]\\Rabobank Project Administrators").TeamFoundationId;
+
+            var applicationGroupIdContributors = applicationGroups
+                .First(gi => gi.DisplayName == $"[{project}]\\Contributors").TeamFoundationId;
+
             
             var projectId = client.Get(Project.Properties(project)).Id;           
             
@@ -55,6 +74,15 @@ namespace SecurePipelineScan.Rules
             
             var permissionsBuildBuildAdmins = client.Get(Permissions.PermissionsGroupSetId(
                 projectId, namespaceIdBuild, applicationGroupIdBuildAdmins));
+
+            var permissionsReleaseRaboProjectAdmins = client.Get(Permissions.PermissionsGroupSetId(
+                projectId, namespaceIdRelease, applicationGroupIdRaboProjAdmins));
+
+            var permissionsReleaseProdEnvOwner = client.Get(Permissions.PermissionsGroupSetId(
+                projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners));
+
+            var permissionsReleaseContributors = client.Get(Permissions.PermissionsGroupSetId(
+                projectId, namespaceIdRelease, applicationGroupIdContributors));
 
             
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
@@ -79,6 +107,10 @@ namespace SecurePipelineScan.Rules
                 
                 BuildDefinitionsRightsBuildAdmin = CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdBuildAdmins),
                 BuildDefinitionsRightsProjectAdmin = CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdProjectAdmins),
+                
+                ReleaseRightsProductionEnvOwner = CheckReleaseRightsProdEnvOwner(permissionsReleaseProdEnvOwner.Permissions),
+                ReleaseRightsRaboProjectAdmin = CheckReleaseRights(permissionsReleaseRaboProjectAdmins.Permissions),
+                ReleaseRightsContributor = CheckReleaseRights(permissionsReleaseContributors.Permissions)
                 
             };
           
@@ -136,6 +168,34 @@ namespace SecurePipelineScan.Rules
                     Permission.HasNoPermissionToDestroyBuilds(permissions),
                 HasNoPermissionsToDeleteBuildDefinition = 
                     Permission.HasNoPermissionToDeleteBuildDefinition(permissions)
+            };
+        }
+
+        private ReleaseRights CheckReleaseRights(
+            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+        {
+            return new ReleaseRights
+            {
+                HasNoPermissionToCreateReleases =
+                    Permission.HasNoPermissionToCreateReleases(permissions),
+                HasNoPermissionToDeleteReleases =
+                    Permission.HasNoPermissionToDeleteReleases(permissions),
+                HasNoPermissionToManageReleaseApprovers =
+                    Permission.HasNoPermissionToManageReleaseApprovers(permissions),
+                HasNoPermissionsToAdministerReleasePermissions =
+                    Permission.HasNoPermissionToAdministerReleasePermissions(permissions),
+                HasNoPermissionToDeleteReleasePipeline =
+                    Permission.HasNoPermissionToDeleteReleasePipeline(permissions)
+            };
+        }
+
+        private ReleaseRightsProductionEnvOwner CheckReleaseRightsProdEnvOwner(
+            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+        {
+            return new ReleaseRightsProductionEnvOwner
+            {
+                HasNoPermissionToCreateReleases = Permission.HasNoPermissionToCreateReleases(permissions),
+                HasPermissionToManageReleaseApprovers = Permission.HasPermissionToManageReleaseApprovers(permissions)
             };
         }
         

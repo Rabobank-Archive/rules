@@ -45,5 +45,41 @@ namespace SecurePipelineScan.Rules.Checks
                                            (p.PermissionId == 2 || p.PermissionId == 4));
         }
 
+        public static bool HasNoPermissionToAdministerReleasePermissions(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 512 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+        
+        public static bool HasNoPermissionToDeleteReleasePipeline(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 4 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
+        public static bool HasNoPermissionToDeleteReleases(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 1024 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
+        public static bool HasPermissionToManageReleaseApprovers(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 8 &&
+                                           (p.PermissionId == 1 || p.PermissionId == 3));
+        }
+
+        public static bool HasNoPermissionToManageReleaseApprovers(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 8 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
+        public static bool HasNoPermissionToCreateReleases(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p =>    p.PermissionBit == 64 &&
+                                           (p.PermissionId == 2 || p.PermissionId == 4));
+        }
+
     }
 }
