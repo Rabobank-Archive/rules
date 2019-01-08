@@ -10,7 +10,7 @@ using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules
 {
-    public class RepositoryScan
+    public class RepositoryScan : IProjectScan<IEnumerable<RepositoryReport>>
     {
         private readonly IVstsRestClient client;
 

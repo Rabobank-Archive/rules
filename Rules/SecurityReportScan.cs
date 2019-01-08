@@ -15,7 +15,7 @@ using SecurityNamespace = SecurePipelineScan.VstsService.Requests.SecurityNamesp
 
 namespace SecurePipelineScan.Rules
 {
-    public class SecurityReportScan
+    public class SecurityReportScan : IProjectScan<SecurityReport>
     {
         private readonly IVstsRestClient client;
 
@@ -23,16 +23,6 @@ namespace SecurePipelineScan.Rules
         {
             this.client = client;
         }
-
-        public void Execute()
-        {
-            var projects = client.Get(Project.Projects()).Value;
-            foreach (var project in projects)
-            {
-                Execute(project.Name);
-            }
-        }
-        
 
         public SecurityReport Execute(string project)
         {

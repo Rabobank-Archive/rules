@@ -7,7 +7,7 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Events
 {
-    public class ReleaseDeploymentScan
+    public class ReleaseDeploymentScan : IServiceHookScan<ReleaseDeploymentCompletedReport>
     {
         private readonly IServiceEndpointValidator _endpoints;
 
