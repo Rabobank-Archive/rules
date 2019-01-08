@@ -73,6 +73,7 @@ namespace SecurePipelineScan.Rules.Tests
             client.Get(Arg.Any<IVstsRestRequest<Response.ProjectProperties>>()).Returns(fixture.Create<Response.ProjectProperties>());
 
             client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>()).Returns(fixture.Create<Response.Multiple<Response.Repository>>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.BuildDefinition>>>()).Returns(fixture.Create<Response.Multiple<Response.BuildDefinition>>());
 
             client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>()).Returns(fixture.Create<Response.PermissionsSetId>());
 

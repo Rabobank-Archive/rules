@@ -13,6 +13,8 @@ namespace Rules.Reports
         
         public BuildRights BuildRightsProjectAdmin { get; set; }
         public BuildRights BuildRightsBuildAdmin { get; set; }
+        public BuildRights BuildDefinitionsRightsProjectAdmin { get; set; }
+        public BuildRights BuildDefinitionsRightsBuildAdmin { get; set; }
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
