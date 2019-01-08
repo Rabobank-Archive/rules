@@ -59,18 +59,19 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
-                    Project = "Fabrikam",
-                    Release = "Release-1",
-                    Environment = "Dev",
-                    ReleaseId = "1",
-                    CreatedDate = DateTime.Parse("2016-09-19T13:03:28.5345098")
+                    Project = "test",
+                    Pipeline = "transport-variables",
+                    Release = "Release-13",
+                    Environment = "Stage 1",
+                    ReleaseId = "60",
+                    CreatedDate = DateTime.Parse("2019-01-04T10:37:11.4507576")
                 }.ToExpectedObject(ctx =>
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
                 });
 
-                var input = ReadInput("Completed", "ReleaseCreatorCanBeApprover.json");
+                var input = ReadInput("Completed", "Real.json");
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
 
                 var report = scan.Completed(input);

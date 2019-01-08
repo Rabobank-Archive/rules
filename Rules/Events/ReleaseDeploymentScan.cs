@@ -21,6 +21,7 @@ namespace SecurePipelineScan.Rules.Events
             return new ReleaseDeploymentCompletedReport
             {
                 Project = (string)input.SelectToken("resource.project.name"),
+                Pipeline = (string)input.SelectToken("resource.environment.releaseDefinition.name"),
                 Release = (string)input.SelectToken("resource.environment.release.name"),
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),

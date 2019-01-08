@@ -11,5 +11,6 @@ namespace SecurePipelineScan.Rules.Reports
         public DateTime? CreatedDate { get; set; }
         public bool UsesProductionEndpoints { get; set; }
         public bool HasApprovalOptions { get; set; }
+        public string Pipeline { get; set; }
     }
 }
