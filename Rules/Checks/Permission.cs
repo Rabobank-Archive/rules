@@ -81,5 +81,19 @@ namespace SecurePipelineScan.Rules.Checks
                                            (p.PermissionId == 2 || p.PermissionId == 4));
         }
 
+        public static bool HasNoPermissionToDeleteTeamProject(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 4 && p.PermissionId == 2);
+        }
+
+        public static bool HasNoPermissionToPermanentlyDeleteWorkitems(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 32768 && p.PermissionId == 2);
+        }
+
+        public static bool HasNoPermissionToManageProjectProperties(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 131072 && p.PermissionId == 2);
+        }
     }
 }

@@ -55,16 +55,16 @@ namespace SecurePipelineScan.Rules
             var applicationGroupIdProdEnvOwners = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Production Environment Owners").TeamFoundationId;
             
-            var applicationGroupIdRaboProjAdmins = applicationGroups
+            var applicationGroupRabobankProjectAdministrators = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Rabobank Project Administrators").TeamFoundationId;
 
             var applicationGroupIdContributors = applicationGroups
                 .First(gi => gi.DisplayName == $"[{project}]\\Contributors").TeamFoundationId;
 
-            
+
             var projectId = client.Get(Project.Properties(project)).Id;           
-            
-            
+             
+
             var permissionsGitRepositorySet = client.Get(Permissions.PermissionsGroupRepositorySet(
                 projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins));
 
@@ -74,8 +74,11 @@ namespace SecurePipelineScan.Rules
             var permissionsBuildBuildAdmins = client.Get(Permissions.PermissionsGroupSetId(
                 projectId, namespaceIdBuild, applicationGroupIdBuildAdmins));
 
-            var permissionsReleaseRaboProjectAdmins = client.Get(Permissions.PermissionsGroupSetId(
-                projectId, namespaceIdRelease, applicationGroupIdRaboProjAdmins));
+            var permissionsTeamRabobankProjectAdministrators = client.Get(Permissions.PermissionsGroupProjectId(
+                projectId, applicationGroupRabobankProjectAdministrators));
+                
+            var permissionsReleaseRabobankProjectAdmininistrators = client.Get(Permissions.PermissionsGroupSetId(
+                projectId, namespaceIdRelease, applicationGroupRabobankProjectAdministrators));
 
             var permissionsReleaseProdEnvOwner = client.Get(Permissions.PermissionsGroupSetId(
                 projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners));
@@ -83,7 +86,7 @@ namespace SecurePipelineScan.Rules
             var permissionsReleaseContributors = client.Get(Permissions.PermissionsGroupSetId(
                 projectId, namespaceIdRelease, applicationGroupIdContributors));
 
-            
+
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
 
             var buildDefinitions = client.Get(Builds.BuildDefinitions(projectId)).Value;
@@ -106,13 +109,29 @@ namespace SecurePipelineScan.Rules
                 
                 BuildDefinitionsRightsBuildAdmin = CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdBuildAdmins),
                 BuildDefinitionsRightsProjectAdmin = CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdProjectAdmins),
+
                 
                 ReleaseRightsProductionEnvOwner = CheckReleaseRightsProdEnvOwner(permissionsReleaseProdEnvOwner.Permissions),
-                ReleaseRightsRaboProjectAdmin = CheckReleaseRights(permissionsReleaseRaboProjectAdmins.Permissions),
-                ReleaseRightsContributor = CheckReleaseRights(permissionsReleaseContributors.Permissions)
+                ReleaseRightsRaboProjectAdmin = CheckReleaseRights(permissionsReleaseRabobankProjectAdmininistrators.Permissions),
+                ReleaseRightsContributor = CheckReleaseRights(permissionsReleaseContributors.Permissions),
+
+                TeamRabobankProjectAdministrators = CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security.Permissions),
             };
           
            return securityReport;
+        }
+
+        private GlobalRights CheckTeamRabobankProjectAdministrators(IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+        {
+            return new GlobalRights
+            {
+                HasNoPermissionToDeleteTeamProject =
+                    Permission.HasNoPermissionToDeleteTeamProject(permissions),
+                HasNoPermissionToPermanentlyDeleteWorkitems =
+                    Permission.HasNoPermissionToPermanentlyDeleteWorkitems(permissions),
+                HasNoPermissionToManageProjectProperties =
+                    Permission.HasNoPermissionToManageProjectProperties(permissions),
+            };
         }
 
         private RepositoryRights CheckRepositoryRights(

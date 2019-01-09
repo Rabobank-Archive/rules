@@ -9,19 +9,21 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     public class SecurityReportTests
     {
         [Theory]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true)]
-        [InlineData(false, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, false, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, false, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, false, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, false, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, false, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, false, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, false, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, false, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, false, false)]
+
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, false, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, false, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, false, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, false, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, false, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, false, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, false, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, false, false)]
         public void CheckSecurityReport(
-            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool expected)
+            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool expected)
         {
             var securityReport = new SecurityReport(DateTime.Now)
             {
@@ -89,12 +91,18 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 {
                     HasNoPermissionToCreateReleases = j,
                     HasPermissionToManageReleaseApprovers = j
+                },
+
+                TeamRabobankProjectAdministrators = new GlobalRights
+                {
+                    HasNoPermissionToDeleteTeamProject = k,
+                    HasNoPermissionToPermanentlyDeleteWorkitems = k,
+                    HasNoPermissionToManageProjectProperties = k
                 }
-                
+
             };
             
             securityReport.ProjectIsSecure.ShouldBe(expected);
-
         }
 
     }

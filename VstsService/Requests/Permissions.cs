@@ -32,7 +32,13 @@ namespace SecurePipelineScan.VstsService.Requests
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}%2F{definitionId}");
 
         }
-            
+
+        public static IVstsRestRequest<Response.PermissionsProjectId> PermissionsGroupProjectId(string projectId, string applicationGroupId)
+        {
+            return new VstsRestRequest<PermissionsProjectId>(
+                $"{projectId}/_api/_identity/Display?__v=5&tfid={applicationGroupId}");
+        }
+
     }
     
 }

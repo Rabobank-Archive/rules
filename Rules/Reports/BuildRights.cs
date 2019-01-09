@@ -1,4 +1,4 @@
-namespace Rules.Reports
+﻿namespace Rules.Reports
 {
     public class BuildRights
     {

@@ -19,6 +19,9 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Reports\BuildRights1.cs" />
+  </ItemGroup>
   <PropertyGroup>
     <Authors>TAS</Authors>
     <Company>Rabobank</Company>

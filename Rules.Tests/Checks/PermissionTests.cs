@@ -81,7 +81,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToAdministerBuildPermissions(new List<Response.Permission>())
                 .ShouldBeFalse();
         }
-        
+
         [Fact]
         public void NoPermissionToDeleteBuildDefinitionShouldBeTrue()
         {
@@ -131,7 +131,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDestroyBuilds(new List<Response.Permission>())
                 .ShouldBeFalse();
         }
-        
+
         [Fact]
         public void NoPermissionToDeleteBuildsShouldBeTrue()
         {
@@ -258,6 +258,74 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 }
             };
             Permission.HasNoPermissionToCreateReleases(permissions).ShouldBeTrue();   
+        }
+    
+        [Fact]
+        public void HasNoPermissionToDeleteTeamProjectShouldBeTrue()
+        {
+            var permissions = new Response.PermissionsProjectId
+            {
+                Security = new Response.PermissionsSetId()
+                {
+                    Permissions = new[] {
+                            new Response.Permission {
+                            PermissionBit = 4,
+                            DisplayName = "Delete team project",
+
+                            PermissionId = 2,
+                            PermissionDisplayString = "Deny"
+                            }
+                        }
+                }
+            };
+
+
+            Permission.HasNoPermissionToDeleteTeamProject(permissions.Security.Permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void HasNoPermissionToPermanentlyDeleteWorkitemsShouldBeTrue()
+        {
+            var permissions = new Response.PermissionsProjectId
+            {
+                Security = new Response.PermissionsSetId()
+                {
+                    Permissions = new[] {
+                            new Response.Permission {
+                            PermissionBit = 32768,
+                            DisplayName = "Permanently delete work items",
+
+                            PermissionId = 2,
+                            PermissionDisplayString = "Deny"
+                            }
+                        }
+                }
+            };
+
+
+            Permission.HasNoPermissionToPermanentlyDeleteWorkitems(permissions.Security.Permissions).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void HasNoPermissionToManageProjectPropertiesShouldBeTrue()
+        {
+            var permissions = new Response.PermissionsProjectId
+            {
+                Security = new Response.PermissionsSetId()
+                {
+                    Permissions = new[] {
+                            new Response.Permission {
+                            PermissionBit = 131072,
+                            DisplayName = "Manage project properties",
+
+                            PermissionId = 2,
+                            PermissionDisplayString = "Deny"
+                            }
+                        }
+                }
+            };
+
+            Permission.HasNoPermissionToManageProjectProperties(permissions.Security.Permissions).ShouldBeTrue();
         }
     }
 }

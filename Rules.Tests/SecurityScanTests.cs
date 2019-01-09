@@ -40,7 +40,8 @@ namespace SecurePipelineScan.Rules.Tests
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
             securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
-            
+            securityReport.TeamRabobankProjectAdministrators.GlobalRightsIsSecure.ShouldBeTrue();
+
             securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeTrue();
             securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
             securityReport.BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure.ShouldBeTrue();
@@ -60,6 +61,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
+
 
             var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1",};
             var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2"};
@@ -91,6 +93,8 @@ namespace SecurePipelineScan.Rules.Tests
 
             
             client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>()).Returns(fixture.Create<Response.PermissionsSetId>());
+
+            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsProjectId>>()).Returns(fixture.Create<Response.PermissionsProjectId>());
 
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute("dummy", DateTime.Now);

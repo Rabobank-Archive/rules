@@ -14,7 +14,8 @@ namespace Rules.Reports
         
         public bool ApplicationGroupContainsProductionEnvironmentOwner { get; set; }
         public bool ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup { get; set; }
-        
+        public GlobalRights TeamRabobankProjectAdministrators { get; set; }
+
         public RepositoryRights RepositoryRightsProjectAdmin { get; set; }
         
         public BuildRights BuildRightsProjectAdmin { get; set; }
@@ -28,6 +29,7 @@ namespace Rules.Reports
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
+                                       TeamRabobankProjectAdministrators.GlobalRightsIsSecure &&
                                        BuildRightsBuildAdmin.BuildRightsIsSecure &&
                                        BuildRightsProjectAdmin.BuildRightsIsSecure &&
                                        BuildDefinitionsRightsProjectAdmin.BuildRightsIsSecure &&
