@@ -1,6 +1,6 @@
-﻿using AutoFixture;
+﻿using System;
+using AutoFixture;
 using AutoFixture.AutoNSubstitute;
-using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.VstsService;
 using Shouldly;
@@ -13,24 +13,24 @@ namespace SecurePipelineScan.Rules.Tests
 {
     public class RepositoryScanTests : IClassFixture<TestConfig>
     {
-        private readonly ITestOutputHelper output;
-        private readonly TestConfig config;
+        private readonly ITestOutputHelper _output;
+        private readonly TestConfig _config;
 
         public RepositoryScanTests(ITestOutputHelper output, TestConfig config)
         {
-            this.output = output;
-            this.config = config;
+            _output = output;
+            _config = config;
         }
 
         [Fact]
         [Trait("category", "integration")]
         public void IntegrationTestOnScan()
         {
-            var client = new VstsRestClient(config.Organization, config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
             var scan = new RepositoryScan(client);
-            var result = scan.Execute(config.Project).ToList();
+            var result = scan.Execute(_config.Project, DateTime.Now).ToList();
 
-            result.ForEach(x => output.WriteLine($"Repository: {x.Repository}, Result: {x.HasRequiredReviewerPolicy}"));
+            result.ForEach(x => _output.WriteLine($"Repository: {x.Repository}, Result: {x.HasRequiredReviewerPolicy}"));
             result.ShouldAllBe(r => r.HasRequiredReviewerPolicy);
         }
 
@@ -54,7 +54,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(repos);
 
             var scan = new RepositoryScan(client);
-            scan.Execute("dummy").ShouldNotBeEmpty();
+            scan.Execute("dummy", DateTime.Now).ShouldNotBeEmpty();
         }
     }
 }

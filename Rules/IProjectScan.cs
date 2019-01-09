@@ -1,9 +1,10 @@
+using System;
 using Rules.Reports;
 
 namespace SecurePipelineScan.Rules
 {
     public interface IProjectScan<out TReport>
     {
-        TReport Execute(string project);
+        TReport Execute(string project, DateTime date);
     }
 }

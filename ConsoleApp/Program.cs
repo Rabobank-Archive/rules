@@ -37,7 +37,7 @@ namespace SecurePipelineScan.ConsoleApp
                     var client = new VstsRestClient(organization, token);
 
                     var repoScan = new RepositoryScan(client);
-                    PrintMultiple(repoScan.Execute(projectNameOption.Value()));
+                    PrintMultiple(repoScan.Execute(projectNameOption.Value(), DateTime.Now));
                 });
                 return 0;
             });

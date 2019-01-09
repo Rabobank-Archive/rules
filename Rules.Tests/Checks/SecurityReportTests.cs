@@ -1,3 +1,4 @@
+using System;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Reports;
 using Shouldly;
@@ -22,7 +23,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         public void CheckSecurityReport(
             bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool expected)
         {
-            var securityReport = new SecurityReport
+            var securityReport = new SecurityReport(DateTime.Now)
             {
                 ApplicationGroupContainsProductionEnvironmentOwner = a,
                 ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = b,

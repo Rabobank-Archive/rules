@@ -1,3 +1,4 @@
+using System;
 using Rules.Reports;
 using Shouldly;
 using Xunit;
@@ -29,7 +30,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         [Fact]
         public void EmptyBuildRightsBuildAdminShouldBeFalse()
         {
-            var report = new SecurityReport
+            var report = new SecurityReport(DateTime.Now)
             {
                 BuildRightsBuildAdmin = new BuildRights(),
                 BuildRightsProjectAdmin = new BuildRights(),

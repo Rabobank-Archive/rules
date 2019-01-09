@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
@@ -25,7 +24,7 @@ namespace SecurePipelineScan.Rules
             this.client = client;
         }
 
-        public SecurityReport Execute(string project)
+        public SecurityReport Execute(string project, DateTime date)
         {
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
@@ -87,10 +86,10 @@ namespace SecurePipelineScan.Rules
             
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
 
-            var buildDefinitions = client.Get(VstsService.Requests.Builds.BuildDefinitions(projectId)).Value;
+            var buildDefinitions = client.Get(Builds.BuildDefinitions(projectId)).Value;
 
             
-            var securityReport = new SecurityReport
+            var securityReport = new SecurityReport(date)
             {
                 Project = project,
                 
@@ -111,7 +110,6 @@ namespace SecurePipelineScan.Rules
                 ReleaseRightsProductionEnvOwner = CheckReleaseRightsProdEnvOwner(permissionsReleaseProdEnvOwner.Permissions),
                 ReleaseRightsRaboProjectAdmin = CheckReleaseRights(permissionsReleaseRaboProjectAdmins.Permissions),
                 ReleaseRightsContributor = CheckReleaseRights(permissionsReleaseContributors.Permissions)
-                
             };
           
            return securityReport;
@@ -202,8 +200,7 @@ namespace SecurePipelineScan.Rules
         private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
         {
             var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
-            var groupMembers = client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
-            return groupMembers;
+            return client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
         }
 
         private bool ApplicationGroupHasNoPermissionToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
@@ -213,8 +210,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToManageRepositoryPermissions(
                     client.Get(Permissions.PermissionsGroupRepository(
                             projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
 
         private bool ApplicationGroupHasNoPermissionToDeleteRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
@@ -224,8 +220,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDeleteRepository(
                     client.Get(Permissions.PermissionsGroupRepository(
                             projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
         
         private bool ApplicationGroupHasNoPermissionToDeleteBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
@@ -235,8 +230,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDeleteBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
                             projectId, namespaceId, applicationGroupId, r.id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
 
         private bool ApplicationGroupHasNoPermissionToDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
@@ -246,8 +240,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
                             projectId, namespaceId, applicationGroupId, r.id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
 
         private bool ApplicationGroupHasNoPermissionToDestroyBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
@@ -257,8 +250,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDestroyBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
                             projectId, namespaceId, applicationGroupId, r.id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
         
         private bool ApplicationGroupHasNoPermissionToAdministerBuildPermissions(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
@@ -268,8 +260,7 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToAdministerBuildPermissions(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
                             projectId, namespaceId, applicationGroupId, r.id))
-                        .Permissions)
-                == true);
+                        .Permissions));
         }
 
 

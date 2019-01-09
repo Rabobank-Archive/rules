@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService;
@@ -19,7 +20,7 @@ namespace SecurePipelineScan.Rules
             this.client = client;
         }
 
-        public IEnumerable<RepositoryReport> Execute(string project)
+        public IEnumerable<RepositoryReport> Execute(string project, DateTime date)
         {
             var repos = client.Get(Requests.Repository.Repositories(project));
             var policies = client.Get(Requests.Policies.All(project));
@@ -27,7 +28,7 @@ namespace SecurePipelineScan.Rules
 
             foreach (var repo in repos)
             {
-                var repoReport = new RepositoryReport
+                var repoReport = new RepositoryReport(date)
                 {
                     Project = project,
                     Repository = repo.Name,

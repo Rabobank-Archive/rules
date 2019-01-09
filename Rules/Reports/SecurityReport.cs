@@ -1,9 +1,15 @@
+using System;
 using SecurePipelineScan.Rules.Reports;
 
 namespace Rules.Reports
 {
     public class SecurityReport
     {
+        public SecurityReport(DateTime date)
+        {
+            Date = date;
+        }
+
         public string Project { get; set; }
         
         public bool ApplicationGroupContainsProductionEnvironmentOwner { get; set; }
@@ -32,5 +38,6 @@ namespace Rules.Reports
                                        ReleaseRightsProductionEnvOwner.ReleaseRightsProductEnvOwnerIsSecure
         ;
 
+        public DateTime Date { get; }
     }
 }

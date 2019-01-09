@@ -18,26 +18,25 @@ namespace SecurePipelineScan.Rules.Tests
 {
     public class SecurityReportScanTest : IClassFixture<TestConfig>
     {
-        private readonly ITestOutputHelper output;
-        private readonly TestConfig config;
+        private readonly ITestOutputHelper _output;
+        private readonly TestConfig _config;
 
         public SecurityReportScanTest(ITestOutputHelper output, TestConfig config)
         {
-            this.output = output;
-            this.config = config;
+            _output = output;
+            _config = config;
         }
 
         [Fact]
         [Trait("category", "integration")]
         public void IntegrationTestOnScan()
         {
-            var organization = config.Organization;
-            string token = config.Token;
+            var organization = _config.Organization;
+            var token = _config.Token;
 
             var client = new VstsRestClient(organization, token);
             var scan = new SecurityReportScan(client);
-            var securityReport = scan.Execute(config.Project);
-
+            var securityReport = scan.Execute(_config.Project, DateTime.Now);
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
             securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
@@ -94,7 +93,7 @@ namespace SecurePipelineScan.Rules.Tests
             client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>()).Returns(fixture.Create<Response.PermissionsSetId>());
 
             var scan = new SecurityReportScan(client);
-            var securityReport = scan.Execute("dummy");
+            var securityReport = scan.Execute("dummy", DateTime.Now);
 
             securityReport.ShouldNotBeNull();
         }
