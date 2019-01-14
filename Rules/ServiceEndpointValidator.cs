@@ -33,16 +33,5 @@ namespace SecurePipelineScan.Rules
                 return _client.Get(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson());
             };
         }
-
-        public bool IsProductionEnvironment(string project, string releaseId, string environmentId)
-        {
-            var environment = _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
-            return environment
-                .DeployPhasesSnapshot
-                .SelectMany(s => s.WorkflowTasks)
-                .SelectMany(w => w.Inputs)
-                .Select(i => i.Value)
-                .Any(x => Guid.TryParse(x, out var id) && IsProduction(project, id));
-        }
     }
 }

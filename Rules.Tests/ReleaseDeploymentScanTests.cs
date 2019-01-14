@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using AutoFixture;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
+using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -13,45 +16,65 @@ namespace SecurePipelineScan.Rules.Tests
 {
     public class ReleaseDeploymentScanTests
     {
-        public class Completed : IClassFixture<TestConfig>
+        public class Completed
         {
-            private readonly TestConfig _config;
-            private VstsRestClient _client;
-
-            public Completed(TestConfig config)
-            {
-                _config = config;
-                _client = new VstsRestClient(config.Organization, config.Token);
-            }
+            private IFixture _fixture = new Fixture();
             
             [Fact]
-            public void ApprovalNotRequired()
-            {
-                var input = ReadInput("Completed", "NotApproved.json");
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
-                
-                var report = scan.Completed(input);
-                report.HasApprovalOptions.ShouldBeFalse();
-            }
-
-            [Fact]
-            public void MinimumNumberOfApproversNotZero()
+            public void ApprovalSettingsCorrect()
             {
                 var input = ReadInput("Completed", "Approved.json");
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
+                _fixture.Customize<Response.ApprovalOptions>(x => x
+                    .With(a => a.RequiredApproverCount, 0)
+                    .With(a => a.ReleaseCreatorCanBeApprover, false));
+                    
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
 
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
                 var report = scan.Completed(input);
                 report.HasApprovalOptions.ShouldBeTrue();
             }
 
             [Fact]
-            public void RequestedForCanBeApprover()
+            public void MinimumNumberOfApproversNotSet()
             {
-                var input = ReadInput("Completed", "ReleaseCreatorCanBeApprover.json");
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
+                var input = ReadInput("Completed", "NotApproved.json");
+                _fixture
+                    .Customize<Response.ApprovalOptions>(x => x.With(a => a.RequiredApproverCount, null));
+
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+                
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);
                 report.HasApprovalOptions.ShouldBeFalse();
+            }
+
+            [Fact]
+            public void RequestedForCanBeApprover()
+            {
+                var input = ReadInput("Completed", "NotApproved.json");
+                _fixture
+                    .Customize<Response.ApprovalOptions>(x => x.With(a => a.ReleaseCreatorCanBeApprover, true));
+
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+
+                var report = scan.Completed(input);
+                report
+                    .HasApprovalOptions
+                    .ShouldBeFalse();
             }
 
             [Fact]
@@ -59,20 +82,25 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
-                    Project = "test",
-                    Pipeline = "transport-variables",
-                    Release = "Release-13",
+                    Project = "proeftuin",
+                    Pipeline = "CheckApproval",
+                    Release = "Release-1",
                     Environment = "Stage 1",
-                    ReleaseId = "60",
-                    CreatedDate = DateTime.Parse("2019-01-04T10:37:11.4507576")
+                    ReleaseId = "1",
+                    CreatedDate = DateTime.Parse("2019-01-11T13:34:58.0366887")
                 }.ToExpectedObject(ctx =>
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
                 });
 
-                var input = ReadInput("Completed", "Real.json");
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var input = ReadInput("Completed", "Approved.json");
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);
                 expected.ShouldEqual(report);
@@ -81,17 +109,28 @@ namespace SecurePipelineScan.Rules.Tests
             [Fact]
             public void UsesServiceEndpointValidatorToScan()
             {
-                var input = ReadInput("Completed", "ReleaseCreatorCanBeApprover.json");
+                var input = ReadInput("Completed", "NotApproved.json");
+                _fixture.Customize<Response.WorkflowTask>(x => x.With(a => a.Inputs, new Dictionary<string, string>
+                {
+                    ["some-input"] = Guid.NewGuid().ToString()
+                }));
+                
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
-                endpoints.IsProductionEnvironment(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+                endpoints
+                    .IsProduction(Arg.Any<string>(), Arg.Any<Guid>())
+                    .Returns(true);
                 
-                var scan = new ReleaseDeploymentScan(endpoints);
-                var report = scan.Completed(input);
+                var scan = new ReleaseDeploymentScan(endpoints, client);
+                scan.Completed(input);
                 
-                report.UsesProductionEndpoints.ShouldBeTrue();
                 endpoints
                     .Received()
-                    .IsProductionEnvironment("Fabrikam", "0", "5");
+                    .IsProduction("test", Arg.Any<Guid>());
             }
 
             [Fact]
@@ -103,7 +142,13 @@ namespace SecurePipelineScan.Rules.Tests
                 }.ToExpectedObject();
                 
                 var input = new JObject();
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>());
+                
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);
                 expected.ShouldEqual(report);

@@ -1,52 +1,65 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Events
 {
     public class ReleaseDeploymentScan : IServiceHookScan<ReleaseDeploymentCompletedReport>
     {
         private readonly IServiceEndpointValidator _endpoints;
+        private readonly IVstsRestClient _client;
 
-        public ReleaseDeploymentScan(IServiceEndpointValidator endpoints)
+        public ReleaseDeploymentScan(IServiceEndpointValidator endpoints, IVstsRestClient client)
         {
             _endpoints = endpoints;
+            _client = client;
         }
 
         public ReleaseDeploymentCompletedReport Completed(JObject input)
         {
+            var environment = ResolveEnvironment(input);
+            var project = (string)input.SelectToken("resource.project.name");
             return new ReleaseDeploymentCompletedReport
             {
-                Project = (string)input.SelectToken("resource.project.name"),
+                Project = project,
                 Pipeline = (string)input.SelectToken("resource.environment.releaseDefinition.name"),
                 Release = (string)input.SelectToken("resource.environment.release.name"),
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),
                 CreatedDate = (DateTime?)input["createdDate"],
-                UsesProductionEndpoints = UsesProductionEndpoints(input),
-                HasApprovalOptions = CheckApprovalOptions(input)
+                UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
+                HasApprovalOptions = CheckApprovalOptions(environment)
             };
         }
 
-        private bool UsesProductionEndpoints(JToken input)
+        private bool UsesProductionEndpoints(string project, Response.Environment environment)
         {
-            // Could reuse the project name as resolved earlier but I like the idea of autonomy here
-            var project = (string)input.SelectToken("resource.project.name");
-            var releaseId = (string)input.SelectToken("resource.environment.releaseId");
-            var environmentId = (string)input.SelectToken("resource.environment.id");
-            
-            return _endpoints.IsProductionEnvironment(project, releaseId, environmentId);
+            return environment
+                .DeployPhasesSnapshot
+                .SelectMany(s => s.WorkflowTasks)
+                .SelectMany(w => w.Inputs)
+                .Select(i => i.Value)
+                .Any(x => Guid.TryParse(x, out var id) && _endpoints.IsProduction(project, id));
+
         }
 
-        private static bool CheckApprovalOptions(JToken input)
+        private static bool CheckApprovalOptions(Response.Environment environment)
         {
-            var options = input.SelectToken("resource.environment.preApprovalsSnapshot.approvalOptions");
-            return options != null &&
-                   (long)options["requiredApproverCount"] > 0 &&
-                   (bool?)options["releaseCreatorCanBeApprover"] == false;
+            return !environment.PreApprovalsSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover &&
+                environment.PreApprovalsSnapshot.ApprovalOptions.RequiredApproverCount != null; // Just having a value means it has to be approved.
+        }
+
+        private Response.Environment ResolveEnvironment(JToken input)
+        {
+            var project = (string) input.SelectToken("resource.project.name");
+            var releaseId = (string) input.SelectToken("resource.environment.releaseId");
+            var environmentId = (string) input.SelectToken("resource.environment.id");
+
+            var environment = _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
+            return environment;
         }
     }
 }

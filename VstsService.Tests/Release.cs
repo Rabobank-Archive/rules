@@ -77,13 +77,22 @@ namespace SecurePipelineScan.VstsService.Tests
             var task = snapshot.WorkflowTasks.First();
             task.TaskId.ShouldNotBe(Guid.Empty);
             task.Inputs.ShouldNotBeEmpty();
+            
+            var preApprovalSnapshot = environment.PreApprovalsSnapshot;
+            preApprovalSnapshot.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.RequiredApproverCount.ShouldBe(0);
+            preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeFalse();
         }
 
         [Fact]
         public void ConditionResultOnReleaseEnvironmentMustBeNullable()
         {
-            // Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
-            // _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
+            /*
+             * First test to use json file for test deserialization.
+             *   Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
+             *   _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
+             */
 
             var response = EmptyResponse();
             response.Content = File.ReadAllText(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
