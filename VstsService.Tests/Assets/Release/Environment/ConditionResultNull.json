@@ -1,0 +1,540 @@
+{
+  "id": 57594,
+  "releaseId": 7604,
+  "name": "Deploy to acpt4",
+  "status": "succeeded",
+  "variables": {
+    "link": {
+      "value": "$(acptLink)"
+    },
+    "targets": {
+      "value": "$(acptTargets)"
+    }
+  },
+  "variableGroups": [],
+  "preDeployApprovals": [
+    {
+      "id": 34552,
+      "revision": 1,
+      "approvalType": "preDeploy",
+      "createdOn": "2019-01-11T14:37:44.577Z",
+      "modifiedOn": "2019-01-11T14:37:44.577Z",
+      "status": "approved",
+      "comments": "",
+      "isAutomated": true,
+      "isNotificationOn": false,
+      "trialNumber": 1,
+      "attempt": 1,
+      "rank": 1,
+      "release": {
+        "id": 7604,
+        "name": "Release-86",
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604",
+        "_links": {}
+      },
+      "releaseDefinition": {
+        "id": 229,
+        "name": "investment-rbo-frontend release",
+        "path": "\\Skynet",
+        "projectReference": null,
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/definitions/229",
+        "_links": {}
+      },
+      "releaseEnvironment": {
+        "id": 57594,
+        "name": "Deploy to acpt4",
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594",
+        "_links": {}
+      },
+      "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/approvals/34552"
+    }
+  ],
+  "postDeployApprovals": [
+    {
+      "id": 34554,
+      "revision": 1,
+      "approvalType": "postDeploy",
+      "createdOn": "2019-01-11T14:38:37.57Z",
+      "modifiedOn": "2019-01-11T14:38:37.583Z",
+      "status": "approved",
+      "comments": "",
+      "isAutomated": true,
+      "isNotificationOn": false,
+      "trialNumber": 1,
+      "attempt": 1,
+      "rank": 3,
+      "release": {
+        "id": 7604,
+        "name": "Release-86",
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604",
+        "_links": {}
+      },
+      "releaseDefinition": {
+        "id": 229,
+        "name": "investment-rbo-frontend release",
+        "path": "\\Skynet",
+        "projectReference": null,
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/definitions/229",
+        "_links": {}
+      },
+      "releaseEnvironment": {
+        "id": 57594,
+        "name": "Deploy to acpt4",
+        "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594",
+        "_links": {}
+      },
+      "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/approvals/34554"
+    }
+  ],
+  "preApprovalsSnapshot": {
+    "approvals": [
+      {
+        "rank": 1,
+        "isAutomated": true,
+        "isNotificationOn": false,
+        "id": 0
+      }
+    ],
+    "approvalOptions": {
+      "requiredApproverCount": null,
+      "releaseCreatorCanBeApprover": false,
+      "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+      "enforceIdentityRevalidation": false,
+      "timeoutInMinutes": 0,
+      "executionOrder": "beforeGates"
+    }
+  },
+  "postApprovalsSnapshot": {
+    "approvals": [
+      {
+        "rank": 1,
+        "isAutomated": true,
+        "isNotificationOn": false,
+        "id": 0
+      }
+    ],
+    "approvalOptions": {
+      "requiredApproverCount": null,
+      "releaseCreatorCanBeApprover": false,
+      "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+      "enforceIdentityRevalidation": false,
+      "timeoutInMinutes": 0,
+      "executionOrder": "afterSuccessfulGates"
+    }
+  },
+  "deploySteps": [
+    {
+      "id": 34553,
+      "deploymentId": 13578,
+      "attempt": 1,
+      "reason": "automated",
+      "status": "succeeded",
+      "operationStatus": "Approved",
+      "releaseDeployPhases": [
+        {
+          "id": 24589,
+          "phaseId": "24589",
+          "name": "Agent job",
+          "rank": 1,
+          "phaseType": "agentBasedDeployment",
+          "status": "succeeded",
+          "runPlanId": "4fe33d6d-0783-440e-a370-32786fdcb1b7",
+          "deploymentJobs": [
+            {
+              "job": {
+                "id": 8,
+                "timelineRecordId": "8b5b67f3-72b4-495c-bcb4-6b086b8f4215",
+                "name": "Release",
+                "dateStarted": "2019-01-11T14:37:48.81Z",
+                "dateEnded": "2019-01-11T14:38:36.057Z",
+                "startTime": "2019-01-11T14:37:48.81Z",
+                "finishTime": "2019-01-11T14:38:36.057Z",
+                "status": "succeeded",
+                "rank": 1,
+                "issues": [],
+                "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/8/logs"
+              },
+              "tasks": [
+                {
+                  "id": 2,
+                  "timelineRecordId": "0f3cc813-d1e7-4155-b129-0a7166dc7bd0",
+                  "name": "Initialize Job",
+                  "dateStarted": "2019-01-11T14:37:49.063Z",
+                  "dateEnded": "2019-01-11T14:37:49.343Z",
+                  "startTime": "2019-01-11T14:37:49.063Z",
+                  "finishTime": "2019-01-11T14:37:49.343Z",
+                  "status": "succeeded",
+                  "rank": 1,
+                  "issues": [],
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/2/logs"
+                },
+                {
+                  "id": 3,
+                  "timelineRecordId": "701d8286-5827-4de3-aa5e-839bf3dce99a",
+                  "name": "Download artifact - _investment-rbo-frontend CI - drop",
+                  "dateStarted": "2019-01-11T14:37:49.37Z",
+                  "dateEnded": "2019-01-11T14:37:51.097Z",
+                  "startTime": "2019-01-11T14:37:49.37Z",
+                  "finishTime": "2019-01-11T14:37:51.097Z",
+                  "status": "succeeded",
+                  "rank": 2,
+                  "issues": [],
+                  "task": {
+                    "id": "a433f589-fce1-4460-9ee6-44a624aeb1fb",
+                    "name": "DownloadBuildArtifacts",
+                    "version": "0.142.3"
+                  },
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/3/logs"
+                },
+                {
+                  "id": 4,
+                  "timelineRecordId": "2b4c8ae7-4d3a-465c-9ebf-c600f547ac2c",
+                  "name": "Create .npmrc",
+                  "dateStarted": "2019-01-11T14:37:51.097Z",
+                  "dateEnded": "2019-01-11T14:37:51.267Z",
+                  "startTime": "2019-01-11T14:37:51.097Z",
+                  "finishTime": "2019-01-11T14:37:51.267Z",
+                  "status": "succeeded",
+                  "rank": 3,
+                  "issues": [],
+                  "task": {
+                    "id": "10f1f9a1-74b0-47ab-87bf-e3c9c68e8b0d",
+                    "name": "Shell++",
+                    "version": "0.3.1"
+                  },
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/4/logs"
+                },
+                {
+                  "id": 5,
+                  "timelineRecordId": "81f0cfc6-87fa-4cd1-8ad0-6ea04ed74302",
+                  "name": "npm init",
+                  "dateStarted": "2019-01-11T14:37:51.267Z",
+                  "dateEnded": "2019-01-11T14:37:53.01Z",
+                  "startTime": "2019-01-11T14:37:51.267Z",
+                  "finishTime": "2019-01-11T14:37:53.01Z",
+                  "status": "succeeded",
+                  "rank": 4,
+                  "issues": [],
+                  "task": {
+                    "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+                    "name": "Npm",
+                    "version": "1.144.0"
+                  },
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/5/logs"
+                },
+                {
+                  "id": 6,
+                  "timelineRecordId": "92b3cb62-89d8-4d37-9c29-0ee2f1cb167c",
+                  "name": "npm install skynet-release",
+                  "dateStarted": "2019-01-11T14:37:53.01Z",
+                  "dateEnded": "2019-01-11T14:37:59.517Z",
+                  "startTime": "2019-01-11T14:37:53.01Z",
+                  "finishTime": "2019-01-11T14:37:59.517Z",
+                  "status": "succeeded",
+                  "rank": 5,
+                  "issues": [],
+                  "task": {
+                    "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+                    "name": "Npm",
+                    "version": "1.144.0"
+                  },
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/6/logs"
+                },
+                {
+                  "id": 7,
+                  "timelineRecordId": "b76dadc1-fb66-4d14-9b11-5617260071c3",
+                  "name": "Release it!",
+                  "dateStarted": "2019-01-11T14:37:59.517Z",
+                  "dateEnded": "2019-01-11T14:38:36.043Z",
+                  "startTime": "2019-01-11T14:37:59.517Z",
+                  "finishTime": "2019-01-11T14:38:36.043Z",
+                  "status": "succeeded",
+                  "rank": 6,
+                  "issues": [],
+                  "task": {
+                    "id": "10f1f9a1-74b0-47ab-87bf-e3c9c68e8b0d",
+                    "name": "Shell++",
+                    "version": "0.3.1"
+                  },
+                  "agentName": "linux-agent-preview-2-61074-1629-000000-1",
+                  "logUrl": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604/environments/57594/deployPhases/24589/tasks/7/logs"
+                }
+              ]
+            }
+          ],
+          "manualInterventions": [],
+          "startedOn": "2019-01-11T14:37:45.81Z"
+        }
+      ],
+      "requestedBy": {
+        "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+        "id": "0000000d-0000-8888-8000-000000000000",
+        "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+        "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+      },
+      "requestedFor": {
+        "displayName": "Sander van Driel",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+        "_links": {
+          "avatar": {
+            "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+          }
+        },
+        "id": "d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+        "uniqueName": "Sander.van.Driel@somecompany.nl",
+        "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+        "descriptor": "aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+      },
+      "queuedOn": "2019-01-11T14:37:44.45Z",
+      "lastModifiedBy": {
+        "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+        "id": "0000000d-0000-8888-8000-000000000000",
+        "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+        "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+      },
+      "lastModifiedOn": "2019-01-11T14:38:37.617Z",
+      "hasStarted": true,
+      "tasks": [],
+      "runPlanId": "00000000-0000-0000-0000-000000000000",
+      "issues": []
+    }
+  ],
+  "rank": 1,
+  "definitionEnvironmentId": 1651,
+  "environmentOptions": {
+    "emailNotificationType": "OnlyOnFailure",
+    "emailRecipients": "release.environment.owner;release.creator",
+    "skipArtifactsDownload": false,
+    "timeoutInMinutes": 0,
+    "enableAccessToken": false,
+    "publishDeploymentStatus": true,
+    "badgeEnabled": false,
+    "autoLinkWorkItems": false,
+    "pullRequestDeploymentEnabled": false
+  },
+  "demands": [],
+  "conditions": [
+    {
+      "result": true,
+      "name": "ReleaseStarted",
+      "conditionType": "event",
+      "value": ""
+    },
+    {
+      "result": true,
+      "name": "_investment-rbo-frontend CI",
+      "conditionType": "artifact",
+      "value": "{\"sourceBranch\":\"dev\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+    },
+    {
+      "result": null,
+      "name": "_investment-rbo-frontend CI",
+      "conditionType": "artifact",
+      "value": "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+    }
+  ],
+  "createdOn": "2019-01-11T14:37:44.45Z",
+  "modifiedOn": "2019-01-11T14:38:37.583Z",
+  "workflowTasks": [],
+  "deployPhasesSnapshot": [
+    {
+      "deploymentInput": {
+        "parallelExecution": {
+          "parallelExecutionType": "none"
+        },
+        "skipArtifactsDownload": false,
+        "artifactsDownloadInput": {
+          "downloadInputs": [
+            {
+              "artifactItems": [],
+              "alias": "_investment-rbo-frontend CI",
+              "artifactType": "Build",
+              "artifactDownloadMode": "All"
+            }
+          ]
+        },
+        "queueId": 6491,
+        "demands": [
+          "npm"
+        ],
+        "enableAccessToken": false,
+        "timeoutInMinutes": 0,
+        "jobCancelTimeoutInMinutes": 1,
+        "condition": "succeeded()",
+        "overrideInputs": {}
+      },
+      "rank": 1,
+      "phaseType": "agentBasedDeployment",
+      "name": "Agent job",
+      "refName": null,
+      "workflowTasks": [
+        {
+          "taskId": "10f1f9a1-74b0-47ab-87bf-e3c9c68e8b0d",
+          "version": "0.*",
+          "name": "Create .npmrc",
+          "refName": "",
+          "enabled": true,
+          "alwaysRun": false,
+          "continueOnError": false,
+          "timeoutInMinutes": 0,
+          "definitionType": "task",
+          "overrideInputs": {},
+          "condition": "succeeded()",
+          "inputs": {
+            "type": "InlineScript",
+            "scriptPath": "",
+            "args": "",
+            "cwd": "",
+            "failOnStandardError": "false",
+            "script": "#!/usr/bin/env bash\n\necho '@types:registry=https://nexus3.somecompany.nl/repository/npmjs/' > .npmrc\necho 'registry=https://maven.somecompany.nl/nexus/content/repositories/npmjs' >> .npmrc\necho 'ca[]=\"***REMOVED***"' >> .npmrc\n\necho 'Created .npmrc'\n\ncat .npmrc"
+          }
+        },
+        {
+          "taskId": "fe47e961-9fa8-4106-8639-368c022d43ad",
+          "version": "1.*",
+          "name": "npm init",
+          "refName": "",
+          "enabled": true,
+          "alwaysRun": false,
+          "continueOnError": false,
+          "timeoutInMinutes": 0,
+          "definitionType": "task",
+          "overrideInputs": {},
+          "condition": "succeeded()",
+          "inputs": {
+            "command": "custom",
+            "workingDir": "",
+            "verbose": "false",
+            "customCommand": "init -y",
+            "customRegistry": "useNpmrc",
+            "customFeed": "",
+            "customEndpoint": "",
+            "publishRegistry": "useExternalRegistry",
+            "publishFeed": "",
+            "publishEndpoint": ""
+          }
+        },
+        {
+          "taskId": "fe47e961-9fa8-4106-8639-368c022d43ad",
+          "version": "1.*",
+          "name": "npm install skynet-release",
+          "refName": "",
+          "enabled": true,
+          "alwaysRun": false,
+          "continueOnError": false,
+          "timeoutInMinutes": 0,
+          "definitionType": "task",
+          "overrideInputs": {},
+          "condition": "succeeded()",
+          "inputs": {
+            "command": "custom",
+            "workingDir": "",
+            "verbose": "false",
+            "customCommand": "install --save-dev skynet-release --prefer-offline",
+            "customRegistry": "useNpmrc",
+            "customFeed": "",
+            "customEndpoint": "",
+            "publishRegistry": "useExternalRegistry",
+            "publishFeed": "",
+            "publishEndpoint": ""
+          }
+        },
+        {
+          "taskId": "10f1f9a1-74b0-47ab-87bf-e3c9c68e8b0d",
+          "version": "0.*",
+          "name": "Release it!",
+          "refName": "",
+          "enabled": true,
+          "alwaysRun": false,
+          "continueOnError": false,
+          "timeoutInMinutes": 0,
+          "definitionType": "task",
+          "overrideInputs": {},
+          "condition": "succeeded()",
+          "inputs": {
+            "type": "InlineScript",
+            "scriptPath": "",
+            "args": "",
+            "cwd": "",
+            "failOnStandardError": "false",
+            "script": "#!/usr/bin/env bash\n\nRELEASE_JSON=\"$RELEASE_PRIMARYARTIFACTSOURCEALIAS/drop/release-packages.json\"\ncat \"$RELEASE_JSON\"\n\nPICOMA_USER=\"$PICOMAUSER\"\nPICOMA_PASS=\"$SECRET_PICOMAPASSWORD\"\nexport PICOMA_USER\nexport PICOMA_PASS\n\nTO_TARGETS=\"$(targets)\"\n\nLINK=\"$(link)\"\nif [ \"$LINK\" != \"\" ]; then\n  LINK_ARG=\"--link $LINK\"\nelse\n  LINK_ARG=\"\"\nfi\n\necho \"Using: $CROWDUSER:$SECRET_CROWDPASSWORD\"\necho \"Deploying to $TO_TARGETS, linking with $LINK\"\n\nnode_modules/.bin/skynet-release \\\n  -f \"$RELEASE_JSON\" \\\n  -t \"$TO_TARGETS\" \\\n  $LINK_ARG \\\n  -u \"$CROWDUSER\" \\\n  -p \"$SECRET_CROWDPASSWORD\" || exit 1"
+          }
+        }
+      ]
+    }
+  ],
+  "owner": {
+    "displayName": "Sander van Driel",
+    "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "_links": {
+      "avatar": {
+        "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+      }
+    },
+    "id": "d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "uniqueName": "Sander.van.Driel@somecompany.nl",
+    "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "descriptor": "aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+  },
+  "schedules": [],
+  "release": {
+    "id": 7604,
+    "name": "Release-86",
+    "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604",
+    "_links": {
+      "web": {
+        "href": "https://dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_release?releaseId=7604&_a=release-summary"
+      },
+      "self": {
+        "href": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/releases/7604"
+      }
+    }
+  },
+  "releaseDefinition": {
+    "id": 229,
+    "name": "investment-rbo-frontend release",
+    "path": "\\Skynet",
+    "projectReference": null,
+    "url": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/definitions/229",
+    "_links": {
+      "web": {
+        "href": "https://dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_release?definitionId=229"
+      },
+      "self": {
+        "href": "https://vsrm.dev.azure.com/somecompany/a2bff8ac-67ac-47d3-88c9-dde77b7b4c65/_apis/Release/definitions/229"
+      }
+    }
+  },
+  "releaseCreatedBy": {
+    "displayName": "Sander van Driel",
+    "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "_links": {
+      "avatar": {
+        "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+      }
+    },
+    "id": "d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "uniqueName": "Sander.van.Driel@somecompany.nl",
+    "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=d8aa843c-ebcb-6996-b17d-31d8e558b8ef",
+    "descriptor": "aad.ZDhhYTg0M2MtZWJjYi03OTk2LWIxN2QtMzFkOGU1NThiOGVm"
+  },
+  "triggerReason": "ReleaseStarted",
+  "timeToDeploy": 0.88140000000000007,
+  "processParameters": {},
+  "preDeploymentGatesSnapshot": {
+    "id": 0,
+    "gatesOptions": null,
+    "gates": []
+  },
+  "postDeploymentGatesSnapshot": {
+    "id": 0,
+    "gatesOptions": null,
+    "gates": []
+  }
+}

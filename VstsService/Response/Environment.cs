@@ -10,5 +10,6 @@ namespace SecurePipelineScan.VstsService.Response
         public string Name { get; set; }
         public IEnumerable<Condition> Conditions { get; set; }
         public IEnumerable<DeployPhasesSnapshot> DeployPhasesSnapshot { get; set; }
+        public PreApprovalSnapshot PreApprovalsSnapshot { get; set; }
     }
 }

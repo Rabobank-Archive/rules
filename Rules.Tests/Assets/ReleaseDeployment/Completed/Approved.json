@@ -1,78 +1,678 @@
 {
-  "id": "c3e52c57-187a-45c4-abe2-184a48291bad",
+  "subscriptionId": "62663df5-dfe4-4a59-beb2-ec7e6ec5664b",
+  "notificationId": 1,
+  "id": "1ce9f846-1760-41ee-a36d-d32ed5098ee9",
   "eventType": "ms.vss-release.deployment-completed-event",
   "publisherId": "rm",
-  "scope": "all",
   "message": {
-    "text": "Deployment of release Release-1 on environment Dev Succeeded.",
-    "html": "Deployment on environment <a href='http://vsrm.dev.azure.com/fabfiber/DefaultCollection/Fabrikam-Fiber-Git/_apps/hub/ms.vss-releaseManagement-web.hub-explorer?_a=environment-summary&definitionEnvironmentId=8&definitionId=1'>Dev</a> Succeeded.",
-    "markdown": "Deployment on environment [Dev](http://vsrm.dev.azure.com/fabfiber/DefaultCollection/Fabrikam-Fiber-Git/_apps/hub/ms.vss-releaseManagement-web.hub-explorer?_a=environment-summary&definitionEnvironmentId=8&definitionId=1) Succeeded."
+    "text": "Deployment of release Release-1 on stage Stage 1 succeeded.",
+    "html": "Deployment on stage <a href='https://xpirit.visualstudio.com/proeftuin/_release?_a=environment-summary&definitionId=1&definitionEnvironmentId=1'>Stage 1</a> succeeded.",
+    "markdown": "Deployment on stage [Stage 1](https://xpirit.visualstudio.com/proeftuin/_release?_a=environment-summary&definitionId=1&definitionEnvironmentId=1) succeeded."
   },
   "detailedMessage": {
-    "text": "Deployment of release Release-1 on environment Dev Succeeded. Time to deploy: 0.11 minutes.",
-    "html": "Deployment on environment <a href='http://vsrm.dev.azure.com/fabfiber/DefaultCollection/Fabrikam-Fiber-Git/_apps/hub/ms.vss-releaseManagement-web.hub-explorer?_a=environment-summary&definitionEnvironmentId=8&definitionId=1'>Dev</a> Succeeded. Time to deploy: 0.11 minutes.",
-    "markdown": "Deployment on environment [Dev](http://vsrm.dev.azure.com/fabfiber/DefaultCollection/Fabrikam-Fiber-Git/_apps/hub/ms.vss-releaseManagement-web.hub-explorer?_a=environment-summary&definitionEnvironmentId=8&definitionId=1) Succeeded. Time to deploy: 0.11 minutes."
+    "text": "Deployment of release Release-1 on stage Stage 1 succeeded. Time to deploy: 00:00:27.",
+    "html": "Deployment on stage <a href='https://xpirit.visualstudio.com/proeftuin/_release?_a=environment-summary&definitionId=1&definitionEnvironmentId=1'>Stage 1</a> succeeded. Time to deploy: 00:00:27.",
+    "markdown": "Deployment on stage [Stage 1](https://xpirit.visualstudio.com/proeftuin/_release?_a=environment-summary&definitionId=1&definitionEnvironmentId=1) succeeded. Time to deploy: 00:00:27."
   },
   "resource": {
     "environment": {
-      "id": 5,
-      "releaseId": 0,
-      "name": "Dev",
+      "id": 1,
+      "releaseId": 1,
+      "name": "Stage 1",
       "status": "succeeded",
       "variables": {},
-      "preDeployApprovals": [],
-      "postDeployApprovals": [],
-      "preApprovalsSnapshot": {
-        "approvals": [],
-        "approvalOptions": {
-          "requiredApproverCount": 1,
-          "releaseCreatorCanBeApprover": false
+      "variableGroups": [],
+      "preDeployApprovals": [
+        {
+          "id": 1,
+          "revision": 1,
+          "approver": {
+            "displayName": "Marc Duiker",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+              }
+            },
+            "id": "7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "uniqueName": "marcduiker@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "descriptor": "msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+          },
+          "approvedBy": {
+            "displayName": "Marc Duiker",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+              }
+            },
+            "id": "7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "uniqueName": "marcduiker@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "descriptor": "msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+          },
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-11T13:31:59.56Z",
+          "modifiedOn": "2019-01-11T13:34:12.767Z",
+          "status": "approved",
+          "comments": "lgtm",
+          "isAutomated": false,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 1,
+          "release": {
+            "id": 1,
+            "name": "Release-1",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 1,
+            "name": "CheckApproval",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 1,
+            "name": "Stage 1",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1",
+            "_links": {}
+          },
+          "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/approvals/1"
         }
+      ],
+      "postDeployApprovals": [
+        {
+          "id": 3,
+          "revision": 1,
+          "approvalType": "postDeploy",
+          "createdOn": "2019-01-11T13:34:40.877Z",
+          "modifiedOn": "2019-01-11T13:34:40.89Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 3,
+          "release": {
+            "id": 1,
+            "name": "Release-1",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 1,
+            "name": "CheckApproval",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 1,
+            "name": "Stage 1",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1",
+            "_links": {}
+          },
+          "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/approvals/3"
+        }
+      ],
+      "preApprovalsSnapshot": {
+        "approvals": []
       },
       "postApprovalsSnapshot": {
         "approvals": []
       },
-      "deploySteps": [],
+      "deploySteps": [
+        {
+          "id": 2,
+          "deploymentId": 1,
+          "attempt": 1,
+          "reason": "automated",
+          "status": "succeeded",
+          "operationStatus": "Approved",
+          "releaseDeployPhases": [
+            {
+              "id": 1,
+              "phaseId": "1",
+              "name": "Agent job",
+              "rank": 1,
+              "phaseType": "agentBasedDeployment",
+              "status": "succeeded",
+              "runPlanId": "00198ded-bb6e-498c-9794-363b59ceef1d",
+              "deploymentJobs": [
+                {
+                  "job": {
+                    "id": 5,
+                    "timelineRecordId": "e0de3cb2-65d8-4ddd-bbe8-eadf6e7188ae",
+                    "name": "Release",
+                    "dateStarted": "2019-01-11T13:34:32.68Z",
+                    "dateEnded": "2019-01-11T13:34:38.92Z",
+                    "startTime": "2019-01-11T13:34:32.68Z",
+                    "finishTime": "2019-01-11T13:34:38.92Z",
+                    "status": "succeeded",
+                    "rank": 1,
+                    "issues": [],
+                    "agentName": "Hosted Agent"
+                  },
+                  "tasks": [
+                    {
+                      "id": 2,
+                      "timelineRecordId": "f9687adc-2ae0-455b-9445-8cb4a7b59bfd",
+                      "name": "Initialize Agent",
+                      "dateStarted": "2019-01-11T13:34:28.563Z",
+                      "dateEnded": "2019-01-11T13:34:30.08Z",
+                      "startTime": "2019-01-11T13:34:28.563Z",
+                      "finishTime": "2019-01-11T13:34:30.08Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "Hosted Agent"
+                    },
+                    {
+                      "id": 3,
+                      "timelineRecordId": "f3bb1d53-e158-4ac0-8779-d18921f3619b",
+                      "name": "Initialize job",
+                      "dateStarted": "2019-01-11T13:34:33.197Z",
+                      "dateEnded": "2019-01-11T13:34:35.11Z",
+                      "startTime": "2019-01-11T13:34:33.197Z",
+                      "finishTime": "2019-01-11T13:34:35.11Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "Hosted Agent"
+                    },
+                    {
+                      "id": 4,
+                      "timelineRecordId": "a5a1d93c-29c6-4a2c-8418-9d5b585948bc",
+                      "name": "PowerShell Script",
+                      "dateStarted": "2019-01-11T13:34:35.143Z",
+                      "dateEnded": "2019-01-11T13:34:38.913Z",
+                      "startTime": "2019-01-11T13:34:35.143Z",
+                      "finishTime": "2019-01-11T13:34:38.913Z",
+                      "status": "succeeded",
+                      "rank": 2,
+                      "issues": [],
+                      "task": {
+                        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                        "name": "PowerShell",
+                        "version": "2.140.2"
+                      },
+                      "agentName": "Hosted Agent"
+                    }
+                  ]
+                }
+              ],
+              "manualInterventions": [],
+              "startedOn": "2019-01-11T13:34:21.127Z"
+            }
+          ],
+          "requestedBy": {
+            "displayName": "M. Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+              }
+            },
+            "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "uniqueName": "mriezebosch@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          },
+          "requestedFor": {
+            "displayName": "M. Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+              }
+            },
+            "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "uniqueName": "mriezebosch@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+            "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          },
+          "queuedOn": "2019-01-11T13:31:59.39Z",
+          "lastModifiedBy": {
+            "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+            "id": "0000000d-0000-8888-8000-000000000000",
+            "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+            "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+          },
+          "lastModifiedOn": "2019-01-11T13:34:40.923Z",
+          "hasStarted": true,
+          "tasks": [],
+          "runPlanId": "00000000-0000-0000-0000-000000000000",
+          "issues": []
+        }
+      ],
       "rank": 1,
       "definitionEnvironmentId": 1,
-      "queueId": 1,
       "environmentOptions": {
         "emailNotificationType": "OnlyOnFailure",
         "emailRecipients": "release.environment.owner;release.creator",
         "skipArtifactsDownload": false,
         "timeoutInMinutes": 0,
-        "enableAccessToken": false
+        "enableAccessToken": false,
+        "publishDeploymentStatus": true,
+        "badgeEnabled": false,
+        "autoLinkWorkItems": false,
+        "pullRequestDeploymentEnabled": false
       },
       "demands": [],
-      "conditions": [],
-      "modifiedOn": "2016-01-21T08:19:17.26Z",
+      "conditions": [
+        {
+          "result": true,
+          "name": "ReleaseStarted",
+          "conditionType": "event",
+          "value": ""
+        }
+      ],
+      "createdOn": "2019-01-11T13:31:59.39Z",
+      "modifiedOn": "2019-01-11T13:34:40.89Z",
       "workflowTasks": [],
-      "deployPhasesSnapshot": [],
+      "deployPhasesSnapshot": [
+        {
+          "deploymentInput": {
+            "parallelExecution": {
+              "parallelExecutionType": "none"
+            },
+            "skipArtifactsDownload": false,
+            "artifactsDownloadInput": {
+              "downloadInputs": []
+            },
+            "queueId": 1665,
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 1,
+          "phaseType": "agentBasedDeployment",
+          "name": "Agent job",
+          "refName": null,
+          "workflowTasks": []
+        }
+      ],
       "owner": {
-        "id": "4247c988-4060-4712-abca-ff44681dd78a",
-        "displayName": "Chuck Reinhart"
+        "displayName": "M. Riezebosch",
+        "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "_links": {
+          "avatar": {
+            "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          }
+        },
+        "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "uniqueName": "mriezebosch@gmail.com",
+        "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
       },
-      "scheduledDeploymentTime": "2016-01-21T08:19:17.26Z",
       "schedules": [],
       "release": {
         "id": 1,
         "name": "Release-1",
-        "url": "http://vsrm.dev.azure.com/fabfiber/DefaultCollection/Fabrikam-Fiber-Git/_apis/Release/releases/1"
+        "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+        "_links": {
+          "web": {
+            "href": "https://xpirit.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_release?releaseId=1&_a=release-summary"
+          },
+          "self": {
+            "href": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1"
+          }
+        }
+      },
+      "releaseDefinition": {
+        "id": 1,
+        "name": "CheckApproval",
+        "path": "\\",
+        "projectReference": null,
+        "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1",
+        "_links": {
+          "web": {
+            "href": "https://xpirit.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_release?definitionId=1"
+          },
+          "self": {
+            "href": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1"
+          }
+        }
+      },
+      "releaseCreatedBy": {
+        "displayName": "M. Riezebosch",
+        "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "_links": {
+          "avatar": {
+            "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          }
+        },
+        "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "uniqueName": "mriezebosch@gmail.com",
+        "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+      },
+      "triggerReason": "ReleaseStarted",
+      "timeToDeploy": 0.4658833333333333,
+      "processParameters": {},
+      "preDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "postDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
       }
     },
     "project": {
-      "id": "00000000-0000-0000-0000-000000000000",
-      "name": "Fabrikam"
+      "id": "e633228b-200d-4c22-b846-fdfd10921af0",
+      "name": "proeftuin"
+    },
+    "deployment": {
+      "id": 1,
+      "release": {
+        "id": 1,
+        "name": "Release-1",
+        "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+        "artifacts": [],
+        "webAccessUri": "https://xpirit.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_release?releaseId=1&_a=release-summary",
+        "_links": {
+          "self": {
+            "href": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1"
+          },
+          "web": {
+            "href": "https://xpirit.visualstudio.com/proeftuin/_release?releaseId=1&_a=release-summary"
+          },
+          "logs": {
+            "href": "https://xpirit.visualstudio.com/proeftuin/_release?releaseId=1&_a=release-logs&environmentId=1&releaseEnvironmentId=1"
+          }
+        },
+        "description": "",
+        "reason": "manual"
+      },
+      "releaseDefinition": {
+        "id": 1,
+        "name": "CheckApproval",
+        "path": "\\",
+        "projectReference": {
+          "id": "e633228b-200d-4c22-b846-fdfd10921af0",
+          "name": null
+        },
+        "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1",
+        "_links": {
+          "self": {
+            "href": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/1"
+          },
+          "web": {
+            "href": "https://xpirit.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_release?definitionId=1"
+          }
+        }
+      },
+      "releaseEnvironment": {
+        "id": 1,
+        "name": "Stage 1",
+        "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1",
+        "_links": {
+          "self": {
+            "href": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1"
+          }
+        }
+      },
+      "projectReference": null,
+      "definitionEnvironmentId": 1,
+      "attempt": 1,
+      "reason": "automated",
+      "deploymentStatus": "succeeded",
+      "operationStatus": "Approved",
+      "requestedBy": {
+        "displayName": "M. Riezebosch",
+        "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "_links": {
+          "avatar": {
+            "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          }
+        },
+        "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "uniqueName": "mriezebosch@gmail.com",
+        "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+      },
+      "requestedFor": {
+        "displayName": "M. Riezebosch",
+        "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "_links": {
+          "avatar": {
+            "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+          }
+        },
+        "id": "61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "uniqueName": "mriezebosch@gmail.com",
+        "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=61111e88-4ba0-4a4a-98d4-474232ffb10b",
+        "descriptor": "msa.ZTlkMTNhM2QtN2JjMC03YWY4LWIxNDItMjIwZjA2Yzc3Mjky"
+      },
+      "queuedOn": "2019-01-11T13:31:59.39Z",
+      "startedOn": "2019-01-11T13:34:21.127Z",
+      "completedOn": "2019-01-11T13:34:40.923Z",
+      "lastModifiedOn": "2019-01-11T13:34:40.923Z",
+      "lastModifiedBy": {
+        "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+        "id": "0000000d-0000-8888-8000-000000000000",
+        "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+        "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+      },
+      "conditions": [
+        {
+          "name": "ReleaseStarted",
+          "conditionType": "event",
+          "value": ""
+        }
+      ],
+      "preDeployApprovals": [
+        {
+          "id": 1,
+          "revision": 1,
+          "approver": {
+            "displayName": "Marc Duiker",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+              }
+            },
+            "id": "7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "uniqueName": "marcduiker@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "descriptor": "msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+          },
+          "approvedBy": {
+            "displayName": "Marc Duiker",
+            "url": "https://app.vssps.visualstudio.com/Ab5944c5a-64ab-46d4-8012-8c1a46bb3ca2/_apis/Identities/7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "_links": {
+              "avatar": {
+                "href": "https://xpirit.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+              }
+            },
+            "id": "7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "uniqueName": "marcduiker@gmail.com",
+            "imageUrl": "https://xpirit.visualstudio.com/_api/_common/identityImage?id=7fe7d6cf-6971-4dd1-8722-2abd1f88714f",
+            "descriptor": "msa.NjFhNDBiZTQtYTgxNS03NWQxLTg5YmMtZjFlMDZmNmRkMzc0"
+          },
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-11T13:31:59.56Z",
+          "modifiedOn": "2019-01-11T13:34:12.767Z",
+          "status": "approved",
+          "comments": "lgtm",
+          "isAutomated": false,
+          "isNotificationOn": true,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 1,
+          "release": {
+            "id": 1,
+            "name": "",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 0,
+            "name": "",
+            "projectReference": null,
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/0",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 1,
+            "name": "",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1",
+            "_links": {}
+          },
+          "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/approvals/1"
+        }
+      ],
+      "postDeployApprovals": [
+        {
+          "id": 3,
+          "revision": 1,
+          "approvalType": "postDeploy",
+          "createdOn": "2019-01-11T13:34:40.877Z",
+          "modifiedOn": "2019-01-11T13:34:40.89Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 3,
+          "release": {
+            "id": 1,
+            "name": "",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 0,
+            "name": "",
+            "projectReference": null,
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/definitions/0",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 1,
+            "name": "",
+            "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1/environments/1",
+            "_links": {}
+          },
+          "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/approvals/3"
+        }
+      ],
+      "_links": {}
+    },
+    "comment": "",
+    "data": {
+      "releaseProperties": "{\"DownloadBuildArtifactsUsingTask\":{\"$type\":\"System.String\",\"$value\":\"True\"},\"ReleaseCreationSource\":{\"$type\":\"System.String\",\"$value\":\"ReleaseHub\"}}",
+      "environmentStatuses": "{\"1\":\"Succeeded\"}",
+      "workItems": [],
+      "previousReleaseEnvironment": {
+        "id": 0,
+        "releaseId": 0,
+        "name": null,
+        "status": "undefined",
+        "variables": {},
+        "variableGroups": [],
+        "preDeployApprovals": [],
+        "postDeployApprovals": [],
+        "preApprovalsSnapshot": {
+          "approvals": []
+        },
+        "postApprovalsSnapshot": {
+          "approvals": []
+        },
+        "deploySteps": [],
+        "rank": 0,
+        "environmentOptions": {
+          "emailNotificationType": "OnlyOnFailure",
+          "emailRecipients": "release.environment.owner;release.creator",
+          "skipArtifactsDownload": false,
+          "timeoutInMinutes": 0,
+          "enableAccessToken": false,
+          "publishDeploymentStatus": false,
+          "badgeEnabled": false,
+          "autoLinkWorkItems": false,
+          "pullRequestDeploymentEnabled": false
+        },
+        "demands": [],
+        "conditions": [],
+        "workflowTasks": [],
+        "deployPhasesSnapshot": [],
+        "schedules": [],
+        "preDeploymentGatesSnapshot": {
+          "id": 0,
+          "gatesOptions": null,
+          "gates": []
+        },
+        "postDeploymentGatesSnapshot": {
+          "id": 0,
+          "gatesOptions": null,
+          "gates": []
+        }
+      },
+      "commits": [],
+      "testResults": {
+        "aggregatedResultsAnalysis": {
+          "previousContext": {
+            "contextType": 0,
+            "build": null,
+            "release": null
+          },
+          "totalTests": 0,
+          "duration": "00:00:00",
+          "resultsByOutcome": {},
+          "runSummaryByState": {},
+          "runSummaryByOutcome": {}
+        },
+        "testResultsContext": {
+          "contextType": "release",
+          "build": null,
+          "release": {
+            "id": 1,
+            "name": null,
+            "environmentId": 1,
+            "environmentName": null,
+            "definitionId": 0,
+            "environmentDefinitionId": 0,
+            "environmentDefinitionName": null
+          }
+        },
+        "teamProject": {
+          "id": "e633228b-200d-4c22-b846-fdfd10921af0",
+          "name": "proeftuin",
+          "state": "unchanged",
+          "visibility": "unchanged"
+        }
+      }
     }
   },
   "resourceVersion": "3.0-preview.1",
   "resourceContainers": {
     "collection": {
-      "id": "c12d0eb8-e382-443b-9f9c-c52cba5014c2"
+      "id": "3f86f7be-e88c-4989-8484-d210d9cbea24",
+      "baseUrl": "https://xpirit.vsrm.visualstudio.com/"
     },
     "account": {
-      "id": "f844ec47-a9db-4511-8281-8b63f4eaf94e"
+      "id": "b5944c5a-64ab-46d4-8012-8c1a46bb3ca2",
+      "baseUrl": "https://xpirit.vsrm.visualstudio.com/"
+    },
+    "project": {
+      "id": "e633228b-200d-4c22-b846-fdfd10921af0",
+      "baseUrl": "https://xpirit.vsrm.visualstudio.com/"
     }
   },
-  "createdDate": "2016-09-19T13:03:28.5345098Z"
+  "createdDate": "2019-01-11T13:34:58.0366887Z"
 }

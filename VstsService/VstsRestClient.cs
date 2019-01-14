@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
 using RestSharp.Serializers.Newtonsoft.Json;
-using SecurePipelineScan.VstsService.Converters;
 using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
@@ -16,8 +15,7 @@ namespace SecurePipelineScan.VstsService
 
         public VstsRestClient(string organization, string token, IRestClient client)
         {
-            _client = client;
-            SetupSerializer();
+            _client = client.SetupSerializer();
 
             _authorization = GenerateAuthorizationHeader(token);
             _organization = organization;
@@ -63,26 +61,6 @@ namespace SecurePipelineScan.VstsService
                 .AddHeader("authorization", _authorization);
 
             _client.Execute(wrapper).ThrowOnError();
-        }
-        
-        
-        /// <summary>
-        /// https://bytefish.de/blog/restsharp_custom_json_serializer/#using-the-custom-deserializer-for-incoming-responses
-        /// </summary>
-        private void SetupSerializer()
-        {
-            var serializer = new NewtonsoftJsonSerializer(new JsonSerializer
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = {new PolicyConverter()}
-            });
-            
-            _client.AddHandler("application/json", serializer);
-            
-            _client.AddHandler("text/json", NewtonsoftJsonSerializer.Default);
-            _client.AddHandler("text/x-json", NewtonsoftJsonSerializer.Default);
-            _client.AddHandler("text/javascript", NewtonsoftJsonSerializer.Default);
-            _client.AddHandler("*+json", NewtonsoftJsonSerializer.Default);
         }
 
         private static string GenerateAuthorizationHeader(string token)

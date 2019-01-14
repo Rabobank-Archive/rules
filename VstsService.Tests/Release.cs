@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using Xunit;
 using Shouldly;
 using System.Net;
 using System.Linq;
+using NSubstitute;
 using RestSharp;
+using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -12,6 +15,8 @@ namespace SecurePipelineScan.VstsService.Tests
     {
         private readonly IVstsRestClient _client;
         private readonly string _project;
+        
+        private static readonly string EnvironmentAssets = Path.Join("Assets", "Release", "Environment");
 
         public Release(TestConfig config)
         {
@@ -52,7 +57,7 @@ namespace SecurePipelineScan.VstsService.Tests
             conditions.ShouldNotBeEmpty();
 
             var condition = conditions.First();
-            condition.Result.ShouldBeTrue();
+            condition.Result.ShouldBe(true);
             condition.Name.ShouldNotBeNullOrEmpty();
             condition.ConditionType.ShouldNotBeEmpty();
             condition.Value.ShouldNotBeNull();
@@ -72,6 +77,39 @@ namespace SecurePipelineScan.VstsService.Tests
             var task = snapshot.WorkflowTasks.First();
             task.TaskId.ShouldNotBe(Guid.Empty);
             task.Inputs.ShouldNotBeEmpty();
+            
+            var preApprovalSnapshot = environment.PreApprovalsSnapshot;
+            preApprovalSnapshot.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.RequiredApproverCount.ShouldBe(0);
+            preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void ConditionResultOnReleaseEnvironmentMustBeNullable()
+        {
+            /*
+             * First test to use json file for test deserialization.
+             *   Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
+             *   _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
+             */
+
+            var response = EmptyResponse();
+            response.Content = File.ReadAllText(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
+            
+            var client = new RestClient().SetupSerializer();
+            client.Deserialize<Environment>(response).ThrowOnError();
+        }
+
+        private static IRestResponse EmptyResponse()
+        {
+            var response = Substitute.For<IRestResponse>();
+            response.Request = Substitute.For<IRestRequest>();
+            response.ContentType = "application/json";
+            response.StatusCode = HttpStatusCode.OK;
+            response.ResponseStatus = ResponseStatus.Completed;
+            
+            return response;
         }
     }
 }
