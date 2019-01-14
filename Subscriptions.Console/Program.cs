@@ -19,6 +19,7 @@ namespace Subscriptions.Console
             var organizationOption = app.Option("-o|--organization <organization>", "The vsts organization", CommandOptionType.SingleValue);
             var accountNameOption = app.Option("-an|--accountname <accountname>", "The name of the account", CommandOptionType.SingleValue);
             var accountKeyOption = app.Option("-ak|--accountkey <accountkey>", "The key of the account 64 chars", CommandOptionType.SingleValue);
+            var deleteOption = app.Option("-d|--delete <true/false>", "if this command should delete service hooks instead of creating them add -d true", CommandOptionType.SingleValue);
 
             // Currently only check build.completed
             app.OnExecute(() =>
@@ -37,16 +38,34 @@ namespace Subscriptions.Console
                     .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
-                var projects = client
-                    .Get(Requests.Project.Projects());
+                if (deleteOption.HasValue() && deleteOption.Value().ToLower() == "true")
+                {
+                    RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
+                }
+                else
+                {
+                    var projects = client
+                        .Get(Requests.Project.Projects());
 
-                var items = SubscriptionsPerProject(subscriptions, projects);
-                AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
-
+                    var items = SubscriptionsPerProject(subscriptions, projects);
+                    AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
+                }
                 return 0;
             });
 
             app.Execute(args);
+        }
+
+        private static void RemoveStorageHook(string storageAccountName, VstsRestClient client, IEnumerable<Response.Hook> subscriptions)
+        {
+            foreach (var subscription in subscriptions)
+            {
+                if (subscription.ActionDescription.Contains(storageAccountName))
+                {
+                    client.Delete(Requests.Hooks.Subscription(subscription.Id));
+                }
+
+            }
         }
 
         internal static void AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
