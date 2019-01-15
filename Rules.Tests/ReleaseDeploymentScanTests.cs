@@ -58,6 +58,28 @@ namespace SecurePipelineScan.Rules.Tests
             }
 
             [Fact]
+            public void OnlyAutomatedApprovals()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.ApprovalOptions>(x => x
+                    .With(a => a.RequiredApproverCount, 0)
+                    .With(a => a.ReleaseCreatorCanBeApprover, false));
+
+                _fixture.Customize<Response.Approval>(x => x
+                    .With(a => a.IsAutomated, true));
+                    
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
+                var report = scan.Completed(input);
+                report.HasApprovalOptions.ShouldBeFalse();
+            }
+
+            [Fact]
             public void RequestedForCanBeApprover()
             {
                 var input = ReadInput("Completed", "NotApproved.json");
@@ -130,7 +152,7 @@ namespace SecurePipelineScan.Rules.Tests
                 
                 endpoints
                     .Received()
-                    .IsProduction("test", Arg.Any<Guid>());
+                    .IsProduction("TAS", Arg.Any<Guid>());
             }
 
             [Fact]

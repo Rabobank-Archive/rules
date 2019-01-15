@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Events
         private static bool CheckApprovalOptions(Response.Environment environment)
         {
             return !environment.PreApprovalsSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover &&
-                environment.PreApprovalsSnapshot.ApprovalOptions.RequiredApproverCount != null; // Just having a value means it has to be approved.
+                   environment.PreApprovalsSnapshot.Approvals.Any(approval => !approval.IsAutomated);
         }
 
         private Response.Environment ResolveEnvironment(JToken input)

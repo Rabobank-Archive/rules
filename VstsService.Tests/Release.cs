@@ -83,6 +83,10 @@ namespace SecurePipelineScan.VstsService.Tests
             preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
             preApprovalSnapshot.ApprovalOptions.RequiredApproverCount.ShouldBe(0);
             preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeFalse();
+            
+            var approval = preApprovalSnapshot.Approvals.FirstOrDefault();
+            approval.ShouldNotBeNull();
+            approval.IsAutomated.ShouldBeTrue();
         }
 
         [Fact]
