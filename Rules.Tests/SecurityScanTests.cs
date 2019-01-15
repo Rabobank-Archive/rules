@@ -49,13 +49,11 @@ namespace SecurePipelineScan.Rules.Tests
             
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
             
-            // TODO: refactor in the making, project currently different settings. 
-            securityReport.ReleaseRightsContributor.ReleaseRightsIsSecure.ShouldBeFalse();
-            securityReport.ReleaseRightsProductionEnvOwner.ReleaseRightsProductEnvOwnerIsSecure.ShouldBeTrue();
-            securityReport.ReleaseRightsRaboProjectAdmin.ReleaseRightsIsSecure.ShouldBeFalse();
+            securityReport.ReleaseRightsContributor.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
             
-            // See ^^todo
-            securityReport.ProjectIsSecure.ShouldBeFalse();
+            securityReport.ProjectIsSecure.ShouldBeTrue();
         }
 
         [Fact]

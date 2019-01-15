@@ -69,25 +69,28 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionsToAdministerBuildPermissions = g
                 },
                 
-                ReleaseRightsContributor = new ReleaseRights
+                ReleaseRightsContributor = new ContributorsReleaseRights
                 {
                     HasNoPermissionToCreateReleases = h,
                     HasNoPermissionToDeleteReleases = h,
                     HasNoPermissionToManageReleaseApprovers = h,
                     HasNoPermissionToDeleteReleasePipeline = h,
-                    HasNoPermissionsToAdministerReleasePermissions = h
+                    HasNoPermissionsToAdministerReleasePermissions = h,
+                    HasNotSetToManageReleaseApprovers = h,
+                    HasPermissionToCreateReleases = h,
                 },
                
-                ReleaseRightsRaboProjectAdmin = new ReleaseRights
+                ReleaseRightsRaboProjectAdmin = new RaboAdminReleaseRights
                 {
                     HasNoPermissionToCreateReleases = i,
                     HasNoPermissionToDeleteReleases = i,
                     HasNoPermissionToManageReleaseApprovers = i,
                     HasNoPermissionToDeleteReleasePipeline = i,
-                    HasNoPermissionsToAdministerReleasePermissions = i
+                    HasNoPermissionsToAdministerReleasePermissions = i,
+                    
                 },
                 
-                ReleaseRightsProductionEnvOwner = new ReleaseRightsProductionEnvOwner
+                ReleaseRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights
                 {
                     HasNoPermissionToCreateReleases = j,
                     HasPermissionToManageReleaseApprovers = j
