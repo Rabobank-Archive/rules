@@ -99,6 +99,25 @@ namespace SecurePipelineScan.Rules.Tests.Checks
 
             Permission.HasNoPermissionToDeleteBuildDefinition(permissions).ShouldBeTrue();
         }
+        
+        [Fact]
+        public void NotSetToDeleteBuildDefinitionShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 4096,
+                    DisplayName = "Delete build definition",
+
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
+                }
+            };
+
+            Permission.HasNotSetToDeleteBuildDefinition(permissions).ShouldBeTrue();
+        }
+
 
         [Fact]
         public void EmptyPermissionToDeleteBuildDefinitionShouldBeFalse()
@@ -126,6 +145,25 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         }
 
         [Fact]
+        public void NotSetToDestroyBuildsShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 32,
+                    DisplayName = "Destroy builds",
+
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
+                }
+            };
+
+            Permission.HasNotSetToDestroyBuilds(permissions).ShouldBeTrue();
+        }
+
+        
+        [Fact]
         public void EmptyPermissionToDestroyBuildsShouldBeFalse()
         {
             Permission.HasNoPermissionToDestroyBuilds(new List<Response.Permission>())
@@ -150,6 +188,25 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDeleteBuilds(permissions).ShouldBeTrue();
         }
 
+        [Fact]
+        public void NotSetToDeleteBuildsShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 8,
+                    DisplayName = "Delete builds",
+
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
+                }
+            };
+
+            Permission.HasNotSetToDeleteBuilds(permissions).ShouldBeTrue();
+        }
+
+        
         [Fact]
         public void EmptyPermissionToDeleteBuildsShouldBeFalse()
         {

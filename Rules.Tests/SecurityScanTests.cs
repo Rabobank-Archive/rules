@@ -43,10 +43,10 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.TeamRabobankProjectAdministrators.GlobalRightsIsSecure.ShouldBeTrue();
 
             //Todo: fix data and checks in SOx-demo project
-            securityReport.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeFalse();
-            securityReport.BuildRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
-            securityReport.BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure.ShouldBeFalse();
-            securityReport.BuildDefinitionsRightsProjectAdmin.BuildRightsIsSecure.ShouldBeTrue();
+            securityReport.BuildRightsBuildAdmin.IsSecure.ShouldBeFalse();
+            securityReport.BuildRightsProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.BuildDefinitionsRightsBuildAdmin.IsSecure.ShouldBeFalse();
+            securityReport.BuildDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
             
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
             

@@ -36,18 +36,38 @@ namespace SecurePipelineScan.Rules.Checks
                                            (p.PermissionId == Deny || p.PermissionId == DenyInherited));
         }
 
+        public static bool HasNotSetToDeleteBuildDefinition(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 4096 &&
+                                        p.PermissionId == NotSet );
+
+        }
+        
         public static bool HasNoPermissionToDeleteBuilds(IEnumerable<Response.Permission> permissions)
         {
             return permissions.Any(p => p.PermissionBit == 8 &&
                                            (p.PermissionId == Deny || p.PermissionId == DenyInherited));
         }
 
+        public static bool HasNotSetToDeleteBuilds(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 8 &&
+                                        p.PermissionId == NotSet);
+        }
+
+        
         public static bool HasNoPermissionToDestroyBuilds(IEnumerable<Response.Permission> permissions)
         {
             return permissions.Any(p => p.PermissionBit == 32 &&
                                            (p.PermissionId == Deny || p.PermissionId == DenyInherited));
         }
 
+        public static bool HasNotSetToDestroyBuilds(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 32 &&
+                                        p.PermissionId == NotSet);
+        }
+        
         public static bool HasNoPermissionToAdministerReleasePermissions(IEnumerable<Response.Permission> permissions)
         {
             return permissions.Any(p => p.PermissionBit == 512 &&

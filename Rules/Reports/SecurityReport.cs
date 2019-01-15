@@ -20,8 +20,10 @@ namespace Rules.Reports
         
         public BuildRights BuildRightsProjectAdmin { get; set; }
         public BuildRights BuildRightsBuildAdmin { get; set; }
+        public BuildRights BuildRightsContributor { get; set; }
         public BuildRights BuildDefinitionsRightsProjectAdmin { get; set; }
         public BuildRights BuildDefinitionsRightsBuildAdmin { get; set; }
+        public BuildRights BuildDefinitionsRightsContributor { get; set; }
         
         public ReleaseRights ReleaseRightsRaboProjectAdmin { get; set; }
         public ReleaseRights ReleaseDefinitionsRightsRaboProjectAdmin { get; set; }
@@ -35,10 +37,12 @@ namespace Rules.Reports
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
                                        TeamRabobankProjectAdministrators.GlobalRightsIsSecure &&
-                                       BuildRightsBuildAdmin.BuildRightsIsSecure &&
-                                       BuildRightsProjectAdmin.BuildRightsIsSecure &&
-                                       BuildDefinitionsRightsProjectAdmin.BuildRightsIsSecure &&
-                                       BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure &&
+                                       BuildRightsBuildAdmin.IsSecure &&
+                                       BuildRightsProjectAdmin.IsSecure &&
+                                       BuildRightsContributor.IsSecure &&
+                                       BuildDefinitionsRightsProjectAdmin.IsSecure &&
+                                       BuildDefinitionsRightsBuildAdmin.IsSecure &&
+                                       BuildDefinitionsRightsContributor.IsSecure &&
                                        RepositoryRightsProjectAdmin.RepositoryRightsIsSecure &&
                                        ReleaseRightsRaboProjectAdmin.IsSecure &&
                                        ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure &&

@@ -1,5 +1,6 @@
 using System;
 using Rules.Reports;
+using SecurePipelineScan.Rules.Reports;
 using Shouldly;
 using Xunit;
 
@@ -15,15 +16,15 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         [InlineData(true, true, true, false, false)]
         public void CheckBuildRights(bool a, bool b, bool c, bool d, bool e)
         {
-            var buildRights = new BuildRights
+            var buildRights = new BuildAdminBuildRights
             {
                 HasNoPermissionsToDeleteBuilds = a,
                 HasNoPermissionsToDeDestroyBuilds = b,
                 HasNoPermissionsToDeleteBuildDefinition = c,
-                HasNoPermissionsToAdministerBuildPermissions = d
+                HasNoPermissionsToAdministerBuildPermissions = d,
             };
 
-            buildRights.BuildRightsIsSecure.ShouldBe(e);
+            buildRights.IsSecure.ShouldBe(e);
             
         }
         
@@ -32,12 +33,12 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         {
             var report = new SecurityReport(DateTime.Now)
             {
-                BuildRightsBuildAdmin = new BuildRights(),
-                BuildRightsProjectAdmin = new BuildRights(),
+                BuildRightsBuildAdmin = new BuildAdminBuildRights(),
+                BuildRightsProjectAdmin = new ProjectAdminBuildRights(),
                 RepositoryRightsProjectAdmin = new RepositoryRights(),
             };
             
-            report.BuildRightsBuildAdmin.BuildRightsIsSecure.ShouldBeFalse();
+            report.BuildRightsBuildAdmin.IsSecure.ShouldBeFalse();
         }
     }
 }
