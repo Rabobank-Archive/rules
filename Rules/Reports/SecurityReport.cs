@@ -24,8 +24,13 @@ namespace Rules.Reports
         public BuildRights BuildDefinitionsRightsBuildAdmin { get; set; }
         
         public ReleaseRights ReleaseRightsRaboProjectAdmin { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsRaboProjectAdmin { get; set; }
+
         public ReleaseRights ReleaseRightsContributor { get; set; }
-        public ProductionEnvOwnerReleaseRights ReleaseRightsProductionEnvOwner { get; set; }
+        public ReleaseRights ReleaseDefintionsRightsContributor { get; set; }
+
+        public ReleaseRights ReleaseRightsProductionEnvOwner { get; set; }
+        public ReleaseRights ReleaseDefintionsRightsProductionEnvOwner { get; set; }
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
@@ -36,8 +41,11 @@ namespace Rules.Reports
                                        BuildDefinitionsRightsBuildAdmin.BuildRightsIsSecure &&
                                        RepositoryRightsProjectAdmin.RepositoryRightsIsSecure &&
                                        ReleaseRightsRaboProjectAdmin.IsSecure &&
+                                       ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure &&
                                        ReleaseRightsContributor.IsSecure &&
-                                       ReleaseRightsProductionEnvOwner.IsSecure
+                                       ReleaseDefintionsRightsContributor.IsSecure &&
+                                       ReleaseRightsProductionEnvOwner.IsSecure &&
+                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure
         ;
 
         public DateTime Date { get; }

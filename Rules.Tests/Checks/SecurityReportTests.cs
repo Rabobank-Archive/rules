@@ -10,20 +10,23 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     {
         [Theory]
 
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true)]
-        [InlineData(false, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, false, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, false, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, false, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, false, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, false, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, false, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, false, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, false, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, false, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, false, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
         public void CheckSecurityReport(
-            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool expected)
+            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool l, bool m, bool n, bool expected)
         {
             var securityReport = new SecurityReport(DateTime.Now)
             {
@@ -78,6 +81,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionsToAdministerReleasePermissions = h,
                     HasNotSetToManageReleaseApprovers = h,
                     HasPermissionToCreateReleases = h,
+                    HasPermissionToManageReleaseApprovers = h,
                 },
                
                 ReleaseRightsRaboProjectAdmin = new RaboAdminReleaseRights
@@ -87,20 +91,65 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToManageReleaseApprovers = i,
                     HasNoPermissionToDeleteReleasePipeline = i,
                     HasNoPermissionsToAdministerReleasePermissions = i,
+                    HasPermissionToManageReleaseApprovers = i,
+                    HasPermissionToCreateReleases = i,
+                    HasNotSetToManageReleaseApprovers = i,
                     
                 },
                 
                 ReleaseRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights
                 {
                     HasNoPermissionToCreateReleases = j,
-                    HasPermissionToManageReleaseApprovers = j
+                    HasPermissionToManageReleaseApprovers = j,
+                    HasPermissionToCreateReleases = j,
+                    HasNoPermissionToDeleteReleases = j,
+                    HasNotSetToManageReleaseApprovers = j,
+                    HasNoPermissionToDeleteReleasePipeline = j,
+                    HasNoPermissionToManageReleaseApprovers = j,
+                    HasNoPermissionsToAdministerReleasePermissions = j,
+                },
+                
+                ReleaseDefintionsRightsContributor = new ContributorsReleaseRights()
+                {
+                    HasNoPermissionToCreateReleases = k,
+                    HasNoPermissionToDeleteReleases = k,
+                    HasNoPermissionToDeleteReleasePipeline = k,
+                    HasNoPermissionToManageReleaseApprovers = k,
+                    HasNoPermissionsToAdministerReleasePermissions = k,
+                    HasPermissionToCreateReleases = k,
+                    HasPermissionToManageReleaseApprovers = k,
+                    HasNotSetToManageReleaseApprovers = k,
+                },
+                
+                ReleaseDefinitionsRightsRaboProjectAdmin = new RaboAdminReleaseRights()
+                {
+                    HasNoPermissionToCreateReleases = l,
+                    HasNoPermissionToDeleteReleases = l,
+                    HasNoPermissionToDeleteReleasePipeline = l,
+                    HasNoPermissionToManageReleaseApprovers = l,
+                    HasNoPermissionsToAdministerReleasePermissions = l,
+                    HasPermissionToCreateReleases = l,
+                    HasPermissionToManageReleaseApprovers = l,
+                    HasNotSetToManageReleaseApprovers = l,
+                },
+                
+                ReleaseDefintionsRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights()
+                {
+                    HasNoPermissionToCreateReleases = m,
+                    HasPermissionToManageReleaseApprovers = m,
+                    HasPermissionToCreateReleases = m,
+                    HasNoPermissionToDeleteReleases = m,
+                    HasNotSetToManageReleaseApprovers = m,
+                    HasNoPermissionToDeleteReleasePipeline = m,
+                    HasNoPermissionToManageReleaseApprovers = m,
+                    HasNoPermissionsToAdministerReleasePermissions = m,
                 },
 
                 TeamRabobankProjectAdministrators = new GlobalRights
                 {
-                    HasNoPermissionToDeleteTeamProject = k,
-                    HasNoPermissionToPermanentlyDeleteWorkitems = k,
-                    HasNoPermissionToManageProjectProperties = k
+                    HasNoPermissionToDeleteTeamProject = n,
+                    HasNoPermissionToPermanentlyDeleteWorkitems = n,
+                    HasNoPermissionToManageProjectProperties = n
                 }
 
             };
