@@ -1,5 +1,6 @@
 using System;
 using Rules.Reports;
+using SecurePipelineScan.Rules.Reports;
 using Shouldly;
 using Xunit;
 
@@ -31,8 +32,8 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         {
             var report = new SecurityReport(DateTime.Now)
             {
-                BuildRightsBuildAdmin = new BuildRights(),
-                BuildRightsProjectAdmin = new BuildRights(),
+                BuildRightsBuildAdmin = new BuildAdminBuildRights(),
+                BuildRightsProjectAdmin = new ProjectAdminBuildRights(),
                 RepositoryRightsProjectAdmin = new RepositoryRights(),
             };
             

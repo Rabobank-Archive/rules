@@ -10,37 +10,40 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     {
         [Theory]
 
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
-        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
+
         public void CheckSecurityReport(
-            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool l, bool m, bool n, bool expected)
+            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool l, bool m, bool n, bool o, bool p, bool expected)
         {
             var securityReport = new SecurityReport(DateTime.Now)
             {
                 ApplicationGroupContainsProductionEnvironmentOwner = a,
                 ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = b,
 
-                BuildRightsBuildAdmin = new BuildRights
+                BuildRightsBuildAdmin = new BuildAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = c,
                     HasNoPermissionsToDeDestroyBuilds = c,
                     HasNoPermissionsToDeleteBuildDefinition = c,
                     HasNoPermissionsToAdministerBuildPermissions = c
                 },
-                BuildRightsProjectAdmin = new BuildRights
+                BuildRightsProjectAdmin = new ProjectAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = d,
                     HasNoPermissionsToDeDestroyBuilds = d,
@@ -48,7 +51,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionsToAdministerBuildPermissions = d
                 },
 
-                RepositoryRightsProjectAdmin = new RepositoryRights
+                RepositoryRightsProjectAdmin = new RepositoryRights()
                 {
                     HasNotSetToManagePermissionsRepositories = e,
                     HasNotSetToManagePermissionsRepositorySet = e,
@@ -56,7 +59,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteRepositories = e
                 },
                 
-                BuildDefinitionsRightsBuildAdmin = new BuildRights
+                BuildDefinitionsRightsBuildAdmin = new BuildAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = f,
                     HasNoPermissionsToDeDestroyBuilds = f,
@@ -64,7 +67,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionsToAdministerBuildPermissions = f
                 },
                 
-                BuildDefinitionsRightsProjectAdmin = new BuildRights
+                BuildDefinitionsRightsProjectAdmin = new ProjectAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = g,
                     HasNoPermissionsToDeDestroyBuilds = g,
@@ -150,6 +153,22 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteTeamProject = n,
                     HasNoPermissionToPermanentlyDeleteWorkitems = n,
                     HasNoPermissionToManageProjectProperties = n
+                },
+                
+                BuildRightsContributor = new ContributorsBuildRights
+                {
+                    HasNotSetToDeleteBuildDefinition = o, 
+                    HasNotSetToDeleteBuilds = o,
+                    HasNotSetToDestroyBuilds = o, 
+                    HasNoPermissionsToAdministerBuildPermissions = o,
+                },
+                
+                BuildDefinitionsRightsContributor = new ContributorsBuildRights
+                {
+                    HasNotSetToDeleteBuildDefinition = p, 
+                    HasNotSetToDeleteBuilds = p,
+                    HasNotSetToDestroyBuilds = p, 
+                    HasNoPermissionsToAdministerBuildPermissions = p,
                 }
 
             };
