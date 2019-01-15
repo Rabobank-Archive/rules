@@ -4,12 +4,12 @@ namespace Rules.Reports
     {
         public bool HasNoPermissionToDeleteRepositorySet { get; set; }
         public bool HasNoPermissionToDeleteRepositories { get; set; }
-        public bool HasNoPermissionToManagePermissionsRepositorySet { get; set; }
-        public bool HasNoPermissionToManagePermissionsRepositories { get; set; }
+        public bool HasNotSetToManagePermissionsRepositorySet { get; set; }
+        public bool HasNotSetToManagePermissionsRepositories { get; set; }
 
         public bool RepositoryRightsIsSecure => HasNoPermissionToDeleteRepositories &&
                                                 HasNoPermissionToDeleteRepositorySet &&
-                                                HasNoPermissionToManagePermissionsRepositories &&
-                                                HasNoPermissionToManagePermissionsRepositorySet;
+                                                HasNotSetToManagePermissionsRepositories &&
+                                                HasNotSetToManagePermissionsRepositorySet;
     }
 }

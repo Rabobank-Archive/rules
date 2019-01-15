@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         [Fact]
         public void EmptyPermissionToManageRepositoryPermissionShouldBeFalse()
         {
-            Permission.HasNoPermissionToManageRepositoryPermissions(new List<Response.Permission>())
+            Permission.HasNotSetToManageRepositoryPermissions(new List<Response.Permission>())
                 .ShouldBeFalse();
         }
 
@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     PermissionDisplayString = "Deny"
                     }
             };
-            Permission.HasNoPermissionToManageRepositoryPermissions(permissions).ShouldBeTrue();
+            Permission.HasNotSetToManageRepositoryPermissions(permissions).ShouldBeTrue();
         }
 
         [Fact]

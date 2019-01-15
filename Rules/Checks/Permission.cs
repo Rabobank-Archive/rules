@@ -18,10 +18,10 @@ namespace SecurePipelineScan.Rules.Checks
                                            (p.PermissionId == Deny || p.PermissionId == DenyInherited));
         }
 
-        public static bool HasNoPermissionToManageRepositoryPermissions(IEnumerable<Response.Permission> permissions)
+        public static bool HasNotSetToManageRepositoryPermissions(IEnumerable<Response.Permission> permissions)
         {
             return permissions.Any(p => p.PermissionBit == 8192 &&
-                                           (p.PermissionId == Deny || p.PermissionId == DenyInherited));
+                                           p.PermissionId == NotSet);
         }
 
         public static bool HasNoPermissionToAdministerBuildPermissions(IEnumerable<Response.Permission> permissions)
