@@ -18,12 +18,12 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         [Fact]
         public void EmptyPermissionToManageRepositoryPermissionShouldBeFalse()
         {
-            Permission.HasNoPermissionToManageRepositoryPermissions(new List<Response.Permission>())
+            Permission.HasNotSetToManageRepositoryPermissions(new List<Response.Permission>())
                 .ShouldBeFalse();
         }
 
         [Fact]
-        public void NoPermissionToManageRepositoryPermissionsShouldBeTrue()
+        public void NotSetToManageRepositoryPermissionsShouldBeTrue()
         {
             var permissions = new[]
             {
@@ -32,11 +32,11 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     PermissionBit = 8192,
                     DisplayName = "Manage permissions",
 
-                    PermissionId = 2,
-                    PermissionDisplayString = "Deny"
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
                     }
             };
-            Permission.HasNoPermissionToManageRepositoryPermissions(permissions).ShouldBeTrue();
+            Permission.HasNotSetToManageRepositoryPermissions(permissions).ShouldBeTrue();
         }
 
         [Fact]

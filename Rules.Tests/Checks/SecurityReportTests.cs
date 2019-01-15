@@ -50,8 +50,8 @@ namespace SecurePipelineScan.Rules.Tests.Checks
 
                 RepositoryRightsProjectAdmin = new RepositoryRights
                 {
-                    HasNoPermissionToManagePermissionsRepositories = e,
-                    HasNoPermissionToManagePermissionsRepositorySet = e,
+                    HasNotSetToManagePermissionsRepositories = e,
+                    HasNotSetToManagePermissionsRepositorySet = e,
                     HasNoPermissionToDeleteRepositorySet = e,
                     HasNoPermissionToDeleteRepositories = e
                 },

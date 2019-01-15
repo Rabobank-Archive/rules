@@ -17,8 +17,8 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         {
             var repositoryRights = new RepositoryRights
             {
-                HasNoPermissionToManagePermissionsRepositories = a,
-                HasNoPermissionToManagePermissionsRepositorySet = b,
+                HasNotSetToManagePermissionsRepositories = a,
+                HasNotSetToManagePermissionsRepositorySet = b,
                 HasNoPermissionToDeleteRepositorySet = c,
                 HasNoPermissionToDeleteRepositories = d
             };

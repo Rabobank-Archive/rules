@@ -148,10 +148,10 @@ namespace SecurePipelineScan.Rules
                     ApplicationGroupHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceId, applicationGroupId),
                 HasNoPermissionToDeleteRepositorySet =
                     Permission.HasNoPermissionToDeleteRepository(permissions),
-                HasNoPermissionToManagePermissionsRepositories =
-                    ApplicationGroupHasNoPermissionToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
-                HasNoPermissionToManagePermissionsRepositorySet =
-                    Permission.HasNoPermissionToManageRepositoryPermissions(permissions)
+                HasNotSetToManagePermissionsRepositories =
+                    ApplicationGroupHasNotSetToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
+                HasNotSetToManagePermissionsRepositorySet =
+                    Permission.HasNotSetToManageRepositoryPermissions(permissions)
             };
         }
 
@@ -260,11 +260,11 @@ namespace SecurePipelineScan.Rules
             return client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
         }
 
-        private bool ApplicationGroupHasNoPermissionToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
+        private bool ApplicationGroupHasNotSetToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
         {
             return repositories.All
             (r =>
-                Permission.HasNoPermissionToManageRepositoryPermissions(
+                Permission.HasNotSetToManageRepositoryPermissions(
                     client.Get(Permissions.PermissionsGroupRepository(
                             projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
