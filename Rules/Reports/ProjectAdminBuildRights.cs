@@ -7,7 +7,7 @@ namespace SecurePipelineScan.Rules.Reports
         public override bool IsSecure =>
             HasNoPermissionsToDeleteBuilds && 
             HasNoPermissionsToDeleteBuildDefinition &&
-            HasNoPermissionsToDeDestroyBuilds && 
+            HasNoPermissionsToDestroyBuilds && 
             HasNoPermissionsToAdministerBuildPermissions;
     }
 }

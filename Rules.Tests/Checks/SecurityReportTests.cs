@@ -44,14 +44,14 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 BuildRightsBuildAdmin = new BuildAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = c,
-                    HasNoPermissionsToDeDestroyBuilds = c,
+                    HasNoPermissionsToDestroyBuilds = c,
                     HasNoPermissionsToDeleteBuildDefinition = c,
                     HasNoPermissionsToAdministerBuildPermissions = c
                 },
                 BuildRightsProjectAdmin = new ProjectAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = d,
-                    HasNoPermissionsToDeDestroyBuilds = d,
+                    HasNoPermissionsToDestroyBuilds = d,
                     HasNoPermissionsToDeleteBuildDefinition = d,
                     HasNoPermissionsToAdministerBuildPermissions = d
                 },
@@ -67,7 +67,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 BuildDefinitionsRightsBuildAdmin = new BuildAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = f,
-                    HasNoPermissionsToDeDestroyBuilds = f,
+                    HasNoPermissionsToDestroyBuilds = f,
                     HasNoPermissionsToDeleteBuildDefinition = f,
                     HasNoPermissionsToAdministerBuildPermissions = f
                 },
@@ -75,7 +75,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 BuildDefinitionsRightsProjectAdmin = new ProjectAdminBuildRights()
                 {
                     HasNoPermissionsToDeleteBuilds = g,
-                    HasNoPermissionsToDeDestroyBuilds = g,
+                    HasNoPermissionsToDestroyBuilds = g,
                     HasNoPermissionsToDeleteBuildDefinition = g,
                     HasNoPermissionsToAdministerBuildPermissions = g
                 },
@@ -119,7 +119,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasPermissionToDeleteReleaseStage = j,
                 },
                 
-                ReleaseDefintionsRightsContributor = new ContributorsReleaseRights()
+                ReleaseDefinitionsRightsContributor = new ContributorsReleaseRights()
                 {
                     HasNoPermissionToCreateReleases = k,
                     HasNoPermissionToDeleteReleases = k,
@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteReleaseStage = l,
                 },
                 
-                ReleaseDefintionsRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights()
+                ReleaseDefinitionsRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights()
                 {
                     HasNoPermissionToCreateReleases = m,
                     HasPermissionToManageReleaseApprovers = m,
@@ -208,7 +208,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteReleaseStage =s,
                 },
                 
-                ReleaseDefintionsRightsReleaseAdmin = new ReleaseAdminReleaseRights
+                ReleaseDefinitionsRightsReleaseAdmin = new ReleaseAdminReleaseRights
                 {
                     HasNoPermissionsToAdministerReleasePermissions = t,
                     HasNoPermissionToDeleteReleasePipeline = t,

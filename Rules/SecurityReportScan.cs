@@ -126,10 +126,11 @@ namespace SecurePipelineScan.Rules
                 ReleaseRightsProjectAdmin = CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions, new ProjectAdminReleaseRights()),
                 ReleaseRightsReleaseAdmin = CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions, new ProjectAdminReleaseRights()),
 
-                ReleaseDefintionsRightsProductionEnvOwner = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights()),
-                ReleaseDefintionsRightsContributor = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdContributors, new ContributorsReleaseRights()),
+                ReleaseDefinitionsRightsProductionEnvOwner = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights()),
+                ReleaseDefinitionsRightsContributor = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdContributors, new ContributorsReleaseRights()),
                 ReleaseDefinitionsRightsRaboProjectAdmin = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProjectAdmins, new RaboAdminReleaseRights()),
                 ReleaseDefinitionsRightsProjectAdmin = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProjectAdmins, new ProjectAdminReleaseRights()),
+                ReleaseDefinitionsRightsReleaseAdmin = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights()),
                 
                 TeamRabobankProjectAdministrators = CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security.Permissions),
             };
@@ -173,15 +174,25 @@ namespace SecurePipelineScan.Rules
             buildRights.HasNoPermissionsToDeleteBuilds =
                 ApplicationGroupHasNoPermissionToDeleteBuilds(buildDefinitions, projectId, namespaceId,
                     applicationGroupId);
-            buildRights.HasNoPermissionsToDeDestroyBuilds =
+            buildRights.HasNoPermissionsToDestroyBuilds =
                 ApplicationGroupHasNoPermissionToDestroyBuilds(buildDefinitions, projectId, namespaceId,
                     applicationGroupId);
             buildRights.HasNoPermissionsToDeleteBuildDefinition =
-                ApplicationGroupHasNoPermissionToDeleteBuildDefinition(buildDefinitions, projectId, namespaceId,
+                ApplicationGroupHasNoPermissionsToDeleteBuildDefinition(buildDefinitions, projectId, namespaceId,
                     applicationGroupId);
             buildRights.HasNoPermissionsToAdministerBuildPermissions =
                 ApplicationGroupHasNoPermissionToAdministerBuildPermissions(buildDefinitions, projectId, namespaceId,
                     applicationGroupId);
+            buildRights.HasNotSetToDeleteBuildDefinition =                 
+                ApplicationGroupHasNotSetDeleteBuildDefinition(buildDefinitions, projectId, namespaceId,
+                applicationGroupId);
+            buildRights.HasNotSetToDeleteBuilds =
+                ApplicationGroupHasNotSetToDeleteBuilds(buildDefinitions, projectId, namespaceId,
+                    applicationGroupId);
+            buildRights.HasNotSetToDestroyBuilds =
+                ApplicationGroupHasNotSetToDestroyBuilds(buildDefinitions, projectId, namespaceId,
+                    applicationGroupId);
+
             return buildRights;
         }
 
@@ -193,10 +204,16 @@ namespace SecurePipelineScan.Rules
                     Permission.HasNoPermissionToAdministerBuildPermissions(permissions);
                 buildRights.HasNoPermissionsToDeleteBuilds =
                     Permission.HasNoPermissionToDeleteBuilds(permissions);
-                buildRights.HasNoPermissionsToDeDestroyBuilds =
+                buildRights.HasNoPermissionsToDestroyBuilds =
                     Permission.HasNoPermissionToDestroyBuilds(permissions);
                 buildRights.HasNoPermissionsToDeleteBuildDefinition =
                     Permission.HasNoPermissionToDeleteBuildDefinition(permissions);
+                buildRights.HasNotSetToDeleteBuildDefinition =
+                    Permission.HasNotSetToDeleteBuildDefinition(permissions);
+                buildRights.HasNotSetToDeleteBuilds =
+                    Permission.HasNotSetToDeleteBuilds(permissions);
+                buildRights.HasNotSetToDestroyBuilds =
+                    Permission.HasNotSetToDestroyBuilds(permissions);
             };
 
             return buildRights;
@@ -302,12 +319,33 @@ namespace SecurePipelineScan.Rules
                             projectId, namespaceId, applicationGroupId, r.id))
                         .Permissions));
         }
-
-        private bool ApplicationGroupHasNoPermissionToDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
+        
+        private bool ApplicationGroupHasNoPermissionsToDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
         {
             return buildDefinitions.All
             (r =>
                 Permission.HasNoPermissionToDeleteBuildDefinition(
+                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                            projectId, namespaceId, applicationGroupId, r.id))
+                        .Permissions));
+        }
+        
+        private bool ApplicationGroupHasNotSetToDeleteBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return buildDefinitions.All
+            (r =>
+                Permission.HasNotSetToDeleteBuilds(
+                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                            projectId, namespaceId, applicationGroupId, r.id))
+                        .Permissions));
+        }
+
+        
+        private bool ApplicationGroupHasNotSetDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return buildDefinitions.All
+            (r =>
+                Permission.HasNotSetToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
                             projectId, namespaceId, applicationGroupId, r.id))
                         .Permissions));
@@ -323,6 +361,17 @@ namespace SecurePipelineScan.Rules
                         .Permissions));
         }
 
+        private bool ApplicationGroupHasNotSetToDestroyBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return buildDefinitions.All
+            (r =>
+                Permission.HasNotSetToDestroyBuilds(
+                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                            projectId, namespaceId, applicationGroupId, r.id))
+                        .Permissions));
+        }
+
+        
         private bool ApplicationGroupHasNoPermissionToAdministerBuildPermissions(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
         {
             return buildDefinitions.All
