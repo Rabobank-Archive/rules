@@ -1,4 +1,5 @@
 using System;
+using NSubstitute.Core;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Reports;
 using Shouldly;
@@ -10,26 +11,28 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     {
         [Theory]
 
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
-        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
 
-        public void CheckSecurityReport(
-            bool a, bool b, bool c, bool d, bool e, bool f,bool g,bool h, bool i,  bool j, bool k, bool l, bool m, bool n, bool o, bool p, bool expected)
+        public void CheckSecurityReport(bool a, bool b, bool c, bool d, bool e, bool f, bool g, bool h, bool i, bool j,
+            bool k, bool l, bool m, bool n, bool o, bool p, bool q, bool r, bool expected)
         {
             var securityReport = new SecurityReport(DateTime.Now)
             {
@@ -169,6 +172,24 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNotSetToDeleteBuilds = p,
                     HasNotSetToDestroyBuilds = p, 
                     HasNoPermissionsToAdministerBuildPermissions = p,
+                },
+                
+                ReleaseRightsProjectAdmin = new ProjectAdminReleaseRights
+                {                    
+                    HasNoPermissionsToAdministerReleasePermissions = q,
+                    HasNoPermissionToDeleteReleasePipeline = q,
+                    HasNoPermissionToDeleteReleaseStage = q,
+                    HasNoPermissionToDeleteReleases = q,
+                    HasNoPermissionToManageReleaseApprovers = q,
+                },
+                
+                ReleaseDefinitionsRightsProjectAdmin = new ProjectAdminReleaseRights
+                {                    
+                    HasNoPermissionsToAdministerReleasePermissions = r,
+                    HasNoPermissionToDeleteReleasePipeline = r,
+                    HasNoPermissionToDeleteReleaseStage = r,
+                    HasNoPermissionToDeleteReleases = r,
+                    HasNoPermissionToManageReleaseApprovers = r,
                 }
 
             };

@@ -232,23 +232,25 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToAdministerReleasePermissions(permissions).ShouldBeTrue();
         }
 
+
         [Fact]
-        public void NoPermissionsToDeleteReleasePipelineShouldBeTrue()
+        public void NoPermissionsToDeleteReleaseStageShouldBeTrue()
         {
             var permissions = new[]
             {
                 new Response.Permission()
                 {
-                    PermissionBit = 4,
-                    DisplayName = "Delete release pipeline",
+                    PermissionBit = 256,
+                    DisplayName = "Delete release stage",
 
                     PermissionId = 4,
                     PermissionDisplayString = "Deny (inherited)"
                 }
             };
-            Permission.HasNoPermissionToDeleteReleasePipeline(permissions).ShouldBeTrue();
+            Permission.HasNoPermissionToDeleteReleaseStage(permissions).ShouldBeTrue();
         }
 
+        
         [Fact]
         public void NoPermissionsToDeleteReleaseShouldBeTrue()
         {

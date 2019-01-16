@@ -30,6 +30,9 @@ namespace Rules.Reports
 
         public ReleaseRights ReleaseRightsContributor { get; set; }
         public ReleaseRights ReleaseDefintionsRightsContributor { get; set; }
+        
+        public ReleaseRights ReleaseRightsProjectAdmin { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsProjectAdmin { get; set; }
 
         public ReleaseRights ReleaseRightsProductionEnvOwner { get; set; }
         public ReleaseRights ReleaseDefintionsRightsProductionEnvOwner { get; set; }
@@ -49,7 +52,9 @@ namespace Rules.Reports
                                        ReleaseRightsContributor.IsSecure &&
                                        ReleaseDefintionsRightsContributor.IsSecure &&
                                        ReleaseRightsProductionEnvOwner.IsSecure &&
-                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure
+                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure &&
+                                       ReleaseRightsProjectAdmin.IsSecure &&
+                                       ReleaseDefinitionsRightsProjectAdmin.IsSecure
         ;
 
         public DateTime Date { get; }

@@ -55,7 +55,9 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeFalse();
+            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
             
             //Todo: see above ^^
             securityReport.ProjectIsSecure.ShouldBeFalse();
