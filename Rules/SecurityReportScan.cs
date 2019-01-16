@@ -89,6 +89,9 @@ namespace SecurePipelineScan.Rules
             
             var permissionsReleaseProjectAdministrators = client.Get(Permissions.PermissionsGroupSetId(
                 projectId, namespaceIdRelease, applicationGroupIdProjectAdmins));
+            
+            var permissionsReleaseReleaseAdministrators = client.Get(Permissions.PermissionsGroupSetId(
+                projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins));
 
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
 
@@ -121,6 +124,7 @@ namespace SecurePipelineScan.Rules
                 ReleaseRightsRaboProjectAdmin = CheckReleaseRights(permissionsReleaseRabobankProjectAdmininistrators.Permissions, new RaboAdminReleaseRights()),
                 ReleaseRightsContributor = CheckReleaseRights(permissionsReleaseContributors.Permissions, new ContributorsReleaseRights()),
                 ReleaseRightsProjectAdmin = CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions, new ProjectAdminReleaseRights()),
+                ReleaseRightsReleaseAdmin = CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions, new ProjectAdminReleaseRights()),
 
                 ReleaseDefintionsRightsProductionEnvOwner = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights()),
                 ReleaseDefintionsRightsContributor = CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdContributors, new ContributorsReleaseRights()),

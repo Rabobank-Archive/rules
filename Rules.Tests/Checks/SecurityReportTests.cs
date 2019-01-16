@@ -11,28 +11,30 @@ namespace SecurePipelineScan.Rules.Tests.Checks
     {
         [Theory]
 
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
-        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
-        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)]
+        [InlineData(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false)]
+        [InlineData(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false)]
 
         public void CheckSecurityReport(bool a, bool b, bool c, bool d, bool e, bool f, bool g, bool h, bool i, bool j,
-            bool k, bool l, bool m, bool n, bool o, bool p, bool q, bool r, bool expected)
+            bool k, bool l, bool m, bool n, bool o, bool p, bool q, bool r, bool s, bool t, bool expected)
         {
             var securityReport = new SecurityReport(DateTime.Now)
             {
@@ -101,7 +103,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasPermissionToManageReleaseApprovers = i,
                     HasPermissionToCreateReleases = i,
                     HasNotSetToManageReleaseApprovers = i,
-                    
+                    HasNoPermissionToDeleteReleaseStage = i, 
                 },
                 
                 ReleaseRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights
@@ -140,6 +142,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasPermissionToCreateReleases = l,
                     HasPermissionToManageReleaseApprovers = l,
                     HasNotSetToManageReleaseApprovers = l,
+                    HasNoPermissionToDeleteReleaseStage = l,
                 },
                 
                 ReleaseDefintionsRightsProductionEnvOwner = new ProductionEnvOwnerReleaseRights()
@@ -194,8 +197,25 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteReleaseStage = r,
                     HasNoPermissionToDeleteReleases = r,
                     HasNoPermissionToManageReleaseApprovers = r,
+                },
+                
+                ReleaseRightsReleaseAdmin = new ReleaseAdminReleaseRights
+                {
+                    HasNoPermissionsToAdministerReleasePermissions = s,
+                    HasNoPermissionToDeleteReleasePipeline = s,
+                    HasNoPermissionToDeleteReleases = s,
+                    HasNoPermissionToManageReleaseApprovers =s,
+                    HasNoPermissionToDeleteReleaseStage =s,
+                },
+                
+                ReleaseDefintionsRightsReleaseAdmin = new ReleaseAdminReleaseRights
+                {
+                    HasNoPermissionsToAdministerReleasePermissions = t,
+                    HasNoPermissionToDeleteReleasePipeline = t,
+                    HasNoPermissionToDeleteReleases = t,
+                    HasNoPermissionToManageReleaseApprovers = t,
+                    HasNoPermissionToDeleteReleaseStage = t,
                 }
-
             };
             
             securityReport.ProjectIsSecure.ShouldBe(expected);
