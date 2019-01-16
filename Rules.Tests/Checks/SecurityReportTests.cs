@@ -114,6 +114,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteReleasePipeline = j,
                     HasNoPermissionToManageReleaseApprovers = j,
                     HasNoPermissionsToAdministerReleasePermissions = j,
+                    HasPermissionToDeleteReleaseStage = j,
                 },
                 
                 ReleaseDefintionsRightsContributor = new ContributorsReleaseRights()
@@ -151,6 +152,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionToDeleteReleasePipeline = m,
                     HasNoPermissionToManageReleaseApprovers = m,
                     HasNoPermissionsToAdministerReleasePermissions = m,
+                    HasPermissionToDeleteReleaseStage = m,
                 },
 
                 TeamRabobankProjectAdministrators = new GlobalRights

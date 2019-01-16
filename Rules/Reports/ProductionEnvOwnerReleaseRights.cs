@@ -4,6 +4,7 @@
     {
         public override bool IsSecure =>
             HasPermissionToManageReleaseApprovers &&
-            HasNoPermissionToCreateReleases;
+            HasNoPermissionToCreateReleases &&
+            HasPermissionToDeleteReleaseStage;
     }
 }
