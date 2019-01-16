@@ -29,16 +29,16 @@ namespace Rules.Reports
         public ReleaseRights ReleaseDefinitionsRightsRaboProjectAdmin { get; set; }
 
         public ReleaseRights ReleaseRightsContributor { get; set; }
-        public ReleaseRights ReleaseDefintionsRightsContributor { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsContributor { get; set; }
         
         public ReleaseRights ReleaseRightsProjectAdmin { get; set; }
         public ReleaseRights ReleaseDefinitionsRightsProjectAdmin { get; set; }
 
         public ReleaseRights ReleaseRightsProductionEnvOwner { get; set; }
-        public ReleaseRights ReleaseDefintionsRightsProductionEnvOwner { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsProductionEnvOwner { get; set; }
         
         public ReleaseRights ReleaseRightsReleaseAdmin { get; set; }
-        public ReleaseRights ReleaseDefintionsRightsReleaseAdmin { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsReleaseAdmin { get; set; }
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
@@ -53,13 +53,13 @@ namespace Rules.Reports
                                        ReleaseRightsRaboProjectAdmin.IsSecure &&
                                        ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure &&
                                        ReleaseRightsContributor.IsSecure &&
-                                       ReleaseDefintionsRightsContributor.IsSecure &&
+                                       ReleaseDefinitionsRightsContributor.IsSecure &&
                                        ReleaseRightsProductionEnvOwner.IsSecure &&
-                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure &&
+                                       ReleaseDefinitionsRightsProductionEnvOwner.IsSecure &&
                                        ReleaseRightsProjectAdmin.IsSecure &&
                                        ReleaseDefinitionsRightsProjectAdmin.IsSecure &&
                                        ReleaseRightsReleaseAdmin.IsSecure &&
-                                       ReleaseDefintionsRightsReleaseAdmin.IsSecure
+                                       ReleaseDefinitionsRightsReleaseAdmin.IsSecure
         ;
 
         public DateTime Date { get; }

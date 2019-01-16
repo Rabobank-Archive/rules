@@ -40,26 +40,32 @@ namespace SecurePipelineScan.Rules.Tests
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
             securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
+            
             securityReport.TeamRabobankProjectAdministrators.GlobalRightsIsSecure.ShouldBeTrue();
 
-            //Todo: fix data and checks in SOx-demo project
-            securityReport.BuildRightsBuildAdmin.IsSecure.ShouldBeFalse();
+            securityReport.BuildRightsBuildAdmin.IsSecure.ShouldBeTrue();
             securityReport.BuildRightsProjectAdmin.IsSecure.ShouldBeTrue();
-            securityReport.BuildDefinitionsRightsBuildAdmin.IsSecure.ShouldBeFalse();
-            securityReport.BuildDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.BuildRightsContributor.IsSecure.ShouldBeTrue();
             
+            securityReport.BuildDefinitionsRightsContributor.IsSecure.ShouldBeTrue();
+            securityReport.BuildDefinitionsRightsBuildAdmin.IsSecure.ShouldBeTrue();
+            securityReport.BuildDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
+                        
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
             
             securityReport.ReleaseRightsContributor.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseDefintionsRightsContributor.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsReleaseAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseRightsProjectAdmin.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseRightsProjectAdmin.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
             
-            securityReport.ProjectIsSecure.ShouldBeFalse();
+            securityReport.ReleaseDefinitionsRightsContributor.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseDefinitionsRightsReleaseAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
+            securityReport.ReleaseDefinitionsRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
+
+            securityReport.ProjectIsSecure.ShouldBeTrue();
         }
 
         [Fact]

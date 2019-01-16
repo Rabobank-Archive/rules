@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             var buildRights = new BuildAdminBuildRights
             {
                 HasNoPermissionsToDeleteBuilds = a,
-                HasNoPermissionsToDeDestroyBuilds = b,
+                HasNoPermissionsToDestroyBuilds = b,
                 HasNoPermissionsToDeleteBuildDefinition = c,
                 HasNoPermissionsToAdministerBuildPermissions = d,
             };

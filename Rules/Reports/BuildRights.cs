@@ -5,7 +5,7 @@
         public bool HasNoPermissionsToAdministerBuildPermissions { get; set; }
         public bool HasNoPermissionsToDeleteBuildDefinition { get; set; }
         public bool HasNoPermissionsToDeleteBuilds { get; set; }
-        public bool HasNoPermissionsToDeDestroyBuilds { get; set; }
+        public bool HasNoPermissionsToDestroyBuilds { get; set; }
         public bool HasNotSetToDeleteBuildDefinition { get; set; }
         public bool HasNotSetToDeleteBuilds { get; set; }
         public bool HasNotSetToDestroyBuilds { get; set; }
