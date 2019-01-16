@@ -208,7 +208,6 @@ namespace SecurePipelineScan.Rules
                 Permission.HasPermissionToCreateReleases(permissions);
             releaseRights.HasNotSetToManageReleaseApprovers =
                 Permission.HasNotSetToManageReleaseApprovers(permissions);
-
             releaseRights.HasNoPermissionToDeleteReleases =
                 Permission.HasNoPermissionToDeleteReleases(permissions);
             releaseRights.HasNoPermissionToManageReleaseApprovers =
@@ -219,6 +218,8 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDeleteReleasePipeline(permissions);
             releaseRights.HasNoPermissionToDeleteReleaseStage =
                 Permission.HasNoPermissionToDeleteReleaseStage(permissions);
+            releaseRights.HasNotSetToDeleteReleaseStage =
+                Permission.HasNotSetToDeleteReleaseStage(permissions);
             return releaseRights;
         }
 
@@ -250,10 +251,15 @@ namespace SecurePipelineScan.Rules
             releaseRights.HasNoPermissionToManageReleaseApprovers =
                 ApplicationGroupHasNoPermissionsToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
                     applicationGroupId);
+            releaseRights.HasNotSetToManageReleaseApprovers =
+                ApplicationGroupHasNotSetToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
+                    applicationGroupId);
             releaseRights.HasNoPermissionToDeleteReleaseStage = 
                 ApplicationGroupHasNoPermissionToDeleteReleaseStage(releaseDefinitions, projectId, namespaceId,
                     applicationGroupId);
-                
+            releaseRights.HasNotSetToDeleteReleaseStage =
+                ApplicationGroupHasNotSetToDeleteReleaseStage(releaseDefinitions, projectId, namespaceId,
+                    applicationGroupId);
             return releaseRights;
         }
 
@@ -385,6 +391,16 @@ namespace SecurePipelineScan.Rules
                             projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
+        
+        private bool ApplicationGroupHasNotSetToManageReleaseApprovers(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
+        {
+            return releaseDefinitions.All
+            (r =>
+                Permission.HasNotSetToManageReleaseApprovers(
+                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                            projectId, namespaceId, applicationGroupId, r.Id))
+                        .Permissions));
+        }
 
         private bool ApplicationGroupHasNoPermissionsToCreateReleases(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
         {
@@ -403,6 +419,18 @@ namespace SecurePipelineScan.Rules
             return releaseDefinitions.All(
                 r =>
                     Permission.HasNoPermissionToDeleteReleaseStage(
+                        client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                                projectId, namespaceId, applicationGroupId, r.Id))
+                            .Permissions));
+        }
+
+        private bool ApplicationGroupHasNotSetToDeleteReleaseStage(
+            IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId,
+            string applicationGroupId)
+        {
+            return releaseDefinitions.All(
+                r =>
+                    Permission.HasNotSetToDeleteReleaseStage(
                         client.Get(Permissions.PermissionsGroupSetIdDefinition(
                                 projectId, namespaceId, applicationGroupId, r.Id))
                             .Permissions));

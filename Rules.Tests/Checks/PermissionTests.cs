@@ -250,6 +250,23 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToDeleteReleaseStage(permissions).ShouldBeTrue();
         }
 
+        [Fact]
+        public void HasNotSetToDeleteReleaseStageShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 256,
+                    DisplayName = "Delete release stage",
+
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
+                }
+            };
+            Permission.HasNotSetToDeleteReleaseStage(permissions).ShouldBeTrue();
+ 
+        }
         
         [Fact]
         public void NoPermissionsToDeleteReleaseShouldBeTrue()

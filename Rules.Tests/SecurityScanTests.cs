@@ -51,7 +51,7 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
             
             securityReport.ReleaseRightsContributor.IsSecure.ShouldBeTrue();
-            securityReport.ReleaseDefintionsRightsContributor.IsSecure.ShouldBeFalse();
+            securityReport.ReleaseDefintionsRightsContributor.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
@@ -59,7 +59,6 @@ namespace SecurePipelineScan.Rules.Tests
             securityReport.ReleaseRightsProjectAdmin.IsSecure.ShouldBeTrue();
             securityReport.ReleaseDefinitionsRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
             
-            //Todo: see above ^^
             securityReport.ProjectIsSecure.ShouldBeFalse();
         }
 
