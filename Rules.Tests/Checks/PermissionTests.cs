@@ -232,23 +232,60 @@ namespace SecurePipelineScan.Rules.Tests.Checks
             Permission.HasNoPermissionToAdministerReleasePermissions(permissions).ShouldBeTrue();
         }
 
+
         [Fact]
-        public void NoPermissionsToDeleteReleasePipelineShouldBeTrue()
+        public void NoPermissionsToDeleteReleaseStageShouldBeTrue()
         {
             var permissions = new[]
             {
                 new Response.Permission()
                 {
-                    PermissionBit = 4,
-                    DisplayName = "Delete release pipeline",
+                    PermissionBit = 256,
+                    DisplayName = "Delete release stage",
 
                     PermissionId = 4,
                     PermissionDisplayString = "Deny (inherited)"
                 }
             };
-            Permission.HasNoPermissionToDeleteReleasePipeline(permissions).ShouldBeTrue();
+            Permission.HasNoPermissionToDeleteReleaseStage(permissions).ShouldBeTrue();
         }
 
+        [Fact]
+        public void HasPermissionToDeleteReleaseStageShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 256,
+                    DisplayName = "Delete release stage",
+
+                    PermissionId = 1,
+                    PermissionDisplayString = "Allow"
+                }
+            };
+            Permission.HasPermissionToDeleteReleaseStage(permissions).ShouldBeTrue();
+  
+        }
+
+        [Fact]
+        public void HasNotSetToDeleteReleaseStageShouldBeTrue()
+        {
+            var permissions = new[]
+            {
+                new Response.Permission()
+                {
+                    PermissionBit = 256,
+                    DisplayName = "Delete release stage",
+
+                    PermissionId = 0,
+                    PermissionDisplayString = "Not Set"
+                }
+            };
+            Permission.HasNotSetToDeleteReleaseStage(permissions).ShouldBeTrue();
+ 
+        }
+        
         [Fact]
         public void NoPermissionsToDeleteReleaseShouldBeTrue()
         {

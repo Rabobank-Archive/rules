@@ -1,12 +1,12 @@
-﻿namespace SecurePipelineScan.Rules.Reports
+namespace SecurePipelineScan.Rules.Reports
 {
-    public class RaboAdminReleaseRights : ReleaseRights
+    public class ProjectAdminReleaseRights : ReleaseRights
     {
         public override bool IsSecure =>
             HasNoPermissionsToAdministerReleasePermissions &&
             HasNoPermissionToDeleteReleasePipeline &&
+            HasNoPermissionToDeleteReleaseStage &&
             HasNoPermissionToDeleteReleases &&
-            HasNoPermissionToManageReleaseApprovers &&
-            HasNoPermissionToDeleteReleaseStage;
+            HasNoPermissionToManageReleaseApprovers;
     }
 }

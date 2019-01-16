@@ -89,7 +89,25 @@ namespace SecurePipelineScan.Rules.Checks
         public static bool HasPermissionToManageReleaseApprovers(IEnumerable<Response.Permission> permissions)
         {
             return permissions.Any(p => p.PermissionBit == 8 &&
-                                           (p.PermissionId == Allow || p.PermissionId == 3));
+                                           (p.PermissionId == Allow || p.PermissionId == AllowInherited));
+        }
+        
+        public static bool HasNoPermissionToDeleteReleaseStage(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 256 &&
+                                        (p.PermissionId == Deny || p.PermissionId == DenyInherited));
+        }
+        
+        public static bool HasPermissionToDeleteReleaseStage(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 256 &&
+                                        (p.PermissionId == Allow || p.PermissionId == AllowInherited));
+        }
+        
+        public static bool HasNotSetToDeleteReleaseStage(IEnumerable<Response.Permission> permissions)
+        {
+            return permissions.Any(p => p.PermissionBit == 256 &&
+                                        p.PermissionId == NotSet );
         }
 
         public static bool HasNotSetToManageReleaseApprovers(IEnumerable<Response.Permission> permissions)

@@ -30,9 +30,15 @@ namespace Rules.Reports
 
         public ReleaseRights ReleaseRightsContributor { get; set; }
         public ReleaseRights ReleaseDefintionsRightsContributor { get; set; }
+        
+        public ReleaseRights ReleaseRightsProjectAdmin { get; set; }
+        public ReleaseRights ReleaseDefinitionsRightsProjectAdmin { get; set; }
 
         public ReleaseRights ReleaseRightsProductionEnvOwner { get; set; }
         public ReleaseRights ReleaseDefintionsRightsProductionEnvOwner { get; set; }
+        
+        public ReleaseRights ReleaseRightsReleaseAdmin { get; set; }
+        public ReleaseRights ReleaseDefintionsRightsReleaseAdmin { get; set; }
 
         public bool ProjectIsSecure => ApplicationGroupContainsProductionEnvironmentOwner &&
                                        ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup &&
@@ -49,7 +55,11 @@ namespace Rules.Reports
                                        ReleaseRightsContributor.IsSecure &&
                                        ReleaseDefintionsRightsContributor.IsSecure &&
                                        ReleaseRightsProductionEnvOwner.IsSecure &&
-                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure
+                                       ReleaseDefintionsRightsProductionEnvOwner.IsSecure &&
+                                       ReleaseRightsProjectAdmin.IsSecure &&
+                                       ReleaseDefinitionsRightsProjectAdmin.IsSecure &&
+                                       ReleaseRightsReleaseAdmin.IsSecure &&
+                                       ReleaseDefintionsRightsReleaseAdmin.IsSecure
         ;
 
         public DateTime Date { get; }

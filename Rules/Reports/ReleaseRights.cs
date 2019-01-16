@@ -10,6 +10,9 @@ namespace SecurePipelineScan.Rules.Reports
         public bool HasNotSetToManageReleaseApprovers { get; set; }
         public bool HasNoPermissionToCreateReleases { set; get; }
         public bool HasPermissionToCreateReleases { get; set; }
+        public bool HasNoPermissionToDeleteReleaseStage { get; set; }
+        public bool HasNotSetToDeleteReleaseStage { get; set; }
+        public bool HasPermissionToDeleteReleaseStage { get; set; }
 
         public abstract bool IsSecure { get; }
     }

@@ -7,6 +7,6 @@
             HasNoPermissionToDeleteReleasePipeline &&
             HasNoPermissionToDeleteReleases &&
             HasNotSetToManageReleaseApprovers &&
-            HasPermissionToCreateReleases;
+            HasNotSetToDeleteReleaseStage;
     }
 }
