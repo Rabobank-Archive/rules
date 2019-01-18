@@ -15,8 +15,9 @@ namespace SecurePipelineScan.VstsService.Tests
     {
         private readonly IVstsRestClient _client;
         private readonly string _project;
-        
-        private static readonly string EnvironmentAssets = Path.Join("Assets", "Release", "Environment");
+
+        private static readonly string ReleaseAssets = Path.Join("Assets", "Release");
+        private static readonly string EnvironmentAssets = Path.Join(ReleaseAssets, "Environment");
 
         public Release(TestConfig config)
         {
@@ -28,10 +29,10 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void ReleaseWithApproval()
         {
-            const string id = "42"; // <-- just some release, may be gone in future due to retention policy which sucks for reporting
-
-            var release = _client.Get(Requests.Release.Releases(_project, id));
-
+            const string id = "79";
+            
+            // var release = _client.Get(Requests.Release.Releases(_project, id));          
+            var release = MockClientResponse<Response.Release>(Path.Join(ReleaseAssets, "Approved.json"));
             release.Id.ShouldBe(id);
             release.Environments.ShouldNotBeEmpty();
 
@@ -57,11 +58,12 @@ namespace SecurePipelineScan.VstsService.Tests
             conditions.ShouldNotBeEmpty();
 
             var condition = conditions.First();
-            condition.Result.ShouldBe(true);
+            condition.Result.ShouldBe(false);
             condition.Name.ShouldNotBeNullOrEmpty();
             condition.ConditionType.ShouldNotBeEmpty();
             condition.Value.ShouldNotBeNull();
         }
+
 
         [Fact]
         public void QueryEnvironment()
@@ -97,22 +99,26 @@ namespace SecurePipelineScan.VstsService.Tests
              *   Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
              *   _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
              */
-
-            var response = EmptyResponse();
-            response.Content = File.ReadAllText(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
-            
+            MockClientResponse<Environment>(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
+        }
+        
+        private static T MockClientResponse<T>(string path)
+        {
+            var response = MockResponse(File.ReadAllText(path));
             var client = new RestClient().SetupSerializer();
-            client.Deserialize<Environment>(response).ThrowOnError();
+            
+            return client.Deserialize<T>(response).ThrowOnError().Data;
         }
 
-        private static IRestResponse EmptyResponse()
+        private static IRestResponse MockResponse(string content)
         {
             var response = Substitute.For<IRestResponse>();
             response.Request = Substitute.For<IRestRequest>();
             response.ContentType = "application/json";
             response.StatusCode = HttpStatusCode.OK;
             response.ResponseStatus = ResponseStatus.Completed;
-            
+            response.Content = content;
+
             return response;
         }
     }
