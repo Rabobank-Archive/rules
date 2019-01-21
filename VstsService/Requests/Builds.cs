@@ -3,7 +3,7 @@ using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
-    public class Builds
+    public static class Builds
     {
         public static IVstsRestRequest<Multiple<BuildDefinition>> BuildDefinitions(string projectId)
         {

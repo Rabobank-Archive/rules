@@ -31,15 +31,13 @@ namespace SecurePipelineScan.VstsService
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri)
                 .AddHeader("authorization", _authorization);
-            
-            switch (request)
-            {
-                case IVstsRestRequest<JObject> _:
-                    return (TResponse)(object)JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
 
-                default:
-                    return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            if (request is IVstsRestRequest<JObject>)
+            {
+                return (TResponse) (object) JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
             }
+
+            return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
 
         public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()

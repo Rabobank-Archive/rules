@@ -21,17 +21,11 @@ namespace SecurePipelineScan.Rules.Checks
         /// <returns></returns>
         public static bool HasRequiredReviewerPolicy(this Response.Repository repository, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
         {
-            if (policies.Any(p => p.Settings.Scope?[0].RepositoryId.ToString() == repository.Id &&
-                                  p.IsEnabled.HasValue &&
-                                  p.IsEnabled.Value == true &&
-                                  p.Settings.CreatorVoteCounts == true &&
-                                  p.Settings.ResetOnSourcePush == true &&
-                                  p.Settings.MinimumApproverCount > 1
-                                  ))
-            {
-                return true;
-            }
-            return false;
+            return policies.Any(p => p.Settings.Scope?[0].RepositoryId.ToString() == repository.Id &&
+                                     p.IsEnabled == true &&
+                                     p.Settings.CreatorVoteCounts == true &&
+                                     p.Settings.ResetOnSourcePush == true &&
+                                     p.Settings.MinimumApproverCount > 1);
         }
     }
 }

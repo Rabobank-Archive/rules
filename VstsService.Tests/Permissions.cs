@@ -100,7 +100,7 @@ namespace SecurePipelineScan.VstsService.Tests
             foreach (var buildDefinition in buildDefinitions)
             {
                 var permissionsGroupSetId = _client.Get(Requests.Permissions.PermissionsGroupSetIdDefinition(
-                    projectId, permissionSetId, applicationGroupId, buildDefinition.id));
+                    projectId, permissionSetId, applicationGroupId, buildDefinition.Id));
                 
                 permissionsGroupSetId.ShouldNotBeNull();
                 permissionsGroupSetId.Permissions.First().PermissionId.ShouldNotBeNull();
@@ -115,7 +115,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId));
             
             buildDefinitions.ShouldNotBeNull();
-            buildDefinitions.First().id.ShouldNotBeNull();
+            buildDefinitions.First().Id.ShouldNotBeNull();
         }
     }
 }
