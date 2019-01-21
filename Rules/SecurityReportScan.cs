@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project)).Identities;
 
-            var groupMembers = getGroupMembersFromApplicationGroup(project, applicationGroups);
+            var groupMembers = GetGroupMembersFromApplicationGroup(project, applicationGroups);
 
             var namespaceIdGitRepositories = client.Get(SecurityNamespace.SecurityNamespaces()).Value
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
@@ -199,22 +199,20 @@ namespace SecurePipelineScan.Rules
         private BuildRights CheckBuildRights(
             IEnumerable<VstsService.Response.Permission> permissions, BuildRights buildRights)
         {
-            {
-                buildRights.HasNoPermissionsToAdministerBuildPermissions =
-                    Permission.HasNoPermissionToAdministerBuildPermissions(permissions);
-                buildRights.HasNoPermissionsToDeleteBuilds =
-                    Permission.HasNoPermissionToDeleteBuilds(permissions);
-                buildRights.HasNoPermissionsToDestroyBuilds =
-                    Permission.HasNoPermissionToDestroyBuilds(permissions);
-                buildRights.HasNoPermissionsToDeleteBuildDefinition =
-                    Permission.HasNoPermissionToDeleteBuildDefinition(permissions);
-                buildRights.HasNotSetToDeleteBuildDefinition =
-                    Permission.HasNotSetToDeleteBuildDefinition(permissions);
-                buildRights.HasNotSetToDeleteBuilds =
-                    Permission.HasNotSetToDeleteBuilds(permissions);
-                buildRights.HasNotSetToDestroyBuilds =
-                    Permission.HasNotSetToDestroyBuilds(permissions);
-            };
+            buildRights.HasNoPermissionsToAdministerBuildPermissions =
+                Permission.HasNoPermissionToAdministerBuildPermissions(permissions);
+            buildRights.HasNoPermissionsToDeleteBuilds =
+                Permission.HasNoPermissionToDeleteBuilds(permissions);
+            buildRights.HasNoPermissionsToDestroyBuilds =
+                Permission.HasNoPermissionToDestroyBuilds(permissions);
+            buildRights.HasNoPermissionsToDeleteBuildDefinition =
+                Permission.HasNoPermissionToDeleteBuildDefinition(permissions);
+            buildRights.HasNotSetToDeleteBuildDefinition =
+                Permission.HasNotSetToDeleteBuildDefinition(permissions);
+            buildRights.HasNotSetToDeleteBuilds =
+                Permission.HasNotSetToDeleteBuilds(permissions);
+            buildRights.HasNotSetToDestroyBuilds =
+                Permission.HasNotSetToDestroyBuilds(permissions);
 
             return buildRights;
         }
@@ -284,7 +282,7 @@ namespace SecurePipelineScan.Rules
             return releaseRights;
         }
        
-        private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+        private IEnumerable<VstsService.Response.ApplicationGroup> GetGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
         {
             var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
             return client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
@@ -316,7 +314,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDeleteBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
         
@@ -326,7 +324,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
         
@@ -336,7 +334,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDeleteBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -347,7 +345,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -357,7 +355,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDestroyBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -367,7 +365,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDestroyBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -378,7 +376,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToAdministerBuildPermissions(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
