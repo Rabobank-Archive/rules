@@ -38,7 +38,7 @@ namespace Subscriptions.Console
                     .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
-                if (deleteOption.HasValue() && deleteOption.Value().ToLower() == "true")
+                if (deleteOption.HasValue() && deleteOption.Value().Equals("true", StringComparison.OrdinalIgnoreCase))
                 {
                     RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
                 }
@@ -149,6 +149,9 @@ namespace Subscriptions.Console
                 case "ms.vss-release.deployment-completed-event":
                     projectInfo.ReleaseDeploymentCompleted = true;
                     break;
+                
+                default:
+                    throw new ArgumentException(eventType, nameof(eventType));
             }
         }
     }

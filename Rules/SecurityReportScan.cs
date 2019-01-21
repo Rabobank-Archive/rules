@@ -426,7 +426,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDeleteBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
         
@@ -436,7 +436,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
         
@@ -446,7 +446,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDeleteBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -457,7 +457,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDeleteBuildDefinition(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -467,7 +467,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToDestroyBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -477,7 +477,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNotSetToDestroyBuilds(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
@@ -488,7 +488,7 @@ namespace SecurePipelineScan.Rules
             (r =>
                 Permission.HasNoPermissionToAdministerBuildPermissions(
                     client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.id))
+                            projectId, namespaceId, applicationGroupId, r.Id))
                         .Permissions));
         }
 
