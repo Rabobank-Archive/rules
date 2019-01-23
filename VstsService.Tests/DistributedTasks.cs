@@ -38,5 +38,13 @@ namespace SecurePipelineScan.VstsService.Tests
 
             agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
+
+        [Fact]
+        public void GetTask()
+        {
+            var task = client.Get(Requests.DistributedTask.Tasks());
+
+            task.ShouldAllBe(_ => !string.IsNullOrWhiteSpace(_.Id));
+        }
     }
 }

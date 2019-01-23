@@ -7,5 +7,8 @@ namespace SecurePipelineScan.VstsService.Response
     {
         public Guid TaskId { get; set; }
         public Dictionary<string, string> Inputs { get; set; }
+
+        public string Version { get; set; }
+        public string Name { get; set; }
     }
 }

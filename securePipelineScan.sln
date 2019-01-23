@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Console", "Su
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Console.Tests", "Subscriptions.Console.Tests\Subscriptions.Console.Tests.csproj", "{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskUsage.Console", "TaskUsage.Console\TaskUsage.Console.csproj", "{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

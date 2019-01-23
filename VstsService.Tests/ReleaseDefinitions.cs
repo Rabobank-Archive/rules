@@ -1,3 +1,4 @@
+using System.Linq;
 using Shouldly;
 using Xunit;
 
@@ -27,6 +28,18 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var definition = client.Get(Requests.Release.Definition(config.Project, config.ReleaseDefinitionId));
             definition.Name.ShouldBe(config.ReleaseDefinitionName);
+            definition.Links.ShouldNotBeNull();
+            definition.Environments.ShouldNotBeEmpty();
+
+            var environment = definition.Environments.First();
+            environment.Name.ShouldNotBeEmpty();
+            environment.DeployPhases.ShouldNotBeEmpty();
+
+            var phase = environment.DeployPhases.First();
+            phase.WorkflowTasks.ShouldNotBeEmpty();
+
+            var task = phase.WorkflowTasks.First();
+            task.Name.ShouldNotBeEmpty();
         }
     }
 }

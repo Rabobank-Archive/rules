@@ -1,5 +1,3 @@
-using RestSharp;
-
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class DistributedTask
@@ -17,6 +15,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRestRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
         {
             return new VstsRestRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents?includeCapabilities=false&includeAssignedRequest=true");
+        }
+
+        public static IVstsRestRequest<Response.Multiple<Response.Task>> Tasks()
+        {
+            return new VstsRestRequest<Response.Multiple<Response.Task>>($"_apis/distributedtask/tasks");
         }
     }
 }
