@@ -99,24 +99,24 @@ namespace SecurePipelineScan.Rules.Tests.Checks
 
             Permission.HasNoPermissionToDeleteBuildDefinition(permissions).ShouldBeTrue();
         }
-        
-        [Fact]
-        public void NotSetToDeleteBuildDefinitionShouldBeTrue()
-        {
-            var permissions = new[]
-            {
-                new Response.Permission()
-                {
-                    PermissionBit = 4096,
-                    DisplayName = "Delete build definition",
 
-                    PermissionId = 0,
-                    PermissionDisplayString = "Not Set"
-                }
-            };
+        //[fact]
+        //public void notsettodeletebuilddefinitionshouldbetrue()
+        //{
+        //    var permissions = new[]
+        //    {
+        //        new response.permission()
+        //        {
+        //            permissionbit = 4096,
+        //            displayname = "delete build definition",
 
-            Permission.HasNotSetToDeleteBuildDefinition(permissions).ShouldBeTrue();
-        }
+        //            permissionid = 0,
+        //            permissiondisplaystring = "not set"
+        //        }
+        //    };
+
+        //    Permission.HasNotSetToDeleteBuildDefinition(permissions).ShouldBeTrue();
+        //}
 
 
         [Fact]
