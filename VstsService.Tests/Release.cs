@@ -68,7 +68,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryEnvironment()
         {
-            var environment = _client.Get(Requests.Release.Environment(_project, "62", "115"));
+            var environment = _client.Get(Requests.Release.Environment(_project, "79", "150"));
 
             environment.ShouldNotBeNull();
             environment.DeployPhasesSnapshot.ShouldNotBeEmpty();

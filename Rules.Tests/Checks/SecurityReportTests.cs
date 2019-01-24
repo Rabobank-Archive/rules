@@ -167,17 +167,17 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                 
                 BuildRightsContributor = new ContributorsBuildRights
                 {
-                    HasNotSetToDeleteBuildDefinition = o, 
-                    HasNotSetToDeleteBuilds = o,
-                    HasNotSetToDestroyBuilds = o, 
+                    HasNoPermissionsToDeleteBuildDefinition = o, 
+                    HasNoPermissionsToDeleteBuilds = o,
+                    HasNoPermissionsToDestroyBuilds = o, 
                     HasNoPermissionsToAdministerBuildPermissions = o,
                 },
                 
                 BuildDefinitionsRightsContributor = new ContributorsBuildRights
                 {
-                    HasNotSetToDeleteBuildDefinition = p, 
-                    HasNotSetToDeleteBuilds = p,
-                    HasNotSetToDestroyBuilds = p, 
+                    HasNoPermissionsToDeleteBuildDefinition = p, 
+                    HasNoPermissionsToDeleteBuilds = p,
+                    HasNoPermissionsToDestroyBuilds = p, 
                     HasNoPermissionsToAdministerBuildPermissions = p,
                 },
                 
