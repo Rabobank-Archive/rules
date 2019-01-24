@@ -35,6 +35,8 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var build = _client.Get(Requests.Builds.Build(_config.Project, _config.BuildId));
             build.ShouldNotBeNull();
+            build.Id.ShouldNotBe(0);
+            build.Definition.ShouldNotBeNull();
             build.Project.ShouldNotBeNull();
         }
     }

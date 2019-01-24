@@ -25,6 +25,7 @@ namespace SecurePipelineScan.Rules
             return new BuildScanReport
             {
                 Id = id, 
+                Pipeline = build.Definition.Name,
                 Project = project,
                 ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container")
             };

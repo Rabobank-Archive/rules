@@ -35,7 +35,8 @@ namespace SecurePipelineScan.Rules.Tests
             var report = scan.Completed(input);
 
             report.Id.ShouldBe("70609");
-            report.Project.ShouldBe("LQA");           
+            report.Project.ShouldBe("LQA");   
+            report.Pipeline.ShouldNotBeEmpty();
         }
 
         [Fact]
