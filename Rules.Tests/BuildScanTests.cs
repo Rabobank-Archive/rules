@@ -69,7 +69,6 @@ namespace SecurePipelineScan.Rules.Tests
             var report = scan.Completed(input);
 
             report.UsesFortify.ShouldBe(false);
-            report.UsesNexusIQ.ShouldBe(false);
             report.UsesSonarQube.ShouldBe(false);
 
         }
@@ -100,8 +99,6 @@ namespace SecurePipelineScan.Rules.Tests
 
             report.UsesFortify.ShouldBe(true);
             report.UsesSonarQube.ShouldBe(true);
-            report.UsesNexusIQ.ShouldBe(false);
-
         }
 
 

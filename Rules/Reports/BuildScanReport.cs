@@ -7,7 +7,6 @@ namespace SecurePipelineScan.Rules.Reports
         public string Project { get; set; }
         public bool ArtifactsStoredSecure { get; set; }
         public bool UsesFortify { get; internal set; }
-        public bool UsesNexusIQ { get; internal set; }
         public bool UsesSonarQube { get; internal set; }
     }
 }

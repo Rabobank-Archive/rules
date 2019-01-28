@@ -11,7 +11,6 @@ namespace SecurePipelineScan.Rules
     {
         private const string FortifyScaTaskId = "818386e5-c8a5-46c3-822d-954b3c8fb130";
         private const string SonarQubePublishTaskId = "291ed61f-1ee4-45d3-b1b0-bf822d9095ef";
-        private const string NexusArtifactUploadTaskId = "f5ac18e5-ebe2-44f5-b3f3-def849ba8144";
         private readonly IVstsRestClient _client;
 
         public BuildScan(IVstsRestClient client)
@@ -37,7 +36,6 @@ namespace SecurePipelineScan.Rules
                 Project = project,
                 ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container"),
                 UsesFortify = usedTaskIds.Contains(FortifyScaTaskId),
-                UsesNexusIQ = usedTaskIds.Contains(NexusArtifactUploadTaskId),
                 UsesSonarQube = usedTaskIds.Contains(SonarQubePublishTaskId),
             };
         }
