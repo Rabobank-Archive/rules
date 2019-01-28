@@ -1,5 +1,7 @@
 name: $(Build.BuildId)
 pool: 'Rabo-Build-Azure-Windows-Preview'
+trigger:
+  - master
 variables:
   buildConfiguration: 'Release'
 
