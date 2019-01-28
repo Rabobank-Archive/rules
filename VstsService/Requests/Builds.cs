@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
@@ -14,6 +13,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRestRequest<Multiple<BuildArtifact>> Artifacts(string project, string id)
         {
             return new VstsRestRequest<Multiple<BuildArtifact>>($"{project}/_apis/build/builds/{id}/artifacts");
+        }
+
+        public static IVstsRestRequest<Timeline> Timeline(string project, string id)
+        {
+            return new VstsRestRequest<Timeline>($"{project}/_apis/build/builds/{id}/timeline");
         }
 
         public static IVstsRestRequest<Build> Build(string project, string id)

@@ -30,7 +30,11 @@ namespace SecurePipelineScan.Rules.Tests
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<BuildArtifact>>>())
                 .Returns(_fixture.Create<Multiple<BuildArtifact>>());
-            
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Returns(_fixture.Create<JObject>());
+
             var scan = new BuildScan(client);
             var report = scan.Completed(input);
 
@@ -38,6 +42,68 @@ namespace SecurePipelineScan.Rules.Tests
             report.Project.ShouldBe("LQA");   
             report.Pipeline.ShouldNotBeEmpty();
         }
+
+        [Fact]
+        public void CompletedIncludesTasksShouldAllBeFalse()
+        {
+            _fixture
+                .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+
+            var input = ReadInput("Completed.json");
+            var timeline = ReadInput("DesignerBuildTimeline.json");
+
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .Get(Arg.Any<IVstsRestRequest<Build>>())
+                .Returns(_fixture.Create<Build>());
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<Multiple<BuildArtifact>>>())
+                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Returns(timeline);
+
+            var scan = new BuildScan(client);
+            var report = scan.Completed(input);
+
+            report.UsesFortify.ShouldBe(false);
+            report.UsesNexusIQ.ShouldBe(false);
+            report.UsesSonarQube.ShouldBe(false);
+
+        }
+        [Fact]
+        public void CompletedIncludesTasksShouldAllBeTrue()
+        {
+            _fixture
+                .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+
+            var input = ReadInput("Completed.json");
+            var timeline = ReadInput("YamlBuildTimeline.json");
+
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .Get(Arg.Any<IVstsRestRequest<Build>>())
+                .Returns(_fixture.Create<Build>());
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<Multiple<BuildArtifact>>>())
+                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Returns(timeline);
+
+            var scan = new BuildScan(client);
+            var report = scan.Completed(input);
+
+            report.UsesFortify.ShouldBe(true);
+            report.UsesSonarQube.ShouldBe(true);
+            report.UsesNexusIQ.ShouldBe(false);
+
+        }
+
 
         [Fact]
         public void AllArtifactsInContainer_ArtifactsStoredSecure_ShouldBeTrue()
@@ -54,7 +120,12 @@ namespace SecurePipelineScan.Rules.Tests
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<BuildArtifact>>>())
                 .Returns(_fixture.Create<Multiple<BuildArtifact>>());
-            
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Returns(_fixture.Create<JObject>());
+
+
             var scan = new BuildScan(client);
             var report = scan.Completed(input);
 
@@ -75,7 +146,12 @@ namespace SecurePipelineScan.Rules.Tests
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<BuildArtifact>>>())
                 .Returns(_fixture.Create<Multiple<BuildArtifact>>());
-            
+
+            client
+                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Returns(_fixture.Create<JObject>());
+
+
             var scan = new BuildScan(client);
             var report = scan.Completed(input);
 
