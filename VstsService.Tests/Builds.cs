@@ -1,5 +1,5 @@
-using System.Linq;
 using Shouldly;
+using System.Linq;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -14,7 +14,7 @@ namespace SecurePipelineScan.VstsService.Tests
             _config = config;
             _client = new VstsRestClient(_config.Organization, _config.Token);
         }
-        
+
         [Fact]
         [Trait("category", "integration")]
         public void QueryArtifacts()
@@ -24,7 +24,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var artifact = artifacts.First();
             artifact.Id.ShouldNotBe(0);
-            
+
             artifact.Resource.ShouldNotBeNull();
             artifact.Resource.Type.ShouldBe("Container");
         }
@@ -38,6 +38,28 @@ namespace SecurePipelineScan.VstsService.Tests
             build.Id.ShouldNotBe(0);
             build.Definition.ShouldNotBeNull();
             build.Project.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void QueryBuildDefinitionsReturnsBuildDefinitions()
+        {
+            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
+
+            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId));
+
+            buildDefinitions.ShouldNotBeNull();
+            buildDefinitions.First().Id.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void QueryBuildDefinitionsReturnsBuildDefinitionsWithExtendedProperties()
+        {
+            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
+
+            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId, true).AsJson());
+
+            buildDefinitions.ShouldNotBeNull();
+            buildDefinitions.SelectTokens("value[*].process").Count().ShouldBeGreaterThan(0);
         }
     }
 }

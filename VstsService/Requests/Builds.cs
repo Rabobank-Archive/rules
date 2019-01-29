@@ -4,10 +4,10 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Builds
     {
-        public static IVstsRestRequest<Multiple<BuildDefinition>> BuildDefinitions(string projectId)
+        public static IVstsRestRequest<Multiple<BuildDefinition>> BuildDefinitions(string projectId, bool includeAllProperties = false)
         {
             return new VstsRestRequest<Multiple<BuildDefinition>>(
-                $"{projectId}/_apis/build/definitions?api-version=5.0-preview.7");
+                $"{projectId}/_apis/build/definitions?includeAllProperties={includeAllProperties}&api-version=5.0-preview.7");
         }
 
         public static IVstsRestRequest<Multiple<BuildArtifact>> Artifacts(string project, string id)
