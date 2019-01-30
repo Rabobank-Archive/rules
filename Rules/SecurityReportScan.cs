@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
@@ -7,6 +8,9 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+using RestSharp;
 using ApplicationGroup = SecurePipelineScan.VstsService.Requests.ApplicationGroup;
 using Permission = SecurePipelineScan.Rules.Checks.Permission;
 using Project = SecurePipelineScan.VstsService.Requests.Project;
@@ -27,27 +31,45 @@ namespace SecurePipelineScan.Rules
 
         public SecurityReport Execute(string project, DateTime date)
         {
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
             var applicationGroups =
                 client.Get(ApplicationGroup.ApplicationGroups(project))
                     ?.Identities;
-              
-            var groupMembers = (project != null && applicationGroups != null)
-                ? getGroupMembersFromApplicationGroup(project, applicationGroups)
-                : null;
 
-            var namespaceIdGitRepositories = client.Get(SecurityNamespace.SecurityNamespaces()).Value
+            if (applicationGroups == null)
+            {
+                throw new ArgumentNullException(nameof(applicationGroups));
+            }
+
+            var groupMembersProjectAdministrators =
+                getGroupMembersOfProjectAdministrators(project, applicationGroups);
+
+            //Todo: can be done outside loop for projects / just once per scan (=organisation)
+            var securityNamespaces = client.Get(SecurityNamespace.SecurityNamespaces()).Value;
+
+            if (securityNamespaces == null)
+            {
+                throw new ArgumentNullException(nameof(securityNamespaces));
+            }
+            
+            var namespaceIdGitRepositories = securityNamespaces
                 .FirstOrDefault(ns => ns.DisplayName == "Git Repositories")
                 ?.NamespaceId;
 
-            var namespaceIdBuild = client.Get(SecurityNamespace.SecurityNamespaces()).Value
+            var namespaceIdBuild = securityNamespaces
                 .FirstOrDefault(ns => ns.Name == "Build")
                 ?.NamespaceId;
 
-            var namespaceIdRelease = client.Get(SecurityNamespace.SecurityNamespaces()).Value
+            var namespaceIdRelease = securityNamespaces
                 .FirstOrDefault(ns => ns.Name == "ReleaseManagement" &&
-                             ns.Actions.
-                                 Any(action => action.Name.Equals("ViewReleaseDefinition")))
+                                      ns.Actions.Any(action => action.Name.Equals("ViewReleaseDefinition")))
                 ?.NamespaceId;
+
+
 
             var applicationGroupIdProjectAdmins = applicationGroups
                 .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Project Administrators")
@@ -73,182 +95,194 @@ namespace SecurePipelineScan.Rules
                 .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Contributors")
                 ?.TeamFoundationId;
 
+
+            var projectId = client.Get(Project.Properties(project)).Id;
+
+            var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
+
+            var buildDefinitions = client.Get(Builds.BuildDefinitions(projectId)).Value;
+
+            var releaseDefinitions = client.Get((Release.Definitions(projectId))).Value;
+
             
-            var projectId = 
-                project != null 
-                    ? client.Get(Project.Properties(project)).Id 
-                    : null;
-            
-            var repositories =
-                (projectId != null)
-                    ? client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value
-                    : null;
-
-            var buildDefinitions =
-                (projectId != null)
-                    ? client.Get(Builds.BuildDefinitions(projectId)).Value
-                    : null;
-
-            var releaseDefinitions =
-                (projectId != null)
-                    ? client.Get((Release.Definitions(projectId))).Value
-                    : null;
-
             var permissionsGitRepositorySet =
-                (projectId != null && namespaceIdGitRepositories != null && applicationGroupIdProjectAdmins != null)
+                applicationGroupIdProjectAdmins != null
                     ? client.Get(Permissions.PermissionsGroupRepositorySet(
                         projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins))
                     : null;
 
+            
             var permissionsBuildProjectAdmins =
-                (projectId != null && namespaceIdBuild != null && applicationGroupIdProjectAdmins != null)
+                applicationGroupIdProjectAdmins != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdBuild, applicationGroupIdProjectAdmins))
                     : null;
 
             var permissionsBuildBuildAdmins =
-                (projectId != null && namespaceIdBuild != null && applicationGroupIdBuildAdmins != null)
+                applicationGroupIdBuildAdmins != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdBuild, applicationGroupIdBuildAdmins))
                     : null;
 
             var permissionsBuildContributors =
-                (projectId != null && namespaceIdBuild != null && applicationGroupIdContributors != null)
+                applicationGroupIdContributors != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdBuild, applicationGroupIdContributors))
                     : null;
 
+
             var permissionsTeamRabobankProjectAdministrators =
-                (projectId != null && applicationGroupRabobankProjectAdministrators != null)
+                (applicationGroupRabobankProjectAdministrators != null)
                     ? client.Get(Permissions.PermissionsGroupProjectId(
                         projectId, applicationGroupRabobankProjectAdministrators))
                     : null;
 
             var permissionsReleaseRabobankProjectAdministrators =
-                (projectId != null && namespaceIdRelease != null &&
-                 applicationGroupRabobankProjectAdministrators != null)
+                namespaceIdRelease != null &&
+                applicationGroupRabobankProjectAdministrators != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdRelease, applicationGroupRabobankProjectAdministrators))
                     : null;
 
             var permissionsReleaseProdEnvOwner =
-                (projectId != null && namespaceIdRelease != null && applicationGroupIdProdEnvOwners != null)
+                applicationGroupIdProdEnvOwners != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners))
                     : null;
 
             var permissionsReleaseContributors =
-                (projectId != null && namespaceIdRelease != null && applicationGroupIdContributors != null)
+                applicationGroupIdContributors != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdRelease, applicationGroupIdContributors))
                     : null;
 
             var permissionsReleaseProjectAdministrators =
-                (projectId != null && namespaceIdRelease != null && applicationGroupIdProjectAdmins != null)
+                applicationGroupIdProjectAdmins != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdRelease, applicationGroupIdProjectAdmins))
                     : null;
 
             var permissionsReleaseReleaseAdministrators =
-                (projectId != null && namespaceIdRelease != null && applicationGroupIdReleaseAdmins != null)
+                applicationGroupIdReleaseAdmins != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins))
                     : null;
 
-            
+
             var securityReport = new SecurityReport(date)
             {
                 Project = project,
 
-                ApplicationGroupContainsProductionEnvironmentOwner = 
-                    applicationGroups != null && ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
-                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup = 
-                    groupMembers != null && ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(groupMembers),
+                ApplicationGroupContainsProductionEnvironmentOwner =
+                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
+                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup =
+                    groupMembersProjectAdministrators != null &&
+                    ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(
+                        groupMembersProjectAdministrators),
 
-                RepositoryRightsProjectAdmin = 
-                    (permissionsGitRepositorySet != null && repositories != null && projectId != null && namespaceIdGitRepositories != null && applicationGroupIdProjectAdmins != null)
-                    ? CheckRepositoryRights(permissionsGitRepositorySet.Permissions,
-                            repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins)
-                    : new RepositoryRights(),
+                
+                RepositoryRightsProjectAdmin =
+                    (permissionsGitRepositorySet != null && repositories != null && applicationGroupIdProjectAdmins != null)
+                        ? CheckRepositoryRights(permissionsGitRepositorySet.Permissions,
+                            repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins, new RepositoryRights())
+                        : null,
 
-                BuildRightsBuildAdmin = 
-                    (permissionsBuildBuildAdmins != null)
-                    ? CheckBuildRights(permissionsBuildBuildAdmins.Permissions, new BuildAdminBuildRights())
-                    : new BuildAdminBuildRights(),
-                BuildRightsProjectAdmin = 
-                    (permissionsBuildProjectAdmins != null)
-                    ? CheckBuildRights(permissionsBuildProjectAdmins.Permissions, new ProjectAdminBuildRights())
-                    : new ProjectAdminBuildRights(),
-                BuildRightsContributor = 
+
+                BuildRightsBuildAdmin =
+                    permissionsBuildBuildAdmins != null
+                        ? CheckBuildRights(permissionsBuildBuildAdmins.Permissions, new BuildAdminBuildRights())
+                        : null,
+                BuildRightsProjectAdmin =
+                    permissionsBuildProjectAdmins != null
+                        ? CheckBuildRights(permissionsBuildProjectAdmins.Permissions, new ProjectAdminBuildRights())
+                        : null,
+                BuildRightsContributor =
                     (permissionsBuildContributors != null)
-                    ? CheckBuildRights(permissionsBuildContributors.Permissions, new ContributorsBuildRights())
-                    : new ContributorsBuildRights(),
-                
-                BuildDefinitionsRightsBuildAdmin = 
-                    (buildDefinitions != null && projectId != null && namespaceIdBuild != null && applicationGroupIdBuildAdmins != null)
-                    ? CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdBuildAdmins, new BuildAdminBuildRights())
-                    : new BuildAdminBuildRights(),
-                BuildDefinitionsRightsProjectAdmin = 
-                    (buildDefinitions != null && projectId != null && namespaceIdBuild != null && applicationGroupIdProjectAdmins != null)
-                    ? CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild, applicationGroupIdProjectAdmins, new ProjectAdminBuildRights())
-                    : new ProjectAdminBuildRights(),
-                BuildDefinitionsRightsContributor = 
-                    (buildDefinitions != null && projectId != null && namespaceIdBuild != null && applicationGroupIdContributors != null)
-                    ? CheckBuildDefinitionRights(buildDefinitions, projectId, namespaceIdBuild,applicationGroupIdContributors, new ContributorsBuildRights())
-                    : new ContributorsBuildRights(),
-                
-                ReleaseRightsProductionEnvOwner = 
-                    permissionsReleaseProdEnvOwner != null 
-                        ? CheckReleaseRights(permissionsReleaseProdEnvOwner.Permissions, new ProductionEnvOwnerReleaseRights()) 
-                        : new ProductionEnvOwnerReleaseRights(),
-                ReleaseRightsRaboProjectAdmin = 
+                        ? CheckBuildRights(permissionsBuildContributors.Permissions, new ContributorsBuildRights())
+                        : null,
+
+                BuildDefinitionsRightsBuildAdmin =
+                    (buildDefinitions != null && applicationGroupIdBuildAdmins != null)
+                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+                            applicationGroupIdBuildAdmins, new BuildAdminBuildRights())
+                        : null,
+                BuildDefinitionsRightsProjectAdmin =
+                    (buildDefinitions != null && applicationGroupIdProjectAdmins != null)
+                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+                            applicationGroupIdProjectAdmins, new ProjectAdminBuildRights())
+                        : null,
+                BuildDefinitionsRightsContributor =
+                    (buildDefinitions != null && applicationGroupIdContributors != null)
+                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+                            applicationGroupIdContributors, new ContributorsBuildRights())
+                        : null,
+
+
+                ReleaseRightsProductionEnvOwner =
+                    permissionsReleaseProdEnvOwner != null
+                        ? CheckReleaseRights(permissionsReleaseProdEnvOwner.Permissions,
+                            new ProductionEnvOwnerReleaseRights())
+                        : null,
+                ReleaseRightsRaboProjectAdmin =
                     permissionsReleaseRabobankProjectAdministrators != null
-                    ? CheckReleaseRights(permissionsReleaseRabobankProjectAdministrators.Permissions, new RaboAdminReleaseRights())
-                    : new ProjectAdminReleaseRights(),
-                ReleaseRightsContributor = 
+                        ? CheckReleaseRights(permissionsReleaseRabobankProjectAdministrators.Permissions,
+                            new RaboAdminReleaseRights())
+                        : null,
+                ReleaseRightsContributor =
                     permissionsReleaseContributors != null
-                    ? CheckReleaseRights(permissionsReleaseContributors.Permissions, new ContributorsReleaseRights())
-                    : new ContributorsReleaseRights(),
-                ReleaseRightsProjectAdmin = 
+                        ? CheckReleaseRights(permissionsReleaseContributors.Permissions,
+                            new ContributorsReleaseRights())
+                        : null,
+                ReleaseRightsProjectAdmin =
                     permissionsReleaseProjectAdministrators != null
-                    ? CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions, new ProjectAdminReleaseRights())
-                    : new ProjectAdminReleaseRights(),
-                ReleaseRightsReleaseAdmin = 
+                        ? CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions,
+                            new ProjectAdminReleaseRights())
+                        : null,
+                ReleaseRightsReleaseAdmin =
                     permissionsReleaseReleaseAdministrators != null
-                    ? CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions, new ProjectAdminReleaseRights())
-                    : new ReleaseAdminReleaseRights(),
+                        ? CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions,
+                            new ProjectAdminReleaseRights())
+                        : null,
 
-                ReleaseDefinitionsRightsProductionEnvOwner = 
-                    (releaseDefinitions != null && projectId != null && namespaceIdRelease != null && applicationGroupIdProdEnvOwners != null)
-                    ? CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights())
-                    : new ProductionEnvOwnerReleaseRights(),
-                ReleaseDefinitionsRightsContributor = 
-                    (releaseDefinitions != null && projectId != null && namespaceIdRelease != null && applicationGroupIdContributors != null)
-                    ? CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdContributors, new ContributorsReleaseRights())
-                    : new ContributorsReleaseRights(),
-                ReleaseDefinitionsRightsRaboProjectAdmin = 
-                    (releaseDefinitions != null && projectId != null && namespaceIdRelease != null && applicationGroupRabobankProjectAdministrators != null)
-                    ? CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupRabobankProjectAdministrators, new RaboAdminReleaseRights())
-                    : new RaboAdminReleaseRights(),
-                ReleaseDefinitionsRightsProjectAdmin = 
-                    (releaseDefinitions != null && projectId != null && namespaceIdRelease != null && applicationGroupIdProjectAdmins != null)
-                    ? CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdProjectAdmins, new ProjectAdminReleaseRights())
-                    : new ProjectAdminReleaseRights(),
-                ReleaseDefinitionsRightsReleaseAdmin = 
-                    (releaseDefinitions != null && projectId != null && namespaceIdRelease != null && applicationGroupIdReleaseAdmins != null)
-                    ? CheckReleaseDefinitionRights(releaseDefinitions, projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights())
-                    : new ReleaseAdminReleaseRights(),
+                ReleaseDefinitionsRightsProductionEnvOwner =
+                    (releaseDefinitions != null && applicationGroupIdProdEnvOwners != null)
+                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+                            applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights())
+                        : null,
+                ReleaseDefinitionsRightsContributor =
+                    (releaseDefinitions != null && applicationGroupIdContributors != null)
+                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+                            applicationGroupIdContributors, new ContributorsReleaseRights())
+                        : null,
+                ReleaseDefinitionsRightsRaboProjectAdmin =
+                    (releaseDefinitions != null && applicationGroupRabobankProjectAdministrators != null)
+                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+                            applicationGroupRabobankProjectAdministrators, new RaboAdminReleaseRights())
+                        : null,
+                ReleaseDefinitionsRightsProjectAdmin =
+                    (releaseDefinitions != null && applicationGroupIdProjectAdmins != null)
+                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+                            applicationGroupIdProjectAdmins, new ProjectAdminReleaseRights())
+                        : null,
+                ReleaseDefinitionsRightsReleaseAdmin =
+                    (releaseDefinitions != null && applicationGroupIdReleaseAdmins != null)
+                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+                            applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights())
+                        : null,
+
                 
-                TeamRabobankProjectAdministrators = 
-                    permissionsTeamRabobankProjectAdministrators != null 
-                    ? CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security.Permissions)
-                    : new GlobalRights(),
+                TeamRabobankProjectAdministrators =
+                    permissionsTeamRabobankProjectAdministrators != null
+                        ? CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security
+                            .Permissions)
+                        : null,
             };
-
+            
             return securityReport;
         }
 
-        private GlobalRights CheckTeamRabobankProjectAdministrators(IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+        private GlobalRights CheckTeamRabobankProjectAdministrators(
+            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
         {
             return new GlobalRights
             {
@@ -263,47 +297,37 @@ namespace SecurePipelineScan.Rules
 
         private RepositoryRights CheckRepositoryRights(
             IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions,
-            IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
+            IEnumerable<Repository> repositories, string projectId, string namespaceId, 
+            string applicationGroupId, RepositoryRights repositoryRights)
         {
-            return new RepositoryRights
+            List<PermissionsSetId> permissionsRepositories = new List<PermissionsSetId>();
+            
+            foreach (var repository in repositories)
             {
-                HasNoPermissionToDeleteRepositories =
-                    ApplicationGroupHasNoPermissionToDeleteRepositories(repositories, projectId, namespaceId, applicationGroupId),
-                HasNoPermissionToDeleteRepositorySet =
-                    Permission.HasNoPermissionToDeleteRepository(permissions),
-                HasNotSetToManagePermissionsRepositories =
-                    ApplicationGroupHasNotSetToManagePermissionsRepositories(repositories, projectId, namespaceId, applicationGroupId),
-                HasNotSetToManagePermissionsRepositorySet =
-                    Permission.HasNotSetToManageRepositoryPermissions(permissions)
-            };
-        }
+                permissionsRepositories.Add(
+                    client.Get(Permissions.PermissionsGroupRepository(
+                        projectId, namespaceId, applicationGroupId, repository.Id)));
+            }
 
-        private BuildRights CheckBuildDefinitionRights(
-            IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId, BuildRights buildRights)
-        {
-            buildRights.HasNoPermissionsToDeleteBuilds =
-                ApplicationGroupHasNoPermissionToDeleteBuilds(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            buildRights.HasNoPermissionsToDestroyBuilds =
-                ApplicationGroupHasNoPermissionToDestroyBuilds(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            buildRights.HasNoPermissionsToDeleteBuildDefinition =
-                ApplicationGroupHasNoPermissionsToDeleteBuildDefinition(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            buildRights.HasNoPermissionsToAdministerBuildPermissions =
-                ApplicationGroupHasNoPermissionToAdministerBuildPermissions(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            buildRights.HasNotSetToDeleteBuildDefinition =                 
-                ApplicationGroupHasNotSetDeleteBuildDefinition(buildDefinitions, projectId, namespaceId,
-                applicationGroupId);
-            buildRights.HasNotSetToDeleteBuilds =
-                ApplicationGroupHasNotSetToDeleteBuilds(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            buildRights.HasNotSetToDestroyBuilds =
-                ApplicationGroupHasNotSetToDestroyBuilds(buildDefinitions, projectId, namespaceId,
-                    applicationGroupId);
+            repositoryRights.HasNoPermissionToDeleteRepositories = true;
+            repositoryRights.HasNotSetToManagePermissionsRepositories = true;
 
-            return buildRights;
+            foreach (var permissionsRepository in permissionsRepositories)
+            {
+                repositoryRights.HasNoPermissionToDeleteRepositories =
+                    repositoryRights.HasNoPermissionToDeleteRepositories &&
+                    Permission.HasNoPermissionToDeleteRepository(permissionsRepository.Permissions);
+                repositoryRights.HasNotSetToManagePermissionsRepositories =
+                    repositoryRights.HasNotSetToManagePermissionsRepositories &&
+                    Permission.HasNotSetToManageRepositoryPermissions(permissionsRepository.Permissions);
+            }
+
+            repositoryRights.HasNoPermissionToDeleteRepositorySet =
+                Permission.HasNoPermissionToDeleteRepository(permissions);
+            repositoryRights.HasNotSetToManagePermissionsRepositorySet =
+                Permission.HasNotSetToManageRepositoryPermissions(permissions);
+
+            return repositoryRights;
         }
 
         private BuildRights CheckBuildRights(
@@ -351,240 +375,172 @@ namespace SecurePipelineScan.Rules
                 Permission.HasNoPermissionToDeleteReleasePipeline(permissions);
             releaseRights.HasNoPermissionToDeleteReleaseStage =
                 Permission.HasNoPermissionToDeleteReleaseStage(permissions);
-            releaseRights.HasPermissionToDeleteReleaseStage = 
+            releaseRights.HasPermissionToDeleteReleaseStage =
                 Permission.HasPermissionToDeleteReleaseStage(permissions);
             releaseRights.HasNotSetToDeleteReleaseStage =
                 Permission.HasNotSetToDeleteReleaseStage(permissions);
             return releaseRights;
         }
-        
-        private ReleaseRights CheckReleaseDefinitionRights(
-            IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId, ReleaseRights releaseRights)
+
+        private ReleaseRights CheckReleaseDefinitionsRights(
+            IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId,
+            string applicationGroupId, ReleaseRights releaseRights)
         {
-            releaseRights.HasNoPermissionsToAdministerReleasePermissions = 
-                ApplicationGroupHasNoPermissionsToAdministerReleasePermissions(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNoPermissionToCreateReleases =
-                ApplicationGroupHasNoPermissionsToCreateReleases(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNoPermissionToDeleteReleases =
-                ApplicationGroupHasNoPermissionsToDeleteReleases(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNoPermissionToDeleteReleasePipeline =
-                ApplicationGroupHasNoPermissionsToDeleteReleasePipeline(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNoPermissionToManageReleaseApprovers =
-                ApplicationGroupHasNoPermissionsToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasPermissionToManageReleaseApprovers =
-                ApplicationGroupHasPermissionsToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNotSetToManageReleaseApprovers =
-                ApplicationGroupHasNotSetToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNoPermissionToDeleteReleaseStage = 
-                ApplicationGroupHasNoPermissionToDeleteReleaseStage(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasNotSetToDeleteReleaseStage =
-                ApplicationGroupHasNotSetToDeleteReleaseStage(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
-            releaseRights.HasPermissionToDeleteReleaseStage = 
-                ApplicationGroupHasPermissionsToManageReleaseApprovers(releaseDefinitions, projectId, namespaceId,
-                    applicationGroupId);
+            List<PermissionsSetId> permissionsDefinitions = new List<PermissionsSetId>();
+
+            foreach (var releaseDefinition in releaseDefinitions)
+            {
+                permissionsDefinitions.Add(
+                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                        projectId, namespaceId, applicationGroupId, releaseDefinition.Id)));
+            }
+
+            releaseRights.HasNotSetToManageReleaseApprovers = true;
+            releaseRights.HasNoPermissionsToAdministerReleasePermissions = true;
+            releaseRights.HasNoPermissionToCreateReleases = true;
+            releaseRights.HasNoPermissionToDeleteReleases = true;
+            releaseRights.HasNoPermissionToDeleteReleasePipeline = true;
+            releaseRights.HasNoPermissionToManageReleaseApprovers = true;
+            releaseRights.HasPermissionToManageReleaseApprovers = true;
+            releaseRights.HasNoPermissionToDeleteReleaseStage = true;
+            releaseRights.HasNotSetToDeleteReleaseStage = true;
+            releaseRights.HasPermissionToDeleteReleaseStage = true;
+
+            foreach (var permissionsDefinition in permissionsDefinitions)
+            {
+                releaseRights.HasNotSetToManageReleaseApprovers =
+                    releaseRights.HasNotSetToManageReleaseApprovers &&
+                    Permission.HasNotSetToManageReleaseApprovers(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionsToAdministerReleasePermissions =
+                    releaseRights.HasNoPermissionsToAdministerReleasePermissions &&
+                    Permission.HasNoPermissionToAdministerReleasePermissions(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionToCreateReleases =
+                    releaseRights.HasNoPermissionToCreateReleases &&
+                    Permission.HasNoPermissionToCreateReleases(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionToDeleteReleases =
+                    releaseRights.HasNoPermissionToDeleteReleases &&
+                    Permission.HasNoPermissionToDeleteReleases(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionToDeleteReleasePipeline =
+                    releaseRights.HasNoPermissionToDeleteReleasePipeline &&
+                    Permission.HasNoPermissionToDeleteReleasePipeline(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionToManageReleaseApprovers =
+                    releaseRights.HasNoPermissionToManageReleaseApprovers &&
+                    Permission.HasNoPermissionToManageReleaseApprovers(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasPermissionToManageReleaseApprovers =
+                    releaseRights.HasPermissionToManageReleaseApprovers &&
+                    Permission.HasPermissionToManageReleaseApprovers(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNoPermissionToDeleteReleaseStage =
+                    releaseRights.HasNoPermissionToDeleteReleaseStage &&
+                    Permission.HasNoPermissionToDeleteReleaseStage(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasNotSetToDeleteReleaseStage =
+                    releaseRights.HasNotSetToDeleteReleaseStage &&
+                    Permission.HasNotSetToDeleteReleaseStage(
+                        permissionsDefinition
+                            .Permissions);
+                releaseRights.HasPermissionToDeleteReleaseStage =
+                    releaseRights.HasPermissionToDeleteReleaseStage &&
+                    Permission.HasPermissionToDeleteReleaseStage(
+                        permissionsDefinition
+                            .Permissions);
+            }
             return releaseRights;
         }
-       
-        private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersFromApplicationGroup(string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+
+        private BuildRights CheckBuildDefinitionsRights(
+            IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId,
+            string applicationGroupId, BuildRights buildRights)
         {
-            var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators").TeamFoundationId;
+            List<PermissionsSetId> permissionsDefinitionsBuilds = new List<PermissionsSetId>();
+
+            foreach (var buildDefinition in buildDefinitions)
+            {
+                var permissionsDefinitionSetId = client.Get(Permissions.PermissionsGroupSetIdDefinition(
+                    projectId, namespaceId, applicationGroupId, buildDefinition.Id));
+
+                permissionsDefinitionsBuilds.Add(permissionsDefinitionSetId);
+            }
+
+            buildRights.HasNoPermissionsToDeleteBuilds = true;
+            buildRights.HasNoPermissionsToDestroyBuilds = true;
+            buildRights.HasNoPermissionsToDeleteBuildDefinition = true;
+            buildRights.HasNoPermissionsToAdministerBuildPermissions = true;
+            buildRights.HasNotSetToDeleteBuildDefinition = true;
+            buildRights.HasNotSetToDeleteBuilds = true;
+            buildRights.HasNotSetToDestroyBuilds = true;
+
+            foreach (var permissionsDefinition in permissionsDefinitionsBuilds)
+            {
+                buildRights.HasNoPermissionsToDeleteBuilds =
+                    buildRights.HasNoPermissionsToDeleteBuilds && Permission.HasNoPermissionToDeleteBuilds(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNoPermissionsToDestroyBuilds =
+                    buildRights.HasNoPermissionsToDestroyBuilds && Permission.HasNoPermissionToDestroyBuilds(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNoPermissionsToDeleteBuildDefinition =
+                    buildRights.HasNoPermissionsToDeleteBuildDefinition &&
+                    Permission.HasNoPermissionToDeleteBuildDefinition(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNoPermissionsToAdministerBuildPermissions =
+                    buildRights.HasNoPermissionsToAdministerBuildPermissions &&
+                    Permission.HasNoPermissionToAdministerBuildPermissions(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNotSetToDeleteBuildDefinition =
+                    buildRights.HasNotSetToDeleteBuildDefinition &&
+                    Permission.HasNotSetToDeleteBuildDefinition(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNotSetToDeleteBuilds =
+                    buildRights.HasNotSetToDeleteBuilds && Permission.HasNotSetToDeleteBuilds(
+                        permissionsDefinition
+                            .Permissions);
+                buildRights.HasNotSetToDestroyBuilds =
+                    buildRights.HasNotSetToDestroyBuilds && Permission.HasNotSetToDestroyBuilds(
+                        permissionsDefinition
+                            .Permissions);
+            }
+
+            return buildRights;
+        }
+
+        private IEnumerable<VstsService.Response.ApplicationGroup> getGroupMembersOfProjectAdministrators(
+            string project, IEnumerable<VstsService.Response.ApplicationGroup> applicationGroups)
+        {
+            var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators")
+                .TeamFoundationId;
             return client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
         }
-
-        private bool ApplicationGroupHasNotSetToManagePermissionsRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return repositories.All
-            (r =>
-                Permission.HasNotSetToManageRepositoryPermissions(
-                    client.Get(Permissions.PermissionsGroupRepository(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionToDeleteRepositories(IEnumerable<Repository> repositories, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return repositories.All
-            (r =>
-                Permission.HasNoPermissionToDeleteRepository(
-                    client.Get(Permissions.PermissionsGroupRepository(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionToDeleteBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToDeleteBuilds(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-        
-        private bool ApplicationGroupHasNoPermissionsToDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToDeleteBuildDefinition(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-        
-        private bool ApplicationGroupHasNotSetToDeleteBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNotSetToDeleteBuilds(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        
-        private bool ApplicationGroupHasNotSetDeleteBuildDefinition(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNotSetToDeleteBuildDefinition(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionToDestroyBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToDestroyBuilds(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNotSetToDestroyBuilds(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNotSetToDestroyBuilds(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        
-        private bool ApplicationGroupHasNoPermissionToAdministerBuildPermissions(IEnumerable<BuildDefinition> buildDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return buildDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToAdministerBuildPermissions(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionsToAdministerReleasePermissions(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToAdministerReleasePermissions(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionsToDeleteReleasePipeline(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToDeleteReleasePipeline(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionsToDeleteReleases(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToDeleteReleases(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasPermissionsToManageReleaseApprovers(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasPermissionToManageReleaseApprovers(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionsToManageReleaseApprovers(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToManageReleaseApprovers(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-        
-        private bool ApplicationGroupHasNotSetToManageReleaseApprovers(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNotSetToManageReleaseApprovers(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionsToCreateReleases(IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId, string applicationGroupId)
-        {
-            return releaseDefinitions.All
-            (r =>
-                Permission.HasNoPermissionToCreateReleases(
-                    client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                            projectId, namespaceId, applicationGroupId, r.Id))
-                        .Permissions));
-        }
-
-        private bool ApplicationGroupHasNoPermissionToDeleteReleaseStage(
-            IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId,
-            string applicationGroupId)
-        {
-            return releaseDefinitions.All(
-                r =>
-                    Permission.HasNoPermissionToDeleteReleaseStage(
-                        client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                                projectId, namespaceId, applicationGroupId, r.Id))
-                            .Permissions));
-        }
-
-        private bool ApplicationGroupHasNotSetToDeleteReleaseStage(
-            IEnumerable<ReleaseDefinition> releaseDefinitions, string projectId, string namespaceId,
-            string applicationGroupId)
-        {
-            return releaseDefinitions.All(
-                r =>
-                    Permission.HasNotSetToDeleteReleaseStage(
-                        client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                                projectId, namespaceId, applicationGroupId, r.Id))
-                            .Permissions));
-        }
-
     }
 }
+        
+
+        
+
+
+
+        
+        
+        
+        
+
+
+

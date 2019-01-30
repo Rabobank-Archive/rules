@@ -113,5 +113,45 @@ namespace SecurePipelineScan.Rules.Tests
 
             securityReport.ShouldNotBeNull();
         }
+
+        [Fact]
+        public void ProjectArgumentNullThrowsException()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+
+            var scan = new SecurityReportScan(client);
+            var ex = Assert.Throws<ArgumentNullException>(() => scan.Execute(null, DateTime.Now));
+            Assert.Contains("Parameter name: project", ex.Message);
+        }
+
+        [Fact]
+        public void ApplicationGroupsIsNullThrowsException()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+
+            var scan = new SecurityReportScan(client);
+            var ex = Assert.Throws<ArgumentNullException>(() => scan.Execute("dummy", DateTime.Now));
+            Assert.Contains("Parameter name: applicationGroups", ex.Message);
+        }
+        
+        [Fact]
+        public void SecurityNamespacesIsNullThrowsException()
+        {
+            var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1",};
+            var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2"};
+            var applicationGroups = new Response.ApplicationGroups {Identities = new[]
+            {
+                applicationGroup1, applicationGroup2
+            }};
+            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace> {};
+            
+            var client = Substitute.For<IVstsRestClient>();
+            client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(securityNamespaces);
+
+            var scan = new SecurityReportScan(client);
+            var ex = Assert.Throws<ArgumentNullException>(() => scan.Execute("dummy", DateTime.Now));
+            Assert.Contains("Parameter name: securityNamespaces", ex.Message);
+        }
     }
 }
