@@ -23,7 +23,7 @@ namespace SecurePipelineScan.VstsService.Tests
             putResult.Id.ShouldBe("geert");
 
             var getResult = _client.Get(Requests.ExtensionDataCollections.ExtensionData("ms", "vss-analytics", "DevOps Demo", "geert"));
-            putResult.Id.ShouldBe("geert");
+            getResult.Id.ShouldBe("geert");
         }
 
         internal class TestObject

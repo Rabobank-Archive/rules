@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Requests
