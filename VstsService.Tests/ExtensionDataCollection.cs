@@ -19,16 +19,11 @@ namespace SecurePipelineScan.VstsService.Tests
         [Trait("category", "integration")]
         public void AddDataToExtensionDataCollection()
         {
-            var result = _client.Put(Requests.ExtensionDataCollections.ExtensionData("riezebosch","my-first-extension", "DevOps Demo","geert",new TestObject() {Name="Geert", Value="bla" }));
-            result.Id.ShouldBe("geert");
-        }
+            var putResult = _client.Put(Requests.ExtensionDataCollections.ExtensionData("ms", "vss-analytics", "DevOps Demo","geert",new TestObject() {Name="Geert", Value="bla" }));
+            putResult.Id.ShouldBe("geert");
 
-        [Fact]
-        [Trait("category", "integration")]
-        public void GetDataFromExtensionDataCollection()
-        {
-            var result = _client.Get(Requests.ExtensionDataCollections.ExtensionData("riezebosch", "my-first-extension", "DevOps Demo", "geert"));
-            result.Id.ShouldBe("geert");
+            var getResult = _client.Get(Requests.ExtensionDataCollections.ExtensionData("ms", "vss-analytics", "DevOps Demo", "geert"));
+            putResult.Id.ShouldBe("geert");
         }
 
         internal class TestObject
