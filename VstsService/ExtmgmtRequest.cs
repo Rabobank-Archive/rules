@@ -15,7 +15,7 @@ namespace SecurePipelineScan.VstsService
 
         public Uri BaseUri(string organization)
         {
-            return new System.Uri($"https://extmgmt.dev.azure.com/{organization}/");
+            return new System.Uri($"https://{organization}.extmgmt.visualstudio.com/");
         }
     }
 }

@@ -19,9 +19,14 @@ namespace SecurePipelineScan.VstsService.Requests
         //    "__etag": 3
         //}
 
-        public static IVstsPostRequest<Response.Empty> ExtensionData(string publisher, string extensionName, string collection, string id, object data)
+        public static IVstsRestRequest<Response.ExtensionCollectionData> ExtensionData(string publisher, string extensionName, string collection, string id)
         {
-            return new ExtmgmtPutRequest<Response.Empty>($"_apis/ExtensionManagement/InstalledExtensions/{ publisher }/{ extensionName }/Data/Scopes/Default/Current/Collections/{ collection}/Documents/",new ExtensionData(id, data));
+            return new ExtmgmtRequest<Response.ExtensionCollectionData>($"_apis/ExtensionManagement/InstalledExtensions/{ publisher }/{ extensionName }/Data/Scopes/Default/Current/Collections/{ collection}/Documents/{id}?api-version=3.1-preview.1");
+        }
+
+        public static IVstsPostRequest<Response.ExtensionCollectionData> ExtensionData(string publisher, string extensionName, string collection, string id, object data)
+        {
+            return new ExtmgmtPutRequest<Response.ExtensionCollectionData>($"_apis/ExtensionManagement/InstalledExtensions/{ publisher }/{ extensionName }/Data/Scopes/Default/Current/Collections/{ collection}/Documents?api-version=3.1-preview.1",new ExtensionData(id, data));
         }
     }
 
