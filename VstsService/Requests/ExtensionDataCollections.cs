@@ -15,12 +15,13 @@ namespace SecurePipelineScan.VstsService.Requests
         }
     }
 
-    public class ExtensionData
+    internal class ExtensionData
     {
         public string Id { get; set; }
         public object Data { get; set; }
 
-        public int __etag { get { return -1; }}
+        [JsonProperty("__etag")]
+        public int Etag { get; } = -1;
 
         public ExtensionData(string id, object data)
         {
