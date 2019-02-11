@@ -1,5 +1,3 @@
-using System;
-using System.Net;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using RestSharp;
@@ -10,6 +8,7 @@ namespace SecurePipelineScan.VstsService.Tests
 {
     public class VstsRestClientTests : IClassFixture<TestConfig>
     {
+        private const string InvalidToken = "77p7fc7hpclqst4irzpwz452gkze75za7xkpbamkdy6lgtngjvcq";
         private readonly TestConfig _config;
         private readonly IVstsRestClient _vsts;
 
@@ -24,53 +23,64 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = Substitute.For<IVstsRestRequest<int>>();
             var response = Substitute.For<IRestResponse>();
-            
+
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-            
-            var client = new VstsRestClient("dummy", "pat", rest);            
-            Assert.Throws<Exception>(() => client.Delete(request));
+
+            var client = new VstsRestClient("dummy", "pat", rest);
+            Assert.Throws<VstsException>(() => client.Delete(request));
         }
-        
+
         [Fact]
         public void PostThrowsOnError()
         {
             var request = Substitute.For<IVstsPostRequest<int>>();
             var response = Substitute.For<IRestResponse>();
-            
+
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-            
-            var client = new VstsRestClient("dummy", "pat", rest);        
-            Assert.Throws<Exception>(() => client.Post(request));
+
+            var client = new VstsRestClient("dummy", "pat", rest);
+            Assert.Throws<VstsException>(() => client.Post(request));
         }
-        
+
         [Fact]
         public void GetThrowsOnError()
         {
             var request = Substitute.For<IVstsRestRequest<int>>();
             var response = Substitute.For<IRestResponse>();
-            
+
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-            
-            var client = new VstsRestClient("dummy", "pat", rest);        
-            Assert.Throws<Exception>(() => client.Get(request));
+
+            var client = new VstsRestClient("dummy", "pat", rest);
+            Assert.Throws<VstsException>(() => client.Get(request));
         }
-        
+
         [Fact]
         public void GetJsonThrowsOnError()
         {
             var request = Substitute.For<IVstsRestRequest<JObject>>();
             var response = Substitute.For<IRestResponse>();
-            
+
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-            
-            var client = new VstsRestClient("dummy", "pat", rest);        
-            Assert.Throws<Exception>(() => client.Get(request));
+
+            var client = new VstsRestClient("dummy", "pat", rest);
+            Assert.Throws<VstsException>(() => client.Get(request));
         }
-        
+
+        [Fact]
+        public void HtmlInsteadOfXmlShouldThrow()
+        {
+            var sut = new VstsRestClient("somecompany-test", InvalidToken);
+
+            Assert.Throws<VstsException>(() =>
+            {
+                var result = sut.Get(Requests.Project.Projects());
+            });
+        }
+
         [Fact]
         [Trait("category", "integration")]
         public void RestRequestResultAsJsonObject()

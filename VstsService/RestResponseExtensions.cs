@@ -1,5 +1,4 @@
 using RestSharp;
-using System;
 using System.Net;
 
 namespace SecurePipelineScan.VstsService
@@ -22,12 +21,12 @@ namespace SecurePipelineScan.VstsService
         {
             if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.NotFound)
             {
-                throw new Exception(response.ErrorMessage ?? response.Content);
+                throw new VstsException(response);
             }
 
             if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation)
             {
-                throw new Exception($"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
+                throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
             }
         }
     }

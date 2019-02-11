@@ -1,7 +1,6 @@
 using NSubstitute;
 using RestSharp;
 using Shouldly;
-using System;
 using System.Net;
 using Xunit;
 
@@ -15,8 +14,9 @@ namespace SecurePipelineScan.VstsService.Tests
             var response = Substitute.For<IRestResponse<int>>();
             response.IsSuccessful.Returns(false);
             response.ErrorMessage.Returns("fail");
+            response.StatusCode.Returns(HttpStatusCode.SeeOther);
 
-            var ex = Assert.Throws<Exception>(() => response.ThrowOnError());
+            var ex = Assert.Throws<VstsException>(() => response.ThrowOnError());
             ex.Message.ShouldBe("fail");
         }
 
@@ -27,8 +27,9 @@ namespace SecurePipelineScan.VstsService.Tests
             response.IsSuccessful.Returns(false);
             response.ErrorMessage.Returns(null, new string[0]);
             response.Content.Returns("fail");
+            response.StatusCode.Returns(HttpStatusCode.SeeOther);
 
-            var ex = Assert.Throws<Exception>(() => response.ThrowOnError());
+            var ex = Assert.Throws<VstsException>(() => response.ThrowOnError());
             ex.Message.ShouldBe("fail");
         }
 
@@ -51,7 +52,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var response = Substitute.For<IRestResponse<int>>();
             response.IsSuccessful.Returns(false);
 
-            Assert.Throws<Exception>(() => response.ThrowOnError());
+            Assert.Throws<VstsException>(() => response.ThrowOnError());
         }
 
         [Fact]
@@ -62,7 +63,7 @@ namespace SecurePipelineScan.VstsService.Tests
             response.StatusCode.Returns(HttpStatusCode.NonAuthoritativeInformation);
             response.StatusDescription.Returns("Non-Authoritative Information");
 
-            Assert.Throws<Exception>(() => response.ThrowOnError());
+            Assert.Throws<VstsException>(() => response.ThrowOnError());
         }
 
         [Fact]
@@ -73,7 +74,7 @@ namespace SecurePipelineScan.VstsService.Tests
             response.StatusCode.Returns(HttpStatusCode.NonAuthoritativeInformation);
             response.StatusDescription.Returns("Non-Authoritative Information");
 
-            Assert.Throws<Exception>(() => response.ThrowOnError());
+            Assert.Throws<VstsException>(() => response.ThrowOnError());
         }
 
         [Fact]
@@ -85,7 +86,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             response.ThrowOnError().Data.ShouldBeNull();
         }
-        
+
         [Fact]
         public void ThrowsNothingOnNotFoundOnRequestWithNoResult()
         {
