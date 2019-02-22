@@ -29,7 +29,7 @@ namespace SecurePipelineScan.Rules.Events
                 Release = (string)input.SelectToken("resource.environment.release.name"),
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),
-                CreatedDate = (DateTime?)input["createdDate"],
+                CreatedDate = (DateTime)input["createdDate"],
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment)
             };

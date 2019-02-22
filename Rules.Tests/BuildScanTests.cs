@@ -1,7 +1,9 @@
+using System;
 using System.IO;
 using AutoFixture;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
+using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
@@ -41,6 +43,7 @@ namespace SecurePipelineScan.Rules.Tests
             report.Id.ShouldBe("70609");
             report.Project.ShouldBe("LQA");   
             report.Pipeline.ShouldNotBeEmpty();
+            report.CreatedDate.ShouldNotBe(default(DateTime));
         }
 
         [Fact]

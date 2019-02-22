@@ -1,4 +1,4 @@
-﻿namespace Rules.Reports
+﻿namespace SecurePipelineScan.Rules.Reports
 {
     public class GlobalRights
     {

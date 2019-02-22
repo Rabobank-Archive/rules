@@ -1,6 +1,5 @@
 using System;
 using NSubstitute.Core;
-using Rules.Reports;
 using SecurePipelineScan.Rules.Reports;
 using Shouldly;
 using Xunit;

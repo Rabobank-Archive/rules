@@ -1,11 +1,10 @@
-using Newtonsoft.Json.Linq;
-using SecurePipelineScan.Rules.Events;
-using SecurePipelineScan.Rules.Reports;
-using SecurePipelineScan.VstsService;
 using System;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using SecurePipelineScan.Rules.Reports;
+using SecurePipelineScan.VstsService;
 
-namespace SecurePipelineScan.Rules
+namespace SecurePipelineScan.Rules.Events
 {
     public class BuildScan : IServiceHookScan<BuildScanReport>
     {
@@ -34,6 +33,7 @@ namespace SecurePipelineScan.Rules
                 Id = id,
                 Pipeline = build.Definition.Name,
                 Project = project,
+                CreatedDate = (DateTime)input["createdDate"],
                 ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container"),
                 UsesFortify = usedTaskIds.Contains(FortifyScaTaskId),
                 UsesSonarQube = usedTaskIds.Contains(SonarQubePublishTaskId),

@@ -1,12 +1,10 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Converters;
 using SecurePipelineScan.VstsService.Response;
 using System.Collections.Generic;
 using System.Linq;
+using SecurePipelineScan.Rules.Reports;
 using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules

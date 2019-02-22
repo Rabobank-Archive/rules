@@ -1,5 +1,3 @@
-using Rules.Reports;
-
 namespace SecurePipelineScan.Rules.Reports
 {
     public class ProjectAdminBuildRights : BuildRights

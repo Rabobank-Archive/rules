@@ -1,5 +1,4 @@
 using System;
-using Rules.Reports;
 
 namespace SecurePipelineScan.Rules
 {

@@ -1,3 +1,5 @@
+using System;
+
 namespace SecurePipelineScan.Rules.Reports
 {
     public class BuildScanReport
@@ -8,5 +10,6 @@ namespace SecurePipelineScan.Rules.Reports
         public bool ArtifactsStoredSecure { get; set; }
         public bool UsesFortify { get; internal set; }
         public bool UsesSonarQube { get; internal set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

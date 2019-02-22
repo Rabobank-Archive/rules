@@ -19,7 +19,7 @@ namespace SecurePipelineScan.VstsService.Tests
             ServiceEndpointId = configuration["serviceEndpointId"] ?? "975b3603-9939-4f22-a5a9-baebb39b5dad";
             ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "2";
             ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "demo SOx";
-            BuildId = configuration["buildId"] ?? "72716";
+            BuildId = configuration["buildId"] ?? "72713";
 
             if (int.TryParse(configuration["AgentPoolId"], out int poolId))
             {
