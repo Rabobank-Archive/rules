@@ -1,8 +1,6 @@
 ﻿using System;
-using SecurePipelineScan.Rules.Reports;
-using SecurePipelineScan.VstsService.Response;
 
-namespace Rules.Reports
+namespace SecurePipelineScan.Rules.Reports
 {
     public class RepositoryReport
     {

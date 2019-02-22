@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
-using Rules.Reports;
 using SecurePipelineScan.Rules;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;

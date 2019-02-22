@@ -1,5 +1,4 @@
 using System;
-using Rules.Reports;
 using SecurePipelineScan.Rules.Reports;
 using Shouldly;
 using Xunit;

@@ -161,9 +161,12 @@ namespace SecurePipelineScan.Rules.Tests
                 var expected = new ReleaseDeploymentCompletedReport
                 {
                     // All default null values and false for booleans is fine
-                }.ToExpectedObject();
+                }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
-                var input = new JObject();
+                var input = JObject.FromObject(new
+                {
+                    createdDate = "2019-01-11T13:34:58.0366887Z"
+                });
                 
                 var client = Substitute.For<IVstsRestClient>();
                 client
