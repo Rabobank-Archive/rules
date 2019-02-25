@@ -37,7 +37,7 @@ namespace SecurePipelineScan.VstsService
                 return (TResponse) (object) JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
             }
 
-            return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            return _client.Execute<TResponse>(wrapper).ThrowOnError().DefaultIfNotFound();
         }
 
         public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()

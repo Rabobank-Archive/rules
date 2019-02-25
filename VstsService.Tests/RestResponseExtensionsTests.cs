@@ -2,6 +2,7 @@ using NSubstitute;
 using RestSharp;
 using Shouldly;
 using System.Net;
+using SecurePipelineScan.VstsService.Response;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -95,6 +96,25 @@ namespace SecurePipelineScan.VstsService.Tests
             response.StatusCode.Returns(HttpStatusCode.NotFound);
 
             response.ThrowOnError().Content.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void DefaultIfNotFound()
+        {
+            var response = Substitute.For<IRestResponse<Build>>();
+            response.StatusCode.Returns(HttpStatusCode.NotFound);
+
+            response.DefaultIfNotFound().ShouldBeNull();
+        }
+        
+        [Fact]
+        public void DataIfFound()
+        {
+            var response = Substitute.For<IRestResponse<Build>>();
+            response.StatusCode.Returns(HttpStatusCode.OK);
+            response.Data.Returns(new Build());
+
+            response.DefaultIfNotFound().ShouldNotBeNull();
         }
     }
 }

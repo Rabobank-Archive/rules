@@ -29,5 +29,10 @@ namespace SecurePipelineScan.VstsService
                 throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
             }
         }
+
+        public static T DefaultIfNotFound<T>(this IRestResponse<T> response)
+        {
+            return response.StatusCode == HttpStatusCode.NotFound ? default(T) : response.Data;
+        }
     }
 }

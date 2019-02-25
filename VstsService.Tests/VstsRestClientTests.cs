@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using RestSharp;
@@ -87,6 +89,13 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
             endpoints.SelectToken("value[?(@.data.subscriptionId == '45cfa52a-a2aa-4a18-8d3d-29896327b51d')]").ShouldNotBeNull();
+        }
+
+        
+        [Fact]
+        public void NotFoundIsNull()
+        {
+            _vsts.Get(Requests.Builds.Build("TAS", "2342423")).ShouldBeNull();
         }
     }
 }
