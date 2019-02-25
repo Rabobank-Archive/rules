@@ -156,6 +156,36 @@ namespace SecurePipelineScan.Rules.Tests
             }
 
             [Fact]
+            public void IgnoresTasks()
+            {
+                _fixture
+                    .Customize<Response.WorkflowTask>(
+                        x => x
+                            .With(y => y.Inputs, new Dictionary<string, string> {["connection"] = Guid.NewGuid().ToString()})
+                            .With(y => y.TaskId, new Guid("dd84dea2-33b4-4745-a2e2-d88803403c1b")));
+                
+                var input = JObject.FromObject(new
+                {
+                    createdDate = DateTime.Now.ToString()
+                });
+
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+                
+                var endpoints = Substitute.For<IServiceEndpointValidator>();
+                endpoints
+                    .IsProduction(Arg.Any<string>(), Arg.Any<Guid>())
+                    .Returns(true);
+                
+                var scan = new ReleaseDeploymentScan(endpoints, client);
+                var report = scan.Completed(input);
+                
+                report.UsesProductionEndpoints.ShouldBeFalse();
+            }
+
+            [Fact]
             public void HowToHandleDefaults()
             {
                 var expected = new ReleaseDeploymentCompletedReport

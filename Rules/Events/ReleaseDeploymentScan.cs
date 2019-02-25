@@ -9,6 +9,13 @@ namespace SecurePipelineScan.Rules.Events
 {
     public class ReleaseDeploymentScan : IServiceHookScan<ReleaseDeploymentCompletedReport>
     {
+        private static readonly Guid[] _ignoredTaskIds =
+        {
+            new Guid("dd84dea2-33b4-4745-a2e2-d88803403c1b"), // auto-lst
+            new Guid("291ed61f-1ee4-45d3-b1b0-bf822d9095ef"), // SonarQubePublish
+            new Guid("d0c045b6-d01d-4d69-882a-c21b18a35472"), // SM9 - Create
+            new Guid("f0d043e2-e42f-4d11-113c-d34c99d63896"), // SM9 - Close 
+        };
         private readonly IServiceEndpointValidator _endpoints;
         private readonly IVstsRestClient _client;
 
@@ -40,10 +47,10 @@ namespace SecurePipelineScan.Rules.Events
             return environment
                 .DeployPhasesSnapshot
                 .SelectMany(s => s.WorkflowTasks)
+                .Where(w => !_ignoredTaskIds.Contains(w.TaskId))
                 .SelectMany(w => w.Inputs)
                 .Select(i => i.Value)
                 .Any(x => Guid.TryParse(x, out var id) && _endpoints.IsProduction(project, id));
-
         }
 
         private static bool CheckApprovalOptions(Response.Environment environment)
@@ -58,8 +65,7 @@ namespace SecurePipelineScan.Rules.Events
             var releaseId = (string) input.SelectToken("resource.environment.releaseId");
             var environmentId = (string) input.SelectToken("resource.environment.id");
 
-            var environment = _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
-            return environment;
+            return _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
         }
     }
 }
