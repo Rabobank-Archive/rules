@@ -40,7 +40,7 @@ namespace SecurePipelineScan.Rules
             }
         }
 
-        private static List<Permission> CreatePermissionsPerApplicationGroup(ApplicationGroup applicationGroup)
+        private static IEnumerable<Permission> CreatePermissionsPerApplicationGroup(ApplicationGroup applicationGroup)
         {
             var applicationGroupPermissions = applicationGroup.Permissions;
             List<Permission> permissions = new List<Permission>();
