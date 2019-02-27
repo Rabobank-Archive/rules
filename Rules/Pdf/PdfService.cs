@@ -100,7 +100,7 @@ namespace SecurePipelineScan.Rules.Pdf
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
-                    table.AddCell(bodyCell(permission.Description?.ToString(),3)) ;
+                    table.AddCell(bodyCell($"{permission.Description?.ToString()}({permission.PermissionBit})",3)) ;
                     table.AddCell(bodyCell(permission.ActualPermissionId?.ToString()));
                     table.AddCell(bodyCell(permission.ShouldBePermissionId?.ToString()));
                     table.AddCell(bodyCell(permission.IsCompliant.ToString()));

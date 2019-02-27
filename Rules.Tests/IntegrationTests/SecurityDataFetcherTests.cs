@@ -39,7 +39,7 @@ namespace SecurePipelineScan.Rules.Tests.IntegrationTests
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
 
-            string projectName = "Sox-Compliant-Demo";
+            string projectName = "TAS";
 
             var scan = new SecurityReportScan(client);
             var report = scan.Execute(projectName);
