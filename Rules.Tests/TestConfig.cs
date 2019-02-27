@@ -15,10 +15,14 @@ namespace SecurePipelineScan.Rules.Tests
             Token = configuration["token"];
             Project = configuration["project"];
             Organization = configuration["organization"];
+            ExtensionName = configuration["extensionname"];
+
+            
         }
 
         public string Token { get; }
         public string Project { get; }
         public string Organization { get; }
+        public string ExtensionName { get; }
     }
 }

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\VstsService\VstsService.csproj" />
   </ItemGroup>
 
@@ -16,12 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Reports\BuildRights1.cs" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Pdf\somecompany.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
   <PropertyGroup>
     <Authors>TAS</Authors>
     <Company>Rabobank</Company>

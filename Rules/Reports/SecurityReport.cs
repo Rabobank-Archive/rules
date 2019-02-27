@@ -1,4 +1,9 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Rules.Reports;
+using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Reports
 {
@@ -7,9 +12,10 @@ namespace SecurePipelineScan.Rules.Reports
         public SecurityReport(DateTime date)
         {
             Date = date;
+            GlobalPermissions = new List<GlobalPermissions>();
         }
 
-        public string Project { get; set; }
+        public string ProjectName { get; set; }
         
         public bool ApplicationGroupContainsProductionEnvironmentOwner { get; set; }
         public bool ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup { get; set; }
@@ -62,5 +68,8 @@ namespace SecurePipelineScan.Rules.Reports
         ;
 
         public DateTime Date { get; }
+
+        public IEnumerable<GlobalPermissions> GlobalPermissions { get; internal set; }
+        public bool IsCompliant => GlobalPermissions.All(g => g.IsCompliant);
     }
 }

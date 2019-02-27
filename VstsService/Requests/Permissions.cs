@@ -33,7 +33,13 @@ namespace SecurePipelineScan.VstsService.Requests
 
         }
 
-        public static IVstsRestRequest<Response.PermissionsProjectId> PermissionsGroupProjectId(string projectId, string applicationGroupId)
+        /// <summary>
+        /// Gets project permissions for an applicationGroup
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="applicationGroupId"></param>
+        /// <returns></returns>
+        public static IVstsRestRequest<PermissionsProjectId> PermissionsGroupProjectId(string projectId, string applicationGroupId)
         {
             return new VstsRestRequest<PermissionsProjectId>(
                 $"{projectId}/_api/_identity/Display?__v=5&tfid={applicationGroupId}");

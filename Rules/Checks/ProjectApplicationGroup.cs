@@ -11,12 +11,12 @@ namespace SecurePipelineScan.Rules.Checks
 {
     public static class ProjectApplicationGroup
     {
-        public static bool ApplicationGroupContainsProductionEnvironmentOwner(IEnumerable<ApplicationGroup> groups)
+        public static bool ApplicationGroupContainsProductionEnvironmentOwner(IEnumerable<VstsService.Response.ApplicationGroup> groups)
         {
             return groups.Any(g => g.FriendlyDisplayName == "Production Environment Owners");
         }
 
-        public static bool ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(IEnumerable<ApplicationGroup> groups)
+        public static bool ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(IEnumerable<VstsService.Response.ApplicationGroup> groups)
         {
             if (groups.Count() == 1)
             {

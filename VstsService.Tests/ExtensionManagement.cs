@@ -1,9 +1,7 @@
-using Shouldly;
-using System.Linq;
 using AutoFixture;
 using ExpectedObjects;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
+using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -27,16 +25,15 @@ namespace SecurePipelineScan.VstsService.Tests
 
             // Act
             var result = _client.Put(Requests.ExtensionManagement.ExtensionData<TestObject>(
-                "ms", 
+                "ms",
                 "vss-analytics",
                 "DevOps Demo"), data);
-            
+
             // Assert
             result
                 .Id
                 .ShouldBe(data.Id);
         }
-
 
         [Fact]
         public void GetReturnsDataFromPut()
@@ -44,24 +41,24 @@ namespace SecurePipelineScan.VstsService.Tests
             // Arrange
             var data = _fixture.Create<TestObject>();
             _client.Put(Requests.ExtensionManagement.ExtensionData<TestObject>(
-                "ms", 
+                "ms",
                 "vss-analytics",
                 "DevOps Demo"), data);
-            
+
             var expected = new
-                {
-                    data.Id,
-                    data.Name,
-                    data.Value,
-                    Etag = Expect.NotDefault<int>()
-                }
+            {
+                data.Id,
+                data.Name,
+                data.Value,
+                Etag = Expect.NotDefault<int>()
+            }
                 .ToExpectedObject();
 
             // Act
-            var result =  _client.Get(Requests.ExtensionManagement.ExtensionData<TestObject>(
-                "ms", 
-                "vss-analytics", 
-                "DevOps Demo", 
+            var result = _client.Get(Requests.ExtensionManagement.ExtensionData<TestObject>(
+                "ms",
+                "vss-analytics",
+                "DevOps Demo",
                 data.Id));
 
             // Assert

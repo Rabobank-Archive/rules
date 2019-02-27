@@ -5,7 +5,7 @@ using System.Linq;
 using Xunit;
 using Response = SecurePipelineScan.VstsService.Response;
 
-namespace Rules.Tests
+namespace SecurePipelineScan.Rules.Tests
 {
     public class ReleaseBuilderTests
     {

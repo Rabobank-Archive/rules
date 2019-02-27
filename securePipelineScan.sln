@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Console.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskUsage.Console", "TaskUsage.Console\TaskUsage.Console.csproj", "{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{CEB64191-D25C-4687-85D9-4DA0E450C46C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB4A1DB-20CF-4811-8C71-AA75A121BE87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEB64191-D25C-4687-85D9-4DA0E450C46C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB64191-D25C-4687-85D9-4DA0E450C46C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB64191-D25C-4687-85D9-4DA0E450C46C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB64191-D25C-4687-85D9-4DA0E450C46C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

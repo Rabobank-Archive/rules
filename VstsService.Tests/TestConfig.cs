@@ -15,11 +15,11 @@ namespace SecurePipelineScan.VstsService.Tests
             Token = configuration["token"];
             Project = configuration["project"];
             Organization = configuration["organization"];
-            ExpectedAgentPoolName = configuration["expectedAgentPoolName"] ?? "Rabo-Build-Azure-Windows";
+            ExpectedAgentPoolName = configuration["expectedAgentPoolName"] ?? "Default";
             ServiceEndpointId = configuration["serviceEndpointId"] ?? "975b3603-9939-4f22-a5a9-baebb39b5dad";
-            ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "2";
-            ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "demo SOx";
-            BuildId = configuration["buildId"] ?? "72713";
+            ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "1";
+            ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "New release pipeline";
+            BuildId = configuration["buildId"] ?? "4";
 
             if (int.TryParse(configuration["AgentPoolId"], out int poolId))
             {
@@ -34,7 +34,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public string ServiceEndpointId { get; }
         public string ReleaseDefinitionId { get; }
         public string ReleaseDefinitionName { get; }
-        public int AgentPoolId { get; } = 119;
+        public int AgentPoolId { get; } = 1;
         public string BuildId { get; }
     }
 }

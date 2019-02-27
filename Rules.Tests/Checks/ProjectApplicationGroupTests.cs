@@ -11,7 +11,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         [Fact]
         public void EmptyGroupsShouldBeFalse()
         {
-            ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(new List<ApplicationGroup>())
+            ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(new List<VstsService.Response.ApplicationGroup>())
                 .ShouldBeFalse();
         }
 
@@ -19,28 +19,28 @@ namespace SecurePipelineScan.Rules.Tests.Checks
         public void ContainingProductionEnvironmentOwnersShouldBeTrue()
         {
             ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(new[]
-                {new ApplicationGroup {FriendlyDisplayName = "Production Environment Owners"}}).ShouldBeTrue();
+                {new VstsService.Response.ApplicationGroup {FriendlyDisplayName = "Production Environment Owners"}}).ShouldBeTrue();
         }
 
         [Fact]
         public void ApplicationGroupContainingRabobankProjectAdministratorShouldBeTrue()
         {
             ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new[]
-                {new ApplicationGroup {FriendlyDisplayName = "Rabobank Project Administrators"}}).ShouldBeTrue();
+                {new VstsService.Response.ApplicationGroup {FriendlyDisplayName = "Rabobank Project Administrators"}}).ShouldBeTrue();
         }
 
         [Fact]
         public void ApplicationGroupNotContainingRabobankProjectAdministratorShouldBeFalse()
         {
             ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new[]
-                {new ApplicationGroup {FriendlyDisplayName = "No Rabo Project Admins"}}).ShouldBeFalse();
+                {new VstsService.Response.ApplicationGroup {FriendlyDisplayName = "No Rabo Project Admins"}}).ShouldBeFalse();
         }
 
         [Fact]
         public void ApplicationGroupsWithSizeMoreThenOneShouldReturnFalse()
         {
             ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(new[]
-                    {new ApplicationGroup {FriendlyDisplayName = "Rabobank Project Administrators"}, new ApplicationGroup {FriendlyDisplayName = "Yoyoyo"}})
+                    {new VstsService.Response.ApplicationGroup {FriendlyDisplayName = "Rabobank Project Administrators"}, new VstsService.Response.ApplicationGroup {FriendlyDisplayName = "Yoyoyo"}})
                 .ShouldBeFalse();
         }
     }

@@ -89,7 +89,7 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNotSetToManageReleaseApprovers = h,
                     HasPermissionToCreateReleases = h,
                     HasPermissionToManageReleaseApprovers = h,
-                    HasNotSetToDeleteReleaseStage =h,
+                    HasNotSetToDeleteReleaseStage = h,
                 },
                
                 ReleaseRightsRaboProjectAdmin = new RaboAdminReleaseRights
@@ -203,8 +203,8 @@ namespace SecurePipelineScan.Rules.Tests.Checks
                     HasNoPermissionsToAdministerReleasePermissions = s,
                     HasNoPermissionToDeleteReleasePipeline = s,
                     HasNoPermissionToDeleteReleases = s,
-                    HasNoPermissionToManageReleaseApprovers =s,
-                    HasNoPermissionToDeleteReleaseStage =s,
+                    HasNoPermissionToManageReleaseApprovers = s,
+                    HasNoPermissionToDeleteReleaseStage = s,
                 },
                 
                 ReleaseDefinitionsRightsReleaseAdmin = new ReleaseAdminReleaseRights

@@ -1,0 +1,16 @@
+{
+  "projectName": "SoxPipeline",
+  "projectId": "",
+  "GlobalPermissions": [
+    {
+      "applicationGroupName": "shouldBeGroupA",
+      "applicationGroupId": "",
+      "permissions": [
+        {
+          "permissionBit": "111",
+          "permissionId": 2
+        }
+      ]
+    }
+  ]
+}

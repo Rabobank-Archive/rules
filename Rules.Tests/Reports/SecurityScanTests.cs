@@ -1,17 +1,12 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
-using RestSharp;
-using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using Response = SecurePipelineScan.VstsService.Response;
-using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -39,25 +34,25 @@ namespace SecurePipelineScan.Rules.Tests
 
             securityReport.ApplicationGroupContainsProductionEnvironmentOwner.ShouldBeTrue();
             securityReport.ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup.ShouldBeTrue();
-            
+
             securityReport.TeamRabobankProjectAdministrators.GlobalRightsIsSecure.ShouldBeTrue();
 
             securityReport.BuildRightsBuildAdmin.IsSecure.ShouldBeTrue();
             securityReport.BuildRightsProjectAdmin.IsSecure.ShouldBeTrue();
             securityReport.BuildRightsContributor.IsSecure.ShouldBeTrue();
-            
+
             securityReport.BuildDefinitionsRightsContributor.IsSecure.ShouldBeTrue();
             securityReport.BuildDefinitionsRightsBuildAdmin.IsSecure.ShouldBeTrue();
             securityReport.BuildDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
-                        
+
             securityReport.RepositoryRightsProjectAdmin.RepositoryRightsIsSecure.ShouldBeTrue();
-            
+
             securityReport.ReleaseRightsContributor.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsReleaseAdmin.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProjectAdmin.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsProductionEnvOwner.IsSecure.ShouldBeTrue();
             securityReport.ReleaseRightsRaboProjectAdmin.IsSecure.ShouldBeTrue();
-            
+
             securityReport.ReleaseDefinitionsRightsContributor.IsSecure.ShouldBeTrue();
             securityReport.ReleaseDefinitionsRightsReleaseAdmin.IsSecure.ShouldBeTrue();
             securityReport.ReleaseDefinitionsRightsProjectAdmin.IsSecure.ShouldBeTrue();
@@ -73,39 +68,61 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-
-            var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1",};
-            var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2"};
-            var applicationGroup3 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Build Administrators", TeamFoundationId = "3",};
-            var applicationGroup4 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Production Environment Owners", TeamFoundationId = "4",};
-            var applicationGroup5 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Release Administrators", TeamFoundationId = "5",};
-            var applicationGroup6 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Contributors", TeamFoundationId = "6",};
-            var applicationGroups = new Response.ApplicationGroups {Identities = new[]
+            var applicationGroup1 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1", };
+            var applicationGroup2 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2" };
+            var applicationGroup3 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Build Administrators", TeamFoundationId = "3", };
+            var applicationGroup4 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Production Environment Owners", TeamFoundationId = "4", };
+            var applicationGroup5 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Release Administrators", TeamFoundationId = "5", };
+            var applicationGroup6 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Contributors", TeamFoundationId = "6", };
+            var applicationGroups = new Response.ApplicationGroups
             {
-                applicationGroup1 , applicationGroup2, applicationGroup3, applicationGroup4, applicationGroup5, applicationGroup6
-            }};
+                Identities = new[]
+                {
+                    applicationGroup1, applicationGroup2, applicationGroup3, applicationGroup4, applicationGroup5,
+                    applicationGroup6
+                }
+            };
 
-            var securityNamespace1 = new Response.SecurityNamespace {DisplayName = "Git Repositories", NamespaceId = "123456"};
-            var securityNamespace2 = new Response.SecurityNamespace {Name = "Build", NamespaceId = "54321"};
-            var securityNamespace3 = new Response.SecurityNamespace {Name = "ReleaseManagement", NamespaceId = "54454321", Actions = new []{ new Response.NamespaceAction{ Name = "ViewReleaseDefinition"} }};
-            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace>(securityNamespace1, securityNamespace2, securityNamespace3);
-            
+            var securityNamespace1 = new Response.SecurityNamespace
+            { DisplayName = "Git Repositories", NamespaceId = "123456" };
+            var securityNamespace2 = new Response.SecurityNamespace { Name = "Build", NamespaceId = "54321" };
+            var securityNamespace3 = new Response.SecurityNamespace
+            {
+                Name = "ReleaseManagement",
+                NamespaceId = "54454321",
+                Actions = new[] { new Response.NamespaceAction { Name = "ViewReleaseDefinition" } }
+            };
+            var securityNamespaces =
+                new Response.Multiple<Response.SecurityNamespace>(securityNamespace1, securityNamespace2,
+                    securityNamespace3);
 
             var client = Substitute.For<IVstsRestClient>();
 
             client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
-            
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(securityNamespaces);
-            client.Get(Arg.Any<IVstsRestRequest<Response.ProjectProperties>>()).Returns(fixture.Create<Response.ProjectProperties>());
 
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>()).Returns(fixture.Create<Response.Multiple<Response.Repository>>());
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.BuildDefinition>>>()).Returns(fixture.Create<Response.Multiple<Response.BuildDefinition>>());
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.ReleaseDefinition>>>()).Returns(fixture.Create<Response.Multiple<Response.ReleaseDefinition>>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>())
+                .Returns(securityNamespaces);
+            client.Get(Arg.Any<IVstsRestRequest<Response.ProjectProperties>>())
+                .Returns(fixture.Create<Response.ProjectProperties>());
 
-            
-            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>()).Returns(fixture.Create<Response.PermissionsSetId>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.Repository>>>())
+                .Returns(fixture.Create<Response.Multiple<Response.Repository>>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.BuildDefinition>>>())
+                .Returns(fixture.Create<Response.Multiple<Response.BuildDefinition>>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.ReleaseDefinition>>>())
+                .Returns(fixture.Create<Response.Multiple<Response.ReleaseDefinition>>());
 
-            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsProjectId>>()).Returns(fixture.Create<Response.PermissionsProjectId>());
+            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsSetId>>())
+                .Returns(fixture.Create<Response.PermissionsSetId>());
+
+            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsProjectId>>())
+                .Returns(fixture.Create<Response.PermissionsProjectId>());
 
             var scan = new SecurityReportScan(client);
             var securityReport = scan.Execute("dummy", DateTime.Now);
@@ -132,21 +149,27 @@ namespace SecurePipelineScan.Rules.Tests
             var ex = Assert.Throws<ArgumentNullException>(() => scan.Execute("dummy", DateTime.Now));
             Assert.Contains("Parameter name: applicationGroups", ex.Message);
         }
-        
+
         [Fact]
         public void SecurityNamespacesIsNullThrowsException()
         {
-            var applicationGroup1 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1",};
-            var applicationGroup2 = new Response.ApplicationGroup {DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2"};
-            var applicationGroups = new Response.ApplicationGroups {Identities = new[]
+            var applicationGroup1 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Project Administrators", TeamFoundationId = "1", };
+            var applicationGroup2 = new Response.ApplicationGroup
+            { DisplayName = "[dummy]\\Rabobank Project Administrators", TeamFoundationId = "2" };
+            var applicationGroups = new Response.ApplicationGroups
             {
-                applicationGroup1, applicationGroup2
-            }};
-            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace> {};
-            
+                Identities = new[]
+                {
+                    applicationGroup1, applicationGroup2
+                }
+            };
+            var securityNamespaces = new Response.Multiple<Response.SecurityNamespace> { };
+
             var client = Substitute.For<IVstsRestClient>();
             client.Get(Arg.Any<IVstsRestRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
-            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>()).Returns(securityNamespaces);
+            client.Get(Arg.Any<IVstsRestRequest<Response.Multiple<Response.SecurityNamespace>>>())
+                .Returns(securityNamespaces);
 
             var scan = new SecurityReportScan(client);
             var ex = Assert.Throws<ArgumentNullException>(() => scan.Execute("dummy", DateTime.Now));

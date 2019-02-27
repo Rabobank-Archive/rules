@@ -1,17 +1,14 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Common;
+using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using RestSharp;
-using ApplicationGroup = SecurePipelineScan.VstsService.Requests.ApplicationGroup;
-using Permission = SecurePipelineScan.Rules.Checks.Permission;
+using Permission = SecurePipelineScan.VstsService.Response.Permission;
 using Project = SecurePipelineScan.VstsService.Requests.Project;
 using Release = SecurePipelineScan.VstsService.Requests.Release;
 using Repository = SecurePipelineScan.VstsService.Response.Repository;
@@ -28,6 +25,22 @@ namespace SecurePipelineScan.Rules
             this.client = client;
         }
 
+        public SecurityReport Execute(string project)
+        {
+            // Fetch data
+            ISecurityData fetchedData = new SecurityDataFetcher(client).
+                FetchSecurityPermissions(project);
+
+            // Fetch Should be data
+            ShouldBeDataFetcher shouldBeDataFetcher = new ShouldBeDataFetcher();
+            ICompliantValues values = shouldBeDataFetcher.FetchGlobalShouldBePermissions(project, () => ShouldBeDataFetcher.ReadFileForProject(project));
+
+            var securityDataProcessor = new SecurityReportProcessor();
+            SecurityReport securityReport = securityDataProcessor.Evaluate(fetchedData, values);
+
+            return securityReport;
+        }
+
         public SecurityReport Execute(string project, DateTime date)
         {
             if (project == null)
@@ -36,7 +49,7 @@ namespace SecurePipelineScan.Rules
             }
 
             var applicationGroups =
-                client.Get(ApplicationGroup.ApplicationGroups(project))
+                client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
                     ?.Identities;
 
             if (applicationGroups == null)
@@ -54,7 +67,7 @@ namespace SecurePipelineScan.Rules
             {
                 throw new ArgumentNullException(nameof(securityNamespaces));
             }
-            
+
             var namespaceIdGitRepositories = securityNamespaces
                 .FirstOrDefault(ns => ns.DisplayName == "Git Repositories")
                 ?.NamespaceId;
@@ -67,8 +80,6 @@ namespace SecurePipelineScan.Rules
                 .FirstOrDefault(ns => ns.Name == "ReleaseManagement" &&
                                       ns.Actions.Any(action => action.Name.Equals("ViewReleaseDefinition")))
                 ?.NamespaceId;
-
-
 
             var applicationGroupIdProjectAdmins = applicationGroups
                 .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Project Administrators")
@@ -94,7 +105,6 @@ namespace SecurePipelineScan.Rules
                 .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Contributors")
                 ?.TeamFoundationId;
 
-
             var projectId = client.Get(Project.Properties(project)).Id;
 
             var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
@@ -103,14 +113,12 @@ namespace SecurePipelineScan.Rules
 
             var releaseDefinitions = client.Get((Release.Definitions(projectId))).Value;
 
-            
             var permissionsGitRepositorySet =
                 applicationGroupIdProjectAdmins != null
                     ? client.Get(Permissions.PermissionsGroupRepositorySet(
                         projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins))
                     : null;
 
-            
             var permissionsBuildProjectAdmins =
                 applicationGroupIdProjectAdmins != null
                     ? client.Get(Permissions.PermissionsGroupSetId(
@@ -128,7 +136,6 @@ namespace SecurePipelineScan.Rules
                     ? client.Get(Permissions.PermissionsGroupSetId(
                         projectId, namespaceIdBuild, applicationGroupIdContributors))
                     : null;
-
 
             var permissionsTeamRabobankProjectAdministrators =
                 (applicationGroupRabobankProjectAdministrators != null)
@@ -167,10 +174,9 @@ namespace SecurePipelineScan.Rules
                         projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins))
                     : null;
 
-
             var securityReport = new SecurityReport(date)
             {
-                Project = project,
+                ProjectName = project,
 
                 ApplicationGroupContainsProductionEnvironmentOwner =
                     ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
@@ -179,13 +185,11 @@ namespace SecurePipelineScan.Rules
                     ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(
                         groupMembersProjectAdministrators),
 
-                
                 RepositoryRightsProjectAdmin =
                     (permissionsGitRepositorySet != null && repositories != null && applicationGroupIdProjectAdmins != null)
                         ? CheckRepositoryRights(permissionsGitRepositorySet.Permissions,
                             repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins, new RepositoryRights())
                         : null,
-
 
                 BuildRightsBuildAdmin =
                     permissionsBuildBuildAdmins != null
@@ -215,7 +219,6 @@ namespace SecurePipelineScan.Rules
                         ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
                             applicationGroupIdContributors, new ContributorsBuildRights())
                         : null,
-
 
                 ReleaseRightsProductionEnvOwner =
                     permissionsReleaseProdEnvOwner != null
@@ -269,38 +272,39 @@ namespace SecurePipelineScan.Rules
                             applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights())
                         : null,
 
-                
                 TeamRabobankProjectAdministrators =
                     permissionsTeamRabobankProjectAdministrators != null
                         ? CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security
                             .Permissions)
                         : null,
             };
-            
+
+            var report = Execute(project);
+            securityReport.GlobalPermissions = report.GlobalPermissions;
             return securityReport;
         }
 
         private GlobalRights CheckTeamRabobankProjectAdministrators(
-            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions)
+            IEnumerable<Permission> permissions)
         {
             return new GlobalRights
             {
                 HasNoPermissionToDeleteTeamProject =
-                    Permission.HasNoPermissionToDeleteTeamProject(permissions),
+                    Checks.Permission.HasNoPermissionToDeleteTeamProject(permissions),
                 HasNoPermissionToPermanentlyDeleteWorkitems =
-                    Permission.HasNoPermissionToPermanentlyDeleteWorkitems(permissions),
+                    Checks.Permission.HasNoPermissionToPermanentlyDeleteWorkitems(permissions),
                 HasNoPermissionToManageProjectProperties =
-                    Permission.HasNoPermissionToManageProjectProperties(permissions),
+                    Checks.Permission.HasNoPermissionToManageProjectProperties(permissions),
             };
         }
 
         private RepositoryRights CheckRepositoryRights(
-            IEnumerable<SecurePipelineScan.VstsService.Response.Permission> permissions,
-            IEnumerable<Repository> repositories, string projectId, string namespaceId, 
+            IEnumerable<Permission> permissions,
+            IEnumerable<Repository> repositories, string projectId, string namespaceId,
             string applicationGroupId, RepositoryRights repositoryRights)
         {
             List<PermissionsSetId> permissionsRepositories = new List<PermissionsSetId>();
-            
+
             foreach (var repository in repositories)
             {
                 permissionsRepositories.Add(
@@ -315,69 +319,69 @@ namespace SecurePipelineScan.Rules
             {
                 repositoryRights.HasNoPermissionToDeleteRepositories =
                     repositoryRights.HasNoPermissionToDeleteRepositories &&
-                    Permission.HasNoPermissionToDeleteRepository(permissionsRepository.Permissions);
+                    Checks.Permission.HasNoPermissionToDeleteRepository(permissionsRepository.Permissions);
                 repositoryRights.HasNotSetToManagePermissionsRepositories =
                     repositoryRights.HasNotSetToManagePermissionsRepositories &&
-                    Permission.HasNotSetToManageRepositoryPermissions(permissionsRepository.Permissions);
+                    Checks.Permission.HasNotSetToManageRepositoryPermissions(permissionsRepository.Permissions);
             }
 
             repositoryRights.HasNoPermissionToDeleteRepositorySet =
-                Permission.HasNoPermissionToDeleteRepository(permissions);
+                Checks.Permission.HasNoPermissionToDeleteRepository(permissions);
             repositoryRights.HasNotSetToManagePermissionsRepositorySet =
-                Permission.HasNotSetToManageRepositoryPermissions(permissions);
+                Checks.Permission.HasNotSetToManageRepositoryPermissions(permissions);
 
             return repositoryRights;
         }
 
         private BuildRights CheckBuildRights(
-            IEnumerable<VstsService.Response.Permission> permissions, BuildRights buildRights)
+            IEnumerable<Permission> permissions, BuildRights buildRights)
         {
             {
                 buildRights.HasNoPermissionsToAdministerBuildPermissions =
-                    Permission.HasNoPermissionToAdministerBuildPermissions(permissions);
+                    Checks.Permission.HasNoPermissionToAdministerBuildPermissions(permissions);
                 buildRights.HasNoPermissionsToDeleteBuilds =
-                    Permission.HasNoPermissionToDeleteBuilds(permissions);
+                    Checks.Permission.HasNoPermissionToDeleteBuilds(permissions);
                 buildRights.HasNoPermissionsToDestroyBuilds =
-                    Permission.HasNoPermissionToDestroyBuilds(permissions);
+                    Checks.Permission.HasNoPermissionToDestroyBuilds(permissions);
                 buildRights.HasNoPermissionsToDeleteBuildDefinition =
-                    Permission.HasNoPermissionToDeleteBuildDefinition(permissions);
+                    Checks.Permission.HasNoPermissionToDeleteBuildDefinition(permissions);
                 buildRights.HasNotSetToDeleteBuildDefinition =
-                    Permission.HasNotSetToDeleteBuildDefinition(permissions);
+                    Checks.Permission.HasNotSetToDeleteBuildDefinition(permissions);
                 buildRights.HasNotSetToDeleteBuilds =
-                    Permission.HasNotSetToDeleteBuilds(permissions);
+                    Checks.Permission.HasNotSetToDeleteBuilds(permissions);
                 buildRights.HasNotSetToDestroyBuilds =
-                    Permission.HasNotSetToDestroyBuilds(permissions);
+                    Checks.Permission.HasNotSetToDestroyBuilds(permissions);
             };
 
             return buildRights;
         }
 
         private ReleaseRights CheckReleaseRights(
-            IEnumerable<VstsService.Response.Permission> permissions,
+            IEnumerable<Permission> permissions,
             ReleaseRights releaseRights)
         {
             releaseRights.HasNoPermissionToCreateReleases =
-                Permission.HasNoPermissionToCreateReleases(permissions);
+                Checks.Permission.HasNoPermissionToCreateReleases(permissions);
             releaseRights.HasPermissionToCreateReleases =
-                Permission.HasPermissionToCreateReleases(permissions);
+                Checks.Permission.HasPermissionToCreateReleases(permissions);
             releaseRights.HasNotSetToManageReleaseApprovers =
-                Permission.HasNotSetToManageReleaseApprovers(permissions);
+                Checks.Permission.HasNotSetToManageReleaseApprovers(permissions);
             releaseRights.HasPermissionToManageReleaseApprovers =
-                Permission.HasPermissionToManageReleaseApprovers(permissions);
+                Checks.Permission.HasPermissionToManageReleaseApprovers(permissions);
             releaseRights.HasNoPermissionToDeleteReleases =
-                Permission.HasNoPermissionToDeleteReleases(permissions);
+                Checks.Permission.HasNoPermissionToDeleteReleases(permissions);
             releaseRights.HasNoPermissionToManageReleaseApprovers =
-                Permission.HasNoPermissionToManageReleaseApprovers(permissions);
+                Checks.Permission.HasNoPermissionToManageReleaseApprovers(permissions);
             releaseRights.HasNoPermissionsToAdministerReleasePermissions =
-                Permission.HasNoPermissionToAdministerReleasePermissions(permissions);
+                Checks.Permission.HasNoPermissionToAdministerReleasePermissions(permissions);
             releaseRights.HasNoPermissionToDeleteReleasePipeline =
-                Permission.HasNoPermissionToDeleteReleasePipeline(permissions);
+                Checks.Permission.HasNoPermissionToDeleteReleasePipeline(permissions);
             releaseRights.HasNoPermissionToDeleteReleaseStage =
-                Permission.HasNoPermissionToDeleteReleaseStage(permissions);
+                Checks.Permission.HasNoPermissionToDeleteReleaseStage(permissions);
             releaseRights.HasPermissionToDeleteReleaseStage =
-                Permission.HasPermissionToDeleteReleaseStage(permissions);
+                Checks.Permission.HasPermissionToDeleteReleaseStage(permissions);
             releaseRights.HasNotSetToDeleteReleaseStage =
-                Permission.HasNotSetToDeleteReleaseStage(permissions);
+                Checks.Permission.HasNotSetToDeleteReleaseStage(permissions);
             return releaseRights;
         }
 
@@ -409,52 +413,52 @@ namespace SecurePipelineScan.Rules
             {
                 releaseRights.HasNotSetToManageReleaseApprovers =
                     releaseRights.HasNotSetToManageReleaseApprovers &&
-                    Permission.HasNotSetToManageReleaseApprovers(
+                    Checks.Permission.HasNotSetToManageReleaseApprovers(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionsToAdministerReleasePermissions =
                     releaseRights.HasNoPermissionsToAdministerReleasePermissions &&
-                    Permission.HasNoPermissionToAdministerReleasePermissions(
+                    Checks.Permission.HasNoPermissionToAdministerReleasePermissions(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionToCreateReleases =
                     releaseRights.HasNoPermissionToCreateReleases &&
-                    Permission.HasNoPermissionToCreateReleases(
+                    Checks.Permission.HasNoPermissionToCreateReleases(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionToDeleteReleases =
                     releaseRights.HasNoPermissionToDeleteReleases &&
-                    Permission.HasNoPermissionToDeleteReleases(
+                    Checks.Permission.HasNoPermissionToDeleteReleases(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionToDeleteReleasePipeline =
                     releaseRights.HasNoPermissionToDeleteReleasePipeline &&
-                    Permission.HasNoPermissionToDeleteReleasePipeline(
+                    Checks.Permission.HasNoPermissionToDeleteReleasePipeline(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionToManageReleaseApprovers =
                     releaseRights.HasNoPermissionToManageReleaseApprovers &&
-                    Permission.HasNoPermissionToManageReleaseApprovers(
+                    Checks.Permission.HasNoPermissionToManageReleaseApprovers(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasPermissionToManageReleaseApprovers =
                     releaseRights.HasPermissionToManageReleaseApprovers &&
-                    Permission.HasPermissionToManageReleaseApprovers(
+                    Checks.Permission.HasPermissionToManageReleaseApprovers(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNoPermissionToDeleteReleaseStage =
                     releaseRights.HasNoPermissionToDeleteReleaseStage &&
-                    Permission.HasNoPermissionToDeleteReleaseStage(
+                    Checks.Permission.HasNoPermissionToDeleteReleaseStage(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasNotSetToDeleteReleaseStage =
                     releaseRights.HasNotSetToDeleteReleaseStage &&
-                    Permission.HasNotSetToDeleteReleaseStage(
+                    Checks.Permission.HasNotSetToDeleteReleaseStage(
                         permissionsDefinition
                             .Permissions);
                 releaseRights.HasPermissionToDeleteReleaseStage =
                     releaseRights.HasPermissionToDeleteReleaseStage &&
-                    Permission.HasPermissionToDeleteReleaseStage(
+                    Checks.Permission.HasPermissionToDeleteReleaseStage(
                         permissionsDefinition
                             .Permissions);
             }
@@ -486,34 +490,34 @@ namespace SecurePipelineScan.Rules
             foreach (var permissionsDefinition in permissionsDefinitionsBuilds)
             {
                 buildRights.HasNoPermissionsToDeleteBuilds =
-                    buildRights.HasNoPermissionsToDeleteBuilds && Permission.HasNoPermissionToDeleteBuilds(
+                    buildRights.HasNoPermissionsToDeleteBuilds && Checks.Permission.HasNoPermissionToDeleteBuilds(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNoPermissionsToDestroyBuilds =
-                    buildRights.HasNoPermissionsToDestroyBuilds && Permission.HasNoPermissionToDestroyBuilds(
+                    buildRights.HasNoPermissionsToDestroyBuilds && Checks.Permission.HasNoPermissionToDestroyBuilds(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNoPermissionsToDeleteBuildDefinition =
                     buildRights.HasNoPermissionsToDeleteBuildDefinition &&
-                    Permission.HasNoPermissionToDeleteBuildDefinition(
+                    Checks.Permission.HasNoPermissionToDeleteBuildDefinition(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNoPermissionsToAdministerBuildPermissions =
                     buildRights.HasNoPermissionsToAdministerBuildPermissions &&
-                    Permission.HasNoPermissionToAdministerBuildPermissions(
+                    Checks.Permission.HasNoPermissionToAdministerBuildPermissions(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNotSetToDeleteBuildDefinition =
                     buildRights.HasNotSetToDeleteBuildDefinition &&
-                    Permission.HasNotSetToDeleteBuildDefinition(
+                    Checks.Permission.HasNotSetToDeleteBuildDefinition(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNotSetToDeleteBuilds =
-                    buildRights.HasNotSetToDeleteBuilds && Permission.HasNotSetToDeleteBuilds(
+                    buildRights.HasNotSetToDeleteBuilds && Checks.Permission.HasNotSetToDeleteBuilds(
                         permissionsDefinition
                             .Permissions);
                 buildRights.HasNotSetToDestroyBuilds =
-                    buildRights.HasNotSetToDestroyBuilds && Permission.HasNotSetToDestroyBuilds(
+                    buildRights.HasNotSetToDestroyBuilds && Checks.Permission.HasNotSetToDestroyBuilds(
                         permissionsDefinition
                             .Permissions);
             }
@@ -526,20 +530,7 @@ namespace SecurePipelineScan.Rules
         {
             var groupId = applicationGroups.Single(x => x.DisplayName == $"[{project}]\\Project Administrators")
                 .TeamFoundationId;
-            return client.Get(ApplicationGroup.GroupMembers(project, groupId)).Identities;
+            return client.Get(VstsService.Requests.ApplicationGroup.GroupMembers(project, groupId)).Identities;
         }
     }
 }
-        
-
-        
-
-
-
-        
-        
-        
-        
-
-
-

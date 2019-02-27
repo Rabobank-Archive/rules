@@ -1,11 +1,12 @@
 using Shouldly;
 using System.Collections.Generic;
 using Xunit;
-using Permission = SecurePipelineScan.Rules.Checks.Permission;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Checks
 {
+    using Permission = SecurePipelineScan.Rules.Checks.Permission;
+
     public class PermissionTests
     {
         [Fact]
