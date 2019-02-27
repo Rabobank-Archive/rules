@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules
 
             foreach (var applicationGroup in applicationGroups)
             {
-                shouldBePermissions.Add($"[{project}]]\\{applicationGroup.ApplicationGroupName}", CreatePermissionsPerApplicationGroup(applicationGroup));
+                shouldBePermissions.Add($"[{project}]\\{applicationGroup.ApplicationGroupName}", CreatePermissionsPerApplicationGroup(applicationGroup));
             }
             return new ShouldBeData(project)
             {
@@ -47,7 +47,7 @@ namespace SecurePipelineScan.Rules
              
             foreach (var groupPermission in applicationGroupPermissions)
             {
-                permissions.Add(new Permission(groupPermission.PermissionBit, groupPermission.PermissionId));
+                permissions.Add(new Permission(groupPermission.PermissionBit, groupPermission.PermissionId) { DisplayName = groupPermission.DisplayName});
             }
 
             return permissions;

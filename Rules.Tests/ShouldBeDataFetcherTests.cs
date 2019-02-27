@@ -27,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var result = sut.FetchGlobalShouldBePermissions(projectName, () => ShouldBeDataFetcher.ReadFileForProject(projectName));
 
-            var globalPermissions = result.GlobalPermissions.SingleOrDefault(x => x.Key == @"[SoxPipeline]]\shouldBeGroupA");
+            var globalPermissions = result.GlobalPermissions.SingleOrDefault(x => x.Key == @"[SoxPipeline]\shouldBeGroupA");
 
             globalPermissions.Value.ShouldContain(x => x.PermissionBit == 111);
             globalPermissions.Value.ShouldAllBe(x => x.PermissionBit > 0);
@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var fetchSecurityShouldBePermissions = sut.FetchGlobalShouldBePermissions(projectName, () => json);
 
-            var soxPipelineData = fetchSecurityShouldBePermissions.GlobalPermissions.SingleOrDefault(x => x.Key == @"[Test]]\shouldBeGroupA");
+            var soxPipelineData = fetchSecurityShouldBePermissions.GlobalPermissions.SingleOrDefault(x => x.Key == @"[Test]\shouldBeGroupA");
 
             soxPipelineData.Value.ShouldContain(x => x.PermissionBit == 99);
 
