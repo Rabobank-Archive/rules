@@ -21,11 +21,11 @@ namespace SecurePipelineScan.Rules.Tests
             result.ProjectName.ShouldBe("projectName");
             result.GlobalPermissions.ShouldNotBeNull();
 
-            result.GlobalPermissions.Keys.ShouldContain("tfid_actualGroup1");
-            result.GlobalPermissions.Keys.ShouldContain("tfid_actualGroup2");
+            result.GlobalPermissions.Keys.ShouldContain("actualGroup1");
+            result.GlobalPermissions.Keys.ShouldContain("actualGroup2");
 
-            var actualGroup1 = result.GlobalPermissions.Single(x => x.Key == "tfid_actualGroup1");
-            var actualGroup2 = result.GlobalPermissions.Single(x => x.Key == "tfid_actualGroup2");
+            var actualGroup1 = result.GlobalPermissions.Single(x => x.Key == "actualGroup1");
+            var actualGroup2 = result.GlobalPermissions.Single(x => x.Key == "actualGroup2");
 
             actualGroup1.Value.ShouldContain(x => x.PermissionBit == 32 && x.PermissionId == Common.PermissionId.Allow);
             actualGroup1.Value.ShouldContain(x => x.PermissionBit == 256 && x.PermissionId == Common.PermissionId.Deny);
