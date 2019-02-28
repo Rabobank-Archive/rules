@@ -8,8 +8,8 @@ namespace SecurePipelineScan.Rules.Reports
         public string Pipeline { get; set; }
         public string Project { get; set; }
         public bool ArtifactsStoredSecure { get; set; }
-        public bool UsesFortify { get; internal set; }
-        public bool UsesSonarQube { get; internal set; }
+        public bool UsesFortify { get; set; }
+        public bool UsesSonarQube { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }
