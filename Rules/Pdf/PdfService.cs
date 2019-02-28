@@ -4,6 +4,8 @@ using Rules.Reports;
 using SecurePipelineScan.Rules.Reports;
 using System;
 using System.IO;
+using Common;
+using Permission = Rules.Reports.Permission;
 using Rectangle = iTextSharp.text.Rectangle;
 
 namespace SecurePipelineScan.Rules.Pdf
@@ -18,6 +20,7 @@ namespace SecurePipelineScan.Rules.Pdf
             {
                 Directory.CreateDirectory(dir);
             }
+
             this.dir = dir;
         }
 
@@ -67,42 +70,45 @@ namespace SecurePipelineScan.Rules.Pdf
             document.Add(new Paragraph("\n\n\n"));
 
             PdfPTable table = new PdfPTable(11);
-            table.DefaultCell.Phrase = new Phrase() 
-                { Font = FontFactory.GetFont("Arial", 8, Font.NORMAL) };
+            table.DefaultCell.Phrase = new Phrase()
+                {Font = FontFactory.GetFont("Arial", 8, Font.NORMAL)};
             table.DefaultCell.Border = Rectangle.NO_BORDER;
             table.HorizontalAlignment = Element.ALIGN_LEFT;
             table.WidthPercentage = 100;
 
-            table.AddCell(headerCell("Namespace",1));
-            table.AddCell(headerCell("Application Group",2));
-            table.AddCell(headerCell("Level",1));
+            table.AddCell(headerCell("Namespace", 1));
+            table.AddCell(headerCell("Application Group", 2));
+            table.AddCell(headerCell("Level", 1));
             table.AddCell(headerCell("Permission (bit)", 4));
-            table.AddCell(headerCell("Actual value",1));
-            table.AddCell(headerCell("Should be",1));
-            table.AddCell(headerCell("Is compliant?",1));
+            table.AddCell(headerCell("Actual value", 1));
+            table.AddCell(headerCell("Should be", 1));
+            table.AddCell(headerCell("Is compliant?", 1));
             table.CompleteRow();
 
             // Global permissions
-            table.AddCell(namespaceCell("Global Permissions",10));
-            table.AddCell(namespaceCell(report.IsCompliant.ToString(),1));
+            table.AddCell(namespaceCell("Global Permissions", 10));
+            table.AddCell(namespaceCell(report.IsCompliant.ToString(), 1));
             table.CompleteRow();
 
             foreach (var item in report.GlobalPermissions)
             {
                 table.AddCell("");
-                table.AddCell(appGroupCell(item.ApplicationGroupName,9));
-                table.AddCell(appGroupCell(item.IsCompliant.ToString(),1));
+                table.AddCell(appGroupCell(item.ApplicationGroupName, 9));
+                table.AddCell(appGroupCell(item.IsCompliant.ToString(), 1));
                 table.CompleteRow();
 
                 foreach (var permission in item.Permissions)
                 {
+                    var readableActualPermission = GenerateReadablePermission(permission.ActualPermissionId);
+                    var readableShouldBePermission = GenerateReadablePermission(permission.ShouldBePermissionId);
+
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
-                    table.AddCell(bodyCell($"{permission.Description} ({permission.PermissionBit})",4)) ;
-                    table.AddCell(bodyCell(permission.ActualPermissionId?.ToString()));
-                    table.AddCell(bodyCell(permission.ShouldBePermissionId?.ToString()));
+                    table.AddCell(bodyCell($"{permission.Description} ({permission.PermissionBit})", 4));
+                    table.AddCell(bodyCell(readableActualPermission));
+                    table.AddCell(bodyCell(readableShouldBePermission));
                     table.AddCell(bodyCell(permission.IsCompliant.ToString()));
                     table.CompleteRow();
                 }
@@ -117,6 +123,29 @@ namespace SecurePipelineScan.Rules.Pdf
             PDFData.Close();
 
             return filename;
+        }
+
+        private static string GenerateReadablePermission(PermissionId? permissionId)
+        {
+            string readableActualPermission;
+
+            switch (permissionId)
+            {
+                case PermissionId.NotSet:
+                    readableActualPermission = "Not Set";
+                    break;
+                case PermissionId.AllowInherited:
+                    readableActualPermission = "Allow (inherited)";
+                    break;
+                case PermissionId.DenyInherited:
+                    readableActualPermission = "Deny (inherited)";
+                    break;
+                default:
+                    readableActualPermission = permissionId.ToString();
+                    break;
+            }
+
+            return readableActualPermission;
         }
 
         private PdfPCell bodyCell(string text, int colSpan = 1)
