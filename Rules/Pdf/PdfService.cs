@@ -66,7 +66,7 @@ namespace SecurePipelineScan.Rules.Pdf
             document.Add(anchor);
             document.Add(new Paragraph("\n\n\n"));
 
-            PdfPTable table = new PdfPTable(10);
+            PdfPTable table = new PdfPTable(11);
             table.DefaultCell.Phrase = new Phrase() 
                 { Font = FontFactory.GetFont("Arial", 8, Font.NORMAL) };
             table.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -76,21 +76,21 @@ namespace SecurePipelineScan.Rules.Pdf
             table.AddCell(headerCell("Namespace",1));
             table.AddCell(headerCell("Application Group",2));
             table.AddCell(headerCell("Level",1));
-            table.AddCell(headerCell("Permission", 3));
+            table.AddCell(headerCell("Permission (bit)", 4));
             table.AddCell(headerCell("Actual value",1));
             table.AddCell(headerCell("Should be",1));
             table.AddCell(headerCell("Is compliant?",1));
             table.CompleteRow();
 
             // Global permissions
-            table.AddCell(namespaceCell("Global Permissions",9));
+            table.AddCell(namespaceCell("Global Permissions",10));
             table.AddCell(namespaceCell(report.IsCompliant.ToString(),1));
             table.CompleteRow();
 
             foreach (var item in report.GlobalPermissions)
             {
                 table.AddCell("");
-                table.AddCell(appGroupCell(item.ApplicationGroupName,8));
+                table.AddCell(appGroupCell(item.ApplicationGroupName,9));
                 table.AddCell(appGroupCell(item.IsCompliant.ToString(),1));
                 table.CompleteRow();
 
@@ -100,14 +100,14 @@ namespace SecurePipelineScan.Rules.Pdf
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
-                    table.AddCell(bodyCell(permission.Description?.ToString(),3)) ;
+                    table.AddCell(bodyCell($"{permission.Description} ({permission.PermissionBit})",4)) ;
                     table.AddCell(bodyCell(permission.ActualPermissionId?.ToString()));
                     table.AddCell(bodyCell(permission.ShouldBePermissionId?.ToString()));
                     table.AddCell(bodyCell(permission.IsCompliant.ToString()));
                     table.CompleteRow();
                 }
 
-                table.AddCell(namespaceCell(" ", 10));
+                table.AddCell(namespaceCell(" ", 11));
                 table.CompleteRow();
             }
 

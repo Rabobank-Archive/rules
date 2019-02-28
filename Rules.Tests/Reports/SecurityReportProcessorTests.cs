@@ -106,7 +106,7 @@ namespace SecurePipelineScan.Rules.Tests.Reports
                 {
                     {
                         "group1",
-                        new []{ new Permission(1, Deny) }
+                        new []{ new Permission(1, Deny) {DisplayName = "Permission 1"}}
                     }
                 };
 
@@ -141,7 +141,7 @@ namespace SecurePipelineScan.Rules.Tests.Reports
                 {
                     {
                         "group1",
-                        new []{ new Permission(64, Deny) }
+                        new []{ new Permission(64, Deny) { DisplayName = "Permission 64"} }
                     }
                 };
 
@@ -169,15 +169,15 @@ namespace SecurePipelineScan.Rules.Tests.Reports
                     "group1",
                     new []
                     {
-                        new Permission(1, Allow),
-                        new Permission(2, Deny)
+                        new Permission(1, Allow) { DisplayName = "Permission 1"},
+                        new Permission(2, Deny) { DisplayName = "Permission 2"}
                     }
                 },
                 {
                     "group2",
                     new []
                     {
-                        new Permission(1, NotSet)
+                        new Permission(1, NotSet) { DisplayName = "Permission 1"}
                     }
                 }
             };
@@ -191,8 +191,8 @@ namespace SecurePipelineScan.Rules.Tests.Reports
                     "compliantGroup1",
                     new []
                     {
-                        new Permission(1, Allow),
-                        new Permission(2, Deny)
+                        new Permission(1, Allow) { DisplayName = "Permission 1"},
+                        new Permission(2, Deny) { DisplayName = "Permission 2"}
                     }
                 }
             };

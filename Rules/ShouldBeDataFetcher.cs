@@ -16,12 +16,9 @@ namespace SecurePipelineScan.Rules
 
             var applicationGroups = result.GlobalPermissions;
 
-            var permissions = new List<Permission>();
             foreach (var applicationGroup in applicationGroups)
             {
-                CreatePermissionsPerApplicationGroup(applicationGroup, permissions);
-
-                shouldBePermissions.Add(applicationGroup.ApplicationGroupName, permissions);
+                shouldBePermissions.Add($"[{project}]\\{applicationGroup.ApplicationGroupName}", CreatePermissionsPerApplicationGroup(applicationGroup));
             }
             return new ShouldBeData(project)
             {
@@ -43,14 +40,17 @@ namespace SecurePipelineScan.Rules
             }
         }
 
-        private static void CreatePermissionsPerApplicationGroup(ApplicationGroup applicationGroup, List<Permission> permissions)
+        private static IEnumerable<Permission> CreatePermissionsPerApplicationGroup(ApplicationGroup applicationGroup)
         {
             var applicationGroupPermissions = applicationGroup.Permissions;
-
+            List<Permission> permissions = new List<Permission>();
+             
             foreach (var groupPermission in applicationGroupPermissions)
             {
-                permissions.Add(new Permission(groupPermission.PermissionBit, groupPermission.PermissionId));
+                permissions.Add(new Permission(groupPermission.PermissionBit, groupPermission.PermissionId) { DisplayName = groupPermission.DisplayName});
             }
+
+            return permissions;
         }
 
         /// <summary>

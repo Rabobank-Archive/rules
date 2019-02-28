@@ -52,7 +52,8 @@ namespace SecurePipelineScan.Rules.Reports
                     Permissions = compliantPermission.Value.
                     Select(x => new Permission(x.PermissionBit)
                     {
-                        ShouldBePermissionId = x.PermissionId
+                        ShouldBePermissionId = x.PermissionId,
+                        Description = x.DisplayName
                     }
                     ).ToList()
                 });
@@ -63,19 +64,21 @@ namespace SecurePipelineScan.Rules.Reports
         {
             var foundGlobalPermissionEntry =
                 foundGlobalPermission.Permissions.
-                SingleOrDefault(x => x.PermissionBit == compliantPermissionEntry.PermissionBit);
+                SingleOrDefault(x => x.Description == compliantPermissionEntry.DisplayName);
 
             if (foundGlobalPermissionEntry != null)
             {
                 foundGlobalPermissionEntry.ShouldBePermissionId =
                     compliantPermissionEntry.PermissionId;
+                foundGlobalPermissionEntry.Description = compliantPermissionEntry.DisplayName;
             }
             else
             {
                 foundGlobalPermission.Permissions.Add(
                     new Permission(compliantPermissionEntry.PermissionBit)
                     {
-                        ShouldBePermissionId = compliantPermissionEntry.PermissionId
+                        ShouldBePermissionId = compliantPermissionEntry.PermissionId,
+                        Description = compliantPermissionEntry.DisplayName
                     });
             }
         }
@@ -96,7 +99,7 @@ namespace SecurePipelineScan.Rules.Reports
         {
             foreach (var inputPermission in globalPermission.Value)
             {
-                yield return new Permission(inputPermission.PermissionBit, inputPermission.PermissionId);
+                yield return new Permission(inputPermission.PermissionBit, inputPermission.PermissionId) { Description = inputPermission.DisplayName};
             }
         }
     }
