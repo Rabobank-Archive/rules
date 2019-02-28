@@ -161,6 +161,36 @@ namespace SecurePipelineScan.Rules.Tests.Reports
             compliantGroupOne.Permissions.ShouldContain(x => x.PermissionBit == 2 && !x.ShouldBePermissionId.HasValue);
         }
 
+        [Fact]
+        public void ShouldMapApplicationGroupWithDifferentCase()
+        {
+            ISecurityData data = Substitute.For<ISecurityData>();
+            ICompliantValues values = Substitute.For<ICompliantValues>();
+
+            data.ProjectName.Returns("expectedProjectName");
+
+            data.GlobalPermissions.Returns(CreateFakeISecurityData());
+
+            IDictionary<string, IEnumerable<Permission>> fakeICompliantValues =
+                new Dictionary<string, IEnumerable<Permission>>
+                {
+                    {
+                        "GROUP1",
+                        new []{ new Permission(1, Deny) { DisplayName = "Permission 1"} }
+                    }
+                };
+            values.GlobalPermissions.Returns(fakeICompliantValues);
+
+            var sut = new SecurityReportProcessor();
+            SecurityReport result = sut.Evaluate(data, values);
+            
+            Assert.NotNull(result);
+            Assert.NotNull(result.GlobalPermissions);
+
+            var compliantGroupOne = result.GlobalPermissions.Single(x => x.ApplicationGroupName == "group1");
+            compliantGroupOne.Permissions.ShouldContain(x => x.ActualPermissionId == Allow && x.ShouldBePermissionId == Deny && x.PermissionBit == 1);
+
+        }
         private static IDictionary<string, IEnumerable<Permission>> CreateFakeISecurityData()
         {
             return new Dictionary<string, IEnumerable<Permission>>
