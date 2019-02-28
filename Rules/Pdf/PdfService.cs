@@ -99,8 +99,8 @@ namespace SecurePipelineScan.Rules.Pdf
 
                 foreach (var permission in item.Permissions)
                 {
-                    var readableActualPermission = ReadablePermissionGenerator(permission.ActualPermissionId);
-                    var readableShouldBePermission = ReadablePermissionGenerator(permission.ShouldBePermissionId);
+                    var readableActualPermission = GenerateReadablePermissionGenerator(permission.ActualPermissionId);
+                    var readableShouldBePermission = GenerateReadablePermissionGenerator(permission.ShouldBePermissionId);
 
                     table.AddCell("");
                     table.AddCell("");
@@ -125,7 +125,7 @@ namespace SecurePipelineScan.Rules.Pdf
             return filename;
         }
 
-        private static string ReadablePermissionGenerator(PermissionId? permissionId)
+        private static string GenerateReadablePermissionGenerator(PermissionId? permissionId)
         {
             string readableActualPermission;
 
