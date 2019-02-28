@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Reports
         private static void InsertOrUpdateGlobalPermissions(IList<GlobalPermissions> globalPermissions, KeyValuePair<string, IEnumerable<Common.Permission>> compliantPermission)
         {
             var foundGlobalPermission = globalPermissions.
-                SingleOrDefault(x => x.ApplicationGroupName == compliantPermission.Key);
+                SingleOrDefault(x => String.Equals(x.ApplicationGroupName, compliantPermission.Key, StringComparison.CurrentCultureIgnoreCase));
 
             if (foundGlobalPermission != null)
             {
