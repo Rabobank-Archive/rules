@@ -99,16 +99,13 @@ namespace SecurePipelineScan.Rules.Pdf
 
                 foreach (var permission in item.Permissions)
                 {
-                    var readableActualPermission = GenerateReadablePermission(permission.ActualPermissionId);
-                    var readableShouldBePermission = GenerateReadablePermission(permission.ShouldBePermissionId);
-
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell("");
                     table.AddCell(bodyCell($"{permission.Description} ({permission.PermissionBit})", 4));
-                    table.AddCell(bodyCell(readableActualPermission));
-                    table.AddCell(bodyCell(readableShouldBePermission));
+                    table.AddCell(bodyCell(permission.ActualPermissionId.GetDisplayName()));
+                    table.AddCell(bodyCell(permission.ShouldBePermissionId.GetDisplayName()));
                     table.AddCell(bodyCell(permission.IsCompliant.ToString()));
                     table.CompleteRow();
                 }
