@@ -122,29 +122,6 @@ namespace SecurePipelineScan.Rules.Pdf
             return filename;
         }
 
-        private static string GenerateReadablePermission(PermissionId? permissionId)
-        {
-            string readableActualPermission;
-
-            switch (permissionId)
-            {
-                case PermissionId.NotSet:
-                    readableActualPermission = "Not Set";
-                    break;
-                case PermissionId.AllowInherited:
-                    readableActualPermission = "Allow (inherited)";
-                    break;
-                case PermissionId.DenyInherited:
-                    readableActualPermission = "Deny (inherited)";
-                    break;
-                default:
-                    readableActualPermission = permissionId.ToString();
-                    break;
-            }
-
-            return readableActualPermission;
-        }
-
         private PdfPCell bodyCell(string text, int colSpan = 1)
         {
             return CreateCell(text, 7, colspan: colSpan);
