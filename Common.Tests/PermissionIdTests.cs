@@ -14,7 +14,7 @@ namespace SecurePipelineScan.Common.Tests
             Assert.Equal("Deny (inherited)", PermissionId.DenyInherited.GetDisplayName());
             Assert.Equal("Allow", PermissionId.Allow.GetDisplayName());
             Assert.Equal("Allow (inherited)", PermissionId.AllowInherited.GetDisplayName());
-            
         }
+        
     }
 }
