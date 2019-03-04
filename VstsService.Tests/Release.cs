@@ -62,6 +62,10 @@ namespace SecurePipelineScan.VstsService.Tests
             condition.Name.ShouldNotBeNullOrEmpty();
             condition.ConditionType.ShouldNotBeEmpty();
             condition.Value.ShouldNotBeNull();
+
+            var artifact = release.Artifacts.First();
+            artifact.Type.ShouldNotBeNull();
+            artifact.Alias.ShouldNotBeNull();
         }
 
 

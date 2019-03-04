@@ -31,27 +31,14 @@ namespace SecurePipelineScan.Rules.Tests
                 client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
 
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
                 
                 var report = scan.Completed(input);
                 report.HasApprovalOptions.ShouldBeTrue();
-            }
-
-            [Fact]
-            public void MinimumNumberOfApproversNotSet()
-            {
-                var input = ReadInput("Completed", "NotApproved.json");
-
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-                
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
-
-                var report = scan.Completed(input);
-                report.HasApprovalOptions.ShouldBeFalse();
             }
 
             [Fact]
@@ -65,6 +52,9 @@ namespace SecurePipelineScan.Rules.Tests
                     .With(a => a.IsAutomated, true));
                     
                 var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
                 client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -84,6 +74,9 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var client = Substitute.For<IVstsRestClient>();
                 client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
 
@@ -94,6 +87,57 @@ namespace SecurePipelineScan.Rules.Tests
                     .HasApprovalOptions
                     .ShouldBeFalse();
             }
+            
+            [Fact]
+            public void NoBranchFilterForAllArtifacts()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+                    
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
+                var report = scan.Completed(input);
+                report.HasBranchFilterForAllArtifacts.ShouldBeFalse();
+            }
+            
+            [Fact]
+            public void BranchFilterForAllArtifacts()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(x => x
+                    .With(a => a.Artifacts, new []{new Response.ArtifactReference { Alias = "some-build-artifact"}}));
+
+                _fixture.Customize<Response.Environment>(x =>
+                    x.With(v => v.Conditions, new[]
+                    {
+                        new Response.Condition
+                        {
+                            ConditionType = "artifact",
+                            Name = "some-build-artifact"
+                        }
+                    }));
+                    
+                var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
+                var report = scan.Completed(input);
+                report.HasBranchFilterForAllArtifacts.ShouldBeTrue();
+            }
+
 
             [Fact]
             public void ReportInformation()
@@ -113,6 +157,9 @@ namespace SecurePipelineScan.Rules.Tests
                 });
 
                 var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
                 client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -134,6 +181,9 @@ namespace SecurePipelineScan.Rules.Tests
                 }));
                 
                 var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
                 client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -167,6 +217,9 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var client = Substitute.For<IVstsRestClient>();
                 client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
                 
@@ -195,6 +248,10 @@ namespace SecurePipelineScan.Rules.Tests
                 });
                 
                 var client = Substitute.For<IVstsRestClient>();
+                client
+                    .Get(Arg.Any<IVstsRestRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                
                 client
                     .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());

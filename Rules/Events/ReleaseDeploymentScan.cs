@@ -27,6 +27,7 @@ namespace SecurePipelineScan.Rules.Events
 
         public ReleaseDeploymentCompletedReport Completed(JObject input)
         {
+            var release = ResolveRelease(input);
             var environment = ResolveEnvironment(input);
             var project = (string)input.SelectToken("resource.project.name");
             return new ReleaseDeploymentCompletedReport
@@ -38,8 +39,23 @@ namespace SecurePipelineScan.Rules.Events
                 Environment = (string)input.SelectToken("resource.environment.name"),
                 CreatedDate = (DateTime)input["createdDate"],
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
-                HasApprovalOptions = CheckApprovalOptions(environment)
+                HasApprovalOptions = CheckApprovalOptions(environment),
+                HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment)
             };
+        }
+
+        private bool CheckBranchFilters(Response.Release release, Response.Environment environment)
+        {
+            return release.Artifacts.All(a =>
+                environment.Conditions.Any(c => c.ConditionType == "artifact" && c.Name == a.Alias));
+        }
+
+        private Response.Release ResolveRelease(JObject input)
+        {
+            var project = (string) input.SelectToken("resource.project.name");
+            var releaseId = (string) input.SelectToken("resource.environment.releaseId");
+
+            return _client.Get(VstsService.Requests.Release.Releases(project, releaseId));
         }
 
         private bool UsesProductionEndpoints(string project, Response.Environment environment)
