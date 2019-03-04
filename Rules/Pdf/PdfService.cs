@@ -42,6 +42,7 @@ namespace SecurePipelineScan.Rules.Pdf
             //Setting fonts
             Font titleFont = FontFactory.GetFont("Helvetica", 14, Font.BOLD);
             Font projectFont = FontFactory.GetFont("Helvetica", 12, Font.BOLD);
+            Font bodyFont = FontFactory.GetFont("Helvetica", 10, Font.BOLD);
             Font linkFont = FontFactory.GetFont("Helvetica", 10, Font.UNDERLINE, BaseColor.BLUE);
 
             //Add elements to the document here
@@ -67,7 +68,9 @@ namespace SecurePipelineScan.Rules.Pdf
                 Reference = "https://confluence.dev.somecompany.nl/display/vsts/Azure+DevOps+Project+group+permissions"
             };
             document.Add(anchor);
-            document.Add(new Paragraph("\n\n\n"));
+            document.Add(new Paragraph("\n"));
+
+            document.Add(new Paragraph($"Project is compliant: {report.IsCompliant}\n\n", bodyFont));
 
             PdfPTable table = new PdfPTable(11);
             table.DefaultCell.Phrase = new Phrase()
