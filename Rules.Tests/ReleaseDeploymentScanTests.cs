@@ -25,7 +25,6 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.ApprovalOptions>(x => x
-                    .With(a => a.RequiredApproverCount, 0)
                     .With(a => a.ReleaseCreatorCanBeApprover, false));
                     
                 var client = Substitute.For<IVstsRestClient>();
@@ -43,8 +42,6 @@ namespace SecurePipelineScan.Rules.Tests
             public void MinimumNumberOfApproversNotSet()
             {
                 var input = ReadInput("Completed", "NotApproved.json");
-                _fixture
-                    .Customize<Response.ApprovalOptions>(x => x.With(a => a.RequiredApproverCount, null));
 
                 var client = Substitute.For<IVstsRestClient>();
                 client
@@ -62,7 +59,6 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.ApprovalOptions>(x => x
-                    .With(a => a.RequiredApproverCount, 0)
                     .With(a => a.ReleaseCreatorCanBeApprover, false));
 
                 _fixture.Customize<Response.Approval>(x => x
