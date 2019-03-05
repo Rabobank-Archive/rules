@@ -38,7 +38,9 @@ namespace SecurePipelineScan.Rules
                 var permission = client.Get(Permissions.
                     PermissionsGroupProjectId(projectId, applicationGroup.TeamFoundationId));
 
-                permissions.Add(applicationGroup.DisplayName,
+                var applicationGroupName = applicationGroup.DisplayName.Replace(@"\", "");
+                
+                permissions.Add(applicationGroupName,
                     permission.Security.Permissions.Select(x =>
                     new Permission(x.PermissionBit, (PermissionId)x.PermissionId) { DisplayName = x.DisplayName}));
             };
