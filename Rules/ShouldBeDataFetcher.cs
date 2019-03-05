@@ -18,11 +18,12 @@ namespace SecurePipelineScan.Rules
 
             foreach (var applicationGroup in applicationGroups)
             {
-                shouldBePermissions.Add($"[{project}]\\{applicationGroup.ApplicationGroupName}", CreatePermissionsPerApplicationGroup(applicationGroup));
+               var applicationGroupName = $"[{project}]" + @"\" + $"{applicationGroup.ApplicationGroupName}";
+               shouldBePermissions.Add(applicationGroupName, CreatePermissionsPerApplicationGroup(applicationGroup));
             }
             return new ShouldBeData(project)
             {
-                GlobalPermissions = shouldBePermissions,
+                GlobalPermissions = shouldBePermissions
             };
         }
 

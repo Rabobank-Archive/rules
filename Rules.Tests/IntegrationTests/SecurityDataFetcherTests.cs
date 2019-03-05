@@ -24,9 +24,11 @@ namespace SecurePipelineScan.Rules.Tests.IntegrationTests
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var sut = new SecurityDataFetcher(client);
 
-            var result = sut.FetchSecurityPermissions("Sox-Compliant-Demo");
+            string projectName = _config.Project;
+            
+            var result = sut.FetchSecurityPermissions(projectName);
 
-            result.ProjectName.ShouldBe("Sox-Compliant-Demo");
+            result.ProjectName.ShouldBe(projectName);
             result.GlobalPermissions.ShouldAllBe(x => !string.IsNullOrWhiteSpace(x.Key));
 
             // A minimum of 5 DevOps groups should be there.
@@ -39,7 +41,7 @@ namespace SecurePipelineScan.Rules.Tests.IntegrationTests
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
 
-            string projectName = "Sox-Compliant-Demo";
+            string projectName = _config.Project;
 
             var scan = new SecurityReportScan(client);
             var report = scan.Execute(projectName);
