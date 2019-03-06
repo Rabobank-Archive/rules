@@ -31,6 +31,12 @@
     </None>
   </ItemGroup>
   
+  <ItemGroup>
+    <None Update="ShouldBeSettings\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
   <PropertyGroup>
     <Authors>TAS</Authors>
     <Company>Rabobank</Company>

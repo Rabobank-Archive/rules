@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules
 
             foreach (var applicationGroup in applicationGroups)
             {
-               var applicationGroupName = $"[{project}]" + @"\" + $"{applicationGroup.ApplicationGroupName}";
+               var applicationGroupName = $"[{project}]{applicationGroup.ApplicationGroupName}";
                shouldBePermissions.Add(applicationGroupName, CreatePermissionsPerApplicationGroup(applicationGroup));
             }
             return new ShouldBeData(project)
