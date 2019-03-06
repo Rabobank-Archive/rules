@@ -24,11 +24,23 @@
   <ItemGroup>
     <Compile Remove="Reports\BuildRights1.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <None Update="Pdf\somecompany.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Remove="Pdf\somecompany.png" />
+    <None Remove="ShouldBeSettings\default.json" />
+    <None Remove="ShouldBeSettings\soxpipeline.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pdf\somecompany.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ShouldBeSettings\default.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ShouldBeSettings\soxpipeline.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
   <ItemGroup>
