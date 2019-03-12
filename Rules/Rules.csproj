@@ -31,22 +31,26 @@
     <None Remove="ShouldBeSettings\soxpipeline.json" />
   </ItemGroup>
 
+  <!--<ItemGroup>-->
+    <!--<Content Include="Pdf\somecompany.png">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+    <!--<Content Include="ShouldBeSettings\default.json">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+    <!--<Content Include="ShouldBeSettings\soxpipeline.json">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+  <!--</ItemGroup>-->
+  <!---->
   <ItemGroup>
+    <Content Include="ShouldBeSettings\*.json">
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Pdf\somecompany.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ShouldBeSettings\default.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ShouldBeSettings\soxpipeline.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="ShouldBeSettings\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   
   <PropertyGroup>
