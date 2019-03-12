@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SecurePipelineScan.Rules</RootNamespace>
-    <NuspecFile>SecurePipelineScan.Rules.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,22 +31,23 @@
     <None Remove="ShouldBeSettings\soxpipeline.json" />
   </ItemGroup>
 
+  <!--<ItemGroup>-->
+    <!--<Content Include="Pdf\somecompany.png">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+    <!--<Content Include="ShouldBeSettings\default.json">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+    <!--<Content Include="ShouldBeSettings\soxpipeline.json">-->
+      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
+    <!--</Content>-->
+  <!--</ItemGroup>-->
+  <!---->
   <ItemGroup>
-    <Content Include="Pdf\somecompany.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ShouldBeSettings\default.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ShouldBeSettings\soxpipeline.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="ShouldBeSettings\*.json">
+    <Content Include="ShouldBeSettings\*.json">
+      <IncludeInPackage>true</IncludeInPackage>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   
   <PropertyGroup>
