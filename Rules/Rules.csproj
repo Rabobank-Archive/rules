@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SecurePipelineScan.Rules</RootNamespace>
+    <NuspecFile>SecurePipelineScan.Rules.nuspec</NuspecFile>
   </PropertyGroup>
 
   <ItemGroup>
