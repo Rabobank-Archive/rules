@@ -44,9 +44,12 @@
   <!--</ItemGroup>-->
   <!---->
   <ItemGroup>
-    <Content Include="ShouldBeSettings\*.json">
+    <Content Include="ShouldBeSettings\*.json" CopyToOutputDirectory="true">
       <IncludeInPackage>true</IncludeInPackage>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutput>true</CopyToOutput>
+      <BuildAction>Content</BuildAction>
+      <copyToOutput>true</copyToOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Pdf\somecompany.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
