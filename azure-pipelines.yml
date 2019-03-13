@@ -91,5 +91,4 @@ steps:
   inputs:
     command: push
     publishVstsFeed: 'ea1adc59-f67e-40d5-8539-4c897a894647'
-  condition: succeeded()
-#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
