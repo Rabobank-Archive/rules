@@ -14,18 +14,16 @@ namespace SecurePipelineScan.VstsService
         /// </summary>
         public static IRestClient SetupSerializer(this IRestClient client)
         {
-            var serializer = new NewtonsoftJsonSerializer(new JsonSerializer
+            client.AddHandler("application/json", () => new NewtonsoftJsonSerializer(new JsonSerializer
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Converters = {new PolicyConverter()}
-            });
+            }));
 
-            client.AddHandler("application/json", serializer);
-
-            client.AddHandler("text/json", NewtonsoftJsonSerializer.Default);
-            client.AddHandler("text/x-json", NewtonsoftJsonSerializer.Default);
-            client.AddHandler("text/javascript", NewtonsoftJsonSerializer.Default);
-            client.AddHandler("*+json", NewtonsoftJsonSerializer.Default);
+            client.AddHandler("text/json", () => NewtonsoftJsonSerializer.Default);
+            client.AddHandler("text/x-json", () => NewtonsoftJsonSerializer.Default);
+            client.AddHandler("text/javascript", () => NewtonsoftJsonSerializer.Default);
+            client.AddHandler("*+json",() =>  NewtonsoftJsonSerializer.Default);
 
             return client;
         }
