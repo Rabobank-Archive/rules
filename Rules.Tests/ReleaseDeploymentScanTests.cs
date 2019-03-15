@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.Rules.Reports;
-using SecurePipelineScan.VstsService;
 using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -25,14 +24,9 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.ApprovalOptions>(x => x
-                    .With(a => a.RequiredApproverCount, 0)
                     .With(a => a.ReleaseCreatorCanBeApprover, false));
-                    
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
 
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
                 
                 var report = scan.Completed(input);
@@ -40,39 +34,16 @@ namespace SecurePipelineScan.Rules.Tests
             }
 
             [Fact]
-            public void MinimumNumberOfApproversNotSet()
-            {
-                var input = ReadInput("Completed", "NotApproved.json");
-                _fixture
-                    .Customize<Response.ApprovalOptions>(x => x.With(a => a.RequiredApproverCount, null));
-
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-                
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
-
-                var report = scan.Completed(input);
-                report.HasApprovalOptions.ShouldBeFalse();
-            }
-
-            [Fact]
             public void OnlyAutomatedApprovals()
             {
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.ApprovalOptions>(x => x
-                    .With(a => a.RequiredApproverCount, 0)
                     .With(a => a.ReleaseCreatorCanBeApprover, false));
 
                 _fixture.Customize<Response.Approval>(x => x
                     .With(a => a.IsAutomated, true));
                     
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
                 
                 var report = scan.Completed(input);
@@ -86,11 +57,7 @@ namespace SecurePipelineScan.Rules.Tests
                 _fixture
                     .Customize<Response.ApprovalOptions>(x => x.With(a => a.ReleaseCreatorCanBeApprover, true));
 
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);
@@ -98,6 +65,43 @@ namespace SecurePipelineScan.Rules.Tests
                     .HasApprovalOptions
                     .ShouldBeFalse();
             }
+            
+            [Fact]
+            public void NoBranchFilterForAllArtifacts()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+                    
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
+                var report = scan.Completed(input);
+                report.HasBranchFilterForAllArtifacts.ShouldBeFalse();
+            }
+            
+            [Fact]
+            public void BranchFilterForAllArtifacts()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(x => x
+                    .With(a => a.Artifacts, new []{new Response.ArtifactReference { Alias = "some-build-artifact"}}));
+
+                _fixture.Customize<Response.Environment>(x =>
+                    x.With(v => v.Conditions, new[]
+                    {
+                        new Response.Condition
+                        {
+                            ConditionType = "artifact",
+                            Name = "some-build-artifact"
+                        }
+                    }));
+                    
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                
+                var report = scan.Completed(input);
+                report.HasBranchFilterForAllArtifacts.ShouldBeTrue();
+            }
+
 
             [Fact]
             public void ReportInformation()
@@ -116,12 +120,8 @@ namespace SecurePipelineScan.Rules.Tests
                     ctx.Ignore(x => x.UsesProductionEndpoints);
                 });
 
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-
                 var input = ReadInput("Completed", "Approved.json");
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);
@@ -137,16 +137,12 @@ namespace SecurePipelineScan.Rules.Tests
                     ["some-input"] = Guid.NewGuid().ToString()
                 }));
                 
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
                 endpoints
                     .IsProduction(Arg.Any<string>(), Arg.Any<Guid>())
                     .Returns(true);
                 
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(endpoints, client);
                 scan.Completed(input);
                 
@@ -168,17 +164,13 @@ namespace SecurePipelineScan.Rules.Tests
                 {
                     createdDate = DateTime.Now.ToString()
                 });
-
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
                 
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
                 endpoints
                     .IsProduction(Arg.Any<string>(), Arg.Any<Guid>())
                     .Returns(true);
                 
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(endpoints, client);
                 var report = scan.Completed(input);
                 
@@ -198,11 +190,7 @@ namespace SecurePipelineScan.Rules.Tests
                     createdDate = "2019-01-11T13:34:58.0366887Z"
                 });
                 
-                var client = Substitute.For<IVstsRestClient>();
-                client
-                    .Get(Arg.Any<IVstsRestRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
-
+                var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
 
                 var report = scan.Completed(input);

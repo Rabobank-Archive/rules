@@ -62,34 +62,37 @@ namespace SecurePipelineScan.VstsService.Tests
             condition.Name.ShouldNotBeNullOrEmpty();
             condition.ConditionType.ShouldNotBeEmpty();
             condition.Value.ShouldNotBeNull();
+
+            var artifact = release.Artifacts.First();
+            artifact.Type.ShouldNotBeNull();
+            artifact.Alias.ShouldNotBeNull();
         }
 
 
-        //[Fact]
-        //public void QueryEnvironment()
-        //{
-        //    var environment = _client.Get(Requests.Release.Environment(_project, "5", "7"));
+        [Fact]
+        public void QueryEnvironment()
+        {
+            var environment = _client.Get(Requests.Release.Environment(_project, "5", "7"));
 
-        //    environment.ShouldNotBeNull();
-        //    environment.DeployPhasesSnapshot.ShouldNotBeEmpty();
+            environment.ShouldNotBeNull();
+            environment.DeployPhasesSnapshot.ShouldNotBeEmpty();
 
-        //    var snapshot = environment.DeployPhasesSnapshot.First();
-        //    snapshot.WorkflowTasks.ShouldNotBeEmpty();
+            var snapshot = environment.DeployPhasesSnapshot.First();
+            snapshot.WorkflowTasks.ShouldNotBeEmpty();
 
-        //    var task = snapshot.WorkflowTasks.First();
-        //    task.TaskId.ShouldNotBe(Guid.Empty);
-        //    task.Inputs.ShouldNotBeEmpty();
+            var task = snapshot.WorkflowTasks.First();
+            task.TaskId.ShouldNotBe(Guid.Empty);
+            task.Inputs.ShouldNotBeEmpty();
             
-        //    var preApprovalSnapshot = environment.PreApprovalsSnapshot;
-        //    preApprovalSnapshot.ShouldNotBeNull();
-        //    preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
-        //    preApprovalSnapshot.ApprovalOptions.RequiredApproverCount.ShouldBe(0);
-        //    preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeFalse();
+            var preApprovalSnapshot = environment.PreApprovalsSnapshot;
+            preApprovalSnapshot.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
+            preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeTrue();
             
-        //    var approval = preApprovalSnapshot.Approvals.FirstOrDefault();
-        //    approval.ShouldNotBeNull();
-        //    approval.IsAutomated.ShouldBeTrue();
-        //}
+            var approval = preApprovalSnapshot.Approvals.FirstOrDefault();
+            approval.ShouldNotBeNull();
+            approval.IsAutomated.ShouldBeFalse();
+        }
 
         [Fact]
         public void ConditionResultOnReleaseEnvironmentMustBeNullable()

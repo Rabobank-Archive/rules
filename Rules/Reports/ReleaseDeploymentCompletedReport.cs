@@ -12,5 +12,6 @@ namespace SecurePipelineScan.Rules.Reports
         public bool UsesProductionEndpoints { get; set; }
         public bool HasApprovalOptions { get; set; }
         public string Pipeline { get; set; }
+        public bool HasBranchFilterForAllArtifacts { get; set; }
     }
 }
