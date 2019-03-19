@@ -47,236 +47,236 @@ namespace SecurePipelineScan.Rules
             {
                 throw new ArgumentNullException(nameof(project));
             }
-
-            var applicationGroups =
-                client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
-                    ?.Identities;
-
-            if (applicationGroups == null)
-            {
-                throw new ArgumentNullException(nameof(applicationGroups));
-            }
-
-            var groupMembersProjectAdministrators =
-                getGroupMembersOfProjectAdministrators(project, applicationGroups);
-
-            //Todo: can be done outside loop for projects / just once per scan (=organisation)
-            var securityNamespaces = client.Get(SecurityNamespace.SecurityNamespaces()).Value;
-
-            if (securityNamespaces == null)
-            {
-                throw new ArgumentNullException(nameof(securityNamespaces));
-            }
-
-            var namespaceIdGitRepositories = securityNamespaces
-                .FirstOrDefault(ns => ns.DisplayName == "Git Repositories")
-                ?.NamespaceId;
-
-            var namespaceIdBuild = securityNamespaces
-                .FirstOrDefault(ns => ns.Name == "Build")
-                ?.NamespaceId;
-
-            var namespaceIdRelease = securityNamespaces
-                .FirstOrDefault(ns => ns.Name == "ReleaseManagement" &&
-                                      ns.Actions.Any(action => action.Name.Equals("ViewReleaseDefinition")))
-                ?.NamespaceId;
-
-            var applicationGroupIdProjectAdmins = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Project Administrators")
-                ?.TeamFoundationId;
-
-            var applicationGroupIdBuildAdmins = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Build Administrators")
-                ?.TeamFoundationId;
-
-            var applicationGroupIdReleaseAdmins = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Release Administrators")
-                ?.TeamFoundationId;
-
-            var applicationGroupIdProdEnvOwners = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Production Environment Owners")
-                ?.TeamFoundationId;
-
-            var applicationGroupRabobankProjectAdministrators = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Rabobank Project Administrators")
-                ?.TeamFoundationId;
-
-            var applicationGroupIdContributors = applicationGroups
-                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Contributors")
-                ?.TeamFoundationId;
-
-            var projectId = client.Get(Project.Properties(project)).Id;
-
-            var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
-
-            var buildDefinitions = client.Get(Builds.BuildDefinitions(projectId)).Value;
-
-            var releaseDefinitions = client.Get((Release.Definitions(projectId))).Value;
-
-            var permissionsGitRepositorySet =
-                applicationGroupIdProjectAdmins != null
-                    ? client.Get(Permissions.PermissionsGroupRepositorySet(
-                        projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins))
-                    : null;
-
-            var permissionsBuildProjectAdmins =
-                applicationGroupIdProjectAdmins != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdBuild, applicationGroupIdProjectAdmins))
-                    : null;
-
-            var permissionsBuildBuildAdmins =
-                applicationGroupIdBuildAdmins != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdBuild, applicationGroupIdBuildAdmins))
-                    : null;
-
-            var permissionsBuildContributors =
-                applicationGroupIdContributors != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdBuild, applicationGroupIdContributors))
-                    : null;
-
-            var permissionsTeamRabobankProjectAdministrators =
-                (applicationGroupRabobankProjectAdministrators != null)
-                    ? client.Get(Permissions.PermissionsGroupProjectId(
-                        projectId, applicationGroupRabobankProjectAdministrators))
-                    : null;
-
-            var permissionsReleaseRabobankProjectAdministrators =
-                namespaceIdRelease != null &&
-                applicationGroupRabobankProjectAdministrators != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdRelease, applicationGroupRabobankProjectAdministrators))
-                    : null;
-
-            var permissionsReleaseProdEnvOwner =
-                applicationGroupIdProdEnvOwners != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners))
-                    : null;
-
-            var permissionsReleaseContributors =
-                applicationGroupIdContributors != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdRelease, applicationGroupIdContributors))
-                    : null;
-
-            var permissionsReleaseProjectAdministrators =
-                applicationGroupIdProjectAdmins != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdRelease, applicationGroupIdProjectAdmins))
-                    : null;
-
-            var permissionsReleaseReleaseAdministrators =
-                applicationGroupIdReleaseAdmins != null
-                    ? client.Get(Permissions.PermissionsGroupSetId(
-                        projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins))
-                    : null;
+//
+//            var applicationGroups =
+//                client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
+//                    ?.Identities;
+//
+//            if (applicationGroups == null)
+//            {
+//                throw new ArgumentNullException(nameof(applicationGroups));
+//            }
+//
+//            var groupMembersProjectAdministrators =
+//                getGroupMembersOfProjectAdministrators(project, applicationGroups);
+//
+//            //Todo: can be done outside loop for projects / just once per scan (=organisation)
+//            var securityNamespaces = client.Get(SecurityNamespace.SecurityNamespaces()).Value;
+//
+//            if (securityNamespaces == null)
+//            {
+//                throw new ArgumentNullException(nameof(securityNamespaces));
+//            }
+//
+//            var namespaceIdGitRepositories = securityNamespaces
+//                .FirstOrDefault(ns => ns.DisplayName == "Git Repositories")
+//                ?.NamespaceId;
+//
+//            var namespaceIdBuild = securityNamespaces
+//                .FirstOrDefault(ns => ns.Name == "Build")
+//                ?.NamespaceId;
+//
+//            var namespaceIdRelease = securityNamespaces
+//                .FirstOrDefault(ns => ns.Name == "ReleaseManagement" &&
+//                                      ns.Actions.Any(action => action.Name.Equals("ViewReleaseDefinition")))
+//                ?.NamespaceId;
+//
+//            var applicationGroupIdProjectAdmins = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Project Administrators")
+//                ?.TeamFoundationId;
+//
+//            var applicationGroupIdBuildAdmins = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Build Administrators")
+//                ?.TeamFoundationId;
+//
+//            var applicationGroupIdReleaseAdmins = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Release Administrators")
+//                ?.TeamFoundationId;
+//
+//            var applicationGroupIdProdEnvOwners = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Production Environment Owners")
+//                ?.TeamFoundationId;
+//
+//            var applicationGroupRabobankProjectAdministrators = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Rabobank Project Administrators")
+//                ?.TeamFoundationId;
+//
+//            var applicationGroupIdContributors = applicationGroups
+//                .FirstOrDefault(gi => gi.DisplayName == $"[{project}]\\Contributors")
+//                ?.TeamFoundationId;
+//
+//            var projectId = client.Get(Project.Properties(project)).Id;
+//
+//            var repositories = client.Get(VstsService.Requests.Repository.Repositories(projectId)).Value;
+//
+//            var buildDefinitions = client.Get(Builds.BuildDefinitions(projectId)).Value;
+//
+//            var releaseDefinitions = client.Get((Release.Definitions(projectId))).Value;
+//
+//            var permissionsGitRepositorySet =
+//                applicationGroupIdProjectAdmins != null
+//                    ? client.Get(Permissions.PermissionsGroupRepositorySet(
+//                        projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins))
+//                    : null;
+//
+//            var permissionsBuildProjectAdmins =
+//                applicationGroupIdProjectAdmins != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdBuild, applicationGroupIdProjectAdmins))
+//                    : null;
+//
+//            var permissionsBuildBuildAdmins =
+//                applicationGroupIdBuildAdmins != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdBuild, applicationGroupIdBuildAdmins))
+//                    : null;
+//
+//            var permissionsBuildContributors =
+//                applicationGroupIdContributors != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdBuild, applicationGroupIdContributors))
+//                    : null;
+//
+//            var permissionsTeamRabobankProjectAdministrators =
+//                (applicationGroupRabobankProjectAdministrators != null)
+//                    ? client.Get(Permissions.PermissionsGroupProjectId(
+//                        projectId, applicationGroupRabobankProjectAdministrators))
+//                    : null;
+//
+//            var permissionsReleaseRabobankProjectAdministrators =
+//                namespaceIdRelease != null &&
+//                applicationGroupRabobankProjectAdministrators != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdRelease, applicationGroupRabobankProjectAdministrators))
+//                    : null;
+//
+//            var permissionsReleaseProdEnvOwner =
+//                applicationGroupIdProdEnvOwners != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdRelease, applicationGroupIdProdEnvOwners))
+//                    : null;
+//
+//            var permissionsReleaseContributors =
+//                applicationGroupIdContributors != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdRelease, applicationGroupIdContributors))
+//                    : null;
+//
+//            var permissionsReleaseProjectAdministrators =
+//                applicationGroupIdProjectAdmins != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdRelease, applicationGroupIdProjectAdmins))
+//                    : null;
+//
+//            var permissionsReleaseReleaseAdministrators =
+//                applicationGroupIdReleaseAdmins != null
+//                    ? client.Get(Permissions.PermissionsGroupSetId(
+//                        projectId, namespaceIdRelease, applicationGroupIdReleaseAdmins))
+//                    : null;
 
             var securityReport = new SecurityReport(date)
             {
                 ProjectName = project,
 
-                ApplicationGroupContainsProductionEnvironmentOwner =
-                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
-                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup =
-                    groupMembersProjectAdministrators != null &&
-                    ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(
-                        groupMembersProjectAdministrators),
-
-                RepositoryRightsProjectAdmin =
-                    (permissionsGitRepositorySet != null && repositories != null && applicationGroupIdProjectAdmins != null)
-                        ? CheckRepositoryRights(permissionsGitRepositorySet.Permissions,
-                            repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins, new RepositoryRights())
-                        : null,
-
-                BuildRightsBuildAdmin =
-                    permissionsBuildBuildAdmins != null
-                        ? CheckBuildRights(permissionsBuildBuildAdmins.Permissions, new BuildAdminBuildRights())
-                        : null,
-                BuildRightsProjectAdmin =
-                    permissionsBuildProjectAdmins != null
-                        ? CheckBuildRights(permissionsBuildProjectAdmins.Permissions, new ProjectAdminBuildRights())
-                        : null,
-                BuildRightsContributor =
-                    (permissionsBuildContributors != null)
-                        ? CheckBuildRights(permissionsBuildContributors.Permissions, new ContributorsBuildRights())
-                        : null,
-
-                BuildDefinitionsRightsBuildAdmin =
-                    (buildDefinitions != null && applicationGroupIdBuildAdmins != null)
-                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
-                            applicationGroupIdBuildAdmins, new BuildAdminBuildRights())
-                        : null,
-                BuildDefinitionsRightsProjectAdmin =
-                    (buildDefinitions != null && applicationGroupIdProjectAdmins != null)
-                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
-                            applicationGroupIdProjectAdmins, new ProjectAdminBuildRights())
-                        : null,
-                BuildDefinitionsRightsContributor =
-                    (buildDefinitions != null && applicationGroupIdContributors != null)
-                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
-                            applicationGroupIdContributors, new ContributorsBuildRights())
-                        : null,
-
-                ReleaseRightsProductionEnvOwner =
-                    permissionsReleaseProdEnvOwner != null
-                        ? CheckReleaseRights(permissionsReleaseProdEnvOwner.Permissions,
-                            new ProductionEnvOwnerReleaseRights())
-                        : null,
-                ReleaseRightsRaboProjectAdmin =
-                    permissionsReleaseRabobankProjectAdministrators != null
-                        ? CheckReleaseRights(permissionsReleaseRabobankProjectAdministrators.Permissions,
-                            new RaboAdminReleaseRights())
-                        : null,
-                ReleaseRightsContributor =
-                    permissionsReleaseContributors != null
-                        ? CheckReleaseRights(permissionsReleaseContributors.Permissions,
-                            new ContributorsReleaseRights())
-                        : null,
-                ReleaseRightsProjectAdmin =
-                    permissionsReleaseProjectAdministrators != null
-                        ? CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions,
-                            new ProjectAdminReleaseRights())
-                        : null,
-                ReleaseRightsReleaseAdmin =
-                    permissionsReleaseReleaseAdministrators != null
-                        ? CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions,
-                            new ProjectAdminReleaseRights())
-                        : null,
-
-                ReleaseDefinitionsRightsProductionEnvOwner =
-                    (releaseDefinitions != null && applicationGroupIdProdEnvOwners != null)
-                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
-                            applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights())
-                        : null,
-                ReleaseDefinitionsRightsContributor =
-                    (releaseDefinitions != null && applicationGroupIdContributors != null)
-                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
-                            applicationGroupIdContributors, new ContributorsReleaseRights())
-                        : null,
-                ReleaseDefinitionsRightsRaboProjectAdmin =
-                    (releaseDefinitions != null && applicationGroupRabobankProjectAdministrators != null)
-                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
-                            applicationGroupRabobankProjectAdministrators, new RaboAdminReleaseRights())
-                        : null,
-                ReleaseDefinitionsRightsProjectAdmin =
-                    (releaseDefinitions != null && applicationGroupIdProjectAdmins != null)
-                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
-                            applicationGroupIdProjectAdmins, new ProjectAdminReleaseRights())
-                        : null,
-                ReleaseDefinitionsRightsReleaseAdmin =
-                    (releaseDefinitions != null && applicationGroupIdReleaseAdmins != null)
-                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
-                            applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights())
-                        : null,
-
-                TeamRabobankProjectAdministrators =
-                    permissionsTeamRabobankProjectAdministrators != null
-                        ? CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security
-                            .Permissions)
-                        : null,
+//                ApplicationGroupContainsProductionEnvironmentOwner =
+//                    ProjectApplicationGroup.ApplicationGroupContainsProductionEnvironmentOwner(applicationGroups),
+//                ProjectAdminGroupOnlyContainsRabobankProjectAdminGroup =
+//                    groupMembersProjectAdministrators != null &&
+//                    ProjectApplicationGroup.ProjectAdministratorsGroupOnlyContainsRabobankProjectAdministratorsGroup(
+//                        groupMembersProjectAdministrators),
+//
+//                RepositoryRightsProjectAdmin =
+//                    (permissionsGitRepositorySet != null && repositories != null && applicationGroupIdProjectAdmins != null)
+//                        ? CheckRepositoryRights(permissionsGitRepositorySet.Permissions,
+//                            repositories, projectId, namespaceIdGitRepositories, applicationGroupIdProjectAdmins, new RepositoryRights())
+//                        : null,
+//
+//                BuildRightsBuildAdmin =
+//                    permissionsBuildBuildAdmins != null
+//                        ? CheckBuildRights(permissionsBuildBuildAdmins.Permissions, new BuildAdminBuildRights())
+//                        : null,
+//                BuildRightsProjectAdmin =
+//                    permissionsBuildProjectAdmins != null
+//                        ? CheckBuildRights(permissionsBuildProjectAdmins.Permissions, new ProjectAdminBuildRights())
+//                        : null,
+//                BuildRightsContributor =
+//                    (permissionsBuildContributors != null)
+//                        ? CheckBuildRights(permissionsBuildContributors.Permissions, new ContributorsBuildRights())
+//                        : null,
+//
+//                BuildDefinitionsRightsBuildAdmin =
+//                    (buildDefinitions != null && applicationGroupIdBuildAdmins != null)
+//                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+//                            applicationGroupIdBuildAdmins, new BuildAdminBuildRights())
+//                        : null,
+//                BuildDefinitionsRightsProjectAdmin =
+//                    (buildDefinitions != null && applicationGroupIdProjectAdmins != null)
+//                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+//                            applicationGroupIdProjectAdmins, new ProjectAdminBuildRights())
+//                        : null,
+//                BuildDefinitionsRightsContributor =
+//                    (buildDefinitions != null && applicationGroupIdContributors != null)
+//                        ? CheckBuildDefinitionsRights(buildDefinitions, projectId, namespaceIdBuild,
+//                            applicationGroupIdContributors, new ContributorsBuildRights())
+//                        : null,
+//
+//                ReleaseRightsProductionEnvOwner =
+//                    permissionsReleaseProdEnvOwner != null
+//                        ? CheckReleaseRights(permissionsReleaseProdEnvOwner.Permissions,
+//                            new ProductionEnvOwnerReleaseRights())
+//                        : null,
+//                ReleaseRightsRaboProjectAdmin =
+//                    permissionsReleaseRabobankProjectAdministrators != null
+//                        ? CheckReleaseRights(permissionsReleaseRabobankProjectAdministrators.Permissions,
+//                            new RaboAdminReleaseRights())
+//                        : null,
+//                ReleaseRightsContributor =
+//                    permissionsReleaseContributors != null
+//                        ? CheckReleaseRights(permissionsReleaseContributors.Permissions,
+//                            new ContributorsReleaseRights())
+//                        : null,
+//                ReleaseRightsProjectAdmin =
+//                    permissionsReleaseProjectAdministrators != null
+//                        ? CheckReleaseRights(permissionsReleaseProjectAdministrators.Permissions,
+//                            new ProjectAdminReleaseRights())
+//                        : null,
+//                ReleaseRightsReleaseAdmin =
+//                    permissionsReleaseReleaseAdministrators != null
+//                        ? CheckReleaseRights(permissionsReleaseReleaseAdministrators.Permissions,
+//                            new ProjectAdminReleaseRights())
+//                        : null,
+//
+//                ReleaseDefinitionsRightsProductionEnvOwner =
+//                    (releaseDefinitions != null && applicationGroupIdProdEnvOwners != null)
+//                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+//                            applicationGroupIdProdEnvOwners, new ProductionEnvOwnerReleaseRights())
+//                        : null,
+//                ReleaseDefinitionsRightsContributor =
+//                    (releaseDefinitions != null && applicationGroupIdContributors != null)
+//                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+//                            applicationGroupIdContributors, new ContributorsReleaseRights())
+//                        : null,
+//                ReleaseDefinitionsRightsRaboProjectAdmin =
+//                    (releaseDefinitions != null && applicationGroupRabobankProjectAdministrators != null)
+//                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+//                            applicationGroupRabobankProjectAdministrators, new RaboAdminReleaseRights())
+//                        : null,
+//                ReleaseDefinitionsRightsProjectAdmin =
+//                    (releaseDefinitions != null && applicationGroupIdProjectAdmins != null)
+//                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+//                            applicationGroupIdProjectAdmins, new ProjectAdminReleaseRights())
+//                        : null,
+//                ReleaseDefinitionsRightsReleaseAdmin =
+//                    (releaseDefinitions != null && applicationGroupIdReleaseAdmins != null)
+//                        ? CheckReleaseDefinitionsRights(releaseDefinitions, projectId, namespaceIdRelease,
+//                            applicationGroupIdReleaseAdmins, new ReleaseAdminReleaseRights())
+//                        : null,
+//
+//                TeamRabobankProjectAdministrators =
+//                    permissionsTeamRabobankProjectAdministrators != null
+//                        ? CheckTeamRabobankProjectAdministrators(permissionsTeamRabobankProjectAdministrators.Security
+//                            .Permissions)
+//                        : null,
             };
 
             var report = Execute(project);
