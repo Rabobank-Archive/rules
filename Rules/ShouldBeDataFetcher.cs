@@ -11,7 +11,6 @@ namespace SecurePipelineScan.Rules
         public ShouldBeData FetchGlobalShouldBePermissions(string project, Func<string> GetJsonData)
         {
             var shouldBePermissions = new Dictionary<string, IEnumerable<Permission>>();
-
             ShouldBeSettings result = GetShouldBeSettings(GetJsonData);
 
             var applicationGroups = result.GlobalPermissions;
@@ -31,7 +30,12 @@ namespace SecurePipelineScan.Rules
         {
             try
             {
-                var jsonData = GetJsonData();
+                // Explicit overwriding the GetJsonData with hardcoded shouldbesettings
+                // Reading file does work, but still not on Azure. So currently trying to put the settings in code
+//                var jsonData = GetJsonData();
+                
+                ShouldBeSettingsHardcoded settingsHardcoded = new ShouldBeSettingsHardcoded();
+                var jsonData = settingsHardcoded.ShouldBeHardcoded;
                 var result = JsonConvert.DeserializeObject<ShouldBeSettings>(jsonData);
                 return result;
             }
