@@ -162,7 +162,7 @@ namespace SecurePipelineScan.Rules.Tests
                 
                 var input = JObject.FromObject(new
                 {
-                    createdDate = DateTime.Now.ToString()
+                    createdDate = "2019-01-11T13:34:58.0366887Z"
                 });
                 
                 var endpoints = Substitute.For<IServiceEndpointValidator>();
