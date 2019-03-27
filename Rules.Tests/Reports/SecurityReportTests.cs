@@ -27,6 +27,7 @@ namespace SecurePipelineScan.Rules.Tests.Reports
             MockCompliantGlobalPermissions(securityReport); 
             
             securityReport.GlobalPermissions.All(p => p.IsCompliant).ShouldBeTrue();
+            securityReport.GlobalPermissionsIsCompliant.ShouldBeTrue();
             securityReport.IsCompliant.ShouldBeTrue();
         }
         

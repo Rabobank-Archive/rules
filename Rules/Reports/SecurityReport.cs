@@ -70,6 +70,8 @@ namespace SecurePipelineScan.Rules.Reports
         public DateTime Date { get; }
 
         public IEnumerable<GlobalPermissions> GlobalPermissions { get; internal set; }
-        public bool IsCompliant => GlobalPermissions.All(g => g.IsCompliant);
+        public bool GlobalPermissionsIsCompliant => GlobalPermissions.All(g => g.IsCompliant);
+        public bool IsCompliant => GlobalPermissionsIsCompliant;
+
     }
 }
