@@ -13,5 +13,6 @@ namespace SecurePipelineScan.Rules.Reports
         public bool HasApprovalOptions { get; set; }
         public string Pipeline { get; set; }
         public bool HasBranchFilterForAllArtifacts { get; set; }
+        public bool HasUsedTasManagedAgentsOnly { get; internal set; }
     }
 }

@@ -10,6 +10,8 @@ using SecurePipelineScan.Rules.Reports;
 using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using SecurePipelineScan.VstsService;
+using Moq;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -118,6 +120,7 @@ namespace SecurePipelineScan.Rules.Tests
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
+                    ctx.Ignore(x => x.HasUsedTasManagedAgentsOnly);
                 });
 
                 var input = ReadInput("Completed", "Approved.json");
@@ -196,12 +199,39 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
                 expected.ShouldEqual(report);
             }
-        }
 
+            [Fact]
+            public void AgentIsTasManagedAgent()
+            {
+                var input = ReadInput("Completed", "Approved.json");
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentStatus>>(r => r.Uri == "e633228b-200d-4c22-b846-fdfd10921af0/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentStatus>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+
+                var report = scan.Completed(input);
+                report.HasUsedTasManagedAgentsOnly.ShouldBeTrue();
+                rest.Verify();
+            }
+
+        }
+                
         private static JObject ReadInput(string eventType, string file)
         {
             var dir = Path.Join("Assets", "ReleaseDeployment", eventType);
             return JObject.Parse(File.ReadAllText(Path.Join(dir, file)));
         }
+
     }
 }

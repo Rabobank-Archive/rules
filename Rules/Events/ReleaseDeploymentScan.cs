@@ -40,7 +40,8 @@ namespace SecurePipelineScan.Rules.Events
                 CreatedDate = (DateTime)input["createdDate"],
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
-                HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment)
+                HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
+                HasUsedTasManagedAgentsOnly = project != null
             };
         }
 
