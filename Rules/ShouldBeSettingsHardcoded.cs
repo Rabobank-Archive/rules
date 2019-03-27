@@ -442,7 +442,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 4,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Delete shared Analytics views"",
-                    ""permissionId"": 0
+                    ""permissionId"": 1
                   },
                   {
                     ""permissionBit"": 4,
@@ -466,7 +466,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 2,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Edit shared Analytics views"",
-                    ""permissionId"": 0
+                    ""permissionId"": 1
                   },
                   {
                     ""permissionBit"": 131072,
@@ -532,7 +532,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 512,
                     ""namespaceId"": ""52d39943-cb85-4d7f-8fa8-c6baac873819"",
                     ""displayName"": ""View test runs"",
-                    ""permissionId"": 0
+                    ""permissionId"": 1
                   }
                 ]
               },
