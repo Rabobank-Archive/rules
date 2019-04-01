@@ -120,7 +120,7 @@ namespace SecurePipelineScan.Rules.Tests
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
-                    ctx.Ignore(x => x.HasUsedTasManagedAgentsOnly);
+                    ctx.Ignore(x => x.UsesManagedAgentsOnly);
                 });
 
                 var input = ReadInput("Completed", "Approved.json");
@@ -185,12 +185,22 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
+                    UsesManagedAgentsOnly = true
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
                 var input = JObject.FromObject(new
                 {
-                    createdDate = "2019-01-11T13:34:58.0366887Z"
+                    createdDate = "2019-01-11T13:34:58.0366887Z",
+                    resource = new
+                    {
+                        environment = new
+                        {
+                            deployPhasesSnapshots = new object[]
+                            {
+                            }
+                        }
+                    }
                 });
                 
                 var client = new FixtureClient(_fixture);
@@ -200,15 +210,61 @@ namespace SecurePipelineScan.Rules.Tests
                 expected.ShouldEqual(report);
             }
 
-            [Fact]
-            public void AgentIsTasManagedAgent()
+            [Theory]
+            [InlineData(114)]
+            [InlineData(115)]
+            [InlineData(116)]
+            [InlineData(117)]
+            [InlineData(119)]
+            [InlineData(120)]
+            [InlineData(121)]
+            [InlineData(122)]
+            
+            public void AgentIsTasManagedAgent(int poolId)
             {
+                // Arrange
+                _fixture
+                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, poolId));
                 var input = ReadInput("Completed", "Approved.json");
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentStatus>>(r => r.Uri == "e633228b-200d-4c22-b846-fdfd10921af0/_apis/distributedtask/queues/1665")))
-                    .Returns(_fixture.Create<Response.AgentStatus>())
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();                   
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                report.UsesManagedAgentsOnly.ShouldBeTrue();
+                rest.Verify();
+            }
+
+            [Fact]
+            public void VoorDeRestCallNaarDeAgentQueueWordenAlleQueueIdsUitDeInputGebruikt()
+            {
+                _fixture
+                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, 115));
+                JObject input = ReleaseCompletedInput();
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/653456")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
@@ -218,14 +274,83 @@ namespace SecurePipelineScan.Rules.Tests
                     .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
+                // Act
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
-
                 var report = scan.Completed(input);
-                report.HasUsedTasManagedAgentsOnly.ShouldBeTrue();
+
+                // Assert
                 rest.Verify();
             }
 
+            [Fact]
+            public void IfQueueIdResultsInUnmanagedPoolIdThenFalse()
+            {
+                // This is most definetely not an managed pool id.
+                _fixture
+                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, 543));
+
+                JObject input = ReleaseCompletedInput();
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.AgentQueue>>()))
+                    .Returns(_fixture.Create<Response.AgentQueue>());
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                report
+                    .UsesManagedAgentsOnly
+                    .ShouldBeFalse();
+            }
+
+            private static JObject ReleaseCompletedInput()
+            {
+                // Arrange
+                return JObject.FromObject(new
+                {
+                    createdDate = "2019-01-11T13:34:58.0366887Z",
+                    resource = new
+                    {
+                        environment = new
+                        {
+                            deployPhasesSnapshot = new[]
+                            {
+                                new
+                                {
+                                    deploymentInput = new
+                                    {
+                                        queueId = 1234553
+                                    }
+                                },
+                                new
+                                {
+                                    deploymentInput = new
+                                    {
+                                        queueId = 653456
+                                    }
+                                }
+                            }
+                        },
+                        project = new
+                        {
+                            name = "proeftuin"
+                        }
+                    }
+                });
+            }
         }
+
+
                 
         private static JObject ReadInput(string eventType, string file)
         {

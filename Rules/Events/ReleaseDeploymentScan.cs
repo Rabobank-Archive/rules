@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.Rules.Reports;
@@ -30,6 +31,7 @@ namespace SecurePipelineScan.Rules.Events
             var release = ResolveRelease(input);
             var environment = ResolveEnvironment(input);
             var project = (string)input.SelectToken("resource.project.name");
+            var queueId = input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>();
             return new ReleaseDeploymentCompletedReport
             {
                 Project = project,
@@ -41,8 +43,14 @@ namespace SecurePipelineScan.Rules.Events
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                HasUsedTasManagedAgentsOnly = project != null
+                UsesManagedAgentsOnly = CheckAgents(project, queueId)
             };
+        }
+
+        private bool CheckAgents(string project, IEnumerable<int> queueIds)
+        {
+            int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
+            return queueIds.All(id => managedPoolIds.Contains(_client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, id)).Pool.Id));
         }
 
         private bool CheckBranchFilters(Response.Release release, Response.Environment environment)
