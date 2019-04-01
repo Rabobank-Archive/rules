@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using AutoFixture.AutoNSubstitute;
+﻿using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using Xunit;
@@ -8,13 +7,13 @@ using static SecurePipelineScan.VstsService.Requests.ExtensionManagement;
 
 namespace SecurePipelineScan.Rules.Tests.IntegrationTests
 {
-    public class ExtensionManagementProjectOverview : IClassFixture<TestConfig>
+    public class ScanProjectToExtensionTests : IClassFixture<TestConfig>
     {
         private readonly ITestOutputHelper _output;
         private readonly TestConfig _config;
         private readonly VstsRestClient _client;
 
-        public ExtensionManagementProjectOverview(ITestOutputHelper output, TestConfig config)
+        public ScanProjectToExtensionTests(ITestOutputHelper output, TestConfig config)
         {
             _output = output;
             _config = config;
@@ -23,23 +22,21 @@ namespace SecurePipelineScan.Rules.Tests.IntegrationTests
 
         [Fact]
         [Trait("category", "integration")]
-        public void PutShouldInsertDemoDataProjectOverview()
+        public void ScanProjectToExtensionsData()
         {
-            var fixture = new Fixture();
-            fixture.Customize(new AutoNSubstituteCustomization());
+            var client = new VstsRestClient(_config.Organization, _config.Token);
 
-            fixture.Customizations.Add(
-                new RandomNumericSequenceGenerator(0, 5));
+            string projectName = _config.Project;
 
-            var data = fixture.Create<ProjectOverviewData>();
+            var scan = new SecurityReportScan(client);
+            var report = scan.Execute(projectName);
 
-            data.Id = "SOx-compliant-demo";
-            data.Etag = -1;
+            var extensionData = report.Map();
 
             string extensionName = _config.ExtensionName;
 
             _client.Put(ExtensionData<ProjectOverviewData>("tas", extensionName,
-                "ProjectOverview"), data);
+                "ProjectOverview"), extensionData);
         }
     }
 }

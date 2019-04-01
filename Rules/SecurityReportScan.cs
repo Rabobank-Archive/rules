@@ -1,5 +1,4 @@
 using Common;
-using Rules.Reports;
 using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
