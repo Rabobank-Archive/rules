@@ -21,5 +21,10 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VstsRestRequest<Response.Multiple<Response.Task>>($"_apis/distributedtask/tasks");
         }
+
+        public static IVstsRestRequest<Response.AgentQueue> AgentQueue(string project, int id)
+        {
+            return new VstsRestRequest<Response.AgentQueue>($"/{project}/_apis/distributedtask/queues/{id}");
+        }
     }
 }

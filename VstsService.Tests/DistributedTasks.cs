@@ -46,5 +46,14 @@ namespace SecurePipelineScan.VstsService.Tests
 
             task.ShouldAllBe(_ => !string.IsNullOrWhiteSpace(_.Id));
         }
+
+        [Fact]
+        public void QueryAgentQueueTest()
+        {
+            var response = client.Get(Requests.DistributedTask.AgentQueue(config.Project, 754));
+            response.Id.ShouldBe(754);
+            response.Pool.ShouldNotBeNull();
+            response.Pool.Id.ShouldBe(9);
+        }
     }
 }
