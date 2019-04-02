@@ -140,7 +140,7 @@
             {
               "id": 1,
               "phaseId": "1",
-              "name": "Agent job",
+              "name": "Agent job",      
               "rank": 1,
               "phaseType": "agentBasedDeployment",
               "status": "succeeded",
