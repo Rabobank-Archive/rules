@@ -250,7 +250,7 @@ namespace SecurePipelineScan.Rules.Tests
             }
 
             [Fact]
-            public void VoorDeRestCallNaarDeAgentQueueWordenAlleQueueIdsUitDeInputGebruikt()
+            public void ForTheRestCallToTheAgentQueueOnlyQueueIdsFromTheInputAreUsed()
             {
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 115));

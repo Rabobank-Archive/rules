@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Events
             var release = ResolveRelease(input);
             var environment = ResolveEnvironment(input);
             var project = (string)input.SelectToken("resource.project.name");
-            var queueId = input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>();
+            var queueIds = input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>();
             return new ReleaseDeploymentCompletedReport
             {
                 Project = project,
@@ -43,7 +43,7 @@ namespace SecurePipelineScan.Rules.Events
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                UsesManagedAgentsOnly = CheckAgents(project, queueId)
+                UsesManagedAgentsOnly = CheckAgents(project, queueIds)
             };
         }
 
