@@ -313,6 +313,36 @@ namespace SecurePipelineScan.Rules.Tests
                     .ShouldBeFalse();
             }
 
+            [Fact]
+            public void AllArtifactAreFromBuild()
+            {
+                // Arrange
+                _fixture
+                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, poolId));
+                var input = ReadInput("Completed", "Approved.json");
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                report.ArtifactsAreFromBuild.ShouldBeTrue();
+                rest.Verify();
+            }
+
             private static JObject ReleaseCompletedInput()
             {
                 // Arrange
