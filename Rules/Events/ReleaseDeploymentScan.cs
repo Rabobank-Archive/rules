@@ -51,11 +51,7 @@ namespace SecurePipelineScan.Rules.Events
 
         private bool CheckArtifacts(Response.Release release)
         {
-            if (release.Artifacts.Count() >0 && release.Artifacts.All(a => a.Type == "Build"))
-            {
-                return true;
-            }
-            else return false;
+            return release.Artifacts.Any() && release.Artifacts.All(a => a.Type == "Build");
         }
 
         private bool CheckAgents(string project, IEnumerable<int> queueIds)
