@@ -245,7 +245,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
 
                 // Assert
-                report.UsesManagedAgentsOnly.ShouldBeTrue();
+                Assert.True(report.UsesManagedAgentsOnly);
                 rest.Verify();
             }
 
@@ -308,9 +308,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
 
                 // Assert
-                report
-                    .UsesManagedAgentsOnly
-                    .ShouldBeFalse();
+                Assert.False(report.UsesManagedAgentsOnly);
             }
 
             private static JObject ReleaseCompletedInput()
