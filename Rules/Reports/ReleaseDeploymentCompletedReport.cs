@@ -14,6 +14,6 @@ namespace SecurePipelineScan.Rules.Reports
         public string Pipeline { get; set; }
         public bool HasBranchFilterForAllArtifacts { get; set; }
         public bool UsesManagedAgentsOnly { get; set; }
-        public bool ArtifactsAreFromBuild { get; set; }
+        public bool AllArtifactsAreFromBuild { get; set; }
     }
 }

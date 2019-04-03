@@ -43,8 +43,19 @@ namespace SecurePipelineScan.Rules.Events
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                UsesManagedAgentsOnly = CheckAgents(project, queueIds)
+                UsesManagedAgentsOnly = CheckAgents(project, queueIds),
+                AllArtifactsAreFromBuild = CheckArtifacts(release)
             };
+        }
+
+
+        private bool CheckArtifacts(Response.Release release)
+        {
+            if (release.Artifacts.Count() >0 && release.Artifacts.All(a => a.Type == "Build"))
+            {
+                return true;
+            }
+            else return false;
         }
 
         private bool CheckAgents(string project, IEnumerable<int> queueIds)
