@@ -127,7 +127,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -258,7 +258,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -389,7 +389,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -442,7 +442,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 4,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Delete shared Analytics views"",
-                    ""permissionId"": 1
+                    ""permissionId"": 0
                   },
                   {
                     ""permissionBit"": 4,
@@ -466,7 +466,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 2,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Edit shared Analytics views"",
-                    ""permissionId"": 1
+                    ""permissionId"": 0
                   },
                   {
                     ""permissionBit"": 131072,
@@ -520,7 +520,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -573,7 +573,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 4,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Delete shared Analytics views"",
-                    ""permissionId"": 3
+                    ""permissionId"": 0
                   },
                   {
                     ""permissionBit"": 4,
@@ -597,7 +597,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 2,
                     ""namespaceId"": ""d34d3680-dfe5-4cc6-a949-7d9c68f73cba"",
                     ""displayName"": ""Edit shared Analytics views"",
-                    ""permissionId"": 3
+                    ""permissionId"": 0
                   },
                   {
                     ""permissionBit"": 131072,
@@ -651,7 +651,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -782,7 +782,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,
@@ -913,7 +913,7 @@ namespace SecurePipelineScan.Rules
                     ""permissionBit"": 1,
                     ""namespaceId"": ""58450c49-b02d-465a-ab12-59ae512d6531"",
                     ""displayName"": ""View analytics"",
-                    ""permissionId"": 0
+                    ""permissionId"": 3
                   },
                   {
                     ""permissionBit"": 1,

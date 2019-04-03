@@ -115,7 +115,8 @@ namespace SecurePipelineScan.Rules.Tests
                     Release = "Release-1",
                     Environment = "Stage 1",
                     ReleaseId = "1",
-                    CreatedDate = DateTime.Parse("2019-01-11T13:34:58.0366887")
+                    CreatedDate = DateTime.Parse("2019-01-11T13:34:58.0366887"),
+                    AllArtifactsAreFromBuild = false
                 }.ToExpectedObject(ctx =>
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
@@ -185,7 +186,8 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
-                    UsesManagedAgentsOnly = true
+                    UsesManagedAgentsOnly = true,
+                    AllArtifactsAreFromBuild = false
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
@@ -245,7 +247,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
 
                 // Assert
-                report.UsesManagedAgentsOnly.ShouldBeTrue();
+                Assert.True(report.UsesManagedAgentsOnly);
                 rest.Verify();
             }
 
@@ -308,9 +310,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
 
                 // Assert
-                report
-                    .UsesManagedAgentsOnly
-                    .ShouldBeFalse();
+                Assert.False(report.UsesManagedAgentsOnly);
             }
 
             [Fact]
