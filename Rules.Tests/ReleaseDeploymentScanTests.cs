@@ -115,7 +115,8 @@ namespace SecurePipelineScan.Rules.Tests
                     Release = "Release-1",
                     Environment = "Stage 1",
                     ReleaseId = "1",
-                    CreatedDate = DateTime.Parse("2019-01-11T13:34:58.0366887")
+                    CreatedDate = DateTime.Parse("2019-01-11T13:34:58.0366887"),
+                    AllArtifactsAreFromBuild = false
                 }.ToExpectedObject(ctx =>
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
@@ -185,7 +186,8 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
-                    UsesManagedAgentsOnly = true
+                    UsesManagedAgentsOnly = true,
+                    AllArtifactsAreFromBuild = false
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
@@ -309,6 +311,102 @@ namespace SecurePipelineScan.Rules.Tests
 
                 // Assert
                 Assert.False(report.UsesManagedAgentsOnly);
+            }
+
+            [Fact]
+            public void AllArtifactAreFromBuild()
+            {
+                // Arrange
+                var artifacts = new List<Response.ArtifactReference>();
+                artifacts.Add(new Response.ArtifactReference() { Alias = "Rianne", Type = "Build" });
+
+                _fixture
+                    .Customize<Response.Release>(context => context.With(x => x.Artifacts, artifacts));
+
+                var input = ReadInput("Completed", "Approved.json");
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                Assert.True(report.AllArtifactsAreFromBuild);
+                rest.Verify();
+            }
+
+            [Fact]
+            public void ShoudlReturnFalseIfArtifactsAreNotFromTypeBuild()
+            {
+                // Arrange
+                var artifacts = new List<Response.ArtifactReference>();
+                artifacts.Add(new Response.ArtifactReference() { Alias = "Rianne2", Type = "repository" });
+
+                _fixture
+                    .Customize<Response.Release>(context => context.With(x => x.Artifacts, artifacts));
+
+                var input = ReadInput("Completed", "Approved.json");
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                Assert.False(report.AllArtifactsAreFromBuild);
+                rest.Verify();
+            }
+
+            [Fact]
+            public void ShoudlReturnFalseIfArtifactsCountEqualsZero()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved2.json");
+
+                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                rest
+                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Returns(_fixture.Create<Response.AgentQueue>())
+                    .Verifiable();
+
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Returns(_fixture.Create<Response.Release>());
+                rest
+                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Returns(_fixture.Create<Response.Environment>());
+
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var report = scan.Completed(input);
+
+                // Assert
+                Assert.False(report.AllArtifactsAreFromBuild);
+                rest.Verify();
             }
 
             private static JObject ReleaseCompletedInput()

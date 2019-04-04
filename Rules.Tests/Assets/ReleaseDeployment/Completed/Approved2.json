@@ -381,77 +381,7 @@
         "id": 1,
         "name": "Release-1",
         "url": "https://xpirit.vsrm.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_apis/Release/releases/1",
-        "artifacts": [
-          {
-            "sourceId": "f64ffdfa-0c4e-40d9-980d-bb8479366fc5:1796",
-            "type": "Build",
-            "alias": "_azure-devops-extensions",
-            "definitionReference": {
-              "artifactSourceDefinitionUrl": {
-                "id": "https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=f64ffdfa-0c4e-40d9-980d-bb8479366fc5&definitionId=1796",
-                "name": ""
-              },
-              "buildUri": {
-                "id": "vstfs:///Build/Build/119755",
-                "name": null
-              },
-              "definition": {
-                "id": "1796",
-                "name": "azure-devops-extensions"
-              },
-              "IsTriggeringArtifact": {
-                "id": "True",
-                "name": "True"
-              },
-              "IsXamlBuildArtifactType": {
-                "id": "False",
-                "name": null
-              },
-              "pullRequestMergeCommitId": {
-                "id": "b7bce8b3913bcb96965a626f7cfdaeaf84cdfc06",
-                "name": null
-              },
-              "project": {
-                "id": "f64ffdfa-0c4e-40d9-980d-bb8479366fc5",
-                "name": "TAS"
-              },
-              "repository.provider": {
-                "id": "TfsGit",
-                "name": null
-              },
-              "repository": {
-                "id": "fc28e017-ff28-46ff-8f41-374278fdbef3",
-                "name": "azure-devops-extensions"
-              },
-              "requestedFor": {
-                "id": "Geert van der Cruijsen",
-                "name": null
-              },
-              "requestedForId": {
-                "id": "74d5dd8b-f8bf-69ff-83df-d3bb39d9821c",
-                "name": null
-              },
-              "sourceVersion": {
-                "id": "b7bce8b3913bcb96965a626f7cfdaeaf84cdfc06",
-                "name": null
-              },
-              "version": {
-                "id": "119755",
-                "name": "20190403.4"
-              },
-              "artifactSourceVersionUrl": {
-                "id": "https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=f64ffdfa-0c4e-40d9-980d-bb8479366fc5&buildId=119755",
-                "name": ""
-              },
-              "branch": {
-                "id": "refs/heads/master",
-                "name": "refs/heads/master"
-              }
-            },
-            "isPrimary": true,
-            "isRetained": true
-          }
-        ],
+        "artifacts": [ ],
         "webAccessUri": "https://xpirit.visualstudio.com/e633228b-200d-4c22-b846-fdfd10921af0/_release?releaseId=1&_a=release-summary",
         "_links": {
           "self": {
