@@ -4,7 +4,7 @@ using SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules
 {
-    public class OnlyProjectAdministratorsCanDeleteTheTeamProject
+    public class OnlyProjectAdministratorsCanDeleteTheTeamProject : IProjectRule
     {
         private readonly VstsRestClient _client;
 
@@ -13,6 +13,8 @@ namespace SecurePipelineScan.Rules
             _client = client;
         }
 
+
+        public string Description => "Only Project Administrators can delete the Team Project";
 
         public bool Evaluate(string project)
         {
