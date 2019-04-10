@@ -14,19 +14,18 @@ namespace SecurePipelineScan.Rules
         }
 
 
-        public string Description => "Project Administrator Group only contains Rabobank Project Administrator";
+        public string Description => "Project Administrator Group only contains Rabobank Project Administrators";
 
         public bool Evaluate(string project)
         {
-            var idProjectAdministrators = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
+            var id = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
                 .Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
             
-            var groupMembersProjectAdministrators = _client.Get(VstsService.Requests.ApplicationGroup.GroupMembers(project, idProjectAdministrators)).Identities;
+            var members = _client.Get(VstsService.Requests.ApplicationGroup.GroupMembers(project, id)).Identities;
 
-            return 
-                groupMembersProjectAdministrators.Count(m => m.FriendlyDisplayName == "Rabobank Project Administrators") <= 1 && 
-                groupMembersProjectAdministrators.Count() <= 1;
-           
+            return
+                members.All(m => m.FriendlyDisplayName == "Rabobank Project Administrators");
+
         }
     }
 }
