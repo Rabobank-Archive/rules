@@ -6,9 +6,9 @@ namespace SecurePipelineScan.Rules
 {
     public class ProjectAdministratorsOnlyContainRaboAdministrators : IProjectRule
     {
-        private readonly VstsRestClient _client;
+        private readonly IVstsRestClient _client;
 
-        public ProjectAdministratorsOnlyContainRaboAdministrators(VstsRestClient client)
+        public ProjectAdministratorsOnlyContainRaboAdministrators(IVstsRestClient client)
         {
             _client = client;
         }
