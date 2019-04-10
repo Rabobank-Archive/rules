@@ -14,7 +14,7 @@ namespace SecurePipelineScan.Rules
         }
 
 
-        public string Description => "Only Project Administrators can delete the Team Project";
+        public string Description => "Project Administrator Group only contains Rabobank Project Administrator";
 
         public bool Evaluate(string project)
         {
