@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Tests.Reports
         [InlineData(DenyInherited, Deny, true)]
         [InlineData(Deny, Allow, false)]
 
-        public void PermissionIsCompliantShouldBeTrue(PermissionId actualPermissionId, PermissionId shouldBePermissionId, bool isCompliant)
+        public void PermissionIsCompliantShouldBeTrue(Common.PermissionId actualPermissionId, Common.PermissionId shouldBePermissionId, bool isCompliant)
         {
             var permission =  new global::Rules.Reports.Permission(3, actualPermissionId);
             permission.ShouldBePermissionId = shouldBePermissionId;

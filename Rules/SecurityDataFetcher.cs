@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules
                 
                 permissions.Add(applicationGroupName,
                     permission.Security.Permissions.Select(x =>
-                    new Permission(x.PermissionBit, (PermissionId)x.PermissionId) { DisplayName = x.DisplayName}));
+                    new Permission(x.PermissionBit, (Common.PermissionId)x.PermissionId) { DisplayName = x.DisplayName}));
             };
             return permissions;
         }
