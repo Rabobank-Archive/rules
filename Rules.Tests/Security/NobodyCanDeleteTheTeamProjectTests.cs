@@ -29,7 +29,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);           
-            InitializeProjectAdministratorsLookup(client);            
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"});            
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);           
-            InitializeProjectAdministratorsLookup(client);            
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"});            
             InitializeMembersLookup(client, new Response.ApplicationGroup{FriendlyDisplayName = "Rabobank Project Administrators"});
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);
-            InitializeProjectAdministratorsLookup(client);
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"});
             InitializeMembersLookup(client, new Response.ApplicationGroup());
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
@@ -65,7 +65,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow});
-            InitializeProjectAdministratorsLookup(client);            
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"});            
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
@@ -73,24 +73,37 @@ namespace SecurePipelineScan.Rules.Tests
         }
 
         [Fact]
-        public void GivenOtherApplicationGroupHasPermissionToDeleteTeamProject_WhenEvaluate_ThenFalse()
+        public void GivenContributorsHasPermissionToDeleteTeamProject_WhenEvaluate_ThenFalse()
         {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client, new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow});
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Contributors"});            
+            InitializeMembersLookup(client);
             
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Evaluate(_config.Project).ShouldBeFalse();
         }
 
         [Fact]
         public void GivenProjectAdministratorHasNoPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
         {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client, new Response.Permission());
+            InitializeApplicationGroupsLookup(client, new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"});            
+            InitializeMembersLookup(client);
+            
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Evaluate(_config.Project).ShouldBeTrue();
         }
 
-        private static void InitializeProjectAdministratorsLookup(IVstsRestClient client)
+        private static void InitializeApplicationGroupsLookup(IVstsRestClient client, Response.ApplicationGroup applicationGroup)
         {
             client
                 .Get(Arg.Is<IVstsRestRequest<Response.ApplicationGroups>>(x =>
                     x.Uri.Contains("ReadScopedApplicationGroupsJson")))
                 .Returns(new Response.ApplicationGroups
                 {
-                    Identities = new[] {new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators"}}
+                    Identities = new[] {applicationGroup}
                 });
         }
 
