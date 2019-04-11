@@ -3,9 +3,9 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public static class RuleSets
+    public class RuleSets : IRuleSets
     {
-        public static IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client)
+        public IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheTeamProject(client);
         }

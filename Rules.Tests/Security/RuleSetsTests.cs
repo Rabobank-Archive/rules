@@ -12,7 +12,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void GlobalPermissions()
         {
-            var rules = RuleSets.GlobalPermissions(Substitute.For<IVstsRestClient>());
+            var rules = new RuleSets().GlobalPermissions(Substitute.For<IVstsRestClient>());
             rules.OfType<NobodyCanDeleteTheTeamProject>().ShouldNotBeEmpty();
         }
     }
