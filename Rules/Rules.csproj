@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\VstsService\VstsService.csproj" />
   </ItemGroup>
 
@@ -17,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="iTextSharp" Version="5.5.13" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
   </ItemGroup>
 
@@ -25,37 +23,6 @@
     <Compile Remove="Reports\BuildRights1.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Pdf\somecompany.png" />
-    <None Remove="ShouldBeSettings\default.json" />
-    <None Remove="ShouldBeSettings\soxpipeline.json" />
-  </ItemGroup>
-
-  <!--<ItemGroup>-->
-    <!--<Content Include="Pdf\somecompany.png">-->
-      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
-    <!--</Content>-->
-    <!--<Content Include="ShouldBeSettings\default.json">-->
-      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
-    <!--</Content>-->
-    <!--<Content Include="ShouldBeSettings\soxpipeline.json">-->
-      <!--<CopyToOutputDirectory>Always</CopyToOutputDirectory>-->
-    <!--</Content>-->
-  <!--</ItemGroup>-->
-  <!---->
-  <ItemGroup>
-    <Content Include="ShouldBeSettings\*.json" CopyToOutputDirectory="true">
-      <IncludeInPackage>true</IncludeInPackage>
-      <CopyToOutput>true</CopyToOutput>
-      <BuildAction>Content</BuildAction>
-      <copyToOutput>true</copyToOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Pdf\somecompany.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  
   <PropertyGroup>
     <Authors>TAS</Authors>
     <Company>Rabobank</Company>
