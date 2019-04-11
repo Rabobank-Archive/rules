@@ -1,4 +1,4 @@
-namespace SecurePipelineScan.Rules
+namespace SecurePipelineScan.Rules.Security
 {
     public interface IProjectRule
     {

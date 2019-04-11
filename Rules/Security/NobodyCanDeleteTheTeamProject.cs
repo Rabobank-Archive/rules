@@ -3,7 +3,7 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 
-namespace SecurePipelineScan.Rules
+namespace SecurePipelineScan.Rules.Security
 {
     public class NobodyCanDeleteTheTeamProject : IProjectRule
     {

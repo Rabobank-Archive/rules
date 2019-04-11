@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using NSubstitute;
+using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using Shouldly;
 using Xunit;
 using Response = SecurePipelineScan.VstsService.Response;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class NobodyCanDeleteTheTeamProjectTests : IClassFixture<TestConfig>
     {

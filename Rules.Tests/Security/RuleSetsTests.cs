@@ -5,7 +5,7 @@ using SecurePipelineScan.VstsService;
 using Shouldly;
 using Xunit;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class RuleSetsTests
     {
