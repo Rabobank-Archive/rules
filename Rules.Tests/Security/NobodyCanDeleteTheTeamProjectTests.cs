@@ -28,9 +28,21 @@ namespace SecurePipelineScan.Rules.Tests
         public void GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
-            InitializeEmptyPermissions(client);           
+            InitializePermissions(client);           
             InitializeProjectAdministratorsLookup(client);            
             InitializeMembersLookup(client);
+            
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Evaluate(_config.Project).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenProjectAdministratorsHasOnlyRabobankProjectAdministrators_WhenEvaluating_ThenTrue()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client);           
+            InitializeProjectAdministratorsLookup(client);            
+            InitializeMembersLookup(client, new Response.ApplicationGroup{FriendlyDisplayName = "Rabobank Project Administrators"});
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Evaluate(_config.Project).ShouldBeTrue();
@@ -40,12 +52,35 @@ namespace SecurePipelineScan.Rules.Tests
         public void GivenProjectAdministratorsHasOtherMember_WhenEvaluate_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
-            InitializeEmptyPermissions(client);
+            InitializePermissions(client);
             InitializeProjectAdministratorsLookup(client);
             InitializeMembersLookup(client, new Response.ApplicationGroup());
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Evaluate(_config.Project).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void GivenOnlyProjectAdministratorHasPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client, new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow});
+            InitializeProjectAdministratorsLookup(client);            
+            InitializeMembersLookup(client);
+            
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Evaluate(_config.Project).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void GivenOtherApplicationGroupHasPermissionToDeleteTeamProject_WhenEvaluate_ThenFalse()
+        {
+            
+        }
+
+        [Fact]
+        public void GivenProjectAdministratorHasNoPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
+        {
         }
 
         private static void InitializeProjectAdministratorsLookup(IVstsRestClient client)
@@ -70,11 +105,11 @@ namespace SecurePipelineScan.Rules.Tests
                 });
         }
         
-        private static void InitializeEmptyPermissions(IVstsRestClient client)
+        private static void InitializePermissions(IVstsRestClient client, params Response.Permission[] permissions)
         {
             client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsProjectId>>())
                 .Returns(new Response.PermissionsProjectId
-                    {Security = new Response.PermissionsSetId {Permissions = Enumerable.Empty<Response.Permission>()}});
+                    {Security = new Response.PermissionsSetId {Permissions = permissions}});
         }
     }
 }
