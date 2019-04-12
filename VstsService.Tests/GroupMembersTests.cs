@@ -69,7 +69,7 @@ namespace VstsService.Tests
         }
 
         [Fact(Skip = "unable to delete created group with API")]
-        public async Task CreateGroup()
+        public void CreateGroup()
         {
             client.Post(
                 Requests.Security.ManageGroup(config.Project,
