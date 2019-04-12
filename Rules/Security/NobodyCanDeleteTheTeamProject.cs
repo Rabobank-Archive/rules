@@ -80,7 +80,7 @@ namespace SecurePipelineScan.Rules.Security
                     _client.Get(Permissions.PermissionsGroupProjectId(project, identity.TeamFoundationId));
 
                 var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
-                delete.PermissionBit = PermissionId.NotSet;
+                delete.PermissionId = PermissionId.NotSet;
 
                 _client.Post(Permissions.ManagePermissions(project,
                     new Permissions.ManagePermissionsData(
@@ -95,7 +95,8 @@ namespace SecurePipelineScan.Rules.Security
         {
             var permissions = _client.Get(Permissions.PermissionsGroupProjectId(project, tfsId));
             var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
-            delete.PermissionBit = PermissionId.Deny;
+            delete.PermissionId = 2;
+            delete.PermissionBit = 4;
 
             _client.Post(Permissions.ManagePermissions(project,
                 new Permissions.ManagePermissionsData(

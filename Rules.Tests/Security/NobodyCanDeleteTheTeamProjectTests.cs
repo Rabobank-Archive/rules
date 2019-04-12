@@ -23,10 +23,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public void IntegrationTest()
+        public void EvaluateIntegrationTest()
         {
             var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
             rule.Evaluate(_config.Project).ShouldBeTrue();
+        }
+        
+        [Fact]
+        public void FixIntegrationTest()
+        {
+            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
+            rule.Fix(_config.Project);
         }
         
         [Fact]
@@ -228,7 +235,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
                 .ShouldContain(x => 
                     x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
-                    x.UpdatePackage.Contains(@"PermissionBit"":4"));
+                    x.UpdatePackage.Contains(@"PermissionBit"":4") &&
+                    x.UpdatePackage.Contains(@"PermissionId"":2"));
         }
         
         [Fact]
@@ -250,7 +258,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
                 .ShouldContain(x => 
                     x.UpdatePackage.Contains("afewsf") &&
-                    x.UpdatePackage.Contains(@"PermissionBit"":0"));
+                    x.UpdatePackage.Contains(@"PermissionId"":0"));
             
             data
                 .OfType<VstsService.Requests.Permissions.UpdateWrapper>()
