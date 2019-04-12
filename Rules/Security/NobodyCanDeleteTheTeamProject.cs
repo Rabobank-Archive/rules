@@ -8,7 +8,7 @@ using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGrou
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheTeamProject : IProjectRule
+    public class NobodyCanDeleteTheTeamProject : IProjectRule, IProjectReconcile
     {
         private const string RabobankProjectAdministrators = "Rabobank Project Administrators";
         private const string DeleteTeamProject = "Delete team project";
@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Nobody can delete the Team Project";
+        string IProjectRule.Description => "Nobody can delete the Team Project";
 
         public bool Evaluate(string project)
         {
@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Security
                 members.All(m => m.FriendlyDisplayName == RabobankProjectAdministrators);
         }
 
-        public void Fix(string project)
+        public void Reconcile(string project)
         {
             var groups = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
             var paId = groups.Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;

@@ -33,7 +33,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void FixIntegrationTest()
         {
             var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
         }
         
         [Fact]
@@ -123,7 +123,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
 
             data
                 .OfType<VstsService.Requests.Security.RemoveMembersData>()
@@ -148,7 +148,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
 
             data
                 .OfType<VstsService.Requests.Security.AddMemberData>()
@@ -170,7 +170,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
 
             data
                 .OfType<VstsService.Requests.Security.RemoveMembersData>()
@@ -191,7 +191,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
 
             data
                 .OfType<VstsService.Requests.Security.AddMemberData>()
@@ -213,7 +213,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Returns(_rpa);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
         }
         
         [Fact]
@@ -229,7 +229,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
             
             data
                 .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
@@ -252,7 +252,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Fix(_config.Project);
+            rule.Reconcile(_config.Project);
             
             data
                 .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
