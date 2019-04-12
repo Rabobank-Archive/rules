@@ -40,7 +40,7 @@ namespace SecurePipelineScan.Rules.Security
                        .Any(s => s.DisplayName == DeleteTeamProject &&
                                    (s.PermissionId == PermissionId.Allow || s.PermissionId == PermissionId.AllowInherited));
         }
-        
+
         private bool CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(string project, ApplicationGroups groups)
         {
             var id = groups.Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
@@ -64,7 +64,31 @@ namespace SecurePipelineScan.Rules.Security
             RemoveAllOtherMembersFromProjectAdministrators(project, members, paId);
             AddAllMembersToRabobankProjectAdministratorsGroup(project, members, raboId);
             AddRabobankProjectAdministratorsToProjectAdministratorsGroup(project, raboId, paId);
+
+            ManagePermissionsForAllOtherGroups(project, groups);
             ManageRabobankProjectAdministratorsGroupPermissions(project, raboId);
+        }
+
+        private void ManagePermissionsForAllOtherGroups(string project, ApplicationGroups groups)
+        {
+            foreach (var identity in groups
+                .Identities
+                .Where(i => i.FriendlyDisplayName != "Project Administrators")
+                .Where(i => i.FriendlyDisplayName != RabobankProjectAdministrators))
+            {
+                var permissions =
+                    _client.Get(Permissions.PermissionsGroupProjectId(project, identity.TeamFoundationId));
+
+                var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
+                delete.PermissionBit = PermissionId.NotSet;
+
+                _client.Post(Permissions.ManagePermissions(project,
+                    new Permissions.ManagePermissionsData(
+                        identity.TeamFoundationId,
+                        permissions.Security.DescriptorIdentifier,
+                        permissions.Security.DescriptorIdentityType,
+                        delete)));
+            }
         }
 
         private void ManageRabobankProjectAdministratorsGroupPermissions(string project, string tfsId)

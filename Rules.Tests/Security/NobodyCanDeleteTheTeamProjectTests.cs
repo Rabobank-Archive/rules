@@ -230,6 +230,37 @@ namespace SecurePipelineScan.Rules.Tests.Security
                     x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
                     x.UpdatePackage.Contains(@"PermissionBit"":4"));
         }
+        
+        [Fact]
+        public void GivenOtherMembersHavePermissionsToDeleteTeamProject_WhenFix_ThenPermissionsAreUpdated()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client, _deleteTeamProjectAllow);
+            InitializeApplicationGroupsLookup(client, _pa, _rpa, new Response.ApplicationGroup {FriendlyDisplayName = "Contributors", TeamFoundationId = "afewsf"});            
+            InitializeMembersLookup(client);
+            
+            var data = new List<object>();
+            client
+                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
+            
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Fix(_config.Project);
+            
+            data
+                .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
+                .ShouldContain(x => 
+                    x.UpdatePackage.Contains("afewsf") &&
+                    x.UpdatePackage.Contains(@"PermissionBit"":0"));
+            
+            data
+                .OfType<VstsService.Requests.Permissions.UpdateWrapper>()
+                .ShouldNotContain(x => x.UpdatePackage.Contains(_pa.TeamFoundationId));
+            
+            data
+                .OfType<VstsService.Requests.Permissions.UpdateWrapper>()
+                .ShouldContain(x => x.UpdatePackage.Contains(_rpa.TeamFoundationId), 1); // Only the DENY update
+
+        }
 
         private static void InitializeApplicationGroupsLookup(IVstsRestClient client, params Response.ApplicationGroup[] groups)
         {
