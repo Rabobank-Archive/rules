@@ -11,6 +11,7 @@ namespace SecurePipelineScan.Rules.Security
     public class NobodyCanDeleteTheTeamProject : IProjectRule
     {
         private const string RabobankProjectAdministrators = "Rabobank Project Administrators";
+        private const string DeleteTeamProject = "Delete team project";
         private readonly IVstsRestClient _client;
 
         public NobodyCanDeleteTheTeamProject(IVstsRestClient client)
@@ -36,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
 
             return !permissions
                        .SelectMany(p => p.Security.Permissions)
-                       .Any(s => s.DisplayName == "Delete team project" &&
+                       .Any(s => s.DisplayName == DeleteTeamProject &&
                                    (s.PermissionId == PermissionId.Allow || s.PermissionId == PermissionId.AllowInherited));
         }
         
@@ -63,6 +64,21 @@ namespace SecurePipelineScan.Rules.Security
             RemoveAllOtherMembersFromProjectAdministrators(project, members, paId);
             AddAllMembersToRabobankProjectAdministratorsGroup(project, members, raboId);
             AddRabobankProjectAdministratorsToProjectAdministratorsGroup(project, raboId, paId);
+            ManageRabobankProjectAdministratorsGroupPermissions(project, raboId);
+        }
+
+        private void ManageRabobankProjectAdministratorsGroupPermissions(string project, string tfsId)
+        {
+            var permissions = _client.Get(Permissions.PermissionsGroupProjectId(project, tfsId));
+            var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
+            delete.PermissionBit = PermissionId.Deny;
+
+            _client.Post(Permissions.ManagePermissions(project,
+                new Permissions.ManagePermissionsData(
+                    tfsId,
+                    permissions.Security.DescriptorIdentifier,
+                    permissions.Security.DescriptorIdentityType,
+                    delete)));
         }
 
         private ApplicationGroup CreateRabobankProjectAdministratorsGroupsIfNotExists(string project, ApplicationGroups groups)
