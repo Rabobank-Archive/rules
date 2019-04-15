@@ -6,5 +6,7 @@ namespace SecurePipelineScan.VstsService.Response
     {
         public IEnumerable<Permission> Permissions { get; set; }
         public string CurrentTeamFoundationId { get; set; }
+        public string DescriptorIdentifier { get; set; }
+        public string DescriptorIdentityType { get; set; }
     }
 }

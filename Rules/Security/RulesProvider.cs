@@ -3,7 +3,12 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class RuleSets : IRuleSets
+    public interface IRulesProvider
+    {
+        IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
+    }
+
+    public class RulesProvider : IRulesProvider
     {
         public IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client)
         {

@@ -18,7 +18,7 @@ namespace SecurePipelineScan.VstsService
         {
         }
 
-        public VstsException(IRestResponse response) : base(response.ErrorMessage ?? response.Content)
+        public VstsException(IRestResponse response) : base(response.Content)
         {
             StatusCode = response.StatusCode;
         }

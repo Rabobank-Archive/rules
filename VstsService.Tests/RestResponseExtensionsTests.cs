@@ -10,19 +10,7 @@ namespace SecurePipelineScan.VstsService.Tests
     public class RestResponseExtensionsTests
     {
         [Fact]
-        public void IncludesErrorMessageWhenPresent()
-        {
-            var response = Substitute.For<IRestResponse<int>>();
-            response.IsSuccessful.Returns(false);
-            response.ErrorMessage.Returns("fail");
-            response.StatusCode.Returns(HttpStatusCode.SeeOther);
-
-            var ex = Assert.Throws<VstsException>(() => response.ThrowOnError());
-            ex.Message.ShouldBe("fail");
-        }
-
-        [Fact]
-        public void IncludesContentOtherwise()
+        public void IncludesContentInErrorMessage()
         {
             var response = Substitute.For<IRestResponse<int>>();
             response.IsSuccessful.Returns(false);

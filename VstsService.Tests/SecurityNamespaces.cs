@@ -18,16 +18,24 @@ namespace SecurePipelineScan.VstsService.Tests
 
         public SecurityNamespaces(TestConfig config)
         {
-            this._config = config;
+            _config = config;
             _client = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public void QueryNameSpaces()
+        public void QueryNamespaces()
         {
-            var nameSpaces = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
-            
-            nameSpaces.ShouldNotBeEmpty();
+            var target = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
+            target.ShouldNotBeEmpty();
+
+            var first = target.First();
+            first.Actions.ShouldNotBeEmpty();
+
+            var action = first.Actions.First();
+            action.Name.ShouldNotBeEmpty();
+            action.DisplayName.ShouldNotBeEmpty();
+            action.NamespaceId.ShouldNotBe(Guid.Empty);
+            action.Bit.ShouldNotBe(0);
         }
     }
 }

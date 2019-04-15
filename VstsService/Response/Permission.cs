@@ -9,6 +9,7 @@ namespace SecurePipelineScan.VstsService.Response
         public int PermissionId { get; set; }
 
         public string PermissionDisplayString { get; set; }
-
+        public string NamespaceId { get; set; }
+        public string PermissionToken { get; set; }
     }
 }
