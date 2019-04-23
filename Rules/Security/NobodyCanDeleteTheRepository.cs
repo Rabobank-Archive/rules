@@ -22,10 +22,10 @@ namespace SecurePipelineScan.Rules.Security
             var groups = 
                 _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project)).Identities;
 
-            return CheckNoBodyCanDeleteRepositories(project, repository, groups);
+            return CheckNoBodyCanDeleteRepository(project, repository, groups);
         }
 
-        private bool CheckNoBodyCanDeleteRepositories(string project, string repository, IEnumerable<ApplicationGroup> groups)
+        private bool CheckNoBodyCanDeleteRepository(string project, string repository, IEnumerable<ApplicationGroup> groups)
         {
             var projectId =
                 _client.Get(VstsService.Requests.Project.Properties(project)).Id;

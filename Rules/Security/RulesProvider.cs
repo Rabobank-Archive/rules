@@ -6,7 +6,7 @@ namespace SecurePipelineScan.Rules.Security
     public interface IRulesProvider
     {
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
-        IEnumerable<IRepositoryRule> RepositoryPermissions(IVstsRestClient client);
+        IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client);
         
     }
 
@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Security
                 
         }
 
-        public IEnumerable<IRepositoryRule> RepositoryPermissions(IVstsRestClient client)
+        public IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheRepository(client);
         }
