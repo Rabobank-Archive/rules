@@ -30,11 +30,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void GivenAnApplicationGroupHasPermissionToDeleteRepo_WhenEvaluating_ThenFalse()
+        public void GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllow_WhenEvaluating_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
             
             InitializeLookupData(client, PermissionId.Allow);
+            
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
+        }
+        
+        [Fact]
+        public void GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllowInHerited_WhenEvaluating_ThenFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            
+            InitializeLookupData(client, PermissionId.AllowInherited);
             
             var rule = new NobodyCanDeleteTheRepository(client);
             rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
