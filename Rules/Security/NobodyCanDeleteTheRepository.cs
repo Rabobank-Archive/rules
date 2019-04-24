@@ -26,9 +26,12 @@ namespace SecurePipelineScan.Rules.Security
             var namespaceGit =
                 _client.Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
                     .First(s => s.DisplayName == "Git Repositories").NamespaceId;
-            
-            var groups = 
-                _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, namespaceGit)).Identities;
+
+            var groups =
+                _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, namespaceGit))
+                    .Identities
+                    .Where(g => g.FriendlyDisplayName != "Project Collection Administrators" &&
+                                g.FriendlyDisplayName != "Project Collection Service Accounts");
 
             return CheckNoBodyCanDeleteRepository(projectId, namespaceGit, repository, groups);
         }
