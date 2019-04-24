@@ -19,20 +19,22 @@ namespace SecurePipelineScan.Rules.Security
 
         public bool Evaluate(string project, string repository)
         {
-            var groups = 
-                _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project)).Identities;
 
-            return CheckNoBodyCanDeleteRepository(project, repository, groups);
-        }
-
-        private bool CheckNoBodyCanDeleteRepository(string project, string repository, IEnumerable<ApplicationGroup> groups)
-        {
             var projectId =
                 _client.Get(VstsService.Requests.Project.Properties(project)).Id;
-
+            
             var namespaceGit =
                 _client.Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
                     .First(s => s.DisplayName == "Git Repositories").NamespaceId;
+            
+            var groups = 
+                _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, namespaceGit)).Identities;
+
+            return CheckNoBodyCanDeleteRepository(projectId, namespaceGit, repository, groups);
+        }
+
+        private bool CheckNoBodyCanDeleteRepository(string projectId, string namespaceGit, string repository, IEnumerable<ApplicationGroup> groups)
+        {
 
             var permissions =
                 groups.SelectMany(g => _client.Get(VstsService.Requests.Permissions.PermissionsGroupRepository(

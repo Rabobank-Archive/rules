@@ -32,5 +32,16 @@ namespace SecurePipelineScan.VstsService.Tests
             var group = identity.Identities.First();
             group.DisplayName.ShouldNotBeNullOrEmpty();
         }
+
+        [Fact]
+        public void ExplicitIdentitiesShouldGetIdentities()
+        {
+            string projectId = "53410703-e2e5-4238-9025-233bd7c811b3";
+            string nameSpaceId = "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87";
+
+            var explicitIdentities = Vsts.Get(Requests.ApplicationGroup.ExplicitIdentities(projectId, nameSpaceId));
+            explicitIdentities.ShouldNotBeNull();
+        }
+
     }
 }
