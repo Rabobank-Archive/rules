@@ -62,24 +62,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Assert
             evaluatedRule.ShouldBeTrue();
         }
-        
-        public void EvaluateShouldReturnFalseForRepoHavingCorrectPolicies()
-        {
-            //Arrange
-            CustomizeRepository(_fixture, _id);
-            CustomizeScope(_fixture, _id, "refs/heads/master");
-            CustomizeMinimumNumberOfReviewersPolicy(_fixture);
-            CustomizePolicySettings(_fixture);
-
-            InitializeData(_client, _fixture);
-            var rule = new MasterAndReleaseBranchesProtected(_client);
-
-            //Act
-            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
-
-            //Assert
-            evaluatedRule.ShouldBeTrue();
-        }
 
         [Fact]
         public void EvaluateShouldReturnFalseWhenScopeIsNotMasterMinimumApproverCountIsLessThan2()
