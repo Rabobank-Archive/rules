@@ -15,148 +15,162 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class MasterReleaseBranchesProtectedWith4EyesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private string repoSoxCompliantDemo = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
+        private readonly string repoSoxCompliantDemo = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
+        private readonly Guid _id;
+        private readonly Fixture _fixture;
+        private readonly IVstsRestClient _client;
 
         public MasterReleaseBranchesProtectedWith4EyesTests(TestConfig config)
         {
             _config = config;
+            _id = Guid.NewGuid();
+            _fixture = new Fixture {RepeatCount = 1};
+            _fixture.Customize(new AutoNSubstituteCustomization());
+            _client = Substitute.For<IVstsRestClient>();
         }
 
         [Fact]
         public void EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
-            var fixture = new Fixture {RepeatCount = 1};
-            fixture.Customize(new AutoNSubstituteCustomization());
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
+            InitializeData(_client, _fixture);
 
-            fixture.Customize<VstsService.Response.Repository>(ctx => ctx
-                .With(r => r.Name, repoSoxCompliantDemo));
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
 
-            var client = Substitute.For<IVstsRestClient>();
-
-            var rule = new MasterAndReleaseBranchesProtected(client);
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<Repository>>>())
-                .Returns(fixture.Create<Multiple<Repository>>());
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
-                .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
-
-            rule
-                .Evaluate(_config.Project, repoSoxCompliantDemo)
-                .ShouldBeFalse();
+            //Assert
+            evaluatedRule.ShouldBeFalse();
         }
 
         [Fact]
         public void EvaluateShouldReturnTrueForRepoHavingCorrectPolicies()
         {
-            var fixture = new Fixture {RepeatCount = 1};
-            fixture.Customize(new AutoNSubstituteCustomization());
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            CustomizeScope(_fixture, _id, "refs/heads/master");
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture);
+            CustomizePolicySettings(_fixture);
 
-            var id = Guid.NewGuid();
+            InitializeData(_client, _fixture);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
 
-            fixture.Customize<VstsService.Response.Repository>(ctx => ctx
-                .With(r => r.Name, repoSoxCompliantDemo)
-                .With(r => r.Id, id.ToString()));
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
 
-            fixture.Customize<VstsService.Response.Scope>(ctx => ctx
-                .With(r => r.RepositoryId, id)
-                .With(r => r.RefName, "refs/heads/master"));
+            //Assert
+            evaluatedRule.ShouldBeTrue();
+        }
+        
+        public void EvaluateShouldReturnFalseForRepoHavingCorrectPolicies()
+        {
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            CustomizeScope(_fixture, _id, "refs/heads/master");
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture);
+            CustomizePolicySettings(_fixture);
 
-            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicy>(ctx => ctx
-                .With(r => r.IsEnabled, true));
+            InitializeData(_client, _fixture);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
 
-            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicySettings>(ctx => ctx
-                .With(r => r.MinimumApproverCount, 2)
-                .With(r => r.ResetOnSourcePush, true)
-                .With(r => r.CreatorVoteCounts, true));
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
 
-
-            var client = Substitute.For<IVstsRestClient>();
-
-            var rule = new MasterAndReleaseBranchesProtected(client);
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<Repository>>>())
-                .Returns(fixture.Create<Multiple<Repository>>());
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
-                .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
-
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+            //Assert
+            evaluatedRule.ShouldBeTrue();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
+        public void EvaluateShouldReturnFalseWhenScopeIsNotMasterMinimumApproverCountIsLessThan2()
         {
-            var fixture = new Fixture {RepeatCount = 1};
-            fixture.Customize(new AutoNSubstituteCustomization());
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            CustomizeScope(_fixture, _id);
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
+            CustomizePolicySettings(_fixture, minimumApproverCount: 1);
 
-            var id = Guid.NewGuid();
+            InitializeData(_client, _fixture);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
 
-            fixture.Customize<VstsService.Response.Repository>(ctx => ctx
-                .With(r => r.Name, repoSoxCompliantDemo)
-                .With(r => r.Id, id.ToString()));
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
 
-            fixture.Customize<VstsService.Response.Scope>(ctx => ctx
-                .With(r => r.RepositoryId, id)
-                .With(r => r.RefName, "refs/heads/master"));
+            //Assert
+            evaluatedRule.ShouldBeFalse();
+        }
 
+        [Fact]
+        public void EvaluateShouldReturnFalseWhenMinimumNumberOfReviewerPolicyIsFalse()
+        {
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            CustomizeScope(_fixture, _id);
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
+            CustomizePolicySettings(_fixture, minimumApproverCount: 2);
 
-            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicy>(ctx => ctx
-                .With(r => r.IsEnabled, true));
+            InitializeData(_client, _fixture);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
 
-            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicySettings>(ctx => ctx
-                .With(r => r.MinimumApproverCount, 1)
-                .With(r => r.ResetOnSourcePush, true)
-                .With(r => r.CreatorVoteCounts, true));
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
 
-
-            var client = Substitute.For<IVstsRestClient>();
-
-            var rule = new MasterAndReleaseBranchesProtected(client);
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<Repository>>>())
-                .Returns(fixture.Create<Multiple<Repository>>());
-
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
-                .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
-
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
+            //Assert
+            evaluatedRule.ShouldBeFalse();
         }
 
         [Fact]
         public void EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
         {
-            var fixture = new Fixture {RepeatCount = 1};
-            fixture.Customize(new AutoNSubstituteCustomization());
+            //Arrange
+            CustomizeRepository(_fixture, _id);
+            CustomizeScope(_fixture);
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
+            CustomizePolicySettings(_fixture, 2, true, true);
 
-            var id = Guid.NewGuid();
+            InitializeData(_client, _fixture);
+            var rule = new MasterAndReleaseBranchesProtected(_client);
 
+            //Act
+            var evaluatedRule = rule.Evaluate(_config.Project, repoSoxCompliantDemo);
+
+            //Assert
+            evaluatedRule.ShouldBeFalse();
+        }
+
+        private void CustomizeRepository(Fixture fixture, Guid guid = default(Guid))
+        {
             fixture.Customize<VstsService.Response.Repository>(ctx => ctx
                 .With(r => r.Name, repoSoxCompliantDemo)
-                .With(r => r.Id, id.ToString()));
+                .With(r => r.Id, guid.ToString()));
+        }
 
+        private static void CustomizeScope(Fixture fixture, Guid guid = default(Guid),
+            string refName = "refs/heads/master")
+        {
             fixture.Customize<VstsService.Response.Scope>(ctx => ctx
-                .With(r => r.RepositoryId, id));
+                .With(r => r.RepositoryId, guid)
+                .With(r => r.RefName, refName));
+        }
 
-            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicy>(ctx => ctx
-                .With(r => r.IsEnabled, true));
-
+        private static void CustomizePolicySettings(Fixture fixture, int minimumApproverCount = 2,
+            bool resetOnSourcePush = true, bool creatorVoteCounts = true)
+        {
             fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicySettings>(ctx => ctx
-                .With(r => r.MinimumApproverCount, 2)
-                .With(r => r.ResetOnSourcePush, true)
-                .With(r => r.CreatorVoteCounts, true));
+                .With(r => r.MinimumApproverCount, minimumApproverCount)
+                .With(r => r.ResetOnSourcePush, resetOnSourcePush)
+                .With(r => r.CreatorVoteCounts, creatorVoteCounts));
+        }
+
+        private static void CustomizeMinimumNumberOfReviewersPolicy(Fixture fixture, bool enabled = true)
+        {
+            fixture.Customize<VstsService.Response.MinimumNumberOfReviewersPolicy>(ctx => ctx
+                .With(r => r.IsEnabled, enabled));
+        }
 
 
-            var client = Substitute.For<IVstsRestClient>();
-
-            var rule = new MasterAndReleaseBranchesProtected(client);
-
+        private static void InitializeData(IVstsRestClient client, Fixture fixture)
+        {
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<Repository>>>())
                 .Returns(fixture.Create<Multiple<Repository>>());
@@ -164,8 +178,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
                 .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
-
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
         }
     }
 }
