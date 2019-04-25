@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var repoRules = new RulesProvider().RepositoryRules(Substitute.For<IVstsRestClient>());
             repoRules.OfType<NobodyCanDeleteTheRepository>().ShouldNotBeEmpty();
-            repoRules.OfType<MasterReleaseBranchesProtectedWith4Eyes>().ShouldNotBeEmpty();
+            repoRules.OfType<MasterAndReleaseBranchesProtected>().ShouldNotBeEmpty();
         }
     }
 }

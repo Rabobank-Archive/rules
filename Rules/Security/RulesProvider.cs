@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheRepository(client);
-            yield return new MasterReleaseBranchesProtectedWith4Eyes(client);
+            yield return new MasterAndReleaseBranchesProtected(client);
         }
     }
 }
