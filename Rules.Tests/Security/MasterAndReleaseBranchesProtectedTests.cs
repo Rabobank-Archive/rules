@@ -12,7 +12,7 @@ using Repository = SecurePipelineScan.VstsService.Response.Repository;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class MasterReleaseBranchesProtectedWith4EyesTests : IClassFixture<TestConfig>
+    public class MasterAndReleaseBranchesProtectedTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
         private readonly string repoSoxCompliantDemo = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private readonly Fixture _fixture;
         private readonly IVstsRestClient _client;
 
-        public MasterReleaseBranchesProtectedWith4EyesTests(TestConfig config)
+        public MasterAndReleaseBranchesProtectedTests(TestConfig config)
         {
             _config = config;
             _id = Guid.NewGuid();

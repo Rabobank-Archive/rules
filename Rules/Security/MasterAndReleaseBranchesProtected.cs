@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "iets met 4 eyes";
+        public string Description => "Master Branch is protected with branch policies";
         
         public bool Evaluate(string project, string repository)
         {
