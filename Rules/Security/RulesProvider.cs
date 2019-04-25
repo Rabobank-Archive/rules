@@ -7,7 +7,6 @@ namespace SecurePipelineScan.Rules.Security
     {
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
         IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client);
-        
     }
 
     public class RulesProvider : IRulesProvider
@@ -20,6 +19,7 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheRepository(client);
+            yield return new MasterReleaseBranchesProtectedWith4Eyes(client);
         }
     }
 }
