@@ -27,8 +27,8 @@ namespace SecurePipelineScan.Rules.Security
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
             return HasRequiredReviewerPolicy(repo, policies);
         }
-        
-        public static bool HasRequiredReviewerPolicy(VstsService.Response.Repository repository, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
+
+        private static bool HasRequiredReviewerPolicy(Repository repository, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
         {
             return policies.Any(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repository.Id && scope.RefName == "refs/heads/master") &&
                                      p.IsEnabled == true &&
