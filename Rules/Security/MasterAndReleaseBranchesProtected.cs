@@ -10,7 +10,6 @@ namespace SecurePipelineScan.Rules.Security
     public class MasterAndReleaseBranchesProtected : IRepositoryRule
     {
         
-        private const string DeleteRepository = "Delete repository";
         private readonly IVstsRestClient _client;
         
         public MasterAndReleaseBranchesProtected(IVstsRestClient client)
