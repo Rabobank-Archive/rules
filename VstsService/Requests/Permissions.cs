@@ -32,7 +32,7 @@ namespace SecurePipelineScan.VstsService.Requests
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}%2F{definitionId}");
 
         }
-
+        
         /// <summary>
         /// Gets project permissions for an applicationGroup
         /// </summary>

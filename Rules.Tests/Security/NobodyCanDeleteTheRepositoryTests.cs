@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
 using System.Linq;
 using AutoFixture;
@@ -60,6 +62,57 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var rule = new NobodyCanDeleteTheRepository(client);
             rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IgnoreGroupsProjectCollectionAdminAndProjectCollectionServiceAccounts()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            
+            var applicationGroup1 = new ApplicationGroup
+            {
+                FriendlyDisplayName = "Project Collection Administrators",
+                DisplayName = "blblblablaaProject Collection Administrators",
+                TeamFoundationId= "11",
+            };
+
+            var applicationGroup2 = new ApplicationGroup
+            {
+                FriendlyDisplayName = "Project Collection Service Accounts",
+                DisplayName = "blblblablaaProject Collection Service Accounts",
+                TeamFoundationId= "22",
+            };
+            
+            var applicationGroup3 = new ApplicationGroup
+            {
+                FriendlyDisplayName = "Dit is een test",
+                DisplayName = "blblblablaaDit is een testy",
+                TeamFoundationId= "33",
+            };
+
+            var applicationGroups = new ApplicationGroups
+                {Identities = new[] {applicationGroup1, applicationGroup2, applicationGroup3}};
+            
+            InitializeLookupData(client, PermissionId.Deny);
+            
+            client.Get(Arg.Any<IVstsRestRequest<ApplicationGroups>>()).Returns(applicationGroups);
+            
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+            
+            
+            client
+                .DidNotReceive()
+                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("11")));
+            
+            client
+                .DidNotReceive()
+                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("22")));
+            
+            client
+                .Received()
+                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("33")));
+
         }
 
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
