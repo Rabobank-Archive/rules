@@ -7,17 +7,17 @@ using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class MasterAndReleaseBranchesProtected : IRepositoryRule
+    public class ReleaseBranchesProtectedByPolicies : IRepositoryRule
     {
         
         private readonly IVstsRestClient _client;
         
-        public MasterAndReleaseBranchesProtected(IVstsRestClient client)
+        public ReleaseBranchesProtectedByPolicies(IVstsRestClient client)
         {
             _client = client;
         }
 
-        public string Description => "Master Branch is protected with branch policies";
+        public string Description => "Release branches are protected by policies";
         
         public bool Evaluate(string project, string repository)
         {
@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Security
                                      p.IsEnabled == true &&
                                      p.Settings.CreatorVoteCounts == true &&
                                      p.Settings.ResetOnSourcePush == true &&
-                                     p.Settings.MinimumApproverCount > 1);
+                                     p.Settings.MinimumApproverCount >= 2);
         }
     }
 }
