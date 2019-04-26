@@ -19,18 +19,15 @@ namespace SecurePipelineScan.Rules.Security
 
         public string Description => "Release branches are protected by policies";
         
-        public bool Evaluate(string project, string repository)
+        public bool Evaluate(string project, string repositoryId)
         {
-            var repo = _client.Get(Requests.Repository.Repositories(project)).Single(r => r.Name == repository);
-            
-
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
-            return HasRequiredReviewerPolicy(repo, policies);
+            return HasRequiredReviewerPolicy(repositoryId, policies);
         }
 
-        private static bool HasRequiredReviewerPolicy(Repository repository, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
+        private static bool HasRequiredReviewerPolicy(string repositoryId, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
         {
-            return policies.Any(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repository.Id && scope.RefName == "refs/heads/master") &&
+            return policies.Any(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repositoryId && scope.RefName == "refs/heads/master") &&
                                      p.IsEnabled == true &&
                                      p.Settings.CreatorVoteCounts == true &&
                                      p.Settings.ResetOnSourcePush == true &&

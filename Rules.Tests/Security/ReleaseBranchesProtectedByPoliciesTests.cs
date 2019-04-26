@@ -15,7 +15,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class ReleaseBranchesProtectedByPoliciesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly Guid _id = new Guid( "3167b64e-c72b-4c55-84eb-986ac62d0dec");
+        private readonly string _id = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
 
@@ -26,10 +26,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        public void EvaluateIntegrationTest()
+        {
+            var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
+            rule.Evaluate(_config.Project, _id).ShouldBeTrue();
+        }
+        
+        [Fact]
         public void EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
         {
             //Arrange
-            CustomizeRepository(_fixture);
             CustomizeScope(_fixture, _id);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
@@ -38,7 +44,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, "SOx-Compliant-Demo");
+            var evaluatedRule = rule.Evaluate(_config.Project, _id);
 
             //Assert
             evaluatedRule.ShouldBeTrue();
@@ -48,12 +54,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
             //Arrange
-            CustomizeRepository(_fixture);
             SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, "SOx-Compliant-Demo");
+            var evaluatedRule = rule.Evaluate(_config.Project, _id);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -63,7 +68,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
         {
             //Arrange
-            CustomizeRepository(_fixture);
             CustomizeScope(_fixture, _id);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
@@ -72,7 +76,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, "SOx-Compliant-Demo");
+            var evaluatedRule = rule.Evaluate(_config.Project, _id);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -82,7 +86,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
         {
             //Arrange
-            CustomizeRepository(_fixture);
             CustomizeScope(_fixture, _id);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
             CustomizePolicySettings(_fixture);
@@ -91,7 +94,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, "SOx-Compliant-Demo");
+            var evaluatedRule = rule.Evaluate(_config.Project, _id);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -101,7 +104,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
         {
             //Arrange
-            CustomizeRepository(_fixture);
             CustomizeScope(_fixture, refName: "ref/heads/not-master");
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
@@ -110,25 +112,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, "SOx-Compliant-Demo");
+            var evaluatedRule = rule.Evaluate(_config.Project, _id);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
         }
 
-        private void CustomizeRepository(IFixture fixture)
-        {
-            fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Name, "SOx-Compliant-Demo")
-                .With(r => r.Id, _id.ToString()));
-        }
-
         private void CustomizeScope(IFixture fixture, 
-            Guid? id = null,
+            string id = null,
             string refName = "refs/heads/master")
         {
             fixture.Customize<Scope>(ctx => ctx
-                .With(r => r.RepositoryId, id ?? _id)
+                .With(r => r.RepositoryId, new Guid(id ?? _id))
                 .With(r => r.RefName, refName));
         }
 
@@ -152,10 +147,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         private static void SetupClient(IVstsRestClient client, IFixture fixture)
         {
-            client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<Repository>>>())
-                .Returns(fixture.Create<Multiple<Repository>>());
-
             client
                 .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
                 .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());

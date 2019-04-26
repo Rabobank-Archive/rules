@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
-using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
-using RestSharp;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;

@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Rules.Security
 
         public string Description => "Nobody can delete the repository";
 
-        public bool Evaluate(string project, string repository)
+        public bool Evaluate(string project, string repositoryId)
         {
 
             var projectId =
@@ -33,15 +33,15 @@ namespace SecurePipelineScan.Rules.Security
                     .Where(g => g.FriendlyDisplayName != "Project Collection Administrators" &&
                                 g.FriendlyDisplayName != "Project Collection Service Accounts");
 
-            return CheckNoBodyCanDeleteRepository(projectId, namespaceGit, repository, groups);
+            return CheckNoBodyCanDeleteRepository(projectId, namespaceGit, repositoryId, groups);
         }
 
-        private bool CheckNoBodyCanDeleteRepository(string projectId, string namespaceGit, string repository, IEnumerable<ApplicationGroup> groups)
+        private bool CheckNoBodyCanDeleteRepository(string projectId, string namespaceGit, string repositoryId, IEnumerable<ApplicationGroup> groups)
         {
 
             var permissions =
                 groups.SelectMany(g => _client.Get(VstsService.Requests.Permissions.PermissionsGroupRepository(
-                    projectId, namespaceGit, g.TeamFoundationId, repository)).Permissions);
+                    projectId, namespaceGit, g.TeamFoundationId, repositoryId)).Permissions);
 
             return !permissions.Any(p => p.DisplayName == DeleteRepository &&
                                          (p.PermissionId == PermissionId.Allow ||
