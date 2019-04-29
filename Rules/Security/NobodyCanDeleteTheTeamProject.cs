@@ -50,6 +50,14 @@ namespace SecurePipelineScan.Rules.Security
                 members.All(m => m.FriendlyDisplayName == RabobankProjectAdministrators);
         }
 
+        string[] IProjectReconcile.Impact => new[]
+        {
+            "Rabobank Project Administrators group is created and added to Project Administrators", 
+            "Delete team project permissions of the Rabobank Project Administrators group is set to deny", 
+            "Members of the Project Administrators are moved to Rabobank Project Administrators", 
+            "Delete team project permission is set to 'not set' for all other groups"
+        };
+
         public void Reconcile(string project)
         {
             var groups = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
@@ -65,11 +73,11 @@ namespace SecurePipelineScan.Rules.Security
             AddAllMembersToRabobankProjectAdministratorsGroup(project, members, raboId);
             AddRabobankProjectAdministratorsToProjectAdministratorsGroup(project, raboId, paId);
 
-            ManagePermissionsForAllOtherGroups(project, groups);
-            ManageRabobankProjectAdministratorsGroupPermissions(project, raboId);
+            UpdatePermissionToDeleteTeamProjectToNotSet(project, groups);
+            UpdatePermissionToDeleteTeamProjectToDeny(project, raboId);
         }
 
-        private void ManagePermissionsForAllOtherGroups(string project, ApplicationGroups groups)
+        private void UpdatePermissionToDeleteTeamProjectToNotSet(string project, ApplicationGroups groups)
         {
             foreach (var identity in groups
                 .Identities
@@ -91,7 +99,7 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private void ManageRabobankProjectAdministratorsGroupPermissions(string project, string tfsId)
+        private void UpdatePermissionToDeleteTeamProjectToDeny(string project, string tfsId)
         {
             var permissions = _client.Get(Permissions.PermissionsGroupProjectId(project, tfsId));
             var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
