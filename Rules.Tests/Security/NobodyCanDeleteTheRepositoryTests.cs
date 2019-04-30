@@ -1,11 +1,16 @@
+using System.Collections.Generic;
+using System.Linq;
 using SecurePipelineScan.VstsService;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
+using SecurityNamespace = SecurePipelineScan.VstsService.Response.SecurityNamespace;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -111,6 +116,34 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         }
 
+        [Fact]
+        public void ReconcileIntegrationTest()
+        {
+            var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
+            rule.Reconcile(_config.Project, repoSoxCompliantDemo);
+        }
+
+        [Fact]
+        public void GivenPermissionIsAllowWhenFixPermissionIsUpdatedToDeny()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializeLookupData(client, PermissionId.Allow);
+            
+            var data = new List<object>();
+            client
+                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
+
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Reconcile("TAS", "123");
+            
+            data
+                .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
+                .ShouldContain(x => 
+                    x.UpdatePackage.Contains("123") &&
+                    x.UpdatePackage.Contains(@"PermissionId"":2"));
+
+        }
+
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
         {
             var fixture = new Fixture();
@@ -131,7 +164,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client.Get(Arg.Any<IVstsRestRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
-                Permissions = new[] {new Permission() {DisplayName = "Delete repository", PermissionId = permissionId},}
+                Permissions = new[] {new Permission() {DisplayName = "Delete repository", PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
             });
         }
     }

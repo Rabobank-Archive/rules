@@ -70,7 +70,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
             private static string ExtractToken(string token)
             {
-                return Regex.Match(token, @"(?<=\$PROJECT:).*(?=:)").Value;
+                return Regex.Match(token, @"^(?:\$PROJECT:)?(.*?)(?::)?$").Groups[1].Value;
             }
 
             public object Updates { get; }
