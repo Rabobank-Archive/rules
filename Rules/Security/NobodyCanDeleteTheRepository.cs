@@ -10,9 +10,8 @@ namespace SecurePipelineScan.Rules.Security
     public class NobodyCanDeleteTheRepository : IRepositoryRule
     {
         private const string DeleteRepository = "Delete repository";
+        private static readonly int[] AllowedPermissions = { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
         private readonly IVstsRestClient _client;
-        private const string DeleteTeamProject = "Delete team project";
-
 
         public NobodyCanDeleteTheRepository(IVstsRestClient client)
         {
@@ -45,12 +44,10 @@ namespace SecurePipelineScan.Rules.Security
             IEnumerable<ApplicationGroup> groups)
         {
             var permissions =
-                groups.SelectMany(g => _client.Get(VstsService.Requests.Permissions.PermissionsGroupRepository(
+                groups.SelectMany(g => _client.Get(Permissions.PermissionsGroupRepository(
                     projectId, namespaceGit, g.TeamFoundationId, repositoryId)).Permissions);
 
-            return !permissions.Any(p => p.DisplayName == DeleteRepository &&
-                                         (p.PermissionId == PermissionId.Allow ||
-                                          p.PermissionId == PermissionId.AllowInherited));
+            return permissions.All(p => p.DisplayName != DeleteRepository || AllowedPermissions.Contains(p.PermissionId));
         }
 
         public void Reconcile(string project, string repositoryId)
@@ -66,15 +63,24 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups.Identities)
             {
-                var permissions = _client.Get(VstsService.Requests.Permissions.PermissionsGroupRepository(
-                        projectId, namespaceGit, group.TeamFoundationId, repositoryId));
+                UpdateDeleteRepositoryPermissionToDeny(project, repositoryId, projectId, namespaceGit, @group);
+            }
+        }
 
-                var permission = permissions.Permissions.Single(p => p.DisplayName == DeleteRepository);
-                permission.PermissionId = 2;
+        private void UpdateDeleteRepositoryPermissionToDeny(string project, string repositoryId, string projectId,
+            string namespaceGit, ApplicationGroup @group)
+        {
+            var permissions = _client.Get(Permissions.PermissionsGroupRepository(
+                projectId, namespaceGit, @group.TeamFoundationId, repositoryId));
+
+            var permission = permissions.Permissions.Single(p => p.DisplayName == DeleteRepository);
+            if (!AllowedPermissions.Contains(permission.PermissionId))
+            {
+                permission.PermissionId = PermissionId.Deny;
                 _client
                     .Post(Permissions.ManagePermissions(project,
                         new Permissions.ManagePermissionsData(
-                            group.TeamFoundationId,
+                            @group.TeamFoundationId,
                             permissions.DescriptorIdentifier,
                             permissions.DescriptorIdentityType,
                             permission)));

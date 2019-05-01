@@ -141,7 +141,51 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ShouldContain(x => 
                     x.UpdatePackage.Contains("123") &&
                     x.UpdatePackage.Contains(@"PermissionId"":2"));
+        }
+        
+        [Fact]
+        public void GivenPermissionIsDeny_WhenFixPermission_IsNotUpdated()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializeLookupData(client, 2);
+            
 
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Reconcile("TAS", "123");
+
+            client
+                .DidNotReceive()
+                .Post(Arg.Any<IVstsPostRequest<object>>());
+        }
+        
+        [Fact]
+        public void GivenPermissionIsInheritedDeny_WhenFixPermission_IsNotUpdated()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializeLookupData(client, 4);
+            
+
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Reconcile("TAS", "123");
+
+            client
+                .DidNotReceive()
+                .Post(Arg.Any<IVstsPostRequest<object>>());
+        }
+        
+        [Fact]
+        public void GivenPermissionIsNotSet_WhenFixPermission_IsNotUpdated()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            InitializeLookupData(client, 0);
+            
+
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Reconcile("TAS", "123");
+
+            client
+                .DidNotReceive()
+                .Post(Arg.Any<IVstsPostRequest<object>>());
         }
 
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
@@ -157,8 +201,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 {
                     Count = 1, Value = new SecurityNamespace[1]
                     {
-                        new SecurityNamespace()
-                            {DisplayName = "Git Repositories"}
+                        new SecurityNamespace { DisplayName = "Git Repositories" }
                     }
                 });
 
