@@ -55,6 +55,12 @@ namespace SecurePipelineScan.Rules.Security
             return permissions.All(p => p.DisplayName != DeleteRepository || AllowedPermissions.Contains(p.PermissionId));
         }
 
+        string[] IRepositoryReconcile.Impact => new[]
+        {
+            "For all application groups the 'Delete Repository' permission is set to Deny",
+            "For all single users the 'Delete Repository' permission is set to Deny"
+        };
+        
         public void Reconcile(string projectId, string repositoryId)
         {
             var groups = _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, _namespaceGit));
