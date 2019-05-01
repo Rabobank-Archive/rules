@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteTheRepositoryTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private string repoSoxCompliantDemo = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
+        private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
 
         public NobodyCanDeleteTheRepositoryTests(TestConfig config)
@@ -29,7 +29,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateIntegrationTest()
         {
             var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
+            rule.Evaluate(_config.Project, RepositoryId).ShouldBeFalse();
         }
         
         [Fact]
@@ -51,7 +51,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.AllowInherited);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeFalse();
+            rule.Evaluate(_config.Project, RepositoryId).ShouldBeFalse();
         }
         
         [Fact]
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.Get(Arg.Any<IVstsRestRequest<ApplicationGroups>>()).Returns(applicationGroups);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, repoSoxCompliantDemo).ShouldBeTrue();
+            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
             
             
             client
@@ -119,8 +119,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void ReconcileIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Reconcile(_config.Project, repoSoxCompliantDemo);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Reconcile(projectId, RepositoryId);
         }
 
         [Fact]
@@ -147,7 +150,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void GivenPermissionIsDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
-            InitializeLookupData(client, 2);
+            InitializeLookupData(client, PermissionId.Deny);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);
@@ -162,7 +165,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void GivenPermissionIsInheritedDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
-            InitializeLookupData(client, 4);
+            InitializeLookupData(client, PermissionId.DenyInherited);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);
@@ -177,7 +180,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void GivenPermissionIsNotSet_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
-            InitializeLookupData(client, 0);
+            InitializeLookupData(client, PermissionId.NotSet);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);

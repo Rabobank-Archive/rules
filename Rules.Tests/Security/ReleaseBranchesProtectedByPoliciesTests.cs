@@ -15,7 +15,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class ReleaseBranchesProtectedByPoliciesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly string _id = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
+        private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
 
@@ -28,15 +28,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Evaluate(_config.Project, _id).ShouldBeTrue();
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Evaluate(projectId, RepositoryId);
         }
         
         [Fact]
         public void EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
         {
             //Arrange
-            CustomizeScope(_fixture, _id);
+            CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
 
@@ -44,7 +47,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, _id);
+            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeTrue();
@@ -58,7 +61,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, _id);
+            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -68,7 +71,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
         {
             //Arrange
-            CustomizeScope(_fixture, _id);
+            CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
 
@@ -76,7 +79,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, _id);
+            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -86,7 +89,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
         {
             //Arrange
-            CustomizeScope(_fixture, _id);
+            CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
             CustomizePolicySettings(_fixture);
 
@@ -94,7 +97,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, _id);
+            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -112,7 +115,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, _id);
+            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -123,7 +126,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             string refName = "refs/heads/master")
         {
             fixture.Customize<Scope>(ctx => ctx
-                .With(r => r.RepositoryId, new Guid(id ?? _id))
+                .With(r => r.RepositoryId, new Guid(id ?? RepositoryId))
                 .With(r => r.RefName, refName));
         }
 

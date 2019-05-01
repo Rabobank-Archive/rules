@@ -1,7 +1,10 @@
 using System.Linq;
+using AutoFixture;
+using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -20,9 +23,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void RepositoryPermissions()
         {
-            var repoRules = new RulesProvider().RepositoryRules(Substitute.For<IVstsRestClient>());
-            repoRules.OfType<NobodyCanDeleteTheRepository>().ShouldNotBeEmpty();
-            repoRules.OfType<ReleaseBranchesProtectedByPolicies>().ShouldNotBeEmpty();
+            var fixture = new Fixture();
+            fixture.Customize<SecurityNamespace>(ctx =>
+                ctx.With(x => x.DisplayName, "Git Repositories"));
+            
+            var client = new FixtureClient(fixture);
+            var rules = new RulesProvider().RepositoryRules(client);
+            
+            rules
+                .OfType<NobodyCanDeleteTheRepository>()
+                .ShouldNotBeEmpty();
+            
+            rules
+                .OfType<ReleaseBranchesProtectedByPolicies>()
+                .ShouldNotBeEmpty();
         }
     }
 }
