@@ -21,6 +21,8 @@ namespace SecurePipelineScan.Rules.Security
 
         string IProjectRule.Description => "Nobody can delete the Team Project";
 
+        string IProjectRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
+
         public bool Evaluate(string project)
         {
             var groups = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
