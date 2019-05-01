@@ -19,7 +19,9 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Nobody can delete the repository";
+        string IRepositoryRule.Description => "Nobody can delete the repository";
+
+        string IRepositoryRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the repository.";
 
         public bool Evaluate(string project, string repositoryId)
         {

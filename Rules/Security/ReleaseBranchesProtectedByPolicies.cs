@@ -17,8 +17,10 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Release branches are protected by policies";
-        
+        string IRepositoryRule.Description => "Release branches are protected by policies";
+
+        string IRepositoryRule.Why => "To enforce the 4-eyes principle, appropriate branch policies should be configured on potential release branches.";
+
         public bool Evaluate(string project, string repositoryId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
