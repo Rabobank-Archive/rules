@@ -30,7 +30,6 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VstsRestRequest<PermissionsSetId>(
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}%2F{definitionId}");
-
         }
         
         /// <summary>

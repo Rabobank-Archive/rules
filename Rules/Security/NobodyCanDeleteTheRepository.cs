@@ -37,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
                     .First(s => s.DisplayName == "Git Repositories").NamespaceId;
 
             var groups =
-                _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, namespaceGit))
+                _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, namespaceGit))
                     .Identities
                     .Where(g => g.FriendlyDisplayName != "Project Collection Administrators" &&
                                 g.FriendlyDisplayName != "Project Collection Service Accounts");
@@ -63,7 +63,7 @@ namespace SecurePipelineScan.Rules.Security
         
         public void Reconcile(string projectId, string repositoryId)
         {
-            var groups = _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentities(projectId, _namespaceGit));
+            var groups = _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, _namespaceGit));
             foreach (var group in groups.Identities)
             {
                 UpdateDeleteRepositoryPermissionToDeny(projectId, repositoryId, _namespaceGit, group);
