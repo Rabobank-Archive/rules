@@ -28,8 +28,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheRepository(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+
+            var rule = new NobodyCanDeleteTheRepository(client);
+            rule.Evaluate(projectId, RepositoryId).ShouldBeTrue();
         }
 
         [Fact]

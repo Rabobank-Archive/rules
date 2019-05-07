@@ -27,8 +27,21 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheBuildPipeline(new VstsRestClient(_config.Organization, _config.Token));
-            rule.Evaluate(_config.Project, BuildPipelineId).ShouldBeTrue();
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+
+            var rule = new NobodyCanDeleteTheBuildPipeline(client);
+            rule.Evaluate(projectId, BuildPipelineId).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void ReconcileIntegrationTest()
+        {
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+
+            var rule = new NobodyCanDeleteTheBuildPipeline(client);
+            rule.Reconcile(projectId, BuildPipelineId);
         }
     }
 }
