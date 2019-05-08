@@ -1,9 +1,9 @@
 namespace SecurePipelineScan.Rules.Security
 {
-    public interface IRepositoryRule
+    public interface IRule
     {
         string Description { get; }
         string Why { get; }
-        bool Evaluate(string project, string repositoryId);
+        bool Evaluate(string project, string id);
     }
 }

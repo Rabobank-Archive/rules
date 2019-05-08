@@ -17,11 +17,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var rules = new RulesProvider().GlobalPermissions(Substitute.For<IVstsRestClient>());
             rules.OfType<NobodyCanDeleteTheTeamProject>().ShouldNotBeEmpty();
-            
         }
 
         [Fact]
-        public void RepositoryPermissions()
+        public void RepositoryRules()
         {
             var fixture = new Fixture();
             fixture.Customize<SecurityNamespace>(ctx =>
@@ -36,6 +35,21 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             rules
                 .OfType<ReleaseBranchesProtectedByPolicies>()
+                .ShouldNotBeEmpty();
+        }
+
+        [Fact]
+        public void BuildRules()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<SecurityNamespace>(ctx =>
+                ctx.With(x => x.Name, "Build"));
+
+            var client = new FixtureClient(fixture);
+            var rules = new RulesProvider().BuildRules(client);
+
+            rules
+                .OfType<NobodyCanDeleteTheBuildPipeline>()
                 .ShouldNotBeEmpty();
         }
     }

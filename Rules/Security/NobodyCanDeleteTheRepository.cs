@@ -7,7 +7,7 @@ using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGrou
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheRepository : NobodyCanDeleteThis, IRepositoryRule, IRepositoryReconcile
+    public class NobodyCanDeleteTheRepository : NobodyCanDeleteThisBase, IRule, IReconcile
     {
         protected override string PermissionsDisplayName => "Delete repository";
         protected override int[] AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
@@ -16,8 +16,8 @@ namespace SecurePipelineScan.Rules.Security
         private readonly string _namespaceId;
         private static readonly string[] IgnoredGroups = { "Project Collection Administrators", "Project Collection Service Accounts" };
 
-        string IRepositoryRule.Description => "Nobody can delete the repository";
-        string IRepositoryRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the repository.";
+        string IRule.Description => "Nobody can delete the repository";
+        string IRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the repository.";
 
         public NobodyCanDeleteTheRepository(IVstsRestClient client)
         {
@@ -45,7 +45,7 @@ namespace SecurePipelineScan.Rules.Security
             return _client.Get(Permissions.PermissionsGroupRepository(projectId, _namespaceId, group.TeamFoundationId, id));
         }
 
-        string[] IRepositoryReconcile.Impact => new[]
+        string[] IReconcile.Impact => new[]
         {
             "For all application groups the 'Delete Repository' permission is set to Deny",
             "For all single users the 'Delete Repository' permission is set to Deny"

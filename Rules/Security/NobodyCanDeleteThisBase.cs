@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public abstract class NobodyCanDeleteThis
+    public abstract class NobodyCanDeleteThisBase
     {
         protected abstract string PermissionsDisplayName { get; }
         protected abstract int[] AllowedPermissions { get; }
