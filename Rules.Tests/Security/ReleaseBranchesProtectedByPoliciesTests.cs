@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = new NobodyCanDeleteTheRepository(client);
+            var rule = new ReleaseBranchesProtectedByPolicies(client);
             rule.Evaluate(projectId, RepositoryId);
         }
         

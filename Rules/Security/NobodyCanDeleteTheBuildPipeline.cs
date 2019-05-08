@@ -7,36 +7,37 @@ using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGrou
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheRepository : NobodyCanDeleteThisBase, IRule, IReconcile
+    public class NobodyCanDeleteTheBuildPipeline : NobodyCanDeleteThisBase, IRule, IReconcile
     {
-        protected override string PermissionsDisplayName => "Delete repository";
+        protected override string PermissionsDisplayName => "Delete build definition";
         protected override int[] AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
 
         private readonly IVstsRestClient _client;
         private readonly string _namespaceId;
-        protected override string[] IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Service Accounts" };
+        protected override string[] IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Build Administrators",
+            "Project Collection Service Accounts" };
 
-        string IRule.Description => "Nobody can delete the repository";
-        string IRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the repository.";
+        string IRule.Description => "Nobody can delete the pipeline";
+        string IRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the pipeline.";
 
-        public NobodyCanDeleteTheRepository(IVstsRestClient client)
+        public NobodyCanDeleteTheBuildPipeline(IVstsRestClient client)
         {
             _client = client;
             _namespaceId = _client
                 .Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
-                .First(s => s.DisplayName == "Git Repositories").NamespaceId;
+                .First(s => s.Name == "Build").NamespaceId;
         }
 
-        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) =>
-            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, _namespaceId)).Identities;
+        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) => 
+            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, _namespaceId, id)).Identities;
 
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
-            _client.Get(Permissions.PermissionsGroupRepository(projectId, _namespaceId, group.TeamFoundationId, id));
+            _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, _namespaceId, group.TeamFoundationId, id));
 
         string[] IReconcile.Impact => new[]
         {
-            "For all application groups the 'Delete Repository' permission is set to Deny",
-            "For all single users the 'Delete Repository' permission is set to Deny"
+            "For all application groups the 'Delete Pipeline' permission is set to Deny",
+            "For all single users the 'Delete Pipeline' permission is set to Deny"
         };
 
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission)

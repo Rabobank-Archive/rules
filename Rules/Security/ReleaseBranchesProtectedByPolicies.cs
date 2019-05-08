@@ -7,9 +7,8 @@ using Requests = SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleaseBranchesProtectedByPolicies : IRepositoryRule
+    public class ReleaseBranchesProtectedByPolicies : IRule
     {
-        
         private readonly IVstsRestClient _client;
         
         public ReleaseBranchesProtectedByPolicies(IVstsRestClient client)
@@ -17,9 +16,9 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        string IRepositoryRule.Description => "Release branches are protected by policies";
+        string IRule.Description => "Release branches are protected by policies";
 
-        string IRepositoryRule.Why => "To enforce the 4-eyes principle, appropriate branch policies should be configured on potential release branches.";
+        string IRule.Why => "To enforce the 4-eyes principle, appropriate branch policies should be configured on potential release branches.";
 
         public bool Evaluate(string project, string repositoryId)
         {
