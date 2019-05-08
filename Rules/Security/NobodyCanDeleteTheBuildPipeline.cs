@@ -14,7 +14,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private readonly IVstsRestClient _client;
         private readonly string _namespaceId;
-        private static readonly string[] IgnoredGroups = { "Project Collection Administrators", "Project Collection Build Administrators",
+        protected override string[] IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Build Administrators",
             "Project Collection Service Accounts" };
 
         string IRule.Description => "Nobody can delete the pipeline";
@@ -28,23 +28,11 @@ namespace SecurePipelineScan.Rules.Security
                 .First(s => s.Name == "Build").NamespaceId;
         }
 
-        protected override IEnumerable<ApplicationGroup> WhichGroups(string projectId, string id)
-        {
-            return _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, _namespaceId, id))
-                    .Identities
-                    .Where(g => !IgnoredGroups.Contains(g.FriendlyDisplayName));
-        }
+        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) => 
+            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, _namespaceId, id)).Identities;
 
-        protected override IEnumerable<Permission> WhichPermissions(string projectId, string id, IEnumerable<ApplicationGroup> groups)
-        {
-            return groups.SelectMany(g => _client.Get(Permissions.PermissionsGroupSetIdDefinition(
-                    projectId, _namespaceId, g.TeamFoundationId, id)).Permissions);
-        }
-
-        protected override PermissionsSetId WhichPermissions(string projectId, string id, ApplicationGroup group)
-        {
-            return _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, _namespaceId, group.TeamFoundationId, id));
-        }
+        protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
+            _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, _namespaceId, group.TeamFoundationId, id));
 
         string[] IReconcile.Impact => new[]
         {

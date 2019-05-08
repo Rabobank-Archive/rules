@@ -10,26 +10,28 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class NobodyCanDeleteThisBase
     {
         protected abstract string PermissionsDisplayName { get; }
+        protected abstract string[] IgnoredIdentitiesDisplayNames { get; }
         protected abstract int[] AllowedPermissions { get; }
+
+        protected abstract PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group);
+        protected abstract IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id);
+        protected abstract void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
         public bool Evaluate(string projectId, string id)
         {
-            var groups = WhichGroups(projectId, id);
-            var permissions = WhichPermissions(projectId, id, groups);
+            var groups = LoadGroups(projectId, id)
+                    .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
+
+            var permissions = groups.SelectMany(g => LoadPermissionsSetForGroup(projectId, id, g).Permissions);
             return permissions.All(p => p.DisplayName != PermissionsDisplayName || AllowedPermissions.Contains(p.PermissionId));
         }
 
-        protected abstract IEnumerable<Permission> WhichPermissions(string projectId, string id, IEnumerable<ApplicationGroup> groups);
-        protected abstract PermissionsSetId WhichPermissions(string projectId, string id, ApplicationGroup group);
-        protected abstract IEnumerable<ApplicationGroup> WhichGroups(string projectId, string id);
-
-
         public void Reconcile(string projectId, string id)
         {
-            var groups = WhichGroups(projectId, id);
+            var groups = LoadGroups(projectId, id);
             foreach (var group in groups)
             {
-                var permissionSetId = WhichPermissions(projectId, id, group);
+                var permissionSetId = LoadPermissionsSetForGroup(projectId, id, group);
                 var permission = permissionSetId.Permissions.Single(p => p.DisplayName == PermissionsDisplayName);
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))
@@ -38,7 +40,5 @@ namespace SecurePipelineScan.Rules.Security
                 }
             }
         }
-
-        protected abstract void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
     }
 }
