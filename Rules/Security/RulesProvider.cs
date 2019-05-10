@@ -9,6 +9,7 @@ namespace SecurePipelineScan.Rules.Security
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
         IEnumerable<IRule> RepositoryRules(IVstsRestClient client);
         IEnumerable<IRule> BuildRules(IVstsRestClient client);
+        IEnumerable<IRule> ReleaseRules(IVstsRestClient client);
     }
 
     public class RulesProvider : IRulesProvider
@@ -27,6 +28,11 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRule> BuildRules(IVstsRestClient client)
         {
             yield return NobodyCanDeleteThePipeline.Build(client);
+        }
+
+        public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)
+        {
+            yield return NobodyCanDeleteThePipeline.Release(client);
         }
     }
 }

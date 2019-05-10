@@ -52,5 +52,24 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .OfType<NobodyCanDeleteThePipeline>()
                 .ShouldNotBeEmpty();
         }
+        
+        [Fact]
+        public void ReleaseRules()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            fixture.Customize<NamespaceAction>(ctx =>
+                ctx.With(x => x.Name, "DeleteReleaseDefinition"));
+
+            var client = new FixtureClient(fixture);
+            
+            // Act
+            var provider = new RulesProvider() as IRulesProvider;
+            var rules = provider.ReleaseRules(client);
+
+            // Assert
+            rules
+                .ShouldNotBeEmpty();
+        }
     }
 }
