@@ -9,15 +9,19 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class NobodyCanDeleteTheRepository : NobodyCanDeleteThisBase, IRule, IReconcile
     {
-        protected override string PermissionsDisplayName => "Delete repository";
-        protected override int[] AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
-
-        private readonly IVstsRestClient _client;
         private readonly string _namespaceId;
-        protected override string[] IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Service Accounts" };
+        private readonly IVstsRestClient _client;
+        protected override string PermissionsDisplayName => "Delete repository";
+        protected override IEnumerable<int> AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
+        protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Service Accounts" };
 
         string IRule.Description => "Nobody can delete the repository";
         string IRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the repository.";
+        string[] IReconcile.Impact => new[]
+        {
+            "For all application groups the 'Delete Repository' permission is set to Deny",
+            "For all single users the 'Delete Repository' permission is set to Deny"
+        };
 
         public NobodyCanDeleteTheRepository(IVstsRestClient client)
         {
@@ -33,17 +37,7 @@ namespace SecurePipelineScan.Rules.Security
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
             _client.Get(Permissions.PermissionsGroupRepository(projectId, _namespaceId, group.TeamFoundationId, id));
 
-        string[] IReconcile.Impact => new[]
-        {
-            "For all application groups the 'Delete Repository' permission is set to Deny",
-            "For all single users the 'Delete Repository' permission is set to Deny"
-        };
-
-        protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission)
-        {
-            permission.PermissionId = PermissionId.Deny;
-            _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(
-                group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
-        }
+        protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
+            _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
     }
 }

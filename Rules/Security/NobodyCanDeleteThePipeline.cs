@@ -20,8 +20,8 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string PermissionsDisplayName { get; }
-        protected override int[] AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
-        protected override string[] IgnoredIdentitiesDisplayNames => new[]
+        protected override IEnumerable<int> AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
+        protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[]
         { 
             "Project Collection Administrators", 
             "Project Collection Build Administrators",
@@ -43,13 +43,9 @@ namespace SecurePipelineScan.Rules.Security
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
             _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, _namespaceId, group.TeamFoundationId, id));
 
-        protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission)
-        {
-            permission.PermissionId = PermissionId.Deny;
-            _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(
-                group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
-        }
-        
+        protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
+            _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
+
         public static IRule Build(IVstsRestClient client)
         {
             var namespaceId = client

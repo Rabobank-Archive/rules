@@ -10,8 +10,8 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class NobodyCanDeleteThisBase
     {
         protected abstract string PermissionsDisplayName { get; }
-        protected abstract string[] IgnoredIdentitiesDisplayNames { get; }
-        protected abstract int[] AllowedPermissions { get; }
+        protected abstract IEnumerable<string> IgnoredIdentitiesDisplayNames { get; }
+        protected abstract IEnumerable<int> AllowedPermissions { get; }
 
         protected abstract PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group);
         protected abstract IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id);
@@ -36,6 +36,7 @@ namespace SecurePipelineScan.Rules.Security
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))
                 {
+                    permission.PermissionId = PermissionId.Deny;
                     UpdatePermissionToDeny(projectId, group, permissionSetId, permission);
                 }
             }
