@@ -26,7 +26,7 @@ namespace SecurePipelineScan.Rules.Security
 
         public IEnumerable<IRule> BuildRules(IVstsRestClient client)
         {
-            yield return new NobodyCanDeleteTheBuildPipeline(client);
+            yield return NobodyCanDeleteThePipeline.Build(client);
         }
     }
 }

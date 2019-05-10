@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rules = new RulesProvider().BuildRules(client);
 
             rules
-                .OfType<NobodyCanDeleteTheBuildPipeline>()
+                .OfType<NobodyCanDeleteThePipeline>()
                 .ShouldNotBeEmpty();
         }
     }
