@@ -22,10 +22,10 @@ namespace SecurePipelineScan.Rules.Security
         protected override string PermissionsDisplayName { get; }
         protected override IEnumerable<int> AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
         protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[]
-        { 
-            "Project Collection Administrators", 
+        {
+            "Project Collection Administrators",
             "Project Collection Build Administrators",
-            "Project Collection Service Accounts" 
+            "Project Collection Service Accounts"
         };
 
         string IRule.Description => "Nobody can delete the pipeline";
@@ -36,8 +36,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all single users the 'Delete Pipeline' permission is set to Deny"
         };
 
-
-        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) => 
+        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) =>
             _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, _namespaceId, id)).Identities;
 
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
@@ -46,24 +45,23 @@ namespace SecurePipelineScan.Rules.Security
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
             _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
 
-        public static IRule Build(IVstsRestClient client)
-        {
-            var namespaceId = client
-                .Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
-                .First(s => s.Name == "Build").NamespaceId;
-            
-            return new NobodyCanDeleteThePipeline(client, namespaceId, "Delete build definition");
-        }
+        public static IRule Build(IVstsRestClient client) =>
+            new NobodyCanDeleteThePipeline(client, GetNameSpaceId("Build", client), "Delete builds");
 
-        public static IRule Release(IVstsRestClient client)
-        {
-            var namespaceId = client
+        public static IRule BuildPipeline(IVstsRestClient client) =>
+            new NobodyCanDeleteThePipeline(client, GetNameSpaceId("Build", client), "Delete build definition");
+
+        public static IRule Release(IVstsRestClient client) =>
+            new NobodyCanDeleteThePipeline(client, GetNameSpaceId("ReleaseManagement", client), "Delete releases");
+
+        public static IRule ReleasePipeline(IVstsRestClient client) =>
+            new NobodyCanDeleteThePipeline(client, GetNameSpaceId("ReleaseManagement", client), "Delete release pipeline");
+
+        private static string GetNameSpaceId(string namespaceName, IVstsRestClient client) =>  
+            client
                 .Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
-                .SelectMany(x => x.Actions)
-                .First(s => s.Name == "DeleteReleaseDefinition")
-                .NamespaceId.ToString();
-            
-            return new NobodyCanDeleteThePipeline(client, namespaceId, "Delete release pipeline");
-        }
+                .First(s => s.Name == namespaceName)
+                .NamespaceId
+                .ToString();
     }
 }

@@ -28,11 +28,13 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRule> BuildRules(IVstsRestClient client)
         {
             yield return NobodyCanDeleteThePipeline.Build(client);
+            yield return NobodyCanDeleteThePipeline.BuildPipeline(client);
         }
 
         public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)
         {
             yield return NobodyCanDeleteThePipeline.Release(client);
+            yield return NobodyCanDeleteThePipeline.ReleasePipeline(client);
         }
     }
 }

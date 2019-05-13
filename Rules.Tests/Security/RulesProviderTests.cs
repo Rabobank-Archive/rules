@@ -1,6 +1,5 @@
 using System.Linq;
 using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -52,23 +51,19 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .OfType<NobodyCanDeleteThePipeline>()
                 .ShouldNotBeEmpty();
         }
-        
+
         [Fact]
         public void ReleaseRules()
         {
-            // Arrange
             var fixture = new Fixture();
-            fixture.Customize<NamespaceAction>(ctx =>
-                ctx.With(x => x.Name, "DeleteReleaseDefinition"));
+            fixture.Customize<SecurityNamespace>(ctx =>
+                ctx.With(x => x.Name, "ReleaseManagement"));
 
             var client = new FixtureClient(fixture);
-            
-            // Act
-            var provider = new RulesProvider() as IRulesProvider;
-            var rules = provider.ReleaseRules(client);
+            var rules = new RulesProvider().ReleaseRules(client);
 
-            // Assert
             rules
+                .OfType<NobodyCanDeleteThePipeline>()
                 .ShouldNotBeEmpty();
         }
     }
