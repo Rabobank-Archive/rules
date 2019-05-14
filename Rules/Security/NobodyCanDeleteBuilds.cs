@@ -10,7 +10,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string NamespaceName => "Build";
-        protected override string PermissionsDisplayName => "Delete builds";
+        protected override string PermissionsDisplayName => "Delete builds ";
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {
             PermissionId.NotSet,

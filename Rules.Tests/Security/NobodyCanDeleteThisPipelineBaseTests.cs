@@ -1,24 +1,15 @@
-using System.Collections.Generic;
-using System.Linq;
 using SecurePipelineScan.VstsService;
-using AutoFixture;
-using AutoFixture.AutoNSubstitute;
-using NSubstitute;
 using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
-using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
-using SecurityNamespace = SecurePipelineScan.VstsService.Response.SecurityNamespace;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class NobodyCanDeleteThePipelineTests : IClassFixture<TestConfig>
+    public class NobodyCanDeleteThisPipelineBaseTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
 
-        public NobodyCanDeleteThePipelineTests(TestConfig config)
+        public NobodyCanDeleteThisPipelineBaseTests(TestConfig config)
         {
             _config = config;
         }
@@ -49,7 +40,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = new NobodyCanDeleteBuilds(client);
+            var rule = new NobodyCanDeleteBuildPipelines(client);
             rule.Evaluate(projectId, "2").ShouldBeTrue();
         }
 

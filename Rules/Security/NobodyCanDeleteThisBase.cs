@@ -1,6 +1,4 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
-using SecurePipelineScan.VstsService.Requests;
+﻿using SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +32,7 @@ namespace SecurePipelineScan.Rules.Security
             foreach (var group in groups)
             {
                 var permissionSetId = LoadPermissionsSetForGroup(projectId, id, group);
-                var permission = permissionSetId.Permissions.Single(p => p.DisplayName.Trim() == PermissionsDisplayName);
+                var permission = permissionSetId.Permissions.Single(p => p.DisplayName == PermissionsDisplayName);
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))
                 {
