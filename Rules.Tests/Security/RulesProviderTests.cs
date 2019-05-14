@@ -48,7 +48,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rules = new RulesProvider().BuildRules(client);
 
             rules
-                .OfType<NobodyCanDeleteThePipeline>()
+                .OfType<NobodyCanDeleteThisPipelineBase>()
                 .ShouldNotBeEmpty();
         }
 
@@ -57,13 +57,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var fixture = new Fixture();
             fixture.Customize<SecurityNamespace>(ctx =>
-                ctx.With(x => x.Name, "ReleaseManagement"));
+                ctx.With(x => x.Name, "DeleteReleases"));
 
             var client = new FixtureClient(fixture);
             var rules = new RulesProvider().ReleaseRules(client);
 
             rules
-                .OfType<NobodyCanDeleteThePipeline>()
+                .OfType<NobodyCanDeleteThisPipelineBase>()
                 .ShouldNotBeEmpty();
         }
     }

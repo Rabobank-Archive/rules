@@ -29,7 +29,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.Build(client);
+            var rule = new NobodyCanDeleteBuilds(client);
             rule.Evaluate(projectId, "2").ShouldBeTrue();
         }
 
@@ -39,7 +39,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.Build(client) as IReconcile;
+            var rule = new NobodyCanDeleteBuilds(client) as IReconcile;
             rule.Reconcile(projectId, "2");
         }
 
@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.BuildPipeline(client);
+            var rule = new NobodyCanDeleteBuilds(client);
             rule.Evaluate(projectId, "2").ShouldBeTrue();
         }
 
@@ -59,17 +59,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.BuildPipeline(client) as IReconcile;
+            var rule = new NobodyCanDeleteBuildPipelines(client) as IReconcile;
             rule.Reconcile(projectId, "2");
         }
-        
+
         [Fact]
         public void EvaluateReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.Release(client);
+            var rule = new NobodyCanDeleteReleases(client);
             rule.Evaluate(projectId, "1").ShouldBeTrue();
         }
 
@@ -79,7 +79,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.Release(client) as IReconcile;
+            var rule = new NobodyCanDeleteReleases(client) as IReconcile;
             rule.Reconcile(projectId, "1");
         }
 
@@ -89,7 +89,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.ReleasePipeline(client);
+            var rule = new NobodyCanDeleteReleasePipelines(client);
             rule.Evaluate(projectId, "1").ShouldBeTrue();
         }
 
@@ -99,7 +99,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
-            var rule = NobodyCanDeleteThePipeline.ReleasePipeline(client) as IReconcile;
+            var rule = new NobodyCanDeleteReleasePipelines(client) as IReconcile;
             rule.Reconcile(projectId, "1");
         }
     }
