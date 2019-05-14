@@ -3,13 +3,14 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteReleasePipelines : NobodyCanDeleteThisPipelineBase, IRule, IReconcile
+    public class NobodyCanDeleteReleasePipelines : PipelineRuleBase, IRule, IReconcile
     {
         public NobodyCanDeleteReleasePipelines(IVstsRestClient client) : base(client)
         {
         }
 
         protected override string NamespaceName => "DeleteReleaseDefinition";
+        protected override string Scope => "release";
         protected override string PermissionsDisplayName => "Delete release pipeline";
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {

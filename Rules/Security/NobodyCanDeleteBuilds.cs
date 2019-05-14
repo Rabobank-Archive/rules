@@ -3,13 +3,14 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteBuilds : NobodyCanDeleteThisPipelineBase, IRule, IReconcile
+    public class NobodyCanDeleteBuilds : PipelineRuleBase, IRule, IReconcile
     {
         public NobodyCanDeleteBuilds(IVstsRestClient client) : base(client)
         {
         }
 
         protected override string NamespaceName => "Build";
+        protected override string Scope => "build";
         protected override string PermissionsDisplayName => "Delete builds ";
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {
