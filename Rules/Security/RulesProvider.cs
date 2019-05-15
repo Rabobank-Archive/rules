@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
 
@@ -27,12 +26,14 @@ namespace SecurePipelineScan.Rules.Security
 
         public IEnumerable<IRule> BuildRules(IVstsRestClient client)
         {
-            yield return NobodyCanDeleteThePipeline.Build(client);
+            yield return new NobodyCanDeleteBuilds(client);
+            yield return new NobodyCanDeleteBuildPipelines(client);
         }
 
         public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)
         {
-            yield return NobodyCanDeleteThePipeline.Release(client);
+            yield return new NobodyCanDeleteReleases(client);
+            yield return new NobodyCanDeleteReleasePipelines(client);
         }
     }
 }

@@ -7,7 +7,7 @@ using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGrou
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheRepository : NobodyCanDeleteThisBase, IRule, IReconcile
+    public class NobodyCanDeleteTheRepository : RuleBase, IRule, IReconcile
     {
         private readonly string _namespaceId;
         private readonly IVstsRestClient _client;
