@@ -9,8 +9,7 @@ namespace SecurePipelineScan.Rules.Security
         {
         }
 
-        protected override string NamespaceName => "Build";
-        protected override string Scope => "build";
+        protected override string NamespaceId => "33344d9c-fc72-4d6f-aba5-fa317101a7e9"; // build
         protected override string PermissionsDisplayName => "Delete builds ";
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {

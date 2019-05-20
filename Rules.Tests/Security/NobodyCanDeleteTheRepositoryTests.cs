@@ -202,15 +202,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.Get(Arg.Any<IVstsRestRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
             client.Get(Arg.Any<IVstsRestRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
 
-            client.Get(Arg.Any<IVstsRestRequest<Multiple<SecurityNamespace>>>())
-                .Returns(new Multiple<SecurityNamespace>()
-                {
-                    Count = 1, Value = new SecurityNamespace[1]
-                    {
-                        new SecurityNamespace { DisplayName = "Git Repositories" }
-                    }
-                });
-
             client.Get(Arg.Any<IVstsRestRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
                 Permissions = new[] {new Permission() {DisplayName = "Delete repository", PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}

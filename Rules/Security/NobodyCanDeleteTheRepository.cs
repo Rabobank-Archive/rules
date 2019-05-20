@@ -9,7 +9,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class NobodyCanDeleteTheRepository : RuleBase, IRule, IReconcile
     {
-        private readonly string _namespaceId;
+        private const string NamespaceId = "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; // Git Repositories
         private readonly IVstsRestClient _client;
         protected override string PermissionsDisplayName => "Delete repository";
         protected override IEnumerable<int> AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
@@ -26,16 +26,13 @@ namespace SecurePipelineScan.Rules.Security
         public NobodyCanDeleteTheRepository(IVstsRestClient client)
         {
             _client = client;
-            _namespaceId = _client
-                .Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces())
-                .First(s => s.DisplayName == "Git Repositories").NamespaceId;
         }
 
         protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) =>
-            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, _namespaceId)).Identities;
+            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId)).Identities;
 
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
-            _client.Get(Permissions.PermissionsGroupRepository(projectId, _namespaceId, group.TeamFoundationId, id));
+            _client.Get(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id));
 
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
             _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));

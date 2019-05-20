@@ -14,20 +14,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void GlobalPermissions()
         {
-            var rules = new RulesProvider().GlobalPermissions(Substitute.For<IVstsRestClient>());
+            var rules = new RulesProvider().GlobalPermissions(null);
             rules.OfType<NobodyCanDeleteTheTeamProject>().ShouldNotBeEmpty();
         }
 
         [Fact]
         public void RepositoryRules()
         {
-            var fixture = new Fixture();
-            fixture.Customize<SecurityNamespace>(ctx =>
-                ctx.With(x => x.DisplayName, "Git Repositories"));
-            
-            var client = new FixtureClient(fixture);
-            var rules = new RulesProvider().RepositoryRules(client);
-            
+            var rules = new RulesProvider().RepositoryRules(null);
             rules
                 .OfType<NobodyCanDeleteTheRepository>()
                 .ShouldNotBeEmpty();
@@ -40,13 +34,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void BuildRules()
         {
-            var fixture = new Fixture();
-            fixture.Customize<SecurityNamespace>(ctx =>
-                ctx.With(x => x.Name, "Build"));
-
-            var client = new FixtureClient(fixture);
-            var rules = new RulesProvider().BuildRules(client);
-
+            var rules = new RulesProvider().BuildRules(null);
             rules
                 .OfType<NobodyCanDeleteBuilds>()
                 .ShouldNotBeEmpty();
@@ -55,13 +43,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void ReleaseRules()
         {
-            var fixture = new Fixture();
-            fixture.Customize<SecurityNamespace>(ctx =>
-                ctx.With(x => x.Name, "DeleteReleases"));
-
-            var client = new FixtureClient(fixture);
-            var rules = new RulesProvider().ReleaseRules(client);
-
+            var rules = new RulesProvider().ReleaseRules(null);
             rules
                 .OfType<NobodyCanDeleteReleases>()
                 .ShouldNotBeEmpty();

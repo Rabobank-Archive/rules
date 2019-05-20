@@ -11,41 +11,21 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class PipelineRuleBase : RuleBase
     {
         private readonly IVstsRestClient _client;
-        protected abstract string NamespaceName { get; }
-        protected abstract string Scope { get; }
 
-        public PipelineRuleBase(IVstsRestClient client)
+        protected PipelineRuleBase(IVstsRestClient client)
         {
             _client = client;
         }
 
         protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) =>
-            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, GetNamespaceId(NamespaceName, Scope), id)).Identities;
+            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, id)).Identities;
 
         protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
-            _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, GetNamespaceId(NamespaceName, Scope), group.TeamFoundationId, id));
+            _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, id));
 
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
             _client.Post(Permissions.ManagePermissions(projectId, new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)));
 
-        private string GetNamespaceId(string namespaceName, string scope)
-        {
-            var namespaces = _client.Get(VstsService.Requests.SecurityNamespace.SecurityNamespaces());
-            switch (scope)
-            {
-                case "build":
-                    return namespaces
-                        .First(s => s.Name == namespaceName)
-                        .NamespaceId;
-                case "release":
-                    return namespaces
-                        .SelectMany(x => x.Actions)
-                        .First(s => s.Name == namespaceName)
-                        .NamespaceId
-                        .ToString();
-                default:
-                    throw new ArgumentException(nameof(scope));
-            }
-        }
+        protected abstract string NamespaceId { get; } // https://dev.azure.com/somecompany/_apis/securitynamespaces?api-version=5.0
     }
 }
