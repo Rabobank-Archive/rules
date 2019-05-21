@@ -2,29 +2,29 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class DistributedTask
     {
-        public static IVstsRestRequest<Response.Multiple<Response.AgentPoolInfo>> OrganizationalAgentPools()
+        public static IVstsRequest<Response.Multiple<Response.AgentPoolInfo>> OrganizationalAgentPools()
         {
-            return new VstsRestRequest<Response.Multiple<Response.AgentPoolInfo>>($"_apis/distributedtask/pools");
+            return new VstsRequest<Response.Multiple<Response.AgentPoolInfo>>($"_apis/distributedtask/pools");
         }
 
-        public static IVstsRestRequest<Response.AgentPoolInfo> AgentPool(int id)
+        public static IVstsRequest<Response.AgentPoolInfo> AgentPool(int id)
         {
-            return new VstsRestRequest<Response.AgentPoolInfo>($"_apis/distributedtask/pools/{id}");
+            return new VstsRequest<Response.AgentPoolInfo>($"_apis/distributedtask/pools/{id}");
         }
 
-        public static IVstsRestRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
+        public static IVstsRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
         {
-            return new VstsRestRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents?includeCapabilities=false&includeAssignedRequest=true");
+            return new VstsRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents?includeCapabilities=false&includeAssignedRequest=true");
         }
 
-        public static IVstsRestRequest<Response.Multiple<Response.Task>> Tasks()
+        public static IVstsRequest<Response.Multiple<Response.Task>> Tasks()
         {
-            return new VstsRestRequest<Response.Multiple<Response.Task>>($"_apis/distributedtask/tasks");
+            return new VstsRequest<Response.Multiple<Response.Task>>($"_apis/distributedtask/tasks");
         }
 
-        public static IVstsRestRequest<Response.AgentQueue> AgentQueue(string project, int id)
+        public static IVstsRequest<Response.AgentQueue> AgentQueue(string project, int id)
         {
-            return new VstsRestRequest<Response.AgentQueue>($"/{project}/_apis/distributedtask/queues/{id}");
+            return new VstsRequest<Response.AgentQueue>($"/{project}/_apis/distributedtask/queues/{id}");
         }
     }
 }

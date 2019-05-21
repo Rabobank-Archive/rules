@@ -5,9 +5,9 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Hooks
     {
-        public static IVstsRestRequest<Multiple<Hook>> Subscriptions()
+        public static IVstsRequest<Multiple<Hook>> Subscriptions()
         {
-            return new VstsRestRequest<Multiple<Hook>>(
+            return new VstsRequest<Multiple<Hook>>(
                 $"_apis/hooks/subscriptions?api-version=5.0-preview.1");
         }
 
@@ -175,8 +175,8 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
         
-        public static IVstsRestRequest<Hook> Subscription(string id) => new VstsRestRequest<Hook>($"_apis/hooks/subscriptions/{id}?api-version=5.0-preview.1");
-        public static IVstsPostRequest<Add.Body, Hook> AddHookSubscription() => new VstsPostRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
-        public static IVstsPostRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmPostRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
+        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}?api-version=5.0-preview.1");
+        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
+        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
     }
 }

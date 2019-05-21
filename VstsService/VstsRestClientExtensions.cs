@@ -4,7 +4,7 @@ namespace SecurePipelineScan.VstsService
     {
         public static TResponse Get<TResponse>(this IVstsRestClient client, string url) where TResponse: new()
         {
-            return client.Get(new VstsRestRequest<TResponse>(url));
+            return client.Get(new VstsRequest<TResponse>(url));
         }
     }
 }

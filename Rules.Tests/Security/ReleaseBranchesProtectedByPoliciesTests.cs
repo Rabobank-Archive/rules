@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             _client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+                .Post(Arg.Any<IVstsRequest<Policy,Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
         }
         
         [Fact]
@@ -162,7 +162,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             _client
                 .Received()
-                .Put(Arg.Any<IVstsRestRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+                .Put(Arg.Any<IVstsRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
         }
         
         [Fact]
@@ -180,7 +180,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             _client
                 .Received()
-                .Put(Arg.Any<IVstsRestRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
+                .Put(Arg.Any<IVstsRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
         }
         
         private static void CustomizeScope(IFixture fixture, 
@@ -213,7 +213,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void SetupClient(IVstsRestClient client, IFixture fixture)
         {
             client
-                .Get(Arg.Any<IVstsRestRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
+                .Get(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
                 .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
         }
     }

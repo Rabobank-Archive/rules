@@ -5,21 +5,21 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Security
     {
-        public static IVstsRestRequest<Response.Security.IdentityGroup> GroupMembers(string projectId, string groupId)
+        public static IVstsRequest<Response.Security.IdentityGroup> GroupMembers(string projectId, string groupId)
         {
-            return new VstsRestRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadGroupMembers?__v=5&scope={groupId}&readMembers=true");
+            return new VstsRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadGroupMembers?__v=5&scope={groupId}&readMembers=true");
         }
 
-        public static IVstsRestRequest<Response.Security.IdentityGroup> Groups(string projectId)
+        public static IVstsRequest<Response.Security.IdentityGroup> Groups(string projectId)
         {
-            return new VstsRestRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5");
+            return new VstsRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5");
         }
 
-        public static IVstsPostRequest<AddMemberData, object> AddMember(string project) => 
-            new VstsPostRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities?__v=5");
+        public static IVstsRequest<AddMemberData, object> AddMember(string project) => 
+            new VstsRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities?__v=5");
 
-        public static IVstsPostRequest<EditMembersData, object> EditMembership(string project) =>
-            new VstsPostRequest<EditMembersData, object>($"/{project}/_api/_identity/EditMembership?__v=5");
+        public static IVstsRequest<EditMembersData, object> EditMembership(string project) =>
+            new VstsRequest<EditMembersData, object>($"/{project}/_api/_identity/EditMembership?__v=5");
 
         public class EditMembersData
         {
@@ -51,15 +51,15 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
 
-        public static IVstsPostRequest<ManageGroupData, Response.ApplicationGroup> ManageGroup(string project) =>
-            new VstsPostRequest<ManageGroupData, Response.ApplicationGroup>($"/{project}/_api/_identity/ManageGroup?__v=5");
+        public static IVstsRequest<ManageGroupData, Response.ApplicationGroup> ManageGroup(string project) =>
+            new VstsRequest<ManageGroupData, Response.ApplicationGroup>($"/{project}/_api/_identity/ManageGroup?__v=5");
 
         public class ManageGroupData
         {
             public string Name { get; set; }
         }
 
-        public static IVstsPostRequest<string, object> DeleteIdentity(string project) =>
-            new VstsPostRequest<string, object>($"/{project}/_api/_identity/DeleteIdentity?__v=5");
+        public static IVstsRequest<string, object> DeleteIdentity(string project) =>
+            new VstsRequest<string, object>($"/{project}/_api/_identity/DeleteIdentity?__v=5");
     }
 }

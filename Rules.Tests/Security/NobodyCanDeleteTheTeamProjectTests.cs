@@ -124,7 +124,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.EditMembersData, object>>(),
+                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.EditMembersData, object>>(),
                     Arg.Is<VstsService.Requests.Security.RemoveMembersData>(x => 
                         x.RemoveItemsJson.Contains("asdf") &&
                         x.RemoveItemsJson.Contains("gsdgs") &&
@@ -147,7 +147,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
                     Arg.Is<VstsService.Requests.Security.AddMemberData>(x => 
                         x.GroupsToJoinJson.Contains(_rpa.TeamFoundationId) &&
                         x.ExistingUsersJson.Contains("asdf") &&
@@ -167,7 +167,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.RemoveMembersData, object>>(),
+                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.RemoveMembersData, object>>(),
                     Arg.Any<VstsService.Requests.Security.RemoveMembersData>());
         }
 
@@ -185,7 +185,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
                     Arg.Is<VstsService.Requests.Security.AddMemberData>(x =>
                         x.ExistingUsersJson.Contains(_rpa.TeamFoundationId) &&
                         x.GroupsToJoinJson.Contains(_pa.TeamFoundationId)));
@@ -208,7 +208,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client
                 .DidNotReceive()
                 .Post(
-                    Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
+                    Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
                     Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
@@ -222,7 +222,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
                             
             client
-                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
+                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
                 .Returns(_rpa);
             
             // Act
@@ -233,7 +233,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client
                 .Received()
                 .Post(
-                    Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
+                    Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
                     Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
@@ -250,7 +250,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
                         x.UpdatePackage.Contains(@"PermissionBit"":4") &&
@@ -270,20 +270,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("afewsf") &&
                     x.UpdatePackage.Contains(@"PermissionId"":0")));
             
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_pa.TeamFoundationId)));
             
             client
                 .Received(1)
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId))); // Only the DENY update
 
@@ -292,7 +292,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void InitializeApplicationGroupsLookup(IVstsRestClient client, params Response.ApplicationGroup[] groups)
         {
             client
-                .Get(Arg.Is<IVstsRestRequest<Response.ApplicationGroups>>(x =>
+                .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
                     x.Uri.Contains("ReadScopedApplicationGroupsJson")))
                 .Returns(new Response.ApplicationGroups
                 {
@@ -303,7 +303,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void InitializeMembersLookup(IVstsRestClient client, params Response.ApplicationGroup[] members)
         {
             client
-                .Get(Arg.Is<IVstsRestRequest<Response.ApplicationGroups>>(x =>
+                .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
                     x.Uri.Contains("ReadGroupMembers")))
                 .Returns(new Response.ApplicationGroups
                 {
@@ -313,7 +313,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         
         private static void InitializePermissions(IVstsRestClient client, params Response.Permission[] permissions)
         {
-            client.Get(Arg.Any<IVstsRestRequest<Response.PermissionsProjectId>>())
+            client.Get(Arg.Any<IVstsRequest<Response.PermissionsProjectId>>())
                 .Returns(new Response.PermissionsProjectId
                     {Security = new Response.PermissionsSetId {Permissions = permissions}});
         }

@@ -99,7 +99,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             InitializeLookupData(client, PermissionId.Deny);
             
-            client.Get(Arg.Any<IVstsRestRequest<ApplicationGroups>>()).Returns(applicationGroups);
+            client.Get(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
             
             var rule = new NobodyCanDeleteTheRepository(client);
             rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
@@ -107,15 +107,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=11")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=11")));
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=22")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=22")));
             
             client
                 .Received()
-                .Get(Arg.Is<IVstsRestRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=33")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=33")));
 
         }
 
@@ -140,7 +140,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
                     x.UpdatePackage.Contains("123") &&
                     x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
@@ -157,7 +157,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
@@ -172,7 +172,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
@@ -187,7 +187,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
 
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
@@ -195,10 +195,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            client.Get(Arg.Any<IVstsRestRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
-            client.Get(Arg.Any<IVstsRestRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
+            client.Get(Arg.Any<IVstsRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
+            client.Get(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
 
-            client.Get(Arg.Any<IVstsRestRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
+            client.Get(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
                 Permissions = new[] {new Permission() {DisplayName = "Delete repository", PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
             });

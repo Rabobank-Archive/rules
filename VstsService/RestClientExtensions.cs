@@ -6,7 +6,7 @@ using SecurePipelineScan.VstsService.Converters;
 
 namespace SecurePipelineScan.VstsService
 {
-    public static class RestClientExtensions
+    internal static class RestClientExtensions
     {
 
         /// <summary>

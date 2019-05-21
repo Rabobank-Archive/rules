@@ -3,7 +3,7 @@ using System.Net;
 
 namespace SecurePipelineScan.VstsService
 {
-    public static class RestResponseExtensions
+    internal static class RestResponseExtensions
     {
         public static IRestResponse<T> ThrowOnError<T>(this IRestResponse<T> response)
         {
