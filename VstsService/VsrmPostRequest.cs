@@ -1,13 +1,10 @@
 namespace SecurePipelineScan.VstsService
 {
-    public class VsrmPostRequest<TResponse> : VsrmRequest<TResponse>, IVstsPostRequest<TResponse>
+    public class VsrmPostRequest<TInput, TResponse> : VsrmRequest<TResponse>, IVstsPostRequest<TInput, TResponse>
         where TResponse: new()
     {
-        public object Body { get; }
-
-        public VsrmPostRequest(string uri, object body) : base(uri)
+        public VsrmPostRequest(string uri) : base(uri)
         {
-            Body = body;
         }
     }
 }

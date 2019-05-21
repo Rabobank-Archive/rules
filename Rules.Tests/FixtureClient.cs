@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Tests
             return _fixture.Create<TResponse>();
         }
 
-        public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
+        public TResponse Post<TInput, TResponse>(IVstsPostRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             throw new NotImplementedException();
         }

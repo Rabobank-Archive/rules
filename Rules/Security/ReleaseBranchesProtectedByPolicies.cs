@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Security
                  policy = InitializeMinimumNumberOfReviewersPolicy(id);
                  UpdateSettings(policy.Settings);
                  
-                _client.Post(new VstsPostRequest<MinimumNumberOfReviewersPolicy>(Requests.Policies.All(projectId).Uri, policy));
+                _client.Post(Requests.Policies.Policy(projectId), policy);
             }
         }
 

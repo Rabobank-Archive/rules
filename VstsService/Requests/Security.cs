@@ -15,11 +15,11 @@ namespace SecurePipelineScan.VstsService.Requests
             return new VstsRestRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadScopedApplicationGroupsJson?__v=5");
         }
 
-        public static IVstsPostRequest<object> AddMember(string project, AddMemberData body) => 
-            new VstsPostRequest<object>($"/{project}/_api/_identity/AddIdentities?__v=5", body);
+        public static IVstsPostRequest<AddMemberData, object> AddMember(string project) => 
+            new VstsPostRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities?__v=5");
 
-        public static IVstsPostRequest<object> EditMembership(string project, EditMembersData data) =>
-            new VstsPostRequest<object>($"/{project}/_api/_identity/EditMembership?__v=5", data);
+        public static IVstsPostRequest<EditMembersData, object> EditMembership(string project) =>
+            new VstsPostRequest<EditMembersData, object>($"/{project}/_api/_identity/EditMembership?__v=5");
 
         public class EditMembersData
         {
@@ -51,15 +51,15 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
 
-        public static IVstsPostRequest<Response.ApplicationGroup> ManageGroup(string project, ManageGroupData data) =>
-            new VstsPostRequest<Response.ApplicationGroup>($"/{project}/_api/_identity/ManageGroup?__v=5", data);
+        public static IVstsPostRequest<ManageGroupData, Response.ApplicationGroup> ManageGroup(string project) =>
+            new VstsPostRequest<ManageGroupData, Response.ApplicationGroup>($"/{project}/_api/_identity/ManageGroup?__v=5");
 
         public class ManageGroupData
         {
             public string Name { get; set; }
         }
 
-        public static IVstsPostRequest<object> DeleteIdentity(string project, string tfid) =>
-            new VstsPostRequest<object>($"/{project}/_api/_identity/DeleteIdentity?__v=5", tfid);
+        public static IVstsPostRequest<string, object> DeleteIdentity(string project) =>
+            new VstsPostRequest<string, object>($"/{project}/_api/_identity/DeleteIdentity?__v=5");
     }
 }

@@ -7,8 +7,9 @@ namespace SecurePipelineScan.VstsService
         Uri BaseUri(string organization);
         string Uri { get; }
     }
-    
+
     public interface IVstsRestRequest<TResponse> : IVstsRestRequest
-        where TResponse: new()
-    {}
+        where TResponse : new()
+    {
+    }
 }

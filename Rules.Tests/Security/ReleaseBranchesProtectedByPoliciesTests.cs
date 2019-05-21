@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             _client
                 .Received()
-                .Post(Arg.Any<IVstsPostRequest<MinimumNumberOfReviewersPolicy>>());
+                .Post(Arg.Any<IVstsPostRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
         }
         
         [Fact]

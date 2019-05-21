@@ -93,17 +93,17 @@ namespace Subscriptions.Console
             if (!item.BuildComplete)
             {
                 System.Console.WriteLine($"Add build.completed subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
+                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
             }
             if (!item.GitPullRequestCreated)
             {
                 System.Console.WriteLine($"Add GitPullRequestCreated subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
+                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
             }
             if (!item.GitPushed)
             {
                 System.Console.WriteLine($"Add GitPushed subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
+                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
             }
             if (!item.ReleaseDeploymentCompleted)
             {
@@ -111,7 +111,7 @@ namespace Subscriptions.Console
 
                 // We make sure the Release definition module is loaded.
                 client.Get(Requests.Release.Definitions(item.Id));
-                client.Post(Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
+                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
             }
         }
 

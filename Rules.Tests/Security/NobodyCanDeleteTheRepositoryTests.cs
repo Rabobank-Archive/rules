@@ -135,18 +135,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.Allow);
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-
             var rule = new NobodyCanDeleteTheRepository(client);
             rule.Reconcile("TAS", "123");
             
-            data
-                .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
-                .ShouldContain(x => 
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
                     x.UpdatePackage.Contains("123") &&
-                    x.UpdatePackage.Contains(@"PermissionId"":2"));
+                    x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
         
         [Fact]
@@ -161,7 +157,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<object>>());
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
@@ -176,7 +172,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<object>>());
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
@@ -191,7 +187,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsPostRequest<object>>());
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
 
         private void InitializeLookupData(IVstsRestClient client, int permissionId)

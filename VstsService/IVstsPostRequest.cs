@@ -1,8 +1,11 @@
 namespace SecurePipelineScan.VstsService
 {
-    public interface IVstsPostRequest<T> : IVstsRestRequest<T>
-        where T: new()
+    public interface IVstsPostRequest<TInput, TResponse> : IVstsRestRequest<TResponse>
+        where TResponse: new()
     {
-        object Body { get; }
+    }
+
+    public interface IVstsPostRequest<TResponse> : IVstsPostRequest<TResponse, TResponse> where TResponse : new()
+    {
     }
 }

@@ -4,6 +4,7 @@ using Moq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 using Response = SecurePipelineScan.VstsService.Response;
@@ -118,18 +119,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "asdf"},
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
 
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
 
-            data
-                .OfType<VstsService.Requests.Security.RemoveMembersData>()
-                .ShouldContain(x => x.RemoveItemsJson.Contains("asdf") &&
-                                    x.RemoveItemsJson.Contains("gsdgs") &&
-                                    x.GroupId == "1234");
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.EditMembersData, object>>(),
+                    Arg.Is<VstsService.Requests.Security.RemoveMembersData>(x => 
+                        x.RemoveItemsJson.Contains("asdf") &&
+                        x.RemoveItemsJson.Contains("gsdgs") &&
+                        x.GroupId == "1234"));
         }
         
         [Fact]
@@ -143,18 +142,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "asdf"},
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
 
-            data
-                .OfType<VstsService.Requests.Security.AddMemberData>()
-                .ShouldContain(x => x.GroupsToJoinJson.Contains(_rpa.TeamFoundationId) &&
-                                    x.ExistingUsersJson.Contains("asdf") && 
-                                    x.ExistingUsersJson.Contains("gsdgs"));
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                    Arg.Is<VstsService.Requests.Security.AddMemberData>(x => 
+                        x.GroupsToJoinJson.Contains(_rpa.TeamFoundationId) &&
+                        x.ExistingUsersJson.Contains("asdf") &&
+                        x.ExistingUsersJson.Contains("gsdgs")));
         }
         
         [Fact]
@@ -165,16 +162,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeApplicationGroupsLookup(client, _pa, _rpa);
             InitializeMembersLookup(client, _rpa);
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
 
-            data
-                .OfType<VstsService.Requests.Security.RemoveMembersData>()
-                .ShouldNotContain(x => x.RemoveItemsJson.Contains(_rpa.TeamFoundationId));
+            client
+                .DidNotReceive()
+                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.RemoveMembersData, object>>(),
+                    Arg.Any<VstsService.Requests.Security.RemoveMembersData>());
         }
 
 
@@ -186,34 +180,61 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeApplicationGroupsLookup(client, _pa, _rpa);
             InitializeMembersLookup(client);
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
 
-            data
-                .OfType<VstsService.Requests.Security.AddMemberData>()
-                .ShouldContain(x => 
-                    x.ExistingUsersJson.Contains(_rpa.TeamFoundationId) && 
-                    x.GroupsToJoinJson.Contains(_pa.TeamFoundationId));
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                    Arg.Is<VstsService.Requests.Security.AddMemberData>(x =>
+                        x.ExistingUsersJson.Contains(_rpa.TeamFoundationId) &&
+                        x.GroupsToJoinJson.Contains(_pa.TeamFoundationId)));
+        }
+        
+        [Fact]
+        public void GivenRabobankProjectAdministratorsGroupExists_WhenFix_ThenThatGroupIsNotCreated()
+        {
+            // Arrange
+            var client = Substitute.For<IVstsRestClient>();
+            InitializePermissions(client, _deleteTeamProjectAllow);
+            InitializeApplicationGroupsLookup(client, _pa, _rpa);
+            InitializeMembersLookup(client);
+                      
+            // Act
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            rule.Reconcile(_config.Project);
+
+            // Assert
+            client
+                .DidNotReceive()
+                .Post(
+                    Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
+                    Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
         [Fact]
         public void GivenRabobankProjectAdministratorsGroupDoesNotExist_WhenFix_ThenThatGroupIsCreated()
         {
+            // Arrange 
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
             InitializeApplicationGroupsLookup(client, _pa);
             InitializeMembersLookup(client);
                             
             client
-                .Post(Arg.Any<IVstsPostRequest<Response.ApplicationGroup>>())
+                .Post(Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
                 .Returns(_rpa);
             
+            // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
+            
+            // Assert
+            client
+                .Received()
+                .Post(
+                    Arg.Any<IVstsPostRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
+                    Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
         [Fact]
@@ -224,19 +245,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeApplicationGroupsLookup(client, _pa, _rpa, new Response.ApplicationGroup {FriendlyDisplayName = "Contributors"});            
             InitializeMembersLookup(client);
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
             
-            data
-                .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
-                .ShouldContain(x => 
-                    x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
-                    x.UpdatePackage.Contains(@"PermissionBit"":4") &&
-                    x.UpdatePackage.Contains(@"PermissionId"":2"));
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                        x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
+                        x.UpdatePackage.Contains(@"PermissionBit"":4") &&
+                        x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
         
         [Fact]
@@ -247,26 +265,27 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeApplicationGroupsLookup(client, _pa, _rpa, new Response.ApplicationGroup {FriendlyDisplayName = "Contributors", TeamFoundationId = "afewsf"});            
             InitializeMembersLookup(client);
             
-            var data = new List<object>();
-            client
-                .Post(Arg.Do<IVstsPostRequest<object>>(x => data.Add(x.Body)));
-            
             var rule = new NobodyCanDeleteTheTeamProject(client);
             rule.Reconcile(_config.Project);
             
-            data
-                .OfType<VstsService.Requests.Permissions.UpdateWrapper>() // Couldn't help it but the API is ugly here and requires some wrapping object with a JSON string as content
-                .ShouldContain(x => 
+            client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("afewsf") &&
-                    x.UpdatePackage.Contains(@"PermissionId"":0"));
+                    x.UpdatePackage.Contains(@"PermissionId"":0")));
             
-            data
-                .OfType<VstsService.Requests.Permissions.UpdateWrapper>()
-                .ShouldNotContain(x => x.UpdatePackage.Contains(_pa.TeamFoundationId));
+            client
+                .DidNotReceive()
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                        x.UpdatePackage.Contains(_pa.TeamFoundationId)));
             
-            data
-                .OfType<VstsService.Requests.Permissions.UpdateWrapper>()
-                .ShouldContain(x => x.UpdatePackage.Contains(_rpa.TeamFoundationId), 1); // Only the DENY update
+            client
+                .Received(1)
+                .Post(Arg.Any<IVstsPostRequest<Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                        x.UpdatePackage.Contains(_rpa.TeamFoundationId))); // Only the DENY update
 
         }
 

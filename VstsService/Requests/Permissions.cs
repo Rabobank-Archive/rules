@@ -1,31 +1,31 @@
-using SecurePipelineScan.VstsService.Response;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Permissions
     {
-        public static IVstsRestRequest<Response.PermissionsSetId> PermissionsGroupRepositorySet(string projectId, string permissionSetId, string applicationGroupId)
+        public static IVstsRestRequest<PermissionsSetId> PermissionsGroupRepositorySet(string projectId, string permissionSetId, string applicationGroupId)
         {
-            return new VstsRestRequest<Response.PermissionsSetId>(
+            return new VstsRestRequest<PermissionsSetId>(
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken=repoV2%2F{projectId}");
         }
         
-        public static IVstsRestRequest<Response.PermissionsSetId> PermissionsGroupRepository(string projectId, string permissionSetId, string applicationGroupId, string repositoryId)
+        public static IVstsRestRequest<PermissionsSetId> PermissionsGroupRepository(string projectId, string permissionSetId, string applicationGroupId, string repositoryId)
         {
             return new VstsRestRequest<PermissionsSetId>(
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken=repoV2%2F{projectId}%2F{repositoryId}");
         }
 
-        public static IVstsRestRequest<Response.PermissionsSetId> PermissionsGroupSetId(string projectId,string permissionSetId, string applicationGroupId)
+        public static IVstsRestRequest<PermissionsSetId> PermissionsGroupSetId(string projectId,string permissionSetId, string applicationGroupId)
         {
             return new VstsRestRequest<PermissionsSetId>(
                 $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}");
         }
 
-        public static IVstsRestRequest<Response.PermissionsSetId> PermissionsGroupSetIdDefinition(string projectId,
+        public static IVstsRestRequest<PermissionsSetId> PermissionsGroupSetIdDefinition(string projectId,
             string permissionSetId, string applicationGroupId, string definitionId)
         {
             return new VstsRestRequest<PermissionsSetId>(
@@ -81,6 +81,9 @@ namespace SecurePipelineScan.VstsService.Requests
             public string DescriptorIdentifier { get; }
             public bool RefreshIdentities { get; } = false;
             public string TokenDisplayName { get; } = null;
+            
+            public UpdateWrapper Wrap() =>
+                new UpdateWrapper(JsonConvert.SerializeObject(this));
         }
 
         /// <summary>
@@ -96,8 +99,7 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
 
-        public static IVstsPostRequest<object> ManagePermissions(string project, ManagePermissionsData data) =>
-            new VstsPostRequest<object>($"{project}/_api/_security/ManagePermissions?__v=5", new UpdateWrapper(JsonConvert.SerializeObject(data)));
+        public static IVstsPostRequest<UpdateWrapper, object> ManagePermissions(string project) =>
+            new VstsPostRequest<UpdateWrapper, object>($"{project}/_api/_security/ManagePermissions?__v=5");
     }
-    
 }

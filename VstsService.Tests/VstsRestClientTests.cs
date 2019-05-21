@@ -43,7 +43,7 @@ namespace SecurePipelineScan.VstsService.Tests
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
             var client = new VstsRestClient("dummy", "pat", rest);
-            Assert.Throws<VstsException>(() => client.Post(request));
+            Assert.Throws<VstsException>(() => client.Post(request, 3));
         }
 
         [Fact]

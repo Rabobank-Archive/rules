@@ -41,14 +41,14 @@ namespace SecurePipelineScan.VstsService
             return _client.Execute<TResponse>(wrapper).ThrowOnError().DefaultIfNotFound();
         }
 
-        public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
+        public TResponse Post<TInput, TResponse>(IVstsPostRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri, Method.POST)
             {
                 JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
             }.AddHeader("authorization", _authorization)
-             .AddJsonBody(request.Body);
+             .AddJsonBody(body);
 
             return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }

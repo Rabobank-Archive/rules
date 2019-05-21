@@ -10,6 +10,8 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRestRequest<Multiple<Policy>> All(string project) => new VstsRestRequest<Multiple<Policy>>($"{project}/_apis/policy/configurations?api-version=5.0-preview.1");
 
-        public static IVstsRestRequest<Policy> Policy(string project, int id) => new VstsRestRequest<Policy>($"{project}/_apis/policy/configurations/{id}?api-version=5.0");  
+        public static IVstsRestRequest<Policy> Policy(string project, int id) => new VstsRestRequest<Policy>($"{project}/_apis/policy/configurations/{id}?api-version=5.0");
+        
+        public static IVstsPostRequest<Policy> Policy(string project) => new VstsPostRequest<Policy>($"{project}/_apis/policy/configurations?api-version=5.0");
     }
 }
