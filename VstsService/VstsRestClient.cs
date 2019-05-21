@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
 using RestSharp.Serializers.Newtonsoft.Json;
+using SecurePipelineScan.VstsService.Converters;
 using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
@@ -45,7 +46,7 @@ namespace SecurePipelineScan.VstsService
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri, Method.POST)
             {
-                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })
+                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
             }.AddHeader("authorization", _authorization)
              .AddJsonBody(request.Body);
 

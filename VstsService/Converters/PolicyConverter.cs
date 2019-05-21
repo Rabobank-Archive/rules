@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Converters
@@ -9,7 +10,14 @@ namespace SecurePipelineScan.VstsService.Converters
     {
         public override void WriteJson(JsonWriter writer, Policy value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            switch (value)
+            {
+                case MinimumNumberOfReviewersPolicy _:
+                    value.Type = new PolicyType { Id = new Guid("fa4e907d-c16b-4a4c-9dfa-4906e5d171dd") };
+                    break;
+            }
+            
+           JToken.FromObject(value,new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver()}).WriteTo(writer);
         }
 
         public override Policy ReadJson(JsonReader reader, Type objectType, Policy existingValue, bool hasExistingValue,

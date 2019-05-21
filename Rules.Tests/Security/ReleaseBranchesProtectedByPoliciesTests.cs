@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
+using AutoFixture.Kernel;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -121,7 +123,67 @@ namespace SecurePipelineScan.Rules.Tests.Security
             evaluatedRule.ShouldBeFalse();
         }
 
-        private void CustomizeScope(IFixture fixture, 
+        [Fact]
+        public void Reconcile()
+        {
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
+            rule.Reconcile(_config.Project, RepositoryId);
+        }
+
+        [Fact]
+        public void GivenNoPolicyPresent_WhenReconcile_PostIsUsed()
+        {
+            // Arrange
+            CustomizeScope(_fixture, refName: "some/other/branch");
+            SetupClient(_client, _fixture);
+            
+            // Act
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
+            rule.Reconcile(_config.Project, RepositoryId);
+
+            // Assert
+            _client
+                .Received()
+                .Post(Arg.Any<IVstsPostRequest<MinimumNumberOfReviewersPolicy>>());
+        }
+        
+        [Fact]
+        public void GivenExistingPolicyPresent_WhenReconcile_PutIsUsed()
+        {
+            // Arrange
+            CustomizeScope(_fixture);
+            SetupClient(_client, _fixture);
+            
+            // Act
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
+            rule.Reconcile(_config.Project, RepositoryId);
+
+            // Assert
+            _client
+                .Received()
+                .Put(Arg.Any<IVstsRestRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+        }
+        
+        [Fact]
+        public void GivenExistingPolicyHasApproverCount_WhenReconcile_NotUpdated()
+        {
+            // Arrange
+            CustomizeScope(_fixture);
+            CustomizePolicySettings(_fixture, 3);
+            SetupClient(_client, _fixture);
+            
+            // Act
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
+            rule.Reconcile(_config.Project, RepositoryId);
+
+            // Assert
+            _client
+                .Received()
+                .Put(Arg.Any<IVstsRestRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
+        }
+        
+        private static void CustomizeScope(IFixture fixture, 
             string id = null,
             string refName = "refs/heads/master")
         {

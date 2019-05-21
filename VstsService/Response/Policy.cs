@@ -8,10 +8,11 @@ namespace SecurePipelineScan.VstsService.Response
     */
     public class Policy
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public PolicyType Type { get; set; }
 
-        public bool? IsEnabled { get; set; }
-        public bool? IsBlocking { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool IsEnabled { get; set; }
+        public bool IsBlocking { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
