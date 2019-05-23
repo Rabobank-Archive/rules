@@ -25,5 +25,10 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
         }
+        
+        public static IVstsRestRequest<Response.Multiple<Response.Tag>> Tags(string project, string release)
+        {
+            return new VsrmRequest<Response.Multiple<Response.Tag>>($"{project}/_apis/Release/releases/{release}/tags");
+        }
     }
 }
