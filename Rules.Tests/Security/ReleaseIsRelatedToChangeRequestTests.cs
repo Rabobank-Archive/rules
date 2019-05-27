@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnTrueForReleaseHasSm9ChangeId()
         {
             //Arrange
-            _client.Get(Arg.Any<IVstsRestRequest<Release>>())
+            _client.Get(Arg.Any<IVstsRequest<Release>>())
                 .Returns(new Release() {Id = ReleaseId, Tags = new []{ "SM9ChangeId 12345", "Random tag"}});
             
             //Act
@@ -51,7 +51,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseForReleaseHasNoSm9ChangeId()
         {
             //Arrange
-            _client.Get(Arg.Any<IVstsRestRequest<Release>>())
+            _client.Get(Arg.Any<IVstsRequest<Release>>())
                 .Returns(new Release() {Id = ReleaseId, Tags = new []{ "12345", "Random tag"}});
             
             //Act

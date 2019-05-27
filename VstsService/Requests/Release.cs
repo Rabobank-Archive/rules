@@ -25,6 +25,5 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
         }
-       
     }
 }
