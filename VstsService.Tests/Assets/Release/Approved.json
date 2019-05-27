@@ -1,1 +1,2308 @@
-{"id":79,"name":"Release-48","status":"active","createdOn":"2019-01-16T13:59:39.423Z","modifiedOn":"2019-01-16T13:59:39.423Z","modifiedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"createdBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"environments":[{"id":150,"releaseId":79,"name":"S01 - Test","status":"succeeded","variables":{"AppServiceName":{"value":"S01-soxdemo-01"},"AppServicePlan":{"value":"S01-soxdemo"}},"variableGroups":[],"preDeployApprovals":[{"id":330,"revision":1,"approvalType":"preDeploy","createdOn":"2019-01-16T13:59:39.72Z","modifiedOn":"2019-01-16T13:59:39.75Z","status":"approved","comments":"","isAutomated":true,"isNotificationOn":false,"trialNumber":1,"attempt":1,"rank":1,"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":150,"name":"S01 - Test","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/330"},{"id":336,"revision":1,"approvalType":"preDeploy","createdOn":"2019-01-18T11:02:42.29Z","modifiedOn":"2019-01-18T11:02:42.303Z","status":"approved","comments":"","isAutomated":true,"isNotificationOn":false,"trialNumber":2,"attempt":2,"rank":1,"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":150,"name":"S01 - Test","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/336"}],"postDeployApprovals":[{"id":338,"revision":1,"approvalType":"postDeploy","createdOn":"2019-01-18T11:04:20.01Z","modifiedOn":"2019-01-18T11:04:20.027Z","status":"approved","comments":"","isAutomated":true,"isNotificationOn":false,"trialNumber":2,"attempt":2,"rank":3,"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":150,"name":"S01 - Test","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/338"}],"preApprovalsSnapshot":{"approvals":[{"rank":1,"isAutomated":true,"isNotificationOn":false,"id":0}],"approvalOptions":{"requiredApproverCount":0,"releaseCreatorCanBeApprover":false,"autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,"enforceIdentityRevalidation":false,"timeoutInMinutes":0,"executionOrder":"beforeGates"}},"postApprovalsSnapshot":{"approvals":[{"rank":1,"isAutomated":true,"isNotificationOn":false,"id":0}],"approvalOptions":{"requiredApproverCount":0,"releaseCreatorCanBeApprover":false,"autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,"enforceIdentityRevalidation":false,"timeoutInMinutes":0,"executionOrder":"afterSuccessfulGates"}},"deploySteps":[{"id":331,"deploymentId":146,"attempt":1,"reason":"automated","status":"failed","operationStatus":"PhaseFailed","releaseDeployPhases":[{"id":162,"phaseId":"162","name":"Run on agent","rank":1,"phaseType":"agentBasedDeployment","status":"failed","runPlanId":"f056c9ee-461a-4bee-af2d-2e091114aedc","deploymentJobs":[{"job":{"id":5,"timelineRecordId":"cac5dee5-83c7-403a-a4ec-b0f699b4915a","name":"Release","dateStarted":"2019-01-16T13:59:44.96Z","dateEnded":"2019-01-16T14:00:13.09Z","startTime":"2019-01-16T13:59:44.96Z","finishTime":"2019-01-16T14:00:13.09Z","status":"failed","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/5/logs"},"tasks":[{"id":2,"timelineRecordId":"c5b14d43-888c-4c7c-b43b-fb55d853d00f","name":"Initialize Job","dateStarted":"2019-01-16T13:59:45.993Z","dateEnded":"2019-01-16T13:59:46.183Z","startTime":"2019-01-16T13:59:45.993Z","finishTime":"2019-01-16T13:59:46.183Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/2/logs"},{"id":3,"timelineRecordId":"0c5ce268-711d-456e-9c79-549558437684","name":"Download artifact - _SOx-compliant-demo-CI - drop","dateStarted":"2019-01-16T13:59:46.203Z","dateEnded":"2019-01-16T13:59:48.053Z","startTime":"2019-01-16T13:59:46.203Z","finishTime":"2019-01-16T13:59:48.053Z","status":"succeeded","rank":2,"issues":[],"task":{"id":"a433f589-fce1-4460-9ee6-44a624aeb1fb","name":"DownloadBuildArtifacts","version":"0.142.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/3/logs"},{"id":4,"timelineRecordId":"a19a2160-5f46-40da-ac47-7faf311ae87b","name":"Create or Update a Resource Group","dateStarted":"2019-01-16T13:59:48.053Z","dateEnded":"2019-01-16T14:00:13.08Z","startTime":"2019-01-16T13:59:48.053Z","finishTime":"2019-01-16T14:00:13.08Z","status":"failed","rank":3,"issues":[{"issueType":"Error","message":"Create azure resource group failed unexpected","data":{"type":"error","logFileLineNumber":"10"}}],"task":{"id":"4ac6d781-1b39-4d55-9664-3cc571c44da9","name":"Rabobank-Azure-RG","version":"1.2.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/4/logs"},{"id":0,"timelineRecordId":"1d457cac-4a03-4b7b-b8f3-6642e97ac327","name":"Create Azure App Service Plan if not exists","dateStarted":"2019-01-16T14:00:13.08Z","dateEnded":"2019-01-16T14:00:13.08Z","startTime":"2019-01-16T14:00:13.08Z","finishTime":"2019-01-16T14:00:13.08Z","status":"skipped","rank":4,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"","resultCode":"Evaluating: succeeded()\r\nResult: False\r\n"},{"id":0,"timelineRecordId":"135f6e7c-b445-493d-aac4-74b97dcf740d","name":"Create Azure Web App if not exists","dateStarted":"2019-01-16T14:00:13.08Z","dateEnded":"2019-01-16T14:00:13.083Z","startTime":"2019-01-16T14:00:13.08Z","finishTime":"2019-01-16T14:00:13.083Z","status":"skipped","rank":5,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"","resultCode":"Evaluating: succeeded()\r\nResult: False\r\n"},{"id":0,"timelineRecordId":"e06eab5a-9fd5-4bed-9c5d-d05dbdc0c3be","name":"Deploy Azure App Service","dateStarted":"2019-01-16T14:00:13.083Z","dateEnded":"2019-01-16T14:00:13.083Z","startTime":"2019-01-16T14:00:13.083Z","finishTime":"2019-01-16T14:00:13.083Z","status":"skipped","rank":6,"issues":[],"task":{"id":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","name":"AzureRmWebAppDeployment","version":"3.4.19"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"","resultCode":"Evaluating: succeeded()\r\nResult: False\r\n"},{"id":0,"timelineRecordId":"ed19e811-9630-4d27-b312-6f3029028669","name":"Display URL of our sox-demo website","dateStarted":"2019-01-16T14:00:13.083Z","dateEnded":"2019-01-16T14:00:13.083Z","startTime":"2019-01-16T14:00:13.083Z","finishTime":"2019-01-16T14:00:13.083Z","status":"skipped","rank":7,"issues":[],"task":{"id":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","name":"PowerShell","version":"2.140.2"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"","resultCode":"Evaluating: succeeded()\r\nResult: False\r\n"}]}],"manualInterventions":[],"startedOn":"2019-01-16T13:59:41.19Z"}],"requestedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"requestedFor":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"queuedOn":"2019-01-16T13:59:39.5Z","lastModifiedBy":{"displayName":"Microsoft.VisualStudio.Services.ReleaseManagement","id":"0000000d-0000-8888-8000-000000000000","uniqueName":"0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288","descriptor":"s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"},"lastModifiedOn":"2019-01-16T14:00:14.14Z","hasStarted":true,"tasks":[],"runPlanId":"00000000-0000-0000-0000-000000000000","issues":[]},{"id":337,"deploymentId":148,"attempt":2,"reason":"manual","status":"succeeded","operationStatus":"Approved","releaseDeployPhases":[{"id":164,"phaseId":"164","name":"Run on agent","rank":1,"phaseType":"agentBasedDeployment","status":"succeeded","runPlanId":"40fecf01-f99f-49fc-9ea8-ab7d8ff2804f","deploymentJobs":[{"job":{"id":9,"timelineRecordId":"ed990d0b-2460-4315-a606-15ae6f1220ae","name":"Release","dateStarted":"2019-01-18T11:02:47.887Z","dateEnded":"2019-01-18T11:04:19.13Z","startTime":"2019-01-18T11:02:47.887Z","finishTime":"2019-01-18T11:04:19.13Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/9/logs"},"tasks":[{"id":2,"timelineRecordId":"645cf3aa-a457-4bfb-b0d9-71befabc7acb","name":"Initialize Job","dateStarted":"2019-01-18T11:02:48.897Z","dateEnded":"2019-01-18T11:02:49.09Z","startTime":"2019-01-18T11:02:48.897Z","finishTime":"2019-01-18T11:02:49.09Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/2/logs"},{"id":3,"timelineRecordId":"16f2d925-fc41-4a75-9c9c-9c170edb258e","name":"Download artifact - _SOx-compliant-demo-CI - drop","dateStarted":"2019-01-18T11:02:49.107Z","dateEnded":"2019-01-18T11:02:51.007Z","startTime":"2019-01-18T11:02:49.107Z","finishTime":"2019-01-18T11:02:51.007Z","status":"succeeded","rank":2,"issues":[],"task":{"id":"a433f589-fce1-4460-9ee6-44a624aeb1fb","name":"DownloadBuildArtifacts","version":"0.142.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/3/logs"},{"id":4,"timelineRecordId":"51e61c43-8554-46a9-8f14-ab39bba5bd29","name":"Create or Update a Resource Group","dateStarted":"2019-01-18T11:02:51.007Z","dateEnded":"2019-01-18T11:03:02.267Z","startTime":"2019-01-18T11:02:51.007Z","finishTime":"2019-01-18T11:03:02.267Z","status":"succeeded","rank":3,"issues":[],"task":{"id":"4ac6d781-1b39-4d55-9664-3cc571c44da9","name":"Rabobank-Azure-RG","version":"1.2.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/4/logs"},{"id":5,"timelineRecordId":"8a577cf0-a748-4bc3-b518-52cb971a1f11","name":"Create Azure App Service Plan if not exists","dateStarted":"2019-01-18T11:03:02.267Z","dateEnded":"2019-01-18T11:03:38.727Z","startTime":"2019-01-18T11:03:02.267Z","finishTime":"2019-01-18T11:03:38.727Z","status":"succeeded","rank":4,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/5/logs"},{"id":6,"timelineRecordId":"ff72e626-4459-4931-9f46-cd633aa613f4","name":"Create Azure Web App if not exists","dateStarted":"2019-01-18T11:03:38.727Z","dateEnded":"2019-01-18T11:04:00.57Z","startTime":"2019-01-18T11:03:38.727Z","finishTime":"2019-01-18T11:04:00.57Z","status":"succeeded","rank":5,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/6/logs"},{"id":7,"timelineRecordId":"791947e5-9b63-41ef-ab37-d9027d9a1144","name":"Deploy Azure App Service","dateStarted":"2019-01-18T11:04:00.57Z","dateEnded":"2019-01-18T11:04:17.47Z","startTime":"2019-01-18T11:04:00.57Z","finishTime":"2019-01-18T11:04:17.47Z","status":"succeeded","rank":6,"issues":[],"task":{"id":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","name":"AzureRmWebAppDeployment","version":"3.4.19"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/7/logs"},{"id":8,"timelineRecordId":"00ca790a-61c3-4a12-952e-071d79262e02","name":"Display URL of our sox-demo website","dateStarted":"2019-01-18T11:04:17.47Z","dateEnded":"2019-01-18T11:04:19.12Z","startTime":"2019-01-18T11:04:17.47Z","finishTime":"2019-01-18T11:04:19.12Z","status":"succeeded","rank":7,"issues":[],"task":{"id":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","name":"PowerShell","version":"2.140.2"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/8/logs"}]}],"manualInterventions":[],"startedOn":"2019-01-18T11:02:44.803Z"}],"requestedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"requestedFor":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"queuedOn":"2019-01-18T11:02:42.1Z","lastModifiedBy":{"displayName":"Microsoft.VisualStudio.Services.ReleaseManagement","id":"0000000d-0000-8888-8000-000000000000","uniqueName":"0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288","descriptor":"s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"},"lastModifiedOn":"2019-01-18T11:04:20.027Z","hasStarted":true,"tasks":[],"runPlanId":"00000000-0000-0000-0000-000000000000","issues":[]}],"rank":1,"definitionEnvironmentId":5,"environmentOptions":{"emailNotificationType":"OnlyOnFailure","emailRecipients":"release.environment.owner;release.creator","skipArtifactsDownload":false,"timeoutInMinutes":0,"enableAccessToken":false,"publishDeploymentStatus":true,"badgeEnabled":true,"autoLinkWorkItems":false,"pullRequestDeploymentEnabled":true},"demands":[],"conditions":[{"result":true,"name":"ReleaseStarted","conditionType":"event","value":""}],"createdOn":"2019-01-16T13:59:39.5Z","modifiedOn":"2019-01-18T11:04:20.027Z","workflowTasks":[],"deployPhasesSnapshot":[{"deploymentInput":{"parallelExecution":{"parallelExecutionType":"none"},"skipArtifactsDownload":false,"artifactsDownloadInput":{"downloadInputs":[]},"queueId":7046,"demands":[],"enableAccessToken":false,"timeoutInMinutes":0,"jobCancelTimeoutInMinutes":1,"condition":"succeeded()","overrideInputs":{}},"rank":1,"phaseType":"agentBasedDeployment","name":"Run on agent","refName":null,"workflowTasks":[{"environment":{},"taskId":"4ac6d781-1b39-4d55-9664-3cc571c44da9","version":"1.*","name":"Create or Update a Resource Group","refName":"somecompany","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceNameARM":"975b3603-9939-4f22-a5a9-baebb39b5dad","action":"create","applicationName":"s01soxdemo","resourceGroupName":"","location":"westeurope","organisationalGroup":"eu.res.AADAzure.devaut.us","applicationCI":"","incrementResourceGroupNameIfAlreadyExist":"false","resourceGroupSuffixNumber":"1"}},{"environment":{},"taskId":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","version":"2.*","name":"Create Azure App Service Plan if not exists","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceName":"","ConnectedServiceNameARM":"975b3603-9939-4f22-a5a9-baebb39b5dad","ScriptType":"InlineScript","ScriptPath":"","Inline":"$ifexists = get-azurermappserviceplan | where {$_.name -EQ \"$(AppServicePlan)\"}\n   if($exists) \n{echo 'serviceplan $(AppServicePlan) already exists...'}\n   else {\nNew-AzureRmAppServicePlan -Name $(AppServicePlan) -Location \"West Europe\" -ResourceGroupName $(somecompany.ResourceGroupName) -Tier Free   \n   }\n","ScriptArguments":"","TargetAzurePs":"OtherVersion","CustomTargetAzurePs":"5.1.1"}},{"environment":{},"taskId":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","version":"2.*","name":"Create Azure Web App if not exists","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceName":"","ConnectedServiceNameARM":"975b3603-9939-4f22-a5a9-baebb39b5dad","ScriptType":"InlineScript","ScriptPath":"","Inline":"$ifexistsWa = get-azurermWebApp | where {$_.name -EQ \"$(AppServiceName)\"}\n   if($existsWa) \n{echo 'webapp $(AppServiceName) already exists...'}\n   else {\nNew-AzureRmWebApp -Name $(AppServiceName) -AppServicePlan S01-soxdemo -ResourceGroupName $(somecompany.ResourceGroupName) -Location \"West Europe\" \n   }\n\n","ScriptArguments":"","TargetAzurePs":"OtherVersion","CustomTargetAzurePs":"5.1.1"}},{"environment":{},"taskId":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","version":"3.*","name":"Deploy Azure App Service","refName":"deploy","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":null,"overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceName":"$(Parameters.ConnectedServiceName)","WebAppKind":"$(Parameters.WebAppKind)","WebAppName":"$(Parameters.WebAppName)","DeployToSlotFlag":"false","ResourceGroupName":"","SlotName":"","ImageSource":"$(Parameters.ImageSource)","AzureContainerRegistry":"","AzureContainerRegistryLoginServer":"","AzureContainerRegistryImage":"","AzureContainerRegistryTag":"","DockerRepositoryAccess":"public","RegistryConnectedServiceName":"","PrivateRegistryImage":"","PrivateRegistryTag":"","DockerNamespace":"$(Parameters.DockerNamespace)","DockerRepository":"$(Parameters.DockerRepository)","DockerImageTag":"$(Build.BuildId)","VirtualApplication":"","Package":"$(System.DefaultWorkingDirectory)/**/*.zip","BuiltinLinuxPackage":"$(System.DefaultWorkingDirectory)/**/*.zip","RuntimeStack":"$(Parameters.RuntimeStack)","StartupCommand":"","WebAppUri":"url","ScriptType":"","InlineScript":"","ScriptPath":"","GenerateWebConfig":"false","WebConfigParameters":"","AppSettings":"","ConfigurationSettings":"","TakeAppOfflineFlag":"true","UseWebDeploy":"false","SetParametersFile":"","RemoveAdditionalFilesFlag":"false","ExcludeFilesFromAppDataFlag":"false","AdditionalArguments":"","RenameFilesFlag":"true","XmlTransformation":"false","XmlVariableSubstitution":"false","JSONFiles":""}},{"environment":{},"taskId":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","version":"2.*","name":"Display Url of our sox-demo website","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"targetType":"inline","filePath":"","arguments":"","script":"Write-Host \"The url of your deployed website\"\nWrite-Host $(url)","errorActionPreference":"stop","failOnStderr":"false","ignoreLASTEXITCODE":"false","pwsh":"false","workingDirectory":""}}]}],"owner":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"schedules":[],"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"},"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"}}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"},"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"}}},"releaseCreatedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"triggerReason":"ReleaseStarted","timeToDeploy":1.6268833333333335,"processParameters":{"inputs":[{"aliases":[],"options":{},"properties":{},"name":"ConnectedServiceName","label":"Azure subscription","defaultValue":"975b3603-9939-4f22-a5a9-baebb39b5dad","required":true,"type":"connectedService:AzureRM","helpMarkDown":"Select the Azure Resource Manager subscription for the deployment.","visibleRule":"","groupName":""},{"aliases":[],"options":{"app":"Web App","applinux":"Linux App","functionapp":"Function App","api":"API App","mobileapp":"Mobile App"},"properties":{"EditableOptions":"false"},"name":"WebAppKind","label":"App type","defaultValue":"app","type":"pickList","helpMarkDown":"","groupName":""},{"aliases":[],"options":{},"properties":{"EditableOptions":"True"},"name":"WebAppName","label":"App service name","defaultValue":"$(AppServiceName)","required":true,"type":"pickList","helpMarkDown":"Enter or select the name of an existing Azure App Service.","visibleRule":"","groupName":""},{"aliases":[],"options":{"Registry":"Container Registry","Builtin":"Built-in Image"},"properties":{},"name":"ImageSource","label":"Image Source","defaultValue":"Registry","required":true,"type":"pickList","helpMarkDown":"App Service on Linux offers two different options to publish your application <br/> Custom image deployment or App deployment with a built-in platform image. [Learn More](https://go.microsoft.com/fwlink/?linkid=862490)","visibleRule":"WebAppKind = applinux","groupName":""},{"aliases":[],"options":{},"properties":{},"name":"DockerNamespace","label":"Registry or Namespace","defaultValue":"","required":true,"type":"string","helpMarkDown":"A globally unique top-level domain name for your specific registry or namespace.<br/> Note: Fully qualified image name will be of the format: '<b>`<registry or namespace`></b>/`<repository`>:`<tag`>'. For example, '<b>myregistry.azurecr.io</b>/nginx:latest'.","visibleRule":"WebAppKind = applinux && ImageSource = Registry","groupName":""},{"aliases":[],"options":{},"properties":{},"name":"DockerRepository","label":"Repository","defaultValue":"","required":true,"type":"string","helpMarkDown":"Name of the repository where the container images are stored.<br/> Note: Fully qualified image name will be of the format: '`<registry or namespace`>/<b>`<repository`></b>:`<tag`>'. For example, 'myregistry.azurecr.io/<b>nginx</b>:latest'.","visibleRule":"WebAppKind = applinux && ImageSource = Registry","groupName":""},{"aliases":[],"options":{"node|4.4":"Node.js 4.4","node|4.5":"Node.js 4.5","node|6.2":"Node.js 6.2","node|6.6":"Node.js 6.6","node|6.9":"Node.js 6.9","node|6.10":"Node.js 6.10","node|6.11":"Node.js 6.11","node|8.0":"Node.js 8.0","node|8.1":"Node.js 8.1","php|5.6":"PHP 5.6","php|7.0":"PHP 7.0","dotnetcore|1.0":".NET Core 1.0","dotnetcore|1.1":".NET Core 1.1","dotnetcore|2.0":".NET Core 2.0","ruby|2.3":"Ruby 2.3"},"properties":{},"name":"RuntimeStack","label":"Runtime Stack","defaultValue":"","required":true,"type":"pickList","helpMarkDown":"Select the framework and version.","visibleRule":"WebAppKind = applinux && ImageSource = Builtin"}],"dataSourceBindings":[{"dataSourceName":"AzureRMWebAppNamesByType","parameters":{"WebAppKind":"$(WebAppKind)"},"endpointId":"$(ConnectedServiceName)","target":"WebAppName"}]},"preDeploymentGatesSnapshot":{"id":0,"gatesOptions":null,"gates":[]},"postDeploymentGatesSnapshot":{"id":0,"gatesOptions":null,"gates":[]}},{"id":151,"releaseId":79,"name":"P02 - Prod","status":"succeeded","variables":{"AppServiceName":{"value":"P02-soxdemo-01"},"AppServicePlan":{"value":"P02-soxdemo"}},"variableGroups":[],"preDeployApprovals":[{"id":332,"revision":2,"approver":{"displayName":"Manuel Riezebosch","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"}},"id":"ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","uniqueName":"Manuel.Riezebosch@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","descriptor":"aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"},"approvedBy":{"displayName":"Manuel Riezebosch","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"}},"id":"ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","uniqueName":"Manuel.Riezebosch@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","descriptor":"aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"},"approvalType":"preDeploy","createdOn":"2019-01-16T13:59:49.25Z","modifiedOn":"2019-01-16T14:01:56.19Z","status":"approved","comments":"","isAutomated":false,"isNotificationOn":false,"trialNumber":1,"attempt":1,"rank":1,"history":[{"revision":1,"comments":"","approver":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"changedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"createdOn":"2019-01-16T14:00:00.203Z","modifiedOn":"2019-01-16T14:00:00.203Z"}],"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":151,"name":"P02 - Prod","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/332"},{"id":339,"revision":2,"approver":{"displayName":"[TAS]\\Electron","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/vssgp.Uy0xLTktMTU1MTM3NDI0NS00MjEwOTA1MDc4LTEzMDk0NjQ4OTYtMjU1MTAzNjgwNC0yMDMzNjEwNjkzLTEtNDA5NjY4NTQ4My0yMTczMDgyNDQ2LTI5NjUwNTY0OTgtNTIxNDA3MDIy"}},"id":"ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15","uniqueName":"vstfs:///Classification/TeamProject/f64ffdfa-0c4e-40d9-980d-bb8479366fc5\\Electron","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15","isContainer":true,"descriptor":"vssgp.Uy0xLTktMTU1MTM3NDI0NS00MjEwOTA1MDc4LTEzMDk0NjQ4OTYtMjU1MTAzNjgwNC0yMDMzNjEwNjkzLTEtNDA5NjY4NTQ4My0yMTczMDgyNDQ2LTI5NjUwNTY0OTgtNTIxNDA3MDIy"},"approvedBy":{"displayName":"Jasper Gilhuis","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/a60b02bf-13d1-605f-b6e6-e19ec16eccb5","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YTYwYjAyYmYtMTNkMS03MDVmLWI2ZTYtZTE5ZWMxNmVjY2I1"}},"id":"a60b02bf-13d1-605f-b6e6-e19ec16eccb5","uniqueName":"Jasper.Gilhuis@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=a60b02bf-13d1-605f-b6e6-e19ec16eccb5","descriptor":"aad.YTYwYjAyYmYtMTNkMS03MDVmLWI2ZTYtZTE5ZWMxNmVjY2I1"},"approvalType":"preDeploy","createdOn":"2019-01-18T11:57:10.15Z","modifiedOn":"2019-01-18T12:39:54.947Z","status":"approved","comments":"","isAutomated":false,"isNotificationOn":false,"trialNumber":2,"attempt":2,"rank":1,"history":[{"revision":1,"comments":"","approver":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"changedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"createdOn":"2019-01-18T12:34:50.86Z","modifiedOn":"2019-01-18T12:34:50.86Z"}],"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":151,"name":"P02 - Prod","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/339"}],"postDeployApprovals":[{"id":335,"revision":1,"approvalType":"postDeploy","createdOn":"2019-01-16T14:03:36.11Z","modifiedOn":"2019-01-16T14:03:36.127Z","status":"approved","comments":"","isAutomated":true,"isNotificationOn":false,"trialNumber":1,"attempt":1,"rank":3,"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":151,"name":"P02 - Prod","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/335"},{"id":342,"revision":1,"approvalType":"postDeploy","createdOn":"2019-01-18T12:41:41.4Z","modifiedOn":"2019-01-18T12:41:41.4Z","status":"approved","comments":"","isAutomated":true,"isNotificationOn":false,"trialNumber":2,"attempt":2,"rank":3,"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{}},"releaseEnvironment":{"id":151,"name":"P02 - Prod","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151","_links":{}},"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/342"}],"preApprovalsSnapshot":{"approvals":[{"rank":1,"isAutomated":false,"isNotificationOn":false,"approver":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"id":0}],"approvalOptions":{"requiredApproverCount":0,"releaseCreatorCanBeApprover":false,"autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,"enforceIdentityRevalidation":false,"timeoutInMinutes":0,"executionOrder":"beforeGates"}},"postApprovalsSnapshot":{"approvals":[{"rank":1,"isAutomated":true,"isNotificationOn":false,"id":0}],"approvalOptions":{"requiredApproverCount":0,"releaseCreatorCanBeApprover":false,"autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,"enforceIdentityRevalidation":false,"timeoutInMinutes":0,"executionOrder":"afterSuccessfulGates"}},"deploySteps":[{"id":334,"deploymentId":147,"attempt":1,"reason":"manual","status":"succeeded","operationStatus":"Approved","releaseDeployPhases":[{"id":163,"phaseId":"163","name":"Run on agent","rank":1,"phaseType":"agentBasedDeployment","status":"succeeded","runPlanId":"612557c9-ad3d-4945-bc40-4ecd572f902f","deploymentJobs":[{"job":{"id":9,"timelineRecordId":"56c55ecd-0790-434f-9661-0fefa10f700d","name":"Release","dateStarted":"2019-01-16T14:02:00.837Z","dateEnded":"2019-01-16T14:03:34.41Z","startTime":"2019-01-16T14:02:00.837Z","finishTime":"2019-01-16T14:03:34.41Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/9/logs"},"tasks":[{"id":2,"timelineRecordId":"5dc252c5-0001-466a-a7cf-7c473637f2f6","name":"Initialize Job","dateStarted":"2019-01-16T14:02:01.877Z","dateEnded":"2019-01-16T14:02:02.057Z","startTime":"2019-01-16T14:02:01.877Z","finishTime":"2019-01-16T14:02:02.057Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/2/logs"},{"id":3,"timelineRecordId":"9b4b1367-1c9b-4a73-bdec-b32725cba12c","name":"Download artifact - _SOx-compliant-demo-CI - drop","dateStarted":"2019-01-16T14:02:02.07Z","dateEnded":"2019-01-16T14:02:03.9Z","startTime":"2019-01-16T14:02:02.07Z","finishTime":"2019-01-16T14:02:03.9Z","status":"succeeded","rank":2,"issues":[],"task":{"id":"a433f589-fce1-4460-9ee6-44a624aeb1fb","name":"DownloadBuildArtifacts","version":"0.142.3"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/3/logs"},{"id":4,"timelineRecordId":"64f6367f-07e0-4708-a4c6-764cd925b813","name":"Create or Update a Resource Group","dateStarted":"2019-01-16T14:02:03.9Z","dateEnded":"2019-01-16T14:02:09.493Z","startTime":"2019-01-16T14:02:03.9Z","finishTime":"2019-01-16T14:02:09.493Z","status":"succeeded","rank":3,"issues":[],"task":{"id":"4ac6d781-1b39-4d55-9664-3cc571c44da9","name":"Rabobank-Azure-RG","version":"1.2.3"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/4/logs"},{"id":5,"timelineRecordId":"9eee9997-1a86-4a9f-8aac-987e60527382","name":"Create Azure App Service Plan if not exists","dateStarted":"2019-01-16T14:02:09.497Z","dateEnded":"2019-01-16T14:02:47.73Z","startTime":"2019-01-16T14:02:09.497Z","finishTime":"2019-01-16T14:02:47.73Z","status":"succeeded","rank":4,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/5/logs"},{"id":6,"timelineRecordId":"bd60d7e8-88bd-43dd-b817-c69e71bcf099","name":"Create Azure Web App if not exists","dateStarted":"2019-01-16T14:02:47.733Z","dateEnded":"2019-01-16T14:03:11.597Z","startTime":"2019-01-16T14:02:47.733Z","finishTime":"2019-01-16T14:03:11.597Z","status":"succeeded","rank":5,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/6/logs"},{"id":7,"timelineRecordId":"00442fcb-fb60-4ce1-911e-a6910a9bdc8c","name":"Deploy Azure App Service","dateStarted":"2019-01-16T14:03:11.597Z","dateEnded":"2019-01-16T14:03:32.827Z","startTime":"2019-01-16T14:03:11.597Z","finishTime":"2019-01-16T14:03:32.827Z","status":"succeeded","rank":6,"issues":[],"task":{"id":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","name":"AzureRmWebAppDeployment","version":"3.4.19"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/7/logs"},{"id":8,"timelineRecordId":"cb63f4d4-d3de-4673-8280-4ab2f5b8eab8","name":"Display URL of our sox-demo website","dateStarted":"2019-01-16T14:03:32.827Z","dateEnded":"2019-01-16T14:03:34.4Z","startTime":"2019-01-16T14:03:32.827Z","finishTime":"2019-01-16T14:03:34.4Z","status":"succeeded","rank":7,"issues":[],"task":{"id":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","name":"PowerShell","version":"2.140.2"},"agentName":"windows-agent-2-54262-1450-000007-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/8/logs"}]}],"manualInterventions":[],"startedOn":"2019-01-16T14:01:57.597Z"}],"requestedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"requestedFor":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"queuedOn":"2019-01-16T13:59:49.11Z","lastModifiedBy":{"displayName":"Microsoft.VisualStudio.Services.ReleaseManagement","id":"0000000d-0000-8888-8000-000000000000","uniqueName":"0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288","descriptor":"s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"},"lastModifiedOn":"2019-01-16T14:03:36.127Z","hasStarted":true,"tasks":[],"runPlanId":"00000000-0000-0000-0000-000000000000","issues":[]},{"id":341,"deploymentId":149,"attempt":2,"reason":"manual","status":"succeeded","operationStatus":"Approved","releaseDeployPhases":[{"id":165,"phaseId":"165","name":"Run on agent","rank":1,"phaseType":"agentBasedDeployment","status":"succeeded","runPlanId":"48549832-4ed0-40eb-bad1-1595b0311b17","deploymentJobs":[{"job":{"id":9,"timelineRecordId":"95c4a3aa-5896-45ef-a1eb-aa4334b0a406","name":"Release","dateStarted":"2019-01-18T12:40:00.593Z","dateEnded":"2019-01-18T12:41:39.92Z","startTime":"2019-01-18T12:40:00.593Z","finishTime":"2019-01-18T12:41:39.92Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/9/logs"},"tasks":[{"id":2,"timelineRecordId":"f4f880ea-c146-4206-af8d-b5e760bfaca5","name":"Initialize Job","dateStarted":"2019-01-18T12:40:01.603Z","dateEnded":"2019-01-18T12:40:01.797Z","startTime":"2019-01-18T12:40:01.603Z","finishTime":"2019-01-18T12:40:01.797Z","status":"succeeded","rank":1,"issues":[],"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/2/logs"},{"id":3,"timelineRecordId":"17938eb8-e74d-4db7-a86e-6a7e86e8269e","name":"Download artifact - _SOx-compliant-demo-CI - drop","dateStarted":"2019-01-18T12:40:01.813Z","dateEnded":"2019-01-18T12:40:03.68Z","startTime":"2019-01-18T12:40:01.813Z","finishTime":"2019-01-18T12:40:03.68Z","status":"succeeded","rank":2,"issues":[],"task":{"id":"a433f589-fce1-4460-9ee6-44a624aeb1fb","name":"DownloadBuildArtifacts","version":"0.142.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/3/logs"},{"id":4,"timelineRecordId":"642f9198-c7e4-4c86-bde9-13ca7807670a","name":"Create or Update a Resource Group","dateStarted":"2019-01-18T12:40:03.683Z","dateEnded":"2019-01-18T12:40:15.787Z","startTime":"2019-01-18T12:40:03.683Z","finishTime":"2019-01-18T12:40:15.787Z","status":"succeeded","rank":3,"issues":[],"task":{"id":"4ac6d781-1b39-4d55-9664-3cc571c44da9","name":"Rabobank-Azure-RG","version":"1.2.3"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/4/logs"},{"id":5,"timelineRecordId":"f743d023-1371-4cdb-8058-c25151460dde","name":"Create Azure App Service Plan if not exists","dateStarted":"2019-01-18T12:40:15.787Z","dateEnded":"2019-01-18T12:40:51.947Z","startTime":"2019-01-18T12:40:15.787Z","finishTime":"2019-01-18T12:40:51.947Z","status":"succeeded","rank":4,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/5/logs"},{"id":6,"timelineRecordId":"b594e552-7d1d-4358-8355-c68ef421ee6f","name":"Create Azure Web App if not exists","dateStarted":"2019-01-18T12:40:51.95Z","dateEnded":"2019-01-18T12:41:14.03Z","startTime":"2019-01-18T12:40:51.95Z","finishTime":"2019-01-18T12:41:14.03Z","status":"succeeded","rank":5,"issues":[],"task":{"id":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","name":"AzurePowerShell","version":"2.1.7"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/6/logs"},{"id":7,"timelineRecordId":"ba1fb570-9a8e-430f-8faa-e39da5eb2198","name":"Deploy Azure App Service","dateStarted":"2019-01-18T12:41:14.033Z","dateEnded":"2019-01-18T12:41:38.273Z","startTime":"2019-01-18T12:41:14.033Z","finishTime":"2019-01-18T12:41:38.273Z","status":"succeeded","rank":6,"issues":[],"task":{"id":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","name":"AzureRmWebAppDeployment","version":"3.4.19"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/7/logs"},{"id":8,"timelineRecordId":"5558fa34-cdfe-4771-a35b-0cbeccc386ab","name":"Display URL of our sox-demo website","dateStarted":"2019-01-18T12:41:38.273Z","dateEnded":"2019-01-18T12:41:39.913Z","startTime":"2019-01-18T12:41:38.273Z","finishTime":"2019-01-18T12:41:39.913Z","status":"succeeded","rank":7,"issues":[],"task":{"id":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","name":"PowerShell","version":"2.140.2"},"agentName":"windows-agent-2-54262-1450-000002-1","logUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/8/logs"}]}],"manualInterventions":[],"startedOn":"2019-01-18T12:39:57.257Z"}],"requestedBy":{"displayName":"Manuel Riezebosch","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"}},"id":"ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","uniqueName":"Manuel.Riezebosch@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","descriptor":"aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"},"requestedFor":{"displayName":"Manuel Riezebosch","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"}},"id":"ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","uniqueName":"Manuel.Riezebosch@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c","descriptor":"aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"},"queuedOn":"2019-01-18T11:57:10.023Z","lastModifiedBy":{"displayName":"Microsoft.VisualStudio.Services.ReleaseManagement","id":"0000000d-0000-8888-8000-000000000000","uniqueName":"0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288","descriptor":"s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"},"lastModifiedOn":"2019-01-18T12:41:41.413Z","hasStarted":true,"tasks":[],"runPlanId":"00000000-0000-0000-0000-000000000000","issues":[]}],"rank":2,"definitionEnvironmentId":7,"environmentOptions":{"emailNotificationType":"OnlyOnFailure","emailRecipients":"release.environment.owner;release.creator","skipArtifactsDownload":false,"timeoutInMinutes":0,"enableAccessToken":false,"publishDeploymentStatus":true,"badgeEnabled":true,"autoLinkWorkItems":false,"pullRequestDeploymentEnabled":true},"demands":[],"conditions":[{"result":false,"name":"S01 - Test","conditionType":"environmentState","value":"4"}],"createdOn":"2019-01-16T13:59:49.11Z","modifiedOn":"2019-01-18T12:41:41.4Z","workflowTasks":[],"deployPhasesSnapshot":[{"deploymentInput":{"parallelExecution":{"parallelExecutionType":"none"},"skipArtifactsDownload":false,"artifactsDownloadInput":{"downloadInputs":[{"artifactItems":[],"alias":"_SOx-compliant-demo-CI","artifactType":"Build","artifactDownloadMode":"All"}]},"queueId":7046,"demands":[],"enableAccessToken":false,"timeoutInMinutes":0,"jobCancelTimeoutInMinutes":1,"condition":"succeeded()","overrideInputs":{}},"rank":1,"phaseType":"agentBasedDeployment","name":"Run on agent","refName":null,"workflowTasks":[{"environment":{},"taskId":"4ac6d781-1b39-4d55-9664-3cc571c44da9","version":"1.*","name":"Create or Update a Resource Group","refName":"somecompany","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceNameARM":"64f85840-08f0-48ec-80ec-283c068a2583","action":"create","applicationName":"p02soxdemo","resourceGroupName":"","location":"westeurope","organisationalGroup":"eu.res.AADAzure.devaut.us","applicationCI":"","incrementResourceGroupNameIfAlreadyExist":"false","resourceGroupSuffixNumber":"1"}},{"environment":{},"taskId":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","version":"2.*","name":"Create Azure App Service Plan if not exists","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceName":"","ConnectedServiceNameARM":"64f85840-08f0-48ec-80ec-283c068a2583","ScriptType":"InlineScript","ScriptPath":"","Inline":"$ifexists = get-azurermappserviceplan | where {$_.name -EQ \"$(AppServicePlan)\"}\n   if($exists) \n{echo 'serviceplan $(AppServicePlan) already exists...'}\n   else {\nNew-AzureRmAppServicePlan -Name $(AppServicePlan) -Location \"West Europe\" -ResourceGroupName $(somecompany.ResourceGroupName) -Tier Free   \n   }\n","ScriptArguments":"","TargetAzurePs":"OtherVersion","CustomTargetAzurePs":"5.1.1"}},{"environment":{},"taskId":"72a1931b-effb-4d2e-8fd8-f8472a07cb62","version":"2.*","name":"Create Azure Web App if not exists","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceNameSelector":"ConnectedServiceNameARM","ConnectedServiceName":"","ConnectedServiceNameARM":"64f85840-08f0-48ec-80ec-283c068a2583","ScriptType":"InlineScript","ScriptPath":"","Inline":"$ifexistsWa = get-azurermWebApp | where {$_.name -EQ \"$(AppServiceName)\"}\n   if($existsWa) \n{echo 'webapp $(AppServiceName) already exists...'}\n   else {\nNew-AzureRmWebApp -Name $(AppServiceName) -AppServicePlan $(AppServicePlan) -ResourceGroupName $(somecompany.ResourceGroupName) -Location \"West Europe\" \n   }\n\n","ScriptArguments":"","TargetAzurePs":"OtherVersion","CustomTargetAzurePs":"5.1.1"}},{"environment":{},"taskId":"497d490f-eea7-4f2b-ab94-48d9c1acdcb1","version":"3.*","name":"Deploy Azure App Service","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":null,"overrideInputs":{},"condition":"succeeded()","inputs":{"ConnectedServiceName":"$(Parameters.ConnectedServiceName)","WebAppKind":"$(Parameters.WebAppKind)","WebAppName":"$(Parameters.WebAppName)","DeployToSlotFlag":"false","ResourceGroupName":"","SlotName":"","ImageSource":"$(Parameters.ImageSource)","AzureContainerRegistry":"","AzureContainerRegistryLoginServer":"","AzureContainerRegistryImage":"","AzureContainerRegistryTag":"","DockerRepositoryAccess":"public","RegistryConnectedServiceName":"","PrivateRegistryImage":"","PrivateRegistryTag":"","DockerNamespace":"$(Parameters.DockerNamespace)","DockerRepository":"$(Parameters.DockerRepository)","DockerImageTag":"$(Build.BuildId)","VirtualApplication":"","Package":"$(System.DefaultWorkingDirectory)/**/*.zip","BuiltinLinuxPackage":"$(System.DefaultWorkingDirectory)/**/*.zip","RuntimeStack":"$(Parameters.RuntimeStack)","StartupCommand":"","WebAppUri":"url","ScriptType":"","InlineScript":"","ScriptPath":"","GenerateWebConfig":"false","WebConfigParameters":"","AppSettings":"","ConfigurationSettings":"","TakeAppOfflineFlag":"true","UseWebDeploy":"false","SetParametersFile":"","RemoveAdditionalFilesFlag":"false","ExcludeFilesFromAppDataFlag":"false","AdditionalArguments":"","RenameFilesFlag":"true","XmlTransformation":"false","XmlVariableSubstitution":"false","JSONFiles":""}},{"environment":{},"taskId":"e213ff0f-5d5c-4791-802d-52ea3e7be1f1","version":"2.*","name":"Display URL of our sox-demo website","refName":"","enabled":true,"alwaysRun":false,"continueOnError":false,"timeoutInMinutes":0,"definitionType":"task","overrideInputs":{},"condition":"succeeded()","inputs":{"targetType":"inline","filePath":"","arguments":"","script":"Write-Host \"The url of your deployed website\"\nWrite-Host $(url)","errorActionPreference":"stop","failOnStderr":"false","ignoreLASTEXITCODE":"false","pwsh":"false","workingDirectory":""}}]}],"owner":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"schedules":[],"release":{"id":79,"name":"Release-48","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"},"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"}}},"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"},"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"}}},"releaseCreatedBy":{"displayName":"Pruyssenaere de la Woestijne de, L (Leon)","url":"https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","_links":{"avatar":{"href":"https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"}},"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","uniqueName":"Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl","imageUrl":"https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","descriptor":"aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"},"triggerReason":"After successful deployment of S01 - Test","timeToDeploy":1.7716166666666666,"processParameters":{"inputs":[{"aliases":[],"options":{},"properties":{},"name":"ConnectedServiceName","label":"Azure subscription","defaultValue":"64f85840-08f0-48ec-80ec-283c068a2583","required":true,"type":"connectedService:AzureRM","helpMarkDown":"Select the Azure Resource Manager subscription for the deployment.","visibleRule":"","groupName":""},{"aliases":[],"options":{"app":"Web App","applinux":"Linux App","functionapp":"Function App","api":"API App","mobileapp":"Mobile App"},"properties":{"EditableOptions":"false"},"name":"WebAppKind","label":"App type","defaultValue":"app","type":"pickList","helpMarkDown":"","groupName":""},{"aliases":[],"options":{},"properties":{"EditableOptions":"True"},"name":"WebAppName","label":"App service name","defaultValue":"$(AppServiceName)","required":true,"type":"pickList","helpMarkDown":"Enter or select the name of an existing Azure App Service.","visibleRule":"","groupName":""},{"aliases":[],"options":{"Registry":"Container Registry","Builtin":"Built-in Image"},"properties":{},"name":"ImageSource","label":"Image Source","defaultValue":"Registry","required":true,"type":"pickList","helpMarkDown":"App Service on Linux offers two different options to publish your application <br/> Custom image deployment or App deployment with a built-in platform image. [Learn More](https://go.microsoft.com/fwlink/?linkid=862490)","visibleRule":"WebAppKind = applinux","groupName":""},{"aliases":[],"options":{},"properties":{},"name":"DockerNamespace","label":"Registry or Namespace","defaultValue":"","required":true,"type":"string","helpMarkDown":"A globally unique top-level domain name for your specific registry or namespace.<br/> Note: Fully qualified image name will be of the format: '<b>`<registry or namespace`></b>/`<repository`>:`<tag`>'. For example, '<b>myregistry.azurecr.io</b>/nginx:latest'.","visibleRule":"WebAppKind = applinux && ImageSource = Registry","groupName":""},{"aliases":[],"options":{},"properties":{},"name":"DockerRepository","label":"Repository","defaultValue":"","required":true,"type":"string","helpMarkDown":"Name of the repository where the container images are stored.<br/> Note: Fully qualified image name will be of the format: '`<registry or namespace`>/<b>`<repository`></b>:`<tag`>'. For example, 'myregistry.azurecr.io/<b>nginx</b>:latest'.","visibleRule":"WebAppKind = applinux && ImageSource = Registry","groupName":""},{"aliases":[],"options":{"node|4.4":"Node.js 4.4","node|4.5":"Node.js 4.5","node|6.2":"Node.js 6.2","node|6.6":"Node.js 6.6","node|6.9":"Node.js 6.9","node|6.10":"Node.js 6.10","node|6.11":"Node.js 6.11","node|8.0":"Node.js 8.0","node|8.1":"Node.js 8.1","php|5.6":"PHP 5.6","php|7.0":"PHP 7.0","dotnetcore|1.0":".NET Core 1.0","dotnetcore|1.1":".NET Core 1.1","dotnetcore|2.0":".NET Core 2.0","ruby|2.3":"Ruby 2.3"},"properties":{},"name":"RuntimeStack","label":"Runtime Stack","defaultValue":"","required":true,"type":"pickList","helpMarkDown":"Select the framework and version.","visibleRule":"WebAppKind = applinux && ImageSource = Builtin"}],"dataSourceBindings":[{"dataSourceName":"AzureRMWebAppNamesByType","parameters":{"WebAppKind":"$(WebAppKind)"},"endpointId":"$(ConnectedServiceName)","target":"WebAppName"}]},"preDeploymentGatesSnapshot":{"id":0,"gatesOptions":null,"gates":[]},"postDeploymentGatesSnapshot":{"id":0,"gatesOptions":null,"gates":[]}}],"variables":{},"variableGroups":[],"artifacts":[{"sourceId":"5470b9fd-156e-4308-a82c-c92886b5a99b:2899","type":"Build","alias":"_SOx-compliant-demo-CI","definitionReference":{"artifactSourceDefinitionUrl":{"id":"https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=5470b9fd-156e-4308-a82c-c92886b5a99b&definitionId=2899","name":""},"buildUri":{"id":"vstfs:///Build/Build/72713","name":null},"definition":{"id":"2899","name":"SOx-compliant-demo-CI"},"IsMultiDefinitionType":{"id":"False","name":"False"},"IsXamlBuildArtifactType":{"id":"False","name":null},"pullRequestMergeCommitId":{"id":"ccc5a1634b5b441a783fb517e9b52f3b815f415b","name":null},"project":{"id":"5470b9fd-156e-4308-a82c-c92886b5a99b","name":"SOx-compliant-demo"},"repository.id":{"id":"a14f2dd5-07fe-4c88-9ceb-7ac32f79bb4a","name":null},"repository.name":{"id":"dotnetcoresample","name":null},"repository.provider":{"id":"TfsGit","name":null},"repository":{"id":"a14f2dd5-07fe-4c88-9ceb-7ac32f79bb4a","name":"dotnetcoresample"},"requestedFor":{"id":"Pruyssenaere de la Woestijne de, L (Leon)","name":null},"requestedForId":{"id":"404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba","name":null},"sourceVersion":{"id":"ccc5a1634b5b441a783fb517e9b52f3b815f415b","name":null},"version":{"id":"72713","name":"20190115.3"},"artifactSourceVersionUrl":{"id":"https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=5470b9fd-156e-4308-a82c-c92886b5a99b&buildId=72713","name":""},"branch":{"id":"refs/heads/ymlfileupdate","name":"refs/heads/ymlfileupdate"}},"isPrimary":true,"isRetained":true}],"releaseDefinition":{"id":2,"name":"demo SOx","path":"\\","projectReference":null,"url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2","_links":{"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"},"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"}}},"description":"","reason":"manual","releaseNameFormat":"Release-$(rev:r)","keepForever":false,"definitionSnapshotRevision":1,"logsContainerUrl":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/logs","url":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79","_links":{"self":{"href":"https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"},"web":{"href":"https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"}},"tags":[],"triggeringArtifactAlias":null,"projectReference":{"id":"5470b9fd-156e-4308-a82c-c92886b5a99b","name":null},"properties":{}}
+{
+  "id": 79,
+  "name": "Release-48",
+  "status": "active",
+  "createdOn": "2019-01-16T13:59:39.423Z",
+  "modifiedOn": "2019-01-16T13:59:39.423Z",
+  "modifiedBy": {
+    "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+    "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "_links": {
+      "avatar": {
+        "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      }
+    },
+    "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+    "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+  },
+  "createdBy": {
+    "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+    "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "_links": {
+      "avatar": {
+        "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      }
+    },
+    "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+    "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+    "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+  },
+  "environments": [
+    {
+      "id": 150,
+      "releaseId": 79,
+      "name": "S01 - Test",
+      "status": "succeeded",
+      "variables": {
+        "AppServiceName": {
+          "value": "S01-soxdemo-01"
+        },
+        "AppServicePlan": {
+          "value": "S01-soxdemo"
+        }
+      },
+      "variableGroups": [],
+      "preDeployApprovals": [
+        {
+          "id": 330,
+          "revision": 1,
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-16T13:59:39.72Z",
+          "modifiedOn": "2019-01-16T13:59:39.75Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 1,
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 150,
+            "name": "S01 - Test",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/330"
+        },
+        {
+          "id": 336,
+          "revision": 1,
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-18T11:02:42.29Z",
+          "modifiedOn": "2019-01-18T11:02:42.303Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 2,
+          "attempt": 2,
+          "rank": 1,
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 150,
+            "name": "S01 - Test",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/336"
+        }
+      ],
+      "postDeployApprovals": [
+        {
+          "id": 338,
+          "revision": 1,
+          "approvalType": "postDeploy",
+          "createdOn": "2019-01-18T11:04:20.01Z",
+          "modifiedOn": "2019-01-18T11:04:20.027Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 2,
+          "attempt": 2,
+          "rank": 3,
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 150,
+            "name": "S01 - Test",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/338"
+        }
+      ],
+      "preApprovalsSnapshot": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false,
+            "id": 0
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": "beforeGates"
+        }
+      },
+      "postApprovalsSnapshot": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false,
+            "id": 0
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": "afterSuccessfulGates"
+        }
+      },
+      "deploySteps": [
+        {
+          "id": 331,
+          "deploymentId": 146,
+          "attempt": 1,
+          "reason": "automated",
+          "status": "failed",
+          "operationStatus": "PhaseFailed",
+          "releaseDeployPhases": [
+            {
+              "id": 162,
+              "phaseId": "162",
+              "name": "Run on agent",
+              "rank": 1,
+              "phaseType": "agentBasedDeployment",
+              "status": "failed",
+              "runPlanId": "f056c9ee-461a-4bee-af2d-2e091114aedc",
+              "deploymentJobs": [
+                {
+                  "job": {
+                    "id": 5,
+                    "timelineRecordId": "cac5dee5-83c7-403a-a4ec-b0f699b4915a",
+                    "name": "Release",
+                    "dateStarted": "2019-01-16T13:59:44.96Z",
+                    "dateEnded": "2019-01-16T14:00:13.09Z",
+                    "startTime": "2019-01-16T13:59:44.96Z",
+                    "finishTime": "2019-01-16T14:00:13.09Z",
+                    "status": "failed",
+                    "rank": 1,
+                    "issues": [],
+                    "agentName": "windows-agent-2-54262-1450-000002-1",
+                    "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/5/logs"
+                  },
+                  "tasks": [
+                    {
+                      "id": 2,
+                      "timelineRecordId": "c5b14d43-888c-4c7c-b43b-fb55d853d00f",
+                      "name": "Initialize Job",
+                      "dateStarted": "2019-01-16T13:59:45.993Z",
+                      "dateEnded": "2019-01-16T13:59:46.183Z",
+                      "startTime": "2019-01-16T13:59:45.993Z",
+                      "finishTime": "2019-01-16T13:59:46.183Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/2/logs"
+                    },
+                    {
+                      "id": 3,
+                      "timelineRecordId": "0c5ce268-711d-456e-9c79-549558437684",
+                      "name": "Download artifact - _SOx-compliant-demo-CI - drop",
+                      "dateStarted": "2019-01-16T13:59:46.203Z",
+                      "dateEnded": "2019-01-16T13:59:48.053Z",
+                      "startTime": "2019-01-16T13:59:46.203Z",
+                      "finishTime": "2019-01-16T13:59:48.053Z",
+                      "status": "succeeded",
+                      "rank": 2,
+                      "issues": [],
+                      "task": {
+                        "id": "a433f589-fce1-4460-9ee6-44a624aeb1fb",
+                        "name": "DownloadBuildArtifacts",
+                        "version": "0.142.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/3/logs"
+                    },
+                    {
+                      "id": 4,
+                      "timelineRecordId": "a19a2160-5f46-40da-ac47-7faf311ae87b",
+                      "name": "Create or Update a Resource Group",
+                      "dateStarted": "2019-01-16T13:59:48.053Z",
+                      "dateEnded": "2019-01-16T14:00:13.08Z",
+                      "startTime": "2019-01-16T13:59:48.053Z",
+                      "finishTime": "2019-01-16T14:00:13.08Z",
+                      "status": "failed",
+                      "rank": 3,
+                      "issues": [
+                        {
+                          "issueType": "Error",
+                          "message": "Create azure resource group failed unexpected",
+                          "data": {
+                            "type": "error",
+                            "logFileLineNumber": "10"
+                          }
+                        }
+                      ],
+                      "task": {
+                        "id": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+                        "name": "Rabobank-Azure-RG",
+                        "version": "1.2.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/162/tasks/4/logs"
+                    },
+                    {
+                      "id": 0,
+                      "timelineRecordId": "1d457cac-4a03-4b7b-b8f3-6642e97ac327",
+                      "name": "Create Azure App Service Plan if not exists",
+                      "dateStarted": "2019-01-16T14:00:13.08Z",
+                      "dateEnded": "2019-01-16T14:00:13.08Z",
+                      "startTime": "2019-01-16T14:00:13.08Z",
+                      "finishTime": "2019-01-16T14:00:13.08Z",
+                      "status": "skipped",
+                      "rank": 4,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "",
+                      "resultCode": "Evaluating: succeeded()\r\nResult: False\r\n"
+                    },
+                    {
+                      "id": 0,
+                      "timelineRecordId": "135f6e7c-b445-493d-aac4-74b97dcf740d",
+                      "name": "Create Azure Web App if not exists",
+                      "dateStarted": "2019-01-16T14:00:13.08Z",
+                      "dateEnded": "2019-01-16T14:00:13.083Z",
+                      "startTime": "2019-01-16T14:00:13.08Z",
+                      "finishTime": "2019-01-16T14:00:13.083Z",
+                      "status": "skipped",
+                      "rank": 5,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "",
+                      "resultCode": "Evaluating: succeeded()\r\nResult: False\r\n"
+                    },
+                    {
+                      "id": 0,
+                      "timelineRecordId": "e06eab5a-9fd5-4bed-9c5d-d05dbdc0c3be",
+                      "name": "Deploy Azure App Service",
+                      "dateStarted": "2019-01-16T14:00:13.083Z",
+                      "dateEnded": "2019-01-16T14:00:13.083Z",
+                      "startTime": "2019-01-16T14:00:13.083Z",
+                      "finishTime": "2019-01-16T14:00:13.083Z",
+                      "status": "skipped",
+                      "rank": 6,
+                      "issues": [],
+                      "task": {
+                        "id": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                        "name": "AzureRmWebAppDeployment",
+                        "version": "3.4.19"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "",
+                      "resultCode": "Evaluating: succeeded()\r\nResult: False\r\n"
+                    },
+                    {
+                      "id": 0,
+                      "timelineRecordId": "ed19e811-9630-4d27-b312-6f3029028669",
+                      "name": "Display URL of our sox-demo website",
+                      "dateStarted": "2019-01-16T14:00:13.083Z",
+                      "dateEnded": "2019-01-16T14:00:13.083Z",
+                      "startTime": "2019-01-16T14:00:13.083Z",
+                      "finishTime": "2019-01-16T14:00:13.083Z",
+                      "status": "skipped",
+                      "rank": 7,
+                      "issues": [],
+                      "task": {
+                        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                        "name": "PowerShell",
+                        "version": "2.140.2"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "",
+                      "resultCode": "Evaluating: succeeded()\r\nResult: False\r\n"
+                    }
+                  ]
+                }
+              ],
+              "manualInterventions": [],
+              "startedOn": "2019-01-16T13:59:41.19Z"
+            }
+          ],
+          "requestedBy": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "requestedFor": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "queuedOn": "2019-01-16T13:59:39.5Z",
+          "lastModifiedBy": {
+            "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+            "id": "0000000d-0000-8888-8000-000000000000",
+            "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+            "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+          },
+          "lastModifiedOn": "2019-01-16T14:00:14.14Z",
+          "hasStarted": true,
+          "tasks": [],
+          "runPlanId": "00000000-0000-0000-0000-000000000000",
+          "issues": []
+        },
+        {
+          "id": 337,
+          "deploymentId": 148,
+          "attempt": 2,
+          "reason": "manual",
+          "status": "succeeded",
+          "operationStatus": "Approved",
+          "releaseDeployPhases": [
+            {
+              "id": 164,
+              "phaseId": "164",
+              "name": "Run on agent",
+              "rank": 1,
+              "phaseType": "agentBasedDeployment",
+              "status": "succeeded",
+              "runPlanId": "40fecf01-f99f-49fc-9ea8-ab7d8ff2804f",
+              "deploymentJobs": [
+                {
+                  "job": {
+                    "id": 9,
+                    "timelineRecordId": "ed990d0b-2460-4315-a606-15ae6f1220ae",
+                    "name": "Release",
+                    "dateStarted": "2019-01-18T11:02:47.887Z",
+                    "dateEnded": "2019-01-18T11:04:19.13Z",
+                    "startTime": "2019-01-18T11:02:47.887Z",
+                    "finishTime": "2019-01-18T11:04:19.13Z",
+                    "status": "succeeded",
+                    "rank": 1,
+                    "issues": [],
+                    "agentName": "windows-agent-2-54262-1450-000002-1",
+                    "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/9/logs"
+                  },
+                  "tasks": [
+                    {
+                      "id": 2,
+                      "timelineRecordId": "645cf3aa-a457-4bfb-b0d9-71befabc7acb",
+                      "name": "Initialize Job",
+                      "dateStarted": "2019-01-18T11:02:48.897Z",
+                      "dateEnded": "2019-01-18T11:02:49.09Z",
+                      "startTime": "2019-01-18T11:02:48.897Z",
+                      "finishTime": "2019-01-18T11:02:49.09Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/2/logs"
+                    },
+                    {
+                      "id": 3,
+                      "timelineRecordId": "16f2d925-fc41-4a75-9c9c-9c170edb258e",
+                      "name": "Download artifact - _SOx-compliant-demo-CI - drop",
+                      "dateStarted": "2019-01-18T11:02:49.107Z",
+                      "dateEnded": "2019-01-18T11:02:51.007Z",
+                      "startTime": "2019-01-18T11:02:49.107Z",
+                      "finishTime": "2019-01-18T11:02:51.007Z",
+                      "status": "succeeded",
+                      "rank": 2,
+                      "issues": [],
+                      "task": {
+                        "id": "a433f589-fce1-4460-9ee6-44a624aeb1fb",
+                        "name": "DownloadBuildArtifacts",
+                        "version": "0.142.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/3/logs"
+                    },
+                    {
+                      "id": 4,
+                      "timelineRecordId": "51e61c43-8554-46a9-8f14-ab39bba5bd29",
+                      "name": "Create or Update a Resource Group",
+                      "dateStarted": "2019-01-18T11:02:51.007Z",
+                      "dateEnded": "2019-01-18T11:03:02.267Z",
+                      "startTime": "2019-01-18T11:02:51.007Z",
+                      "finishTime": "2019-01-18T11:03:02.267Z",
+                      "status": "succeeded",
+                      "rank": 3,
+                      "issues": [],
+                      "task": {
+                        "id": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+                        "name": "Rabobank-Azure-RG",
+                        "version": "1.2.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/4/logs"
+                    },
+                    {
+                      "id": 5,
+                      "timelineRecordId": "8a577cf0-a748-4bc3-b518-52cb971a1f11",
+                      "name": "Create Azure App Service Plan if not exists",
+                      "dateStarted": "2019-01-18T11:03:02.267Z",
+                      "dateEnded": "2019-01-18T11:03:38.727Z",
+                      "startTime": "2019-01-18T11:03:02.267Z",
+                      "finishTime": "2019-01-18T11:03:38.727Z",
+                      "status": "succeeded",
+                      "rank": 4,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/5/logs"
+                    },
+                    {
+                      "id": 6,
+                      "timelineRecordId": "ff72e626-4459-4931-9f46-cd633aa613f4",
+                      "name": "Create Azure Web App if not exists",
+                      "dateStarted": "2019-01-18T11:03:38.727Z",
+                      "dateEnded": "2019-01-18T11:04:00.57Z",
+                      "startTime": "2019-01-18T11:03:38.727Z",
+                      "finishTime": "2019-01-18T11:04:00.57Z",
+                      "status": "succeeded",
+                      "rank": 5,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/6/logs"
+                    },
+                    {
+                      "id": 7,
+                      "timelineRecordId": "791947e5-9b63-41ef-ab37-d9027d9a1144",
+                      "name": "Deploy Azure App Service",
+                      "dateStarted": "2019-01-18T11:04:00.57Z",
+                      "dateEnded": "2019-01-18T11:04:17.47Z",
+                      "startTime": "2019-01-18T11:04:00.57Z",
+                      "finishTime": "2019-01-18T11:04:17.47Z",
+                      "status": "succeeded",
+                      "rank": 6,
+                      "issues": [],
+                      "task": {
+                        "id": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                        "name": "AzureRmWebAppDeployment",
+                        "version": "3.4.19"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/7/logs"
+                    },
+                    {
+                      "id": 8,
+                      "timelineRecordId": "00ca790a-61c3-4a12-952e-071d79262e02",
+                      "name": "Display URL of our sox-demo website",
+                      "dateStarted": "2019-01-18T11:04:17.47Z",
+                      "dateEnded": "2019-01-18T11:04:19.12Z",
+                      "startTime": "2019-01-18T11:04:17.47Z",
+                      "finishTime": "2019-01-18T11:04:19.12Z",
+                      "status": "succeeded",
+                      "rank": 7,
+                      "issues": [],
+                      "task": {
+                        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                        "name": "PowerShell",
+                        "version": "2.140.2"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/150/deployPhases/164/tasks/8/logs"
+                    }
+                  ]
+                }
+              ],
+              "manualInterventions": [],
+              "startedOn": "2019-01-18T11:02:44.803Z"
+            }
+          ],
+          "requestedBy": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "requestedFor": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "queuedOn": "2019-01-18T11:02:42.1Z",
+          "lastModifiedBy": {
+            "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+            "id": "0000000d-0000-8888-8000-000000000000",
+            "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+            "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+          },
+          "lastModifiedOn": "2019-01-18T11:04:20.027Z",
+          "hasStarted": true,
+          "tasks": [],
+          "runPlanId": "00000000-0000-0000-0000-000000000000",
+          "issues": []
+        }
+      ],
+      "rank": 1,
+      "definitionEnvironmentId": 5,
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false,
+        "publishDeploymentStatus": true,
+        "badgeEnabled": true,
+        "autoLinkWorkItems": false,
+        "pullRequestDeploymentEnabled": true
+      },
+      "demands": [],
+      "conditions": [
+        {
+          "result": true,
+          "name": "ReleaseStarted",
+          "conditionType": "event",
+          "value": ""
+        }
+      ],
+      "createdOn": "2019-01-16T13:59:39.5Z",
+      "modifiedOn": "2019-01-18T11:04:20.027Z",
+      "workflowTasks": [],
+      "deployPhasesSnapshot": [
+        {
+          "deploymentInput": {
+            "parallelExecution": {
+              "parallelExecutionType": "none"
+            },
+            "skipArtifactsDownload": false,
+            "artifactsDownloadInput": {
+              "downloadInputs": []
+            },
+            "queueId": 7046,
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 1,
+          "phaseType": "agentBasedDeployment",
+          "name": "Run on agent",
+          "refName": null,
+          "workflowTasks": [
+            {
+              "environment": {},
+              "taskId": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+              "version": "1.*",
+              "name": "Create or Update a Resource Group",
+              "refName": "somecompany",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceNameARM": "975b3603-9939-4f22-a5a9-baebb39b5dad",
+                "action": "create",
+                "applicationName": "s01soxdemo",
+                "resourceGroupName": "",
+                "location": "westeurope",
+                "organisationalGroup": "eu.res.AADAzure.devaut.us",
+                "applicationCI": "",
+                "incrementResourceGroupNameIfAlreadyExist": "false",
+                "resourceGroupSuffixNumber": "1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+              "version": "2.*",
+              "name": "Create Azure App Service Plan if not exists",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceName": "",
+                "ConnectedServiceNameARM": "975b3603-9939-4f22-a5a9-baebb39b5dad",
+                "ScriptType": "InlineScript",
+                "ScriptPath": "",
+                "Inline": "$ifexists = get-azurermappserviceplan | where {$_.name -EQ \"$(AppServicePlan)\"}\n   if($exists) \n{echo 'serviceplan $(AppServicePlan) already exists...'}\n   else {\nNew-AzureRmAppServicePlan -Name $(AppServicePlan) -Location \"West Europe\" -ResourceGroupName $(somecompany.ResourceGroupName) -Tier Free   \n   }\n",
+                "ScriptArguments": "",
+                "TargetAzurePs": "OtherVersion",
+                "CustomTargetAzurePs": "5.1.1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+              "version": "2.*",
+              "name": "Create Azure Web App if not exists",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceName": "",
+                "ConnectedServiceNameARM": "975b3603-9939-4f22-a5a9-baebb39b5dad",
+                "ScriptType": "InlineScript",
+                "ScriptPath": "",
+                "Inline": "$ifexistsWa = get-azurermWebApp | where {$_.name -EQ \"$(AppServiceName)\"}\n   if($existsWa) \n{echo 'webapp $(AppServiceName) already exists...'}\n   else {\nNew-AzureRmWebApp -Name $(AppServiceName) -AppServicePlan S01-soxdemo -ResourceGroupName $(somecompany.ResourceGroupName) -Location \"West Europe\" \n   }\n\n",
+                "ScriptArguments": "",
+                "TargetAzurePs": "OtherVersion",
+                "CustomTargetAzurePs": "5.1.1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+              "version": "3.*",
+              "name": "Deploy Azure App Service",
+              "refName": "deploy",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": null,
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "$(Parameters.ConnectedServiceName)",
+                "WebAppKind": "$(Parameters.WebAppKind)",
+                "WebAppName": "$(Parameters.WebAppName)",
+                "DeployToSlotFlag": "false",
+                "ResourceGroupName": "",
+                "SlotName": "",
+                "ImageSource": "$(Parameters.ImageSource)",
+                "AzureContainerRegistry": "",
+                "AzureContainerRegistryLoginServer": "",
+                "AzureContainerRegistryImage": "",
+                "AzureContainerRegistryTag": "",
+                "DockerRepositoryAccess": "public",
+                "RegistryConnectedServiceName": "",
+                "PrivateRegistryImage": "",
+                "PrivateRegistryTag": "",
+                "DockerNamespace": "$(Parameters.DockerNamespace)",
+                "DockerRepository": "$(Parameters.DockerRepository)",
+                "DockerImageTag": "$(Build.BuildId)",
+                "VirtualApplication": "",
+                "Package": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                "BuiltinLinuxPackage": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                "RuntimeStack": "$(Parameters.RuntimeStack)",
+                "StartupCommand": "",
+                "WebAppUri": "url",
+                "ScriptType": "",
+                "InlineScript": "",
+                "ScriptPath": "",
+                "GenerateWebConfig": "false",
+                "WebConfigParameters": "",
+                "AppSettings": "",
+                "ConfigurationSettings": "",
+                "TakeAppOfflineFlag": "true",
+                "UseWebDeploy": "false",
+                "SetParametersFile": "",
+                "RemoveAdditionalFilesFlag": "false",
+                "ExcludeFilesFromAppDataFlag": "false",
+                "AdditionalArguments": "",
+                "RenameFilesFlag": "true",
+                "XmlTransformation": "false",
+                "XmlVariableSubstitution": "false",
+                "JSONFiles": ""
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+              "version": "2.*",
+              "name": "Display Url of our sox-demo website",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "Write-Host \"The url of your deployed website\"\nWrite-Host $(url)",
+                "errorActionPreference": "stop",
+                "failOnStderr": "false",
+                "ignoreLASTEXITCODE": "false",
+                "pwsh": "false",
+                "workingDirectory": ""
+              }
+            }
+          ]
+        }
+      ],
+      "owner": {
+        "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "_links": {
+          "avatar": {
+            "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          }
+        },
+        "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+        "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      },
+      "schedules": [],
+      "release": {
+        "id": 79,
+        "name": "Release-48",
+        "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+        "_links": {
+          "web": {
+            "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"
+          },
+          "self": {
+            "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"
+          }
+        }
+      },
+      "releaseDefinition": {
+        "id": 2,
+        "name": "demo SOx",
+        "path": "\\",
+        "projectReference": null,
+        "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+        "_links": {
+          "web": {
+            "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"
+          },
+          "self": {
+            "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"
+          }
+        }
+      },
+      "releaseCreatedBy": {
+        "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "_links": {
+          "avatar": {
+            "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          }
+        },
+        "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+        "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      },
+      "triggerReason": "ReleaseStarted",
+      "timeToDeploy": 1.6268833333333335,
+      "processParameters": {
+        "inputs": [
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "ConnectedServiceName",
+            "label": "Azure subscription",
+            "defaultValue": "975b3603-9939-4f22-a5a9-baebb39b5dad",
+            "required": true,
+            "type": "connectedService:AzureRM",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
+            "visibleRule": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "app": "Web App",
+              "applinux": "Linux App",
+              "functionapp": "Function App",
+              "api": "API App",
+              "mobileapp": "Mobile App"
+            },
+            "properties": {
+              "EditableOptions": "false"
+            },
+            "name": "WebAppKind",
+            "label": "App type",
+            "defaultValue": "app",
+            "type": "pickList",
+            "helpMarkDown": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "name": "WebAppName",
+            "label": "App service name",
+            "defaultValue": "$(AppServiceName)",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "Enter or select the name of an existing Azure App Service.",
+            "visibleRule": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "Registry": "Container Registry",
+              "Builtin": "Built-in Image"
+            },
+            "properties": {},
+            "name": "ImageSource",
+            "label": "Image Source",
+            "defaultValue": "Registry",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "App Service on Linux offers two different options to publish your application <br/> Custom image deployment or App deployment with a built-in platform image. [Learn More](https://go.microsoft.com/fwlink/?linkid=862490)",
+            "visibleRule": "WebAppKind = applinux",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "DockerNamespace",
+            "label": "Registry or Namespace",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "A globally unique top-level domain name for your specific registry or namespace.<br/> Note: Fully qualified image name will be of the format: '<b>`<registry or namespace`></b>/`<repository`>:`<tag`>'. For example, '<b>myregistry.azurecr.io</b>/nginx:latest'.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Registry",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "DockerRepository",
+            "label": "Repository",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Name of the repository where the container images are stored.<br/> Note: Fully qualified image name will be of the format: '`<registry or namespace`>/<b>`<repository`></b>:`<tag`>'. For example, 'myregistry.azurecr.io/<b>nginx</b>:latest'.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Registry",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "node|4.4": "Node.js 4.4",
+              "node|4.5": "Node.js 4.5",
+              "node|6.2": "Node.js 6.2",
+              "node|6.6": "Node.js 6.6",
+              "node|6.9": "Node.js 6.9",
+              "node|6.10": "Node.js 6.10",
+              "node|6.11": "Node.js 6.11",
+              "node|8.0": "Node.js 8.0",
+              "node|8.1": "Node.js 8.1",
+              "php|5.6": "PHP 5.6",
+              "php|7.0": "PHP 7.0",
+              "dotnetcore|1.0": ".NET Core 1.0",
+              "dotnetcore|1.1": ".NET Core 1.1",
+              "dotnetcore|2.0": ".NET Core 2.0",
+              "ruby|2.3": "Ruby 2.3"
+            },
+            "properties": {},
+            "name": "RuntimeStack",
+            "label": "Runtime Stack",
+            "defaultValue": "",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "Select the framework and version.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Builtin"
+          }
+        ],
+        "dataSourceBindings": [
+          {
+            "dataSourceName": "AzureRMWebAppNamesByType",
+            "parameters": {
+              "WebAppKind": "$(WebAppKind)"
+            },
+            "endpointId": "$(ConnectedServiceName)",
+            "target": "WebAppName"
+          }
+        ]
+      },
+      "preDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "postDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      }
+    },
+    {
+      "id": 151,
+      "releaseId": 79,
+      "name": "P02 - Prod",
+      "status": "succeeded",
+      "variables": {
+        "AppServiceName": {
+          "value": "P02-soxdemo-01"
+        },
+        "AppServicePlan": {
+          "value": "P02-soxdemo"
+        }
+      },
+      "variableGroups": [],
+      "preDeployApprovals": [
+        {
+          "id": 332,
+          "revision": 2,
+          "approver": {
+            "displayName": "Manuel Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+              }
+            },
+            "id": "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "uniqueName": "Manuel.Riezebosch@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "descriptor": "aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+          },
+          "approvedBy": {
+            "displayName": "Manuel Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+              }
+            },
+            "id": "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "uniqueName": "Manuel.Riezebosch@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "descriptor": "aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+          },
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-16T13:59:49.25Z",
+          "modifiedOn": "2019-01-16T14:01:56.19Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": false,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 1,
+          "history": [
+            {
+              "revision": 1,
+              "comments": "",
+              "approver": {
+                "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+                "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "_links": {
+                  "avatar": {
+                    "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+                  }
+                },
+                "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+                "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              },
+              "changedBy": {
+                "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+                "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "_links": {
+                  "avatar": {
+                    "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+                  }
+                },
+                "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+                "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              },
+              "createdOn": "2019-01-16T14:00:00.203Z",
+              "modifiedOn": "2019-01-16T14:00:00.203Z"
+            }
+          ],
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 151,
+            "name": "P02 - Prod",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/332"
+        },
+        {
+          "id": 339,
+          "revision": 2,
+          "approver": {
+            "displayName": "[TAS]\\Electron",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/vssgp.Uy0xLTktMTU1MTM3NDI0NS00MjEwOTA1MDc4LTEzMDk0NjQ4OTYtMjU1MTAzNjgwNC0yMDMzNjEwNjkzLTEtNDA5NjY4NTQ4My0yMTczMDgyNDQ2LTI5NjUwNTY0OTgtNTIxNDA3MDIy"
+              }
+            },
+            "id": "ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15",
+            "uniqueName": "vstfs:///Classification/TeamProject/f64ffdfa-0c4e-40d9-980d-bb8479366fc5\\Electron",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=ceb49aeb-b15e-4f3e-9b9b-60ef407a7a15",
+            "isContainer": true,
+            "descriptor": "vssgp.Uy0xLTktMTU1MTM3NDI0NS00MjEwOTA1MDc4LTEzMDk0NjQ4OTYtMjU1MTAzNjgwNC0yMDMzNjEwNjkzLTEtNDA5NjY4NTQ4My0yMTczMDgyNDQ2LTI5NjUwNTY0OTgtNTIxNDA3MDIy"
+          },
+          "approvedBy": {
+            "displayName": "Jasper Gilhuis",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/a60b02bf-13d1-605f-b6e6-e19ec16eccb5",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YTYwYjAyYmYtMTNkMS03MDVmLWI2ZTYtZTE5ZWMxNmVjY2I1"
+              }
+            },
+            "id": "a60b02bf-13d1-605f-b6e6-e19ec16eccb5",
+            "uniqueName": "Jasper.Gilhuis@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=a60b02bf-13d1-605f-b6e6-e19ec16eccb5",
+            "descriptor": "aad.YTYwYjAyYmYtMTNkMS03MDVmLWI2ZTYtZTE5ZWMxNmVjY2I1"
+          },
+          "approvalType": "preDeploy",
+          "createdOn": "2019-01-18T11:57:10.15Z",
+          "modifiedOn": "2019-01-18T12:39:54.947Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": false,
+          "isNotificationOn": false,
+          "trialNumber": 2,
+          "attempt": 2,
+          "rank": 1,
+          "history": [
+            {
+              "revision": 1,
+              "comments": "",
+              "approver": {
+                "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+                "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "_links": {
+                  "avatar": {
+                    "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+                  }
+                },
+                "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+                "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              },
+              "changedBy": {
+                "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+                "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "_links": {
+                  "avatar": {
+                    "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+                  }
+                },
+                "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+                "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+                "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              },
+              "createdOn": "2019-01-18T12:34:50.86Z",
+              "modifiedOn": "2019-01-18T12:34:50.86Z"
+            }
+          ],
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 151,
+            "name": "P02 - Prod",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/339"
+        }
+      ],
+      "postDeployApprovals": [
+        {
+          "id": 335,
+          "revision": 1,
+          "approvalType": "postDeploy",
+          "createdOn": "2019-01-16T14:03:36.11Z",
+          "modifiedOn": "2019-01-16T14:03:36.127Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 1,
+          "attempt": 1,
+          "rank": 3,
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 151,
+            "name": "P02 - Prod",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/335"
+        },
+        {
+          "id": 342,
+          "revision": 1,
+          "approvalType": "postDeploy",
+          "createdOn": "2019-01-18T12:41:41.4Z",
+          "modifiedOn": "2019-01-18T12:41:41.4Z",
+          "status": "approved",
+          "comments": "",
+          "isAutomated": true,
+          "isNotificationOn": false,
+          "trialNumber": 2,
+          "attempt": 2,
+          "rank": 3,
+          "release": {
+            "id": 79,
+            "name": "Release-48",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+            "_links": {}
+          },
+          "releaseDefinition": {
+            "id": 2,
+            "name": "demo SOx",
+            "path": "\\",
+            "projectReference": null,
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+            "_links": {}
+          },
+          "releaseEnvironment": {
+            "id": 151,
+            "name": "P02 - Prod",
+            "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151",
+            "_links": {}
+          },
+          "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/approvals/342"
+        }
+      ],
+      "preApprovalsSnapshot": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": false,
+            "isNotificationOn": false,
+            "approver": {
+              "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+              "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+              "_links": {
+                "avatar": {
+                  "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+                }
+              },
+              "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+              "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+              "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+              "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+            },
+            "id": 0
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": "beforeGates"
+        }
+      },
+      "postApprovalsSnapshot": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false,
+            "id": 0
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": false,
+          "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+          "enforceIdentityRevalidation": false,
+          "timeoutInMinutes": 0,
+          "executionOrder": "afterSuccessfulGates"
+        }
+      },
+      "deploySteps": [
+        {
+          "id": 334,
+          "deploymentId": 147,
+          "attempt": 1,
+          "reason": "manual",
+          "status": "succeeded",
+          "operationStatus": "Approved",
+          "releaseDeployPhases": [
+            {
+              "id": 163,
+              "phaseId": "163",
+              "name": "Run on agent",
+              "rank": 1,
+              "phaseType": "agentBasedDeployment",
+              "status": "succeeded",
+              "runPlanId": "612557c9-ad3d-4945-bc40-4ecd572f902f",
+              "deploymentJobs": [
+                {
+                  "job": {
+                    "id": 9,
+                    "timelineRecordId": "56c55ecd-0790-434f-9661-0fefa10f700d",
+                    "name": "Release",
+                    "dateStarted": "2019-01-16T14:02:00.837Z",
+                    "dateEnded": "2019-01-16T14:03:34.41Z",
+                    "startTime": "2019-01-16T14:02:00.837Z",
+                    "finishTime": "2019-01-16T14:03:34.41Z",
+                    "status": "succeeded",
+                    "rank": 1,
+                    "issues": [],
+                    "agentName": "windows-agent-2-54262-1450-000007-1",
+                    "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/9/logs"
+                  },
+                  "tasks": [
+                    {
+                      "id": 2,
+                      "timelineRecordId": "5dc252c5-0001-466a-a7cf-7c473637f2f6",
+                      "name": "Initialize Job",
+                      "dateStarted": "2019-01-16T14:02:01.877Z",
+                      "dateEnded": "2019-01-16T14:02:02.057Z",
+                      "startTime": "2019-01-16T14:02:01.877Z",
+                      "finishTime": "2019-01-16T14:02:02.057Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/2/logs"
+                    },
+                    {
+                      "id": 3,
+                      "timelineRecordId": "9b4b1367-1c9b-4a73-bdec-b32725cba12c",
+                      "name": "Download artifact - _SOx-compliant-demo-CI - drop",
+                      "dateStarted": "2019-01-16T14:02:02.07Z",
+                      "dateEnded": "2019-01-16T14:02:03.9Z",
+                      "startTime": "2019-01-16T14:02:02.07Z",
+                      "finishTime": "2019-01-16T14:02:03.9Z",
+                      "status": "succeeded",
+                      "rank": 2,
+                      "issues": [],
+                      "task": {
+                        "id": "a433f589-fce1-4460-9ee6-44a624aeb1fb",
+                        "name": "DownloadBuildArtifacts",
+                        "version": "0.142.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/3/logs"
+                    },
+                    {
+                      "id": 4,
+                      "timelineRecordId": "64f6367f-07e0-4708-a4c6-764cd925b813",
+                      "name": "Create or Update a Resource Group",
+                      "dateStarted": "2019-01-16T14:02:03.9Z",
+                      "dateEnded": "2019-01-16T14:02:09.493Z",
+                      "startTime": "2019-01-16T14:02:03.9Z",
+                      "finishTime": "2019-01-16T14:02:09.493Z",
+                      "status": "succeeded",
+                      "rank": 3,
+                      "issues": [],
+                      "task": {
+                        "id": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+                        "name": "Rabobank-Azure-RG",
+                        "version": "1.2.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/4/logs"
+                    },
+                    {
+                      "id": 5,
+                      "timelineRecordId": "9eee9997-1a86-4a9f-8aac-987e60527382",
+                      "name": "Create Azure App Service Plan if not exists",
+                      "dateStarted": "2019-01-16T14:02:09.497Z",
+                      "dateEnded": "2019-01-16T14:02:47.73Z",
+                      "startTime": "2019-01-16T14:02:09.497Z",
+                      "finishTime": "2019-01-16T14:02:47.73Z",
+                      "status": "succeeded",
+                      "rank": 4,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/5/logs"
+                    },
+                    {
+                      "id": 6,
+                      "timelineRecordId": "bd60d7e8-88bd-43dd-b817-c69e71bcf099",
+                      "name": "Create Azure Web App if not exists",
+                      "dateStarted": "2019-01-16T14:02:47.733Z",
+                      "dateEnded": "2019-01-16T14:03:11.597Z",
+                      "startTime": "2019-01-16T14:02:47.733Z",
+                      "finishTime": "2019-01-16T14:03:11.597Z",
+                      "status": "succeeded",
+                      "rank": 5,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/6/logs"
+                    },
+                    {
+                      "id": 7,
+                      "timelineRecordId": "00442fcb-fb60-4ce1-911e-a6910a9bdc8c",
+                      "name": "Deploy Azure App Service",
+                      "dateStarted": "2019-01-16T14:03:11.597Z",
+                      "dateEnded": "2019-01-16T14:03:32.827Z",
+                      "startTime": "2019-01-16T14:03:11.597Z",
+                      "finishTime": "2019-01-16T14:03:32.827Z",
+                      "status": "succeeded",
+                      "rank": 6,
+                      "issues": [],
+                      "task": {
+                        "id": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                        "name": "AzureRmWebAppDeployment",
+                        "version": "3.4.19"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/7/logs"
+                    },
+                    {
+                      "id": 8,
+                      "timelineRecordId": "cb63f4d4-d3de-4673-8280-4ab2f5b8eab8",
+                      "name": "Display URL of our sox-demo website",
+                      "dateStarted": "2019-01-16T14:03:32.827Z",
+                      "dateEnded": "2019-01-16T14:03:34.4Z",
+                      "startTime": "2019-01-16T14:03:32.827Z",
+                      "finishTime": "2019-01-16T14:03:34.4Z",
+                      "status": "succeeded",
+                      "rank": 7,
+                      "issues": [],
+                      "task": {
+                        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                        "name": "PowerShell",
+                        "version": "2.140.2"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000007-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/163/tasks/8/logs"
+                    }
+                  ]
+                }
+              ],
+              "manualInterventions": [],
+              "startedOn": "2019-01-16T14:01:57.597Z"
+            }
+          ],
+          "requestedBy": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "requestedFor": {
+            "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+              }
+            },
+            "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+            "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          },
+          "queuedOn": "2019-01-16T13:59:49.11Z",
+          "lastModifiedBy": {
+            "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+            "id": "0000000d-0000-8888-8000-000000000000",
+            "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+            "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+          },
+          "lastModifiedOn": "2019-01-16T14:03:36.127Z",
+          "hasStarted": true,
+          "tasks": [],
+          "runPlanId": "00000000-0000-0000-0000-000000000000",
+          "issues": []
+        },
+        {
+          "id": 341,
+          "deploymentId": 149,
+          "attempt": 2,
+          "reason": "manual",
+          "status": "succeeded",
+          "operationStatus": "Approved",
+          "releaseDeployPhases": [
+            {
+              "id": 165,
+              "phaseId": "165",
+              "name": "Run on agent",
+              "rank": 1,
+              "phaseType": "agentBasedDeployment",
+              "status": "succeeded",
+              "runPlanId": "48549832-4ed0-40eb-bad1-1595b0311b17",
+              "deploymentJobs": [
+                {
+                  "job": {
+                    "id": 9,
+                    "timelineRecordId": "95c4a3aa-5896-45ef-a1eb-aa4334b0a406",
+                    "name": "Release",
+                    "dateStarted": "2019-01-18T12:40:00.593Z",
+                    "dateEnded": "2019-01-18T12:41:39.92Z",
+                    "startTime": "2019-01-18T12:40:00.593Z",
+                    "finishTime": "2019-01-18T12:41:39.92Z",
+                    "status": "succeeded",
+                    "rank": 1,
+                    "issues": [],
+                    "agentName": "windows-agent-2-54262-1450-000002-1",
+                    "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/9/logs"
+                  },
+                  "tasks": [
+                    {
+                      "id": 2,
+                      "timelineRecordId": "f4f880ea-c146-4206-af8d-b5e760bfaca5",
+                      "name": "Initialize Job",
+                      "dateStarted": "2019-01-18T12:40:01.603Z",
+                      "dateEnded": "2019-01-18T12:40:01.797Z",
+                      "startTime": "2019-01-18T12:40:01.603Z",
+                      "finishTime": "2019-01-18T12:40:01.797Z",
+                      "status": "succeeded",
+                      "rank": 1,
+                      "issues": [],
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/2/logs"
+                    },
+                    {
+                      "id": 3,
+                      "timelineRecordId": "17938eb8-e74d-4db7-a86e-6a7e86e8269e",
+                      "name": "Download artifact - _SOx-compliant-demo-CI - drop",
+                      "dateStarted": "2019-01-18T12:40:01.813Z",
+                      "dateEnded": "2019-01-18T12:40:03.68Z",
+                      "startTime": "2019-01-18T12:40:01.813Z",
+                      "finishTime": "2019-01-18T12:40:03.68Z",
+                      "status": "succeeded",
+                      "rank": 2,
+                      "issues": [],
+                      "task": {
+                        "id": "a433f589-fce1-4460-9ee6-44a624aeb1fb",
+                        "name": "DownloadBuildArtifacts",
+                        "version": "0.142.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/3/logs"
+                    },
+                    {
+                      "id": 4,
+                      "timelineRecordId": "642f9198-c7e4-4c86-bde9-13ca7807670a",
+                      "name": "Create or Update a Resource Group",
+                      "dateStarted": "2019-01-18T12:40:03.683Z",
+                      "dateEnded": "2019-01-18T12:40:15.787Z",
+                      "startTime": "2019-01-18T12:40:03.683Z",
+                      "finishTime": "2019-01-18T12:40:15.787Z",
+                      "status": "succeeded",
+                      "rank": 3,
+                      "issues": [],
+                      "task": {
+                        "id": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+                        "name": "Rabobank-Azure-RG",
+                        "version": "1.2.3"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/4/logs"
+                    },
+                    {
+                      "id": 5,
+                      "timelineRecordId": "f743d023-1371-4cdb-8058-c25151460dde",
+                      "name": "Create Azure App Service Plan if not exists",
+                      "dateStarted": "2019-01-18T12:40:15.787Z",
+                      "dateEnded": "2019-01-18T12:40:51.947Z",
+                      "startTime": "2019-01-18T12:40:15.787Z",
+                      "finishTime": "2019-01-18T12:40:51.947Z",
+                      "status": "succeeded",
+                      "rank": 4,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/5/logs"
+                    },
+                    {
+                      "id": 6,
+                      "timelineRecordId": "b594e552-7d1d-4358-8355-c68ef421ee6f",
+                      "name": "Create Azure Web App if not exists",
+                      "dateStarted": "2019-01-18T12:40:51.95Z",
+                      "dateEnded": "2019-01-18T12:41:14.03Z",
+                      "startTime": "2019-01-18T12:40:51.95Z",
+                      "finishTime": "2019-01-18T12:41:14.03Z",
+                      "status": "succeeded",
+                      "rank": 5,
+                      "issues": [],
+                      "task": {
+                        "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+                        "name": "AzurePowerShell",
+                        "version": "2.1.7"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/6/logs"
+                    },
+                    {
+                      "id": 7,
+                      "timelineRecordId": "ba1fb570-9a8e-430f-8faa-e39da5eb2198",
+                      "name": "Deploy Azure App Service",
+                      "dateStarted": "2019-01-18T12:41:14.033Z",
+                      "dateEnded": "2019-01-18T12:41:38.273Z",
+                      "startTime": "2019-01-18T12:41:14.033Z",
+                      "finishTime": "2019-01-18T12:41:38.273Z",
+                      "status": "succeeded",
+                      "rank": 6,
+                      "issues": [],
+                      "task": {
+                        "id": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                        "name": "AzureRmWebAppDeployment",
+                        "version": "3.4.19"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/7/logs"
+                    },
+                    {
+                      "id": 8,
+                      "timelineRecordId": "5558fa34-cdfe-4771-a35b-0cbeccc386ab",
+                      "name": "Display URL of our sox-demo website",
+                      "dateStarted": "2019-01-18T12:41:38.273Z",
+                      "dateEnded": "2019-01-18T12:41:39.913Z",
+                      "startTime": "2019-01-18T12:41:38.273Z",
+                      "finishTime": "2019-01-18T12:41:39.913Z",
+                      "status": "succeeded",
+                      "rank": 7,
+                      "issues": [],
+                      "task": {
+                        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                        "name": "PowerShell",
+                        "version": "2.140.2"
+                      },
+                      "agentName": "windows-agent-2-54262-1450-000002-1",
+                      "logUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/environments/151/deployPhases/165/tasks/8/logs"
+                    }
+                  ]
+                }
+              ],
+              "manualInterventions": [],
+              "startedOn": "2019-01-18T12:39:57.257Z"
+            }
+          ],
+          "requestedBy": {
+            "displayName": "Manuel Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+              }
+            },
+            "id": "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "uniqueName": "Manuel.Riezebosch@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "descriptor": "aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+          },
+          "requestedFor": {
+            "displayName": "Manuel Riezebosch",
+            "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "_links": {
+              "avatar": {
+                "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+              }
+            },
+            "id": "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "uniqueName": "Manuel.Riezebosch@somecompany.nl",
+            "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=ab84d5a2-4b8d-68df-9ad3-cc9c8884270c",
+            "descriptor": "aad.YWI4NGQ1YTItNGI4ZC03OGRmLTlhZDMtY2M5Yzg4ODQyNzBj"
+          },
+          "queuedOn": "2019-01-18T11:57:10.023Z",
+          "lastModifiedBy": {
+            "displayName": "Microsoft.VisualStudio.Services.ReleaseManagement",
+            "id": "0000000d-0000-8888-8000-000000000000",
+            "uniqueName": "0000000d-0000-8888-8000-000000000000@2c895908-04e0-4952-89fd-54b0046d6288",
+            "descriptor": "s2s.MDAwMDAwMGQtMDAwMC04ODg4LTgwMDAtMDAwMDAwMDAwMDAwQDJjODk1OTA4LTA0ZTAtNDk1Mi04OWZkLTU0YjAwNDZkNjI4OA"
+          },
+          "lastModifiedOn": "2019-01-18T12:41:41.413Z",
+          "hasStarted": true,
+          "tasks": [],
+          "runPlanId": "00000000-0000-0000-0000-000000000000",
+          "issues": []
+        }
+      ],
+      "rank": 2,
+      "definitionEnvironmentId": 7,
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false,
+        "publishDeploymentStatus": true,
+        "badgeEnabled": true,
+        "autoLinkWorkItems": false,
+        "pullRequestDeploymentEnabled": true
+      },
+      "demands": [],
+      "conditions": [
+        {
+          "result": false,
+          "name": "S01 - Test",
+          "conditionType": "environmentState",
+          "value": "4"
+        }
+      ],
+      "createdOn": "2019-01-16T13:59:49.11Z",
+      "modifiedOn": "2019-01-18T12:41:41.4Z",
+      "workflowTasks": [],
+      "deployPhasesSnapshot": [
+        {
+          "deploymentInput": {
+            "parallelExecution": {
+              "parallelExecutionType": "none"
+            },
+            "skipArtifactsDownload": false,
+            "artifactsDownloadInput": {
+              "downloadInputs": [
+                {
+                  "artifactItems": [],
+                  "alias": "_SOx-compliant-demo-CI",
+                  "artifactType": "Build",
+                  "artifactDownloadMode": "All"
+                }
+              ]
+            },
+            "queueId": 7046,
+            "demands": [],
+            "enableAccessToken": false,
+            "timeoutInMinutes": 0,
+            "jobCancelTimeoutInMinutes": 1,
+            "condition": "succeeded()",
+            "overrideInputs": {}
+          },
+          "rank": 1,
+          "phaseType": "agentBasedDeployment",
+          "name": "Run on agent",
+          "refName": null,
+          "workflowTasks": [
+            {
+              "environment": {},
+              "taskId": "4ac6d781-1b39-4d55-9664-3cc571c44da9",
+              "version": "1.*",
+              "name": "Create or Update a Resource Group",
+              "refName": "somecompany",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceNameARM": "64f85840-08f0-48ec-80ec-283c068a2583",
+                "action": "create",
+                "applicationName": "p02soxdemo",
+                "resourceGroupName": "",
+                "location": "westeurope",
+                "organisationalGroup": "eu.res.AADAzure.devaut.us",
+                "applicationCI": "",
+                "incrementResourceGroupNameIfAlreadyExist": "false",
+                "resourceGroupSuffixNumber": "1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+              "version": "2.*",
+              "name": "Create Azure App Service Plan if not exists",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceName": "",
+                "ConnectedServiceNameARM": "64f85840-08f0-48ec-80ec-283c068a2583",
+                "ScriptType": "InlineScript",
+                "ScriptPath": "",
+                "Inline": "$ifexists = get-azurermappserviceplan | where {$_.name -EQ \"$(AppServicePlan)\"}\n   if($exists) \n{echo 'serviceplan $(AppServicePlan) already exists...'}\n   else {\nNew-AzureRmAppServicePlan -Name $(AppServicePlan) -Location \"West Europe\" -ResourceGroupName $(somecompany.ResourceGroupName) -Tier Free   \n   }\n",
+                "ScriptArguments": "",
+                "TargetAzurePs": "OtherVersion",
+                "CustomTargetAzurePs": "5.1.1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+              "version": "2.*",
+              "name": "Create Azure Web App if not exists",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceName": "",
+                "ConnectedServiceNameARM": "64f85840-08f0-48ec-80ec-283c068a2583",
+                "ScriptType": "InlineScript",
+                "ScriptPath": "",
+                "Inline": "$ifexistsWa = get-azurermWebApp | where {$_.name -EQ \"$(AppServiceName)\"}\n   if($existsWa) \n{echo 'webapp $(AppServiceName) already exists...'}\n   else {\nNew-AzureRmWebApp -Name $(AppServiceName) -AppServicePlan $(AppServicePlan) -ResourceGroupName $(somecompany.ResourceGroupName) -Location \"West Europe\" \n   }\n\n",
+                "ScriptArguments": "",
+                "TargetAzurePs": "OtherVersion",
+                "CustomTargetAzurePs": "5.1.1"
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+              "version": "3.*",
+              "name": "Deploy Azure App Service",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": null,
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "$(Parameters.ConnectedServiceName)",
+                "WebAppKind": "$(Parameters.WebAppKind)",
+                "WebAppName": "$(Parameters.WebAppName)",
+                "DeployToSlotFlag": "false",
+                "ResourceGroupName": "",
+                "SlotName": "",
+                "ImageSource": "$(Parameters.ImageSource)",
+                "AzureContainerRegistry": "",
+                "AzureContainerRegistryLoginServer": "",
+                "AzureContainerRegistryImage": "",
+                "AzureContainerRegistryTag": "",
+                "DockerRepositoryAccess": "public",
+                "RegistryConnectedServiceName": "",
+                "PrivateRegistryImage": "",
+                "PrivateRegistryTag": "",
+                "DockerNamespace": "$(Parameters.DockerNamespace)",
+                "DockerRepository": "$(Parameters.DockerRepository)",
+                "DockerImageTag": "$(Build.BuildId)",
+                "VirtualApplication": "",
+                "Package": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                "BuiltinLinuxPackage": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                "RuntimeStack": "$(Parameters.RuntimeStack)",
+                "StartupCommand": "",
+                "WebAppUri": "url",
+                "ScriptType": "",
+                "InlineScript": "",
+                "ScriptPath": "",
+                "GenerateWebConfig": "false",
+                "WebConfigParameters": "",
+                "AppSettings": "",
+                "ConfigurationSettings": "",
+                "TakeAppOfflineFlag": "true",
+                "UseWebDeploy": "false",
+                "SetParametersFile": "",
+                "RemoveAdditionalFilesFlag": "false",
+                "ExcludeFilesFromAppDataFlag": "false",
+                "AdditionalArguments": "",
+                "RenameFilesFlag": "true",
+                "XmlTransformation": "false",
+                "XmlVariableSubstitution": "false",
+                "JSONFiles": ""
+              }
+            },
+            {
+              "environment": {},
+              "taskId": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+              "version": "2.*",
+              "name": "Display URL of our sox-demo website",
+              "refName": "",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "Write-Host \"The url of your deployed website\"\nWrite-Host $(url)",
+                "errorActionPreference": "stop",
+                "failOnStderr": "false",
+                "ignoreLASTEXITCODE": "false",
+                "pwsh": "false",
+                "workingDirectory": ""
+              }
+            }
+          ]
+        }
+      ],
+      "owner": {
+        "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "_links": {
+          "avatar": {
+            "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          }
+        },
+        "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+        "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      },
+      "schedules": [],
+      "release": {
+        "id": 79,
+        "name": "Release-48",
+        "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+        "_links": {
+          "web": {
+            "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"
+          },
+          "self": {
+            "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"
+          }
+        }
+      },
+      "releaseDefinition": {
+        "id": 2,
+        "name": "demo SOx",
+        "path": "\\",
+        "projectReference": null,
+        "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+        "_links": {
+          "web": {
+            "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"
+          },
+          "self": {
+            "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"
+          }
+        }
+      },
+      "releaseCreatedBy": {
+        "displayName": "Pruyssenaere de la Woestijne de, L (Leon)",
+        "url": "https://app.vssps.visualstudio.com/A463182bb-55b2-4a41-9476-50659007d1ed/_apis/Identities/404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "_links": {
+          "avatar": {
+            "href": "https://dev.azure.com/somecompany/_apis/GraphProfile/MemberAvatars/aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+          }
+        },
+        "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "uniqueName": "Leon.de.Pruyssenaere.de.la.Woestijne@somecompany.nl",
+        "imageUrl": "https://dev.azure.com/somecompany/_api/_common/identityImage?id=404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+        "descriptor": "aad.NDA0ZDhkNzQtZjNjNi03YWViLTlmMDUtMmY4ZTU3NmNkMWJh"
+      },
+      "triggerReason": "After successful deployment of S01 - Test",
+      "timeToDeploy": 1.7716166666666666,
+      "processParameters": {
+        "inputs": [
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "ConnectedServiceName",
+            "label": "Azure subscription",
+            "defaultValue": "64f85840-08f0-48ec-80ec-283c068a2583",
+            "required": true,
+            "type": "connectedService:AzureRM",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
+            "visibleRule": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "app": "Web App",
+              "applinux": "Linux App",
+              "functionapp": "Function App",
+              "api": "API App",
+              "mobileapp": "Mobile App"
+            },
+            "properties": {
+              "EditableOptions": "false"
+            },
+            "name": "WebAppKind",
+            "label": "App type",
+            "defaultValue": "app",
+            "type": "pickList",
+            "helpMarkDown": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "name": "WebAppName",
+            "label": "App service name",
+            "defaultValue": "$(AppServiceName)",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "Enter or select the name of an existing Azure App Service.",
+            "visibleRule": "",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "Registry": "Container Registry",
+              "Builtin": "Built-in Image"
+            },
+            "properties": {},
+            "name": "ImageSource",
+            "label": "Image Source",
+            "defaultValue": "Registry",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "App Service on Linux offers two different options to publish your application <br/> Custom image deployment or App deployment with a built-in platform image. [Learn More](https://go.microsoft.com/fwlink/?linkid=862490)",
+            "visibleRule": "WebAppKind = applinux",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "DockerNamespace",
+            "label": "Registry or Namespace",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "A globally unique top-level domain name for your specific registry or namespace.<br/> Note: Fully qualified image name will be of the format: '<b>`<registry or namespace`></b>/`<repository`>:`<tag`>'. For example, '<b>myregistry.azurecr.io</b>/nginx:latest'.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Registry",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "DockerRepository",
+            "label": "Repository",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Name of the repository where the container images are stored.<br/> Note: Fully qualified image name will be of the format: '`<registry or namespace`>/<b>`<repository`></b>:`<tag`>'. For example, 'myregistry.azurecr.io/<b>nginx</b>:latest'.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Registry",
+            "groupName": ""
+          },
+          {
+            "aliases": [],
+            "options": {
+              "node|4.4": "Node.js 4.4",
+              "node|4.5": "Node.js 4.5",
+              "node|6.2": "Node.js 6.2",
+              "node|6.6": "Node.js 6.6",
+              "node|6.9": "Node.js 6.9",
+              "node|6.10": "Node.js 6.10",
+              "node|6.11": "Node.js 6.11",
+              "node|8.0": "Node.js 8.0",
+              "node|8.1": "Node.js 8.1",
+              "php|5.6": "PHP 5.6",
+              "php|7.0": "PHP 7.0",
+              "dotnetcore|1.0": ".NET Core 1.0",
+              "dotnetcore|1.1": ".NET Core 1.1",
+              "dotnetcore|2.0": ".NET Core 2.0",
+              "ruby|2.3": "Ruby 2.3"
+            },
+            "properties": {},
+            "name": "RuntimeStack",
+            "label": "Runtime Stack",
+            "defaultValue": "",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "Select the framework and version.",
+            "visibleRule": "WebAppKind = applinux && ImageSource = Builtin"
+          }
+        ],
+        "dataSourceBindings": [
+          {
+            "dataSourceName": "AzureRMWebAppNamesByType",
+            "parameters": {
+              "WebAppKind": "$(WebAppKind)"
+            },
+            "endpointId": "$(ConnectedServiceName)",
+            "target": "WebAppName"
+          }
+        ]
+      },
+      "preDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      },
+      "postDeploymentGatesSnapshot": {
+        "id": 0,
+        "gatesOptions": null,
+        "gates": []
+      }
+    }
+  ],
+  "variables": {},
+  "variableGroups": [],
+  "artifacts": [
+    {
+      "sourceId": "5470b9fd-156e-4308-a82c-c92886b5a99b:2899",
+      "type": "Build",
+      "alias": "_SOx-compliant-demo-CI",
+      "definitionReference": {
+        "artifactSourceDefinitionUrl": {
+          "id": "https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=5470b9fd-156e-4308-a82c-c92886b5a99b&definitionId=2899",
+          "name": ""
+        },
+        "buildUri": {
+          "id": "vstfs:///Build/Build/72713",
+          "name": null
+        },
+        "definition": {
+          "id": "2899",
+          "name": "SOx-compliant-demo-CI"
+        },
+        "IsMultiDefinitionType": {
+          "id": "False",
+          "name": "False"
+        },
+        "IsXamlBuildArtifactType": {
+          "id": "False",
+          "name": null
+        },
+        "pullRequestMergeCommitId": {
+          "id": "ccc5a1634b5b441a783fb517e9b52f3b815f415b",
+          "name": null
+        },
+        "project": {
+          "id": "5470b9fd-156e-4308-a82c-c92886b5a99b",
+          "name": "SOx-compliant-demo"
+        },
+        "repository.id": {
+          "id": "a14f2dd5-07fe-4c88-9ceb-7ac32f79bb4a",
+          "name": null
+        },
+        "repository.name": {
+          "id": "dotnetcoresample",
+          "name": null
+        },
+        "repository.provider": {
+          "id": "TfsGit",
+          "name": null
+        },
+        "repository": {
+          "id": "a14f2dd5-07fe-4c88-9ceb-7ac32f79bb4a",
+          "name": "dotnetcoresample"
+        },
+        "requestedFor": {
+          "id": "Pruyssenaere de la Woestijne de, L (Leon)",
+          "name": null
+        },
+        "requestedForId": {
+          "id": "404d8d74-f3c6-6aeb-9f05-2f8e576cd1ba",
+          "name": null
+        },
+        "sourceVersion": {
+          "id": "ccc5a1634b5b441a783fb517e9b52f3b815f415b",
+          "name": null
+        },
+        "version": {
+          "id": "72713",
+          "name": "20190115.3"
+        },
+        "artifactSourceVersionUrl": {
+          "id": "https://dev.azure.com/somecompany/_permalink/_build/index?collectionId=3f5f177f-c504-4f1c-9534-be6de83783f6&projectId=5470b9fd-156e-4308-a82c-c92886b5a99b&buildId=72713",
+          "name": ""
+        },
+        "branch": {
+          "id": "refs/heads/ymlfileupdate",
+          "name": "refs/heads/ymlfileupdate"
+        }
+      },
+      "isPrimary": true,
+      "isRetained": true
+    }
+  ],
+  "releaseDefinition": {
+    "id": 2,
+    "name": "demo SOx",
+    "path": "\\",
+    "projectReference": null,
+    "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2",
+    "_links": {
+      "self": {
+        "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/definitions/2"
+      },
+      "web": {
+        "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?definitionId=2"
+      }
+    }
+  },
+  "description": "",
+  "reason": "manual",
+  "releaseNameFormat": "Release-$(rev:r)",
+  "keepForever": false,
+  "definitionSnapshotRevision": 1,
+  "logsContainerUrl": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79/logs",
+  "url": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79",
+  "_links": {
+    "self": {
+      "href": "https://vsrm.dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_apis/Release/releases/79"
+    },
+    "web": {
+      "href": "https://dev.azure.com/somecompany/5470b9fd-156e-4308-a82c-c92886b5a99b/_release?releaseId=79&_a=release-summary"
+    }
+  },
+  "tags": ["SM9tag1"],
+  "triggeringArtifactAlias": null,
+  "projectReference": {
+    "id": "5470b9fd-156e-4308-a82c-c92886b5a99b",
+    "name": null
+  },
+  "properties": {}
+}
