@@ -19,15 +19,14 @@ namespace Subscriptions.Console
             var organizationOption = app.Option("-o|--organization <organization>", "The vsts organization", CommandOptionType.SingleValue);
             var accountNameOption = app.Option("-an|--accountname <accountname>", "The name of the account", CommandOptionType.SingleValue);
             var accountKeyOption = app.Option("-ak|--accountkey <accountkey>", "The key of the account 64 chars", CommandOptionType.SingleValue);
-            var deleteOption = app.Option("-d|--delete <true/false>", "if this command should delete service hooks instead of creating them add -d true", CommandOptionType.SingleValue);
+            var deleteOption = app.Option("-d|--delete", "if this command should delete service hooks instead of creating them add -d true", CommandOptionType.NoValue);
 
             // Currently only check build.completed
             app.OnExecute(() =>
             {
                 if (!tokenOption.HasValue() ||
                     !organizationOption.HasValue() ||
-                    !accountNameOption.HasValue() ||
-                    !accountKeyOption.HasValue())
+                    !accountNameOption.HasValue())
                 {
                     app.ShowHelp();
                     return 1;
@@ -38,12 +37,17 @@ namespace Subscriptions.Console
                     .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
-                if (deleteOption.HasValue() && deleteOption.Value().Equals("true", StringComparison.OrdinalIgnoreCase))
+                if (deleteOption.Values.Any())
                 {
                     RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
                 }
                 else
                 {
+                    if (!accountKeyOption.HasValue())
+                    {
+                        app.ShowHelp();
+                        return 1;
+                    }
                     var projects = client
                         .Get(Requests.Project.Projects());
 
