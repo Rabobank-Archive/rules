@@ -23,7 +23,7 @@ namespace SecurePipelineScan.Rules.Tests
             var fixture = Fixture();
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Get(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests
         
             client
                 .Received()
-                .Get(Arg.Any<IVstsRestRequest<JObject>>());
+                .Get(Arg.Any<IVstsRequest<JObject>>());
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Get(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
@@ -52,7 +52,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             client
                 .Received(1)
-                .Get(Arg.Any<IVstsRestRequest<JObject>>());
+                .Get(Arg.Any<IVstsRequest<JObject>>());
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace SecurePipelineScan.Rules.Tests
         
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRestRequest<JObject>>())
+                .Get(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(endpoints));
 
             var validator = new ServiceEndpointValidator(client, _cache);

@@ -26,14 +26,14 @@ namespace SecurePipelineScan.VstsService
         {
         }
 
-        public TResponse Get<TResponse>(IVstsRestRequest<TResponse> request)
+        public TResponse Get<TResponse>(IVstsRequest<TResponse> request)
             where TResponse : new()
         {
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri)
                 .AddHeader("authorization", _authorization);
 
-            if (request is IVstsRestRequest<JObject>)
+            if (request is IVstsRequest<JObject>)
             {
                 return (TResponse) (object) JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
             }
@@ -41,19 +41,19 @@ namespace SecurePipelineScan.VstsService
             return _client.Execute<TResponse>(wrapper).ThrowOnError().DefaultIfNotFound();
         }
 
-        public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
+        public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri, Method.POST)
             {
                 JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
             }.AddHeader("authorization", _authorization)
-             .AddJsonBody(request.Body);
+             .AddJsonBody(body);
 
             return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
 
-        public TResponse Put<TResponse>(IVstsRestRequest<TResponse> request, TResponse body) where TResponse: new()
+        public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new()
         {
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri, Method.PUT)
@@ -65,7 +65,7 @@ namespace SecurePipelineScan.VstsService
             return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
 
-        public void Delete(IVstsRestRequest request)
+        public void Delete(IVstsRequest request)
         {
             _client.BaseUrl = request.BaseUri(_organization);
             var wrapper = new RestRequest(request.Uri, Method.DELETE)

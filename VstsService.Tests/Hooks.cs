@@ -34,7 +34,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(body);
+            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
             _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
@@ -50,7 +50,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(body);
+            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
             _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
@@ -66,8 +66,9 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(body);
+            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
+            hook.PublisherInputs.PullrequestCreatedBy.ShouldNotBeNull();
 
             _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
         }
@@ -82,7 +83,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(body);
+            var hook = _fixture.Client.Post(Requests.Hooks.AddReleaseManagementSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
             _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));

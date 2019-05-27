@@ -23,7 +23,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void DeleteThrowsOnError()
         {
-            var request = Substitute.For<IVstsRestRequest<int>>();
+            var request = Substitute.For<IVstsRequest<int>>();
             var response = Substitute.For<IRestResponse>();
 
             var rest = Substitute.For<IRestClient>();
@@ -36,20 +36,20 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void PostThrowsOnError()
         {
-            var request = Substitute.For<IVstsPostRequest<int>>();
+            var request = Substitute.For<IVstsRequest<int,int>>();
             var response = Substitute.For<IRestResponse>();
 
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
             var client = new VstsRestClient("dummy", "pat", rest);
-            Assert.Throws<VstsException>(() => client.Post(request));
+            Assert.Throws<VstsException>(() => client.Post(request, 3));
         }
 
         [Fact]
         public void GetThrowsOnError()
         {
-            var request = Substitute.For<IVstsRestRequest<int>>();
+            var request = Substitute.For<IVstsRequest<int>>();
             var response = Substitute.For<IRestResponse>();
 
             var rest = Substitute.For<IRestClient>();
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void GetJsonThrowsOnError()
         {
-            var request = Substitute.For<IVstsRestRequest<JObject>>();
+            var request = Substitute.For<IVstsRequest<JObject>>();
             var response = Substitute.For<IRestResponse>();
 
             var rest = Substitute.For<IRestClient>();

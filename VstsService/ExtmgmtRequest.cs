@@ -3,7 +3,7 @@ using System;
 
 namespace SecurePipelineScan.VstsService
 {
-    public class ExtmgmtRequest<TResponse> : IVstsRestRequest<TResponse>
+    public class ExtmgmtRequest<TResponse> : IVstsRequest<TResponse>
         where TResponse: new()
     {
         public string Uri { get; }

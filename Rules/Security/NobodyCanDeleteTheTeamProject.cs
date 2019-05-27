@@ -92,12 +92,12 @@ namespace SecurePipelineScan.Rules.Security
                 var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
                 delete.PermissionId = PermissionId.NotSet;
 
-                _client.Post(Permissions.ManagePermissions(project,
+                _client.Post(Permissions.ManagePermissions(project),
                     new Permissions.ManagePermissionsData(
                         identity.TeamFoundationId,
                         permissions.Security.DescriptorIdentifier,
                         permissions.Security.DescriptorIdentityType,
-                        delete)));
+                        delete).Wrap());
             }
         }
 
@@ -108,41 +108,42 @@ namespace SecurePipelineScan.Rules.Security
             delete.PermissionId = 2;
             delete.PermissionBit = 4;
 
-            _client.Post(Permissions.ManagePermissions(project,
+            _client.Post(Permissions.ManagePermissions(project),
                 new Permissions.ManagePermissionsData(
                     tfsId,
                     permissions.Security.DescriptorIdentifier,
                     permissions.Security.DescriptorIdentityType,
-                    delete)));
+                    delete).Wrap());
         }
 
         private ApplicationGroup CreateRabobankProjectAdministratorsGroupsIfNotExists(string project, ApplicationGroups groups)
         {
             return groups.Identities.SingleOrDefault(p => p.FriendlyDisplayName == RabobankProjectAdministrators) ??
-                   _client.Post(VstsService.Requests.Security.ManageGroup(project, new VstsService.Requests.Security.ManageGroupData
-                   {
-                       Name = RabobankProjectAdministrators
-                   }));
+                   _client.Post(VstsService.Requests.Security.ManageGroup(project),
+                       new VstsService.Requests.Security.ManageGroupData
+                       {
+                           Name = RabobankProjectAdministrators
+                       });
         }
 
         private void AddAllMembersToRabobankProjectAdministratorsGroup(string project, IEnumerable<ApplicationGroup> members, string rabo)
         {
-            _client.Post(VstsService.Requests.Security.AddMember(project,
+            _client.Post(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(
                     members.Select(m => m.TeamFoundationId),
-                    new[] {rabo})));
+                    new[] {rabo}));
         }
 
         private void RemoveAllOtherMembersFromProjectAdministrators(string project, IEnumerable<ApplicationGroup> members, string id)
         {
-            _client.Post(VstsService.Requests.Security.EditMembership(project,
-                new VstsService.Requests.Security.RemoveMembersData(members.Select(m => m.TeamFoundationId), id)));
+            _client.Post(VstsService.Requests.Security.EditMembership(project),
+                new VstsService.Requests.Security.RemoveMembersData(members.Select(m => m.TeamFoundationId), id));
         }
 
         private void AddRabobankProjectAdministratorsToProjectAdministratorsGroup(string project, string rabo, string id)
         {
-            _client.Post(VstsService.Requests.Security.AddMember(project,
-                new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id})));
+            _client.Post(VstsService.Requests.Security.AddMember(project),
+                new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}));
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Subscriptions.Console.Tests
             Program.AddHooksToProjects("asdf", "asdf", client, items);
 
             // Assert
-            client.Received(calls).Post(Arg.Any<IVstsPostRequest<Response.Hook>>());
+            client.Received(calls).Post(Arg.Any<IVstsRequest<Requests.Hooks.Add.Body, Response.Hook>>(), Arg.Any<Requests.Hooks.Add.Body>());
         }
     }
 }

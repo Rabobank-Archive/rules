@@ -5,18 +5,18 @@ namespace SecurePipelineScan.VstsService
 {
     public static class VstsRestRequestExtensions
     {
-        public static IVstsRestRequest<JObject> AsJson<TResponse>(
-            this IVstsRestRequest<TResponse> request)
+        public static IVstsRequest<JObject> AsJson<TResponse>(
+            this IVstsRequest<TResponse> request)
             where TResponse : new()
         {
             return new JsonRequest(request);
         }
 
-        private class JsonRequest : IVstsRestRequest<JObject>
+        private class JsonRequest : IVstsRequest<JObject>
         {
-            private readonly IVstsRestRequest _request;
+            private readonly IVstsRequest _request;
 
-            public JsonRequest(IVstsRestRequest request)
+            public JsonRequest(IVstsRequest request)
             {
                 _request = request;
             }

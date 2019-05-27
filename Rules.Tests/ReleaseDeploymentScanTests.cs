@@ -231,15 +231,15 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();                   
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
@@ -260,20 +260,20 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/653456")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/653456")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
@@ -295,14 +295,14 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.AgentQueue>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.AgentQueue>>()))
                     .Returns(_fixture.Create<Response.AgentQueue>());
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
@@ -327,15 +327,15 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
@@ -361,15 +361,15 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
@@ -389,15 +389,15 @@ namespace SecurePipelineScan.Rules.Tests
 
                 var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRestRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
+                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
                     .Returns(_fixture.Create<Response.AgentQueue>())
                     .Verifiable();
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Release>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRestRequest<Response.Environment>>()))
+                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act

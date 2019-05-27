@@ -12,7 +12,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public void RestRequestAsJson()
         {
             var fixture = new Fixture();
-            var request = Substitute.For<IVstsRestRequest<int>>();
+            var request = Substitute.For<IVstsRequest<int>>();
             
             var uri = fixture.Create<string>();
             request.Uri.Returns(uri);

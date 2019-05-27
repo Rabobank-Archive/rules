@@ -13,22 +13,22 @@ namespace SecurePipelineScan.Rules.Tests
             _fixture = fixture;
         }
 
-        public TResponse Get<TResponse>(IVstsRestRequest<TResponse> request) where TResponse : new()
+        public TResponse Get<TResponse>(IVstsRequest<TResponse> request) where TResponse : new()
         {
             return _fixture.Create<TResponse>();
         }
 
-        public TResponse Post<TResponse>(IVstsPostRequest<TResponse> request) where TResponse : new()
+        public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             throw new NotImplementedException();
         }
 
-        public TResponse Put<TResponse>(IVstsRestRequest<TResponse> request, TResponse body) where TResponse : new()
+        public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(IVstsRestRequest request)
+        public void Delete(IVstsRequest request)
         {
             throw new NotImplementedException();
         }

@@ -58,25 +58,25 @@ namespace VstsService.Tests
                 .TeamFoundationId;
             
             client.Post(
-                Requests.Security.AddMember(config.Project, 
+                Requests.Security.AddMember(config.Project), 
                     new Requests.Security.AddMemberData(
                         new []{ "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c" }, 
-                        new [] { groupId })));
+                        new [] { groupId }));
 
             client.Post(
-                Requests.Security.EditMembership(config.Project,
-                    new Requests.Security.RemoveMembersData(new[] { "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c"}, groupId)));
+                Requests.Security.EditMembership(config.Project),
+                    new Requests.Security.RemoveMembersData(new[] { "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c"}, groupId));
         }
 
         [Fact(Skip = "unable to delete created group with API")]
         public void CreateGroup()
         {
             client.Post(
-                Requests.Security.ManageGroup(config.Project,
+                Requests.Security.ManageGroup(config.Project),
                     new Requests.Security.ManageGroupData
                     {
                         Name = "asdf"
-                    }));
+                    });
         }
     }
 }
