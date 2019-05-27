@@ -444,8 +444,43 @@ namespace SecurePipelineScan.Rules.Tests
                     }
                 });
             }
-        }
 
+            [Fact]
+            public void ShouldReturnTrueForReleaseHasSm9ChangeId()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(
+                    x => x.With(
+                        a => a.Tags, new[] {"SM9ChangeId 12345", "Random tag"}));
+                
+                // Act
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var report = scan.Completed(input);
+                
+                // Assert
+                report.RelatedToSm9Change.ShouldBeTrue();
+            }
+
+            [Fact]
+            public void EvaluateShouldReturnFalseForReleaseHasNoSm9ChangeId()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(
+                    x => x.With(
+                        a => a.Tags, new[] {"12345", "Random tag"}));
+                
+                // Act
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var report = scan.Completed(input);
+                
+                // Assert
+                report.RelatedToSm9Change.ShouldBeFalse();
+            }
+        }
 
                 
         private static JObject ReadInput(string eventType, string file)
