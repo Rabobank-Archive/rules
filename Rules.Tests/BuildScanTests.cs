@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
-                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+                .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
                 .Get(Arg.Any<IVstsRequest<JObject>>())
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
-                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+                .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
                 .Get(Arg.Any<IVstsRequest<JObject>>())
@@ -91,7 +91,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
-                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+                .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
                 .Get(Arg.Any<IVstsRequest<JObject>>())
@@ -119,7 +119,7 @@ namespace SecurePipelineScan.Rules.Tests
             
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
-                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+                .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
                 .Get(Arg.Any<IVstsRequest<JObject>>())
@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests
             
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
-                .Returns(_fixture.Create<Multiple<BuildArtifact>>());
+                .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
                 .Get(Arg.Any<IVstsRequest<JObject>>())

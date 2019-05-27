@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
 using RestSharp.Serializers.Newtonsoft.Json;
 using SecurePipelineScan.VstsService.Converters;
+using SecurePipelineScan.VstsService.Response;
 using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
@@ -37,8 +39,19 @@ namespace SecurePipelineScan.VstsService
             {
                 return (TResponse) (object) JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
             }
+            
+            return _client.Execute<TResponse>(wrapper)
+                .ThrowOnError()
+                .DefaultIfNotFound();
+        }
 
-            return _client.Execute<TResponse>(wrapper).ThrowOnError().DefaultIfNotFound();
+        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
+        {
+            _client.BaseUrl = request.BaseUri(_organization);
+            var wrapper = new RestRequest(request.Uri)
+                .AddHeader("authorization", _authorization);
+
+            return new MultipleEnumerator<TResponse>(wrapper, _client);
         }
 
         public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()

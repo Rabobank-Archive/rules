@@ -20,7 +20,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryPermissionsGroupRepositorySetReturnsPermissions()
         {
-            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities
@@ -38,7 +38,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryPermissionsGroupRepositoryReturnsPermissions()
         {
-            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+            var namespaceId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities
@@ -46,7 +46,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
 
-            var repositories = _client.Get(Requests.Repository.Repositories(_config.Project)).Value;
+            var repositories = _client.Get(Requests.Repository.Repositories(_config.Project));
 
             foreach (var repository in repositories)
             {
@@ -61,7 +61,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryPermissionsGroupSetIdReturnsPermissionsForSetId()
         {
-            var permissionSetId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+            var permissionSetId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.Name == "Build").NamespaceId;
 
             var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities
@@ -80,7 +80,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryPermissionsGroupSetIdDefinitionReturnsPermissionsForSetId()
         {
-            var permissionSetId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value
+            var permissionSetId = _client.Get(Requests.SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.Name == "Build").NamespaceId;
 
             var applicationGroupId = _client.Get(Requests.ApplicationGroup.ApplicationGroups(_config.Project)).Identities

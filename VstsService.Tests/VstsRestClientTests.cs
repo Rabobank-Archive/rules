@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
@@ -76,11 +77,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public void HtmlInsteadOfXmlShouldThrow()
         {
             var sut = new VstsRestClient("somecompany-test", InvalidToken);
-
-            Assert.Throws<VstsException>(() =>
-            {
-                var result = sut.Get(Requests.Project.Projects());
-            });
+            Assert.Throws<VstsException>(() => sut.Get(Requests.Project.Projects()).ToList());
         }
 
         [Fact]
