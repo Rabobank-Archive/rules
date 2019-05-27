@@ -1,9 +1,9 @@
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleaseHasChangeIdTag : IRule, IReconcile
+    public class ReleaseIsRelatedToChangeRequest : IRule, IReconcile
     {
-        public string Description => "Releases have change id tag from SM9";
-        public string Why => "To create traceability for audit, every release should have a SM9 tag";
+        public string Description => "Release is related to a change request in SM9";
+        public string Why => "To create traceability for audit, every release should have a tag with the corresponding SM9 change id";
         public bool Evaluate(string project, string id)
         {
             throw new System.NotImplementedException();

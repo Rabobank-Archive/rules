@@ -3,7 +3,7 @@ using Xunit;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ReleaseHasChangeIdTagTests : IClassFixture<TestConfig>
+    public class ReleaseIsRelatedToChangeRequestTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
 
