@@ -11,11 +11,6 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VsrmRequest<Response.Release>($"{project}/_apis/release/releases/{id}");
         }
-        
-        public static IVstsRequest<Multiple<Response.Release>> Releases(string project)
-        {
-            return new VsrmRequest<Multiple<Response.Release>>($"{project}/_apis/release/releases/");
-        }
 
         public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project)
         {
