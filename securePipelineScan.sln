@@ -22,8 +22,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Console", "Su
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Console.Tests", "Subscriptions.Console.Tests\Subscriptions.Console.Tests.csproj", "{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Tests", "Reports.Tests\Reports.Tests.csproj", "{C9396C82-6D40-4398-BE4A-6AE452EFF3D1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,10 +52,6 @@ Global
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62E1A5A3-8D9F-473E-B8B9-01F2B4076726}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9396C82-6D40-4398-BE4A-6AE452EFF3D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9396C82-6D40-4398-BE4A-6AE452EFF3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9396C82-6D40-4398-BE4A-6AE452EFF3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9396C82-6D40-4398-BE4A-6AE452EFF3D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
