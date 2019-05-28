@@ -35,6 +35,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var release = MockClientResponse<Response.Release>(Path.Join(ReleaseAssets, "Approved.json"));
             release.Id.ShouldBe(id);
             release.Environments.ShouldNotBeEmpty();
+            release.Tags.ShouldNotBeEmpty();
 
             var env = release.Environments.Skip(1).First();
             env.Id.ShouldNotBe(0);

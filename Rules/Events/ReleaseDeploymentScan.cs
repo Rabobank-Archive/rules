@@ -44,10 +44,15 @@ namespace SecurePipelineScan.Rules.Events
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
                 UsesManagedAgentsOnly = CheckAgents(project, queueIds),
-                AllArtifactsAreFromBuild = CheckArtifacts(release)
+                AllArtifactsAreFromBuild = CheckArtifacts(release), 
+                RelatedToSm9Change = IsRelatedToSm9Change(release)
             };
         }
 
+        private bool IsRelatedToSm9Change(Response.Release release)
+        {
+            return release.Tags.Any(x => x.Contains("SM9ChangeId"));
+        }
 
         private bool CheckArtifacts(Response.Release release)
         {
