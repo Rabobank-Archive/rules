@@ -214,7 +214,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             client
                 .Get(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
-                .Returns(fixture.Create<Multiple<MinimumNumberOfReviewersPolicy>>());
+                .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
         }
     }
 }

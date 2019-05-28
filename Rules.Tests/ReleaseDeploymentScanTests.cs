@@ -122,6 +122,7 @@ namespace SecurePipelineScan.Rules.Tests
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
                     ctx.Ignore(x => x.UsesManagedAgentsOnly);
+                    ctx.Ignore(x => x.RelatedToSm9Change);
                 });
 
                 var input = ReadInput("Completed", "Approved.json");
@@ -187,7 +188,8 @@ namespace SecurePipelineScan.Rules.Tests
                 var expected = new ReleaseDeploymentCompletedReport
                 {
                     UsesManagedAgentsOnly = true,
-                    AllArtifactsAreFromBuild = false
+                    AllArtifactsAreFromBuild = false,
+                    RelatedToSm9Change = false
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
@@ -444,8 +446,43 @@ namespace SecurePipelineScan.Rules.Tests
                     }
                 });
             }
-        }
 
+            [Fact]
+            public void ShouldReturnTrueForReleaseHasSm9ChangeId()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(
+                    x => x.With(
+                        a => a.Tags, new[] {"SM9ChangeId 12345", "Random tag"}));
+                
+                // Act
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var report = scan.Completed(input);
+                
+                // Assert
+                Assert.True(report.RelatedToSm9Change);
+            }
+
+            [Fact]
+            public void EvaluateShouldReturnFalseForReleaseHasNoSm9ChangeId()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(
+                    x => x.With(
+                        a => a.Tags, new[] {"12345", "Random tag"}));
+                
+                // Act
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var report = scan.Completed(input);
+                
+                // Assert
+                Assert.False(report.RelatedToSm9Change);
+            }
+        }
 
                 
         private static JObject ReadInput(string eventType, string file)

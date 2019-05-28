@@ -24,5 +24,11 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VstsRequest<Build>($"{project}/_apis/build/builds/{id}");
         }
+        
+        public static IVstsRequest<Multiple<Build>> All(string project)
+        {
+            return new VstsRequest<Multiple<Build>>($"{project}/_apis/build/builds?$top=10");
+        }
+
     }
 }

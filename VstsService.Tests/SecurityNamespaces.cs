@@ -13,19 +13,17 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("Category","integration")]
     public class SecurityNamespaces : IClassFixture<TestConfig>
     {
-        private readonly TestConfig _config;
         private readonly IVstsRestClient _client;
 
         public SecurityNamespaces(TestConfig config)
         {
-            _config = config;
             _client = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
         public void QueryNamespaces()
         {
-            var target = _client.Get(Requests.SecurityNamespace.SecurityNamespaces()).Value;
+            var target = _client.Get(Requests.SecurityNamespace.SecurityNamespaces());
             target.ShouldNotBeEmpty();
 
             var first = target.First();

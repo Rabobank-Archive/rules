@@ -6,6 +6,7 @@ using System.Net;
 using System.Linq;
 using NSubstitute;
 using RestSharp;
+using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -13,6 +14,7 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Release : IClassFixture<TestConfig>
     {
+        private readonly TestConfig _config;
         private readonly IVstsRestClient _client;
         private readonly string _project;
 
@@ -21,6 +23,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
         public Release(TestConfig config)
         {
+            _config = config;
             _client = new VstsRestClient(config.Organization, config.Token);
             _project = config.Project;
         }
@@ -35,6 +38,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var release = MockClientResponse<Response.Release>(Path.Join(ReleaseAssets, "Approved.json"));
             release.Id.ShouldBe(id);
             release.Environments.ShouldNotBeEmpty();
+            release.Tags.ShouldNotBeEmpty();
 
             var env = release.Environments.Skip(1).First();
             env.Id.ShouldNotBe(0);
@@ -65,7 +69,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var artifact = release.Artifacts.First();
             artifact.Type.ShouldNotBeNull();
-            artifact.Alias.ShouldNotBeNull();
+            artifact.Alias.ShouldNotBeNull();           
         }
 
 
@@ -92,6 +96,13 @@ namespace SecurePipelineScan.VstsService.Tests
             var approval = preApprovalSnapshot.Approvals.FirstOrDefault();
             approval.ShouldNotBeNull();
             approval.IsAutomated.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void RequestForMultipleContinuesUsingContinuationToken()
+        {
+            var releases = _client.Get(new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/?$top=2"));
+            releases.Count().ShouldBeGreaterThan(2);
         }
 
         [Fact]
