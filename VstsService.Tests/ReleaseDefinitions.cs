@@ -19,14 +19,14 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryReleaseDefinitions()
         {
-            var definitions = client.Get(Requests.Release.Definitions(config.Project));
+            var definitions = client.Get(Requests.ReleaseManagement.Definitions(config.Project));
             definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
         public void QueryReleaseDefinitionDetails()
         {
-            var definition = client.Get(Requests.Release.Definition(config.Project, config.ReleaseDefinitionId));
+            var definition = client.Get(Requests.ReleaseManagement.Definition(config.Project, config.ReleaseDefinitionId));
             definition.Name.ShouldBe(config.ReleaseDefinitionName);
             definition.Links.ShouldNotBeNull();
             definition.Environments.ShouldNotBeEmpty();

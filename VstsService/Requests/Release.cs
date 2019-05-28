@@ -4,11 +4,21 @@ using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
-    public static class Release
+    public static class ReleaseManagement
     {
-        public static IVstsRequest<Response.Release> Releases(string project, string id)
+        public static IVstsRequest<Response.Release> Release(string project, string id)
         {
             return new VsrmRequest<Response.Release>($"{project}/_apis/release/releases/{id}");
+        }
+
+        public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project)
+        {
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases");
+        }
+
+        public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project, string expand, string asof)
+        {
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases?$expand={expand}&minCreatedTime={asof}");
         }
 
         public static IVstsRequest<Response.ReleaseDefinition> Definition(string project, string id)

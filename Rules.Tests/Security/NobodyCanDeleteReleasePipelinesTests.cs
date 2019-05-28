@@ -13,6 +13,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             _config = config;
         }
+
         [Fact]
         public void EvaluateReleasePipelineIntegrationTest()
         {

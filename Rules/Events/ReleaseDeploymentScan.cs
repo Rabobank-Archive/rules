@@ -71,7 +71,7 @@ namespace SecurePipelineScan.Rules.Events
             var project = (string) input.SelectToken("resource.project.name");
             var releaseId = (string) input.SelectToken("resource.environment.releaseId");
 
-            return _client.Get(VstsService.Requests.Release.Releases(project, releaseId));
+            return _client.Get(VstsService.Requests.ReleaseManagement.Release(project, releaseId));
         }
 
         private bool UsesProductionEndpoints(string project, Response.Environment environment)
@@ -97,7 +97,7 @@ namespace SecurePipelineScan.Rules.Events
             var releaseId = (string) input.SelectToken("resource.environment.releaseId");
             var environmentId = (string) input.SelectToken("resource.environment.id");
 
-            return _client.Get(VstsService.Requests.Release.Environment(project, releaseId, environmentId));
+            return _client.Get(VstsService.Requests.ReleaseManagement.Environment(project, releaseId, environmentId));
         }
     }
 }

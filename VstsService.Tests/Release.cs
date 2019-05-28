@@ -29,7 +29,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void ReleaseWithApproval()
         {
-            const string id = "79";
+            const int id = 79;
             
             // var release = _client.Get(Requests.Release.Releases(_project, id));          
             var release = MockClientResponse<Response.Release>(Path.Join(ReleaseAssets, "Approved.json"));
@@ -72,7 +72,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryEnvironment()
         {
-            var environment = _client.Get(Requests.Release.Environment(_project, "5", "7"));
+            var environment = _client.Get(Requests.ReleaseManagement.Environment(_project, "5", "7"));
 
             environment.ShouldNotBeNull();
             environment.DeployPhasesSnapshot.ShouldNotBeEmpty();
