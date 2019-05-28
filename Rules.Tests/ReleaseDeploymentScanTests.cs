@@ -122,6 +122,7 @@ namespace SecurePipelineScan.Rules.Tests
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesProductionEndpoints);
                     ctx.Ignore(x => x.UsesManagedAgentsOnly);
+                    ctx.Ignore(x => x.RelatedToSm9Change);
                 });
 
                 var input = ReadInput("Completed", "Approved.json");
@@ -187,7 +188,8 @@ namespace SecurePipelineScan.Rules.Tests
                 var expected = new ReleaseDeploymentCompletedReport
                 {
                     UsesManagedAgentsOnly = true,
-                    AllArtifactsAreFromBuild = false
+                    AllArtifactsAreFromBuild = false,
+                    RelatedToSm9Change = false
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
@@ -460,7 +462,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
                 
                 // Assert
-                report.RelatedToSm9Change.ShouldBeTrue();
+                Assert.True(report.RelatedToSm9Change);
             }
 
             [Fact]
@@ -478,7 +480,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var report = scan.Completed(input);
                 
                 // Assert
-                report.RelatedToSm9Change.ShouldBeFalse();
+                Assert.False(report.RelatedToSm9Change);
             }
         }
 
