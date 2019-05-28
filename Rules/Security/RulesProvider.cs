@@ -34,6 +34,7 @@ namespace SecurePipelineScan.Rules.Security
         {
             yield return new NobodyCanDeleteReleases(client);
             yield return new NobodyCanDeleteReleasePipelines(client);
+            yield return new PipelineHasRequiredRetentionPolicy(client);
         }
     }
 }

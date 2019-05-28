@@ -35,5 +35,10 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
         }
+
+        public static IVstsRequest<Response.ReleaseSettings> ProjectReleaseSettings(string project)
+        {
+            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings?api-version=5.0-preview");
+        }
     }
 }
