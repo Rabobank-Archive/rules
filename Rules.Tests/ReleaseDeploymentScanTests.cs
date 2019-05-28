@@ -188,6 +188,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var expected = new ReleaseDeploymentCompletedReport
                 {
                     UsesManagedAgentsOnly = true,
+                    HasApprovalOptions = true,
                     AllArtifactsAreFromBuild = false,
                     RelatedToSm9Change = false
                     // All default null values and false for booleans is fine
