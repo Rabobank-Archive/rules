@@ -79,7 +79,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             evaluatedRule.ShouldBeFalse();
         }
 
-        [Fact]
+        [Fact(Skip = "unable to increase the max retention (to 450 days) on other organizations than somecompany")]
         public void Reconcile()
         {
             //Arrange

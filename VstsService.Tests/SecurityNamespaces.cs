@@ -32,7 +32,6 @@ namespace SecurePipelineScan.VstsService.Tests
             var action = first.Actions.First();
             action.Name.ShouldNotBeEmpty();
             action.DisplayName.ShouldNotBeEmpty();
-            action.NamespaceId.ShouldNotBe(Guid.Empty);
             action.Bit.ShouldNotBe(0);
         }
     }
