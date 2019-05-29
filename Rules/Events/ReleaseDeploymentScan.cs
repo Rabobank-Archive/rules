@@ -31,7 +31,6 @@ namespace SecurePipelineScan.Rules.Events
             var release = ResolveRelease(input);
             var environment = ResolveEnvironment(input);
             var project = (string)input.SelectToken("resource.project.name");
-            var queueIds = input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>();
             return new ReleaseDeploymentCompletedReport
             {
                 Project = project,
@@ -43,19 +42,24 @@ namespace SecurePipelineScan.Rules.Events
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                UsesManagedAgentsOnly = CheckAgents(project, queueIds),
+                UsesManagedAgentsOnly = CheckAgents(project, input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>()),
                 AllArtifactsAreFromBuild = CheckArtifacts(release), 
                 RelatedToSm9Change = IsRelatedToSm9Change(release)
             };
         }
 
-        private bool IsRelatedToSm9Change(Response.Release release)
+        private static bool? IsRelatedToSm9Change(Response.Release release)
         {
-            return release.Tags.Any(x => x.Contains("SM9ChangeId"));
+            return release?.Tags.Any(x => x.Contains("SM9ChangeId"));
         }
 
-        private bool CheckArtifacts(Response.Release release)
+        private static bool? CheckArtifacts(Response.Release release)
         {
+            if (release == null)
+            {
+                return null;
+            }
+            
             return release.Artifacts.Any() && release.Artifacts.All(a => a.Type == "Build");
         }
 
@@ -65,8 +69,13 @@ namespace SecurePipelineScan.Rules.Events
             return queueIds.All(id => managedPoolIds.Contains(_client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, id)).Pool.Id));
         }
 
-        private bool CheckBranchFilters(Response.Release release, Response.Environment environment)
+        private static bool? CheckBranchFilters(Response.Release release, Response.Environment environment)
         {
+            if (release == null || environment == null)
+            {
+                return null;
+            }
+            
             return release.Artifacts.All(a =>
                 environment.Conditions.Any(c => c.ConditionType == "artifact" && c.Name == a.Alias));
         }
@@ -79,10 +88,9 @@ namespace SecurePipelineScan.Rules.Events
             return _client.Get(VstsService.Requests.ReleaseManagement.Release(project, releaseId));
         }
 
-        private bool UsesProductionEndpoints(string project, Response.Environment environment)
+        private bool? UsesProductionEndpoints(string project, Response.Environment environment)
         {
-            return environment
-                .DeployPhasesSnapshot
+            return environment?.DeployPhasesSnapshot
                 .SelectMany(s => s.WorkflowTasks)
                 .Where(w => !_ignoredTaskIds.Contains(w.TaskId))
                 .SelectMany(w => w.Inputs)
@@ -90,8 +98,13 @@ namespace SecurePipelineScan.Rules.Events
                 .Any(x => Guid.TryParse(x, out var id) && _endpoints.IsProduction(project, id));
         }
 
-        private static bool CheckApprovalOptions(Response.Environment environment)
+        private static bool? CheckApprovalOptions(Response.Environment environment)
         {
+            if (environment == null)
+            {
+                return null;
+            }
+            
             return !environment.PreApprovalsSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover &&
                    environment.PreApprovalsSnapshot.Approvals.Any(approval => !approval.IsAutomated);
         }
