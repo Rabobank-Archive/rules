@@ -5,16 +5,21 @@ using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
-    public static class Release
+    public static class ReleaseManagement
     {
-        public static IVstsRequest<Response.Release> Releases(string project, string id)
+        public static IVstsRequest<Response.Release> Release(string project, string id)
         {
             return new VsrmRequest<Response.Release>($"{project}/_apis/release/releases/{id}");
         }
-        
-        public static IVstsRequest<Multiple<Response.Release>> Releases(string project)
+
+        public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project)
         {
-            return new VsrmRequest<Multiple<Response.Release>>($"{project}/_apis/release/releases/");
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases");
+        }
+
+        public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project, string expand, string asof)
+        {
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases?$expand={expand}&minCreatedTime={asof}");
         }
 
         public static IVstsRequest<Response.ReleaseDefinition> Definition(string project, string id)
@@ -30,6 +35,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.Environment> Environment(string project, string release, string id)
         {
             return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
+        }
+
+        public static IVstsRequest<Response.ReleaseSettings> Settings(string project)
+        {
+            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings?api-version=5.0-preview");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SecurePipelineScan.Rules.Security
     {
         private const string NamespaceId = "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; // Git Repositories
         private readonly IVstsRestClient _client;
-        protected override string PermissionsDisplayName => "Delete repository";
+        protected override int PermissionBit => 512; //Delete Repository
         protected override IEnumerable<int> AllowedPermissions => new[] { PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited };
         protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[] { "Project Collection Administrators", "Project Collection Service Accounts" };
 

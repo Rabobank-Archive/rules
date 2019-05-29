@@ -7,7 +7,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public abstract class RuleBase
     {
-        protected abstract string PermissionsDisplayName { get; }
+        protected abstract int PermissionBit { get; }
         protected abstract IEnumerable<string> IgnoredIdentitiesDisplayNames { get; }
         protected abstract IEnumerable<int> AllowedPermissions { get; }
 
@@ -21,7 +21,7 @@ namespace SecurePipelineScan.Rules.Security
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             var permissions = groups.SelectMany(g => LoadPermissionsSetForGroup(projectId, id, g).Permissions);
-            return permissions.All(p => p.DisplayName != PermissionsDisplayName || AllowedPermissions.Contains(p.PermissionId));
+            return permissions.All(p => p.PermissionBit != PermissionBit || AllowedPermissions.Contains(p.PermissionId));
         }
 
         public void Reconcile(string projectId, string id)
@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Security
             foreach (var group in groups)
             {
                 var permissionSetId = LoadPermissionsSetForGroup(projectId, id, group);
-                var permission = permissionSetId.Permissions.Single(p => p.DisplayName == PermissionsDisplayName);
+                var permission = permissionSetId.Permissions.Single(p => p.PermissionBit == PermissionBit);
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))
                 {
