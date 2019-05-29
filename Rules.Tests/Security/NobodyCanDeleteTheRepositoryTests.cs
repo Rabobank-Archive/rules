@@ -200,7 +200,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client.Get(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
-                Permissions = new[] {new Permission() {DisplayName = "Delete repository", PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
+                Permissions = new[] {new Permission {DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
             });
         }
     }

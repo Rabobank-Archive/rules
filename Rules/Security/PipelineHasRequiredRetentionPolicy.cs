@@ -39,10 +39,10 @@ namespace SecurePipelineScan.Rules.Security
 
         public void Reconcile(string project, string pipelineId)
         {
-            var releaseSettings = _client.Get(Requests.ReleaseManagement.ProjectReleaseSettings(project));
+            var releaseSettings = _client.Get(Requests.ReleaseManagement.Settings(project));
             if (!HasRequiredReleaseSettings(releaseSettings))
             {
-                _client.Put(Requests.ReleaseManagement.ProjectReleaseSettings(project),
+                _client.Put(Requests.ReleaseManagement.Settings(project),
                     UpdateReleaseSettings(releaseSettings));
             }
 

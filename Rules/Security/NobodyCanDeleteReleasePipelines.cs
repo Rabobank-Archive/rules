@@ -10,7 +10,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; // release management
-        protected override string PermissionsDisplayName => "Delete release pipeline";
+        protected override int PermissionBit => 4; //Delete release pipeline
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {
             PermissionId.NotSet,
