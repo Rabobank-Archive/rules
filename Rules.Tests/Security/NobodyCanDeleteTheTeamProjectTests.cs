@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using Moq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;

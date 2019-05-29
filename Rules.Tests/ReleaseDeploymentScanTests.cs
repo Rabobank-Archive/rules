@@ -11,7 +11,6 @@ using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using SecurePipelineScan.VstsService;
-using Moq;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -19,7 +18,7 @@ namespace SecurePipelineScan.Rules.Tests
     {
         public class Completed
         {
-            private IFixture _fixture = new Fixture();
+            private readonly IFixture _fixture = new Fixture();
             
             [Fact]
             public void ApprovalSettingsCorrect()
@@ -232,26 +231,28 @@ namespace SecurePipelineScan.Rules.Tests
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, poolId));
                 var input = ReadInput("Completed", "Approved.json");
 
-                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                var rest = Substitute.For<IVstsRestClient>();
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665")))
-                    .Returns(_fixture.Create<Response.AgentQueue>())
-                    .Verifiable();                   
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
+                    .Returns(_fixture.Create<Response.AgentQueue>());
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
+                
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
                 var report = scan.Completed(input);
 
                 // Assert
                 Assert.True(report.UsesManagedAgentsOnly);
-                rest.Verify();
+                rest.Received()
+                    .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
+                        r.Uri == "/proeftuin/_apis/distributedtask/queues/1665"));
             }
 
             [Fact]
@@ -259,32 +260,36 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 115));
-                JObject input = ReleaseCompletedInput();
+                
+                var input = ReleaseCompletedInput();
 
-                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                var rest = Substitute.For<IVstsRestClient>();
                 rest
-                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553")))
-                    .Returns(_fixture.Create<Response.AgentQueue>())
-                    .Verifiable();
-
-                rest
-                    .Setup(x => x.Get(It.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/653456")))
-                    .Returns(_fixture.Create<Response.AgentQueue>())
-                    .Verifiable();
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
+                    .Returns(_fixture.Create<Response.AgentQueue>());
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
+                    .Returns(_fixture.Create<Response.AgentQueue>());
+
+                rest
+                    .Get(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
+                
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
-                var report = scan.Completed(input);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                scan.Completed(input);
 
                 // Assert
-                rest.Verify();
+                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
+                    r.Uri == "/proeftuin/_apis/distributedtask/queues/653456"));
+
+                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
+                    r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553"));
             }
 
             [Fact]
@@ -294,22 +299,22 @@ namespace SecurePipelineScan.Rules.Tests
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 543));
 
-                JObject input = ReleaseCompletedInput();
+                var input = ReleaseCompletedInput();
 
-                var rest = new Mock<IVstsRestClient>(MockBehavior.Strict);
+                var rest = Substitute.For<IVstsRestClient>();
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.AgentQueue>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
                     .Returns(_fixture.Create<Response.AgentQueue>());
 
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Release>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
                 rest
-                    .Setup(x => x.Get(It.IsAny<IVstsRequest<Response.Environment>>()))
+                    .Get(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest.Object);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
                 var report = scan.Completed(input);
 
                 // Assert
