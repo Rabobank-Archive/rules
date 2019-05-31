@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AutoFixture;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
@@ -187,7 +188,6 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 var expected = new ReleaseDeploymentCompletedReport
                 {
-                    UsesManagedAgentsOnly = true // because there are no agents used.
                     // All default null values and false for booleans is fine
                 }.ToExpectedObject(ctx => ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
                 
@@ -227,6 +227,10 @@ namespace SecurePipelineScan.Rules.Tests
                 // Arrange
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, poolId));
+                _fixture
+                    .Customize<Response.DeployPhaseSnapshot>(context =>
+                        context.With(x => x.PhaseType, "agentBasedDeployment"));
+                
                 var input = ReadInput("Completed", "Approved.json");
 
                 var rest = Substitute.For<IVstsRestClient>();
@@ -237,10 +241,14 @@ namespace SecurePipelineScan.Rules.Tests
                 rest
                     .Get(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                
+
+                var deployPhaseSnapshot = _fixture.Create<Response.DeployPhaseSnapshot>();
+                deployPhaseSnapshot.PhaseType = "agentBasedDeployment";
+                var environment = _fixture.Create<Response.Environment>();
+                environment.DeployPhasesSnapshot = new[] {deployPhaseSnapshot}; 
                 rest
                     .Get(Arg.Any<IVstsRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
+                    .Returns(environment);
 
                 // Act
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
@@ -250,7 +258,7 @@ namespace SecurePipelineScan.Rules.Tests
                 Assert.True(report.UsesManagedAgentsOnly);
                 rest.Received()
                     .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                        r.Uri == "/proeftuin/_apis/distributedtask/queues/1665"));
+                        r.Uri.Contains(deployPhaseSnapshot.DeploymentInput.QueueId.ToString())));
             }
 
             [Fact]
@@ -258,6 +266,10 @@ namespace SecurePipelineScan.Rules.Tests
             {
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 115));
+                _fixture.Customize<Response.DeployPhaseSnapshot>(context =>
+                    context.With(x => x.PhaseType, "agentBasedDeployment"));
+
+                var environmentFixture = _fixture.Create<Response.Environment>();
                 
                 var input = ReleaseCompletedInput();
 
@@ -276,18 +288,48 @@ namespace SecurePipelineScan.Rules.Tests
                 
                 rest
                     .Get(Arg.Any<IVstsRequest<Response.Environment>>())
-                    .Returns(_fixture.Create<Response.Environment>());
+                    .Returns(environmentFixture);
 
                 // Act
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
                 scan.Completed(input);
 
-                // Assert
-                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                    r.Uri == "/proeftuin/_apis/distributedtask/queues/653456"));
+                rest.Received(environmentFixture.DeployPhasesSnapshot.Count())
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>());
 
-                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                    r.Uri == "/proeftuin/_apis/distributedtask/queues/1234553"));
+                foreach (var phase in environmentFixture.DeployPhasesSnapshot)
+                {
+                    rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
+                        r.Uri.Contains(phase.DeploymentInput.QueueId.ToString())));
+                }
+
+            }
+
+            [Fact]
+            public void DontCheckTasManagedAgentsForNonAgentBasedDeployments()
+            {
+                // Arrange
+                _fixture
+                    .Customize<Response.DeployPhaseSnapshot>(context =>
+                        context.With(x => x.PhaseType, "machineGroupBasedDeployment"));
+                
+                var input = ReadInput("Completed", "Approved.json");
+    
+                var rest = Substitute.For<IVstsRestClient>();
+    
+                rest
+                    .Get(Arg.Any<IVstsRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+                    
+    
+                // Act
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var report = scan.Completed(input);
+    
+                // Assert
+                rest.DidNotReceive()
+                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>());
+                Assert.Null(report.UsesManagedAgentsOnly);
             }
 
             [Fact]
@@ -296,7 +338,9 @@ namespace SecurePipelineScan.Rules.Tests
                 // This is most definetely not an managed pool id.
                 _fixture
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 543));
-
+                _fixture.Customize<Response.DeployPhaseSnapshot>(context =>
+                    context.With(x => x.PhaseType, "agentBasedDeployment"));
+                
                 var input = ReleaseCompletedInput();
 
                 var rest = Substitute.For<IVstsRestClient>();
@@ -387,9 +431,6 @@ namespace SecurePipelineScan.Rules.Tests
 
                 // Assert
                 Assert.False(report.AllArtifactsAreFromBuild);
-                rest.Received()
-                    .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                        r.Uri == "/proeftuin/_apis/distributedtask/queues/1665"));
             }
 
             [Fact]
@@ -417,7 +458,6 @@ namespace SecurePipelineScan.Rules.Tests
 
                 // Assert
                 Assert.False(report.AllArtifactsAreFromBuild);
-                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri == "/proeftuin/_apis/distributedtask/queues/1665"));
             }
 
             [Fact]
@@ -459,6 +499,7 @@ namespace SecurePipelineScan.Rules.Tests
                             {
                                 new
                                 {
+                                    phaseType = "agentBasedDeployment",
                                     deploymentInput = new
                                     {
                                         queueId = 1234553
@@ -466,6 +507,7 @@ namespace SecurePipelineScan.Rules.Tests
                                 },
                                 new
                                 {
+                                    phaseType = "agentBasedDeployment",
                                     deploymentInput = new
                                     {
                                         queueId = 653456

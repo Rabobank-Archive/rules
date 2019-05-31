@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Events
                 UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                UsesManagedAgentsOnly = CheckAgents(project, input.SelectTokens("resource.environment.deployPhasesSnapshot[*].deploymentInput.queueId").Values<int>()),
+                UsesManagedAgentsOnly = CheckAgents(project, environment),
                 AllArtifactsAreFromBuild = CheckArtifacts(release), 
                 RelatedToSm9Change = IsRelatedToSm9Change(release)
             };
@@ -63,10 +63,26 @@ namespace SecurePipelineScan.Rules.Events
             return release.Artifacts.Any() && release.Artifacts.All(a => a.Type == "Build");
         }
 
-        private bool CheckAgents(string project, IEnumerable<int> queueIds)
+        private bool? CheckAgents(string project, Response.Environment environment)
         {
+            if (environment == null)
+            {
+                return null;
+            }
+            
             int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
-            return queueIds.All(id => managedPoolIds.Contains(_client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, id)).Pool.Id));
+
+            var phasesWithAgentBasedDeployment =
+                environment.DeployPhasesSnapshot.Where(p => p.PhaseType == "agentBasedDeployment").ToList();
+
+            if (phasesWithAgentBasedDeployment.Any())
+            {
+                return phasesWithAgentBasedDeployment.Select(p => p.DeploymentInput.QueueId).All(id =>
+                    managedPoolIds.Contains(_client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, id))
+                        .Pool.Id));
+            }
+
+            return null;
         }
 
         private static bool? CheckBranchFilters(Response.Release release, Response.Environment environment)
