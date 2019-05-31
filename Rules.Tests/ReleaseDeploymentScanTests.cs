@@ -352,8 +352,6 @@ namespace SecurePipelineScan.Rules.Tests
 
                 // Assert
                 Assert.True(report.AllArtifactsAreFromBuild);
-                rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                    r.Uri == "/proeftuin/_apis/distributedtask/queues/1665"));
             }
 
             [Fact]
