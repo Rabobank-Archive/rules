@@ -45,6 +45,12 @@ namespace SecurePipelineScan.VstsService.Tests
             env.PreDeployApprovals.ShouldNotBeEmpty();
             env.DeploySteps.ShouldNotBeEmpty();
             env.Name.ShouldNotBeNullOrEmpty();
+            env.DeployPhasesSnapshot.ShouldNotBeEmpty();
+
+            var phaseSnapshot = env.DeployPhasesSnapshot.First();
+            phaseSnapshot.PhaseType.ShouldNotBeEmpty();
+            phaseSnapshot.DeploymentInput.ShouldNotBeNull();
+            phaseSnapshot.DeploymentInput.QueueId.ShouldNotBe(0);
 
             var deploy = env.DeploySteps.First();
             deploy.RequestedFor.ShouldNotBeNull();
