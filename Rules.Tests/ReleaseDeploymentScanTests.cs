@@ -264,20 +264,18 @@ namespace SecurePipelineScan.Rules.Tests
             [Fact]
             public void ForTheRestCallToTheAgentQueueOnlyQueueIdsFromTheInputAreUsed()
             {
-                _fixture
-                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, 115));
-                _fixture.Customize<Response.DeployPhaseSnapshot>(context =>
-                    context.With(x => x.PhaseType, "agentBasedDeployment"));
-
-                var environmentFixture = _fixture.Create<Response.Environment>();
+                _fixture.Customize<Response.AgentPool>(context => context.With(
+                    x => x.Id, 115));
                 
+                _fixture.Customize<Response.DeployPhaseSnapshot>(context => context.With(
+                    x => x.PhaseType, "agentBasedDeployment"));
+
+                _fixture.Customize<Response.DeploymentInput>(context => context.With(
+                    x => x.QueueId, 1234));
+
                 var input = ReleaseCompletedInput();
 
                 var rest = Substitute.For<IVstsRestClient>();
-                rest
-                    .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
-                    .Returns(_fixture.Create<Response.AgentQueue>());
-
                 rest
                     .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>())
                     .Returns(_fixture.Create<Response.AgentQueue>());
@@ -288,21 +286,18 @@ namespace SecurePipelineScan.Rules.Tests
                 
                 rest
                     .Get(Arg.Any<IVstsRequest<Response.Environment>>())
-                    .Returns(environmentFixture);
+                    .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
                 scan.Completed(input);
 
-                rest.Received(environmentFixture.DeployPhasesSnapshot.Count())
+                rest.Received(_fixture.Create<Response.Environment>().DeployPhasesSnapshot.Count())
                     .Get(Arg.Any<IVstsRequest<Response.AgentQueue>>());
 
-                foreach (var phase in environmentFixture.DeployPhasesSnapshot)
-                {
-                    rest.Received().Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                        r.Uri.Contains(phase.DeploymentInput.QueueId.ToString())));
-                }
-
+                rest
+                    .Received()
+                    .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri.Contains("1234")));
             }
 
             [Fact]

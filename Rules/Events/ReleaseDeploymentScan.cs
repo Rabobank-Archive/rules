@@ -70,19 +70,19 @@ namespace SecurePipelineScan.Rules.Events
                 return null;
             }
             
-            int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
-
             var phasesWithAgentBasedDeployment =
                 environment.DeployPhasesSnapshot.Where(p => p.PhaseType == "agentBasedDeployment").ToList();
 
-            if (phasesWithAgentBasedDeployment.Any())
+            if (!phasesWithAgentBasedDeployment.Any())
             {
-                return phasesWithAgentBasedDeployment.Select(p => p.DeploymentInput.QueueId).All(id =>
-                    managedPoolIds.Contains(_client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, id))
-                        .Pool.Id));
+                return null;
             }
-
-            return null;
+            
+            var poolIds = phasesWithAgentBasedDeployment.Select(p =>
+                _client.Get(VstsService.Requests.DistributedTask.AgentQueue(project, p.DeploymentInput.QueueId)).Pool.Id);
+            
+            int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
+            return !poolIds.Except(managedPoolIds).Any();
         }
 
         private static bool? CheckBranchFilters(Response.Release release, Response.Environment environment)
