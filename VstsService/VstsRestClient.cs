@@ -14,77 +14,76 @@ namespace SecurePipelineScan.VstsService
     {
         private readonly string _authorization;
         private readonly string _organization;
-        private readonly IRestClient _client;
+        private readonly IRestClientFactory _factory;
 
-        public VstsRestClient(string organization, string token, IRestClient client)
+        public VstsRestClient(string organization, string token, IRestClientFactory factory)
         {
-            _client = client.SetupSerializer();
-
             _authorization = GenerateAuthorizationHeader(token);
             _organization = organization;
+            _factory = factory;
         }
 
-        public VstsRestClient(string organization, string token) : this(organization, token, new RestClient())
-        {
+        internal VstsRestClient(string organization, string token) : this(organization, token, new RestClientFactory())
+        {   
         }
 
         public TResponse Get<TResponse>(IVstsRequest<TResponse> request)
             where TResponse : new()
         {
-            _client.BaseUrl = request.BaseUri(_organization);
+            var client = _factory.Create(request.BaseUri(_organization));
             var wrapper = new RestRequest(request.Uri)
                 .AddHeader("authorization", _authorization);
 
             if (request is IVstsRequest<JObject>)
             {
-                return (TResponse) (object) JObject.Parse(_client.Execute(wrapper).ThrowOnError().Content);
+                return (TResponse) (object) JObject.Parse(client.Execute(wrapper).ThrowOnError().Content);
             }
             
-            return _client.Execute<TResponse>(wrapper)
+            return client.Execute<TResponse>(wrapper)
                 .ThrowOnError()
                 .DefaultIfNotFound();
         }
 
         public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
         {
-            _client.BaseUrl = request.BaseUri(_organization);
+            var client = _factory.Create(request.BaseUri(_organization));
             var wrapper = new RestRequest(request.Uri)
                 .AddHeader("authorization", _authorization);
 
-            return new MultipleEnumerator<TResponse>(wrapper, _client);
+            return new MultipleEnumerator<TResponse>(wrapper, client);
         }
 
         public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            _client.BaseUrl = request.BaseUri(_organization);
+            var client = _factory.Create(request.BaseUri(_organization));
             var wrapper = new RestRequest(request.Uri, Method.POST)
             {
                 JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
             }.AddHeader("authorization", _authorization)
              .AddJsonBody(body);
 
-            return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
 
         public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new()
         {
-            _client.BaseUrl = request.BaseUri(_organization);
+            var client = _factory.Create(request.BaseUri(_organization));
             var wrapper = new RestRequest(request.Uri, Method.PUT)
             {
                 JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })
             }.AddHeader("authorization", _authorization)
              .AddJsonBody(body);
 
-            return _client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
 
         public void Delete(IVstsRequest request)
         {
-            _client.BaseUrl = request.BaseUri(_organization);
+            var client = _factory.Create(request.BaseUri(_organization));
             var wrapper = new RestRequest(request.Uri, Method.DELETE)
                 .AddHeader("authorization", _authorization);
 
-            _client.Execute(wrapper).ThrowOnError();
+            client.Execute(wrapper).ThrowOnError();
         }
 
         private static string GenerateAuthorizationHeader(string token)

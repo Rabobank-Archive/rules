@@ -30,7 +30,10 @@ namespace SecurePipelineScan.VstsService.Tests
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
-            var client = new VstsRestClient("dummy", "pat", rest);
+            var factory = Substitute.For<IRestClientFactory>();
+            factory.Create(Arg.Any<Uri>()).Returns(rest);
+
+            var client = new VstsRestClient("dummy", "pat", factory);
             Assert.Throws<VstsException>(() => client.Delete(request));
         }
 
@@ -43,7 +46,10 @@ namespace SecurePipelineScan.VstsService.Tests
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
-            var client = new VstsRestClient("dummy", "pat", rest);
+            var factory = Substitute.For<IRestClientFactory>();
+            factory.Create(Arg.Any<Uri>()).Returns(rest);
+
+            var client = new VstsRestClient("dummy", "pat", factory);
             Assert.Throws<VstsException>(() => client.Post(request, 3));
         }
 
@@ -56,7 +62,10 @@ namespace SecurePipelineScan.VstsService.Tests
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
-            var client = new VstsRestClient("dummy", "pat", rest);
+            var factory = Substitute.For<IRestClientFactory>();
+            factory.Create(Arg.Any<Uri>()).Returns(rest);
+
+            var client = new VstsRestClient("dummy", "pat", factory);
             Assert.Throws<VstsException>(() => client.Get(request));
         }
 
@@ -69,7 +78,10 @@ namespace SecurePipelineScan.VstsService.Tests
             var rest = Substitute.For<IRestClient>();
             rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
 
-            var client = new VstsRestClient("dummy", "pat", rest);
+            var factory = Substitute.For<IRestClientFactory>();
+            factory.Create(Arg.Any<Uri>()).Returns(rest);
+
+            var client = new VstsRestClient("dummy", "pat", factory);
             Assert.Throws<VstsException>(() => client.Get(request));
         }
 

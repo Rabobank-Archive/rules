@@ -125,7 +125,7 @@ namespace SecurePipelineScan.VstsService.Tests
         private static T MockClientResponse<T>(string path)
         {
             var response = MockResponse(File.ReadAllText(path));
-            var client = new RestClient().SetupSerializer();
+            var client = new RestClientFactory().Create(new Uri("https://some-uri"));
             
             return client.Deserialize<T>(response).ThrowOnError().Data;
         }

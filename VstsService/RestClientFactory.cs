@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
@@ -6,13 +8,13 @@ using SecurePipelineScan.VstsService.Converters;
 
 namespace SecurePipelineScan.VstsService
 {
-    internal static class RestClientExtensions
+    public class RestClientFactory : IRestClientFactory
     {
 
         /// <summary>
         /// https://bytefish.de/blog/restsharp_custom_json_serializer/#using-the-custom-deserializer-for-incoming-responses
         /// </summary>
-        public static IRestClient SetupSerializer(this IRestClient client)
+        private static IRestClient Configure(IRestClient client)
         {
             client.AddHandler("application/json", () => new NewtonsoftJsonSerializer(new JsonSerializer
             {
@@ -26,6 +28,13 @@ namespace SecurePipelineScan.VstsService
             client.AddHandler("*+json",() =>  NewtonsoftJsonSerializer.Default);
 
             return client;
+        }
+        
+        private readonly ConcurrentDictionary<Uri, IRestClient> _cache = new ConcurrentDictionary<Uri, IRestClient>();
+
+        public IRestClient Create(Uri baseUri)
+        {
+            return _cache.GetOrAdd(baseUri, x => Configure(new RestClient(x)));
         }
     }
 }
