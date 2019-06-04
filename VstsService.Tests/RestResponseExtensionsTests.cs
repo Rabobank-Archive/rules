@@ -19,7 +19,7 @@ namespace SecurePipelineScan.VstsService.Tests
             response.StatusCode.Returns(HttpStatusCode.SeeOther);
 
             var ex = Assert.Throws<VstsException>(() => response.ThrowOnError());
-            ex.Message.ShouldBe("fail");
+            ex.Message.ShouldContain("fail");
         }
 
         [Fact]

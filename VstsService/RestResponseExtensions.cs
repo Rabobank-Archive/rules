@@ -19,13 +19,11 @@ namespace SecurePipelineScan.VstsService
 
         private static void ThrowInternal(IRestResponse response)
         {
+            if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation)
+                throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
+
             if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.NotFound)
-            {
-                if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation)
-                    throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
-                else
-                    throw new VstsException(response, $"HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
-            }
+                throw new VstsException(response, $"HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
         }
 
         public static T DefaultIfNotFound<T>(this IRestResponse<T> response)
