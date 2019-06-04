@@ -21,12 +21,10 @@ namespace SecurePipelineScan.VstsService
         {
             if (!response.IsSuccessful && response.StatusCode != HttpStatusCode.NotFound)
             {
-                throw new VstsException(response);
-            }
-
-            if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation)
-            {
-                throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
+                if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation)
+                    throw new VstsException(response, $"Maybe your PAT is incorrect? HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
+                else
+                    throw new VstsException(response, $"HttpStatus: {response.StatusCode }, {response.StatusDescription}, {response.ErrorMessage ?? response.Content}");
             }
         }
 
