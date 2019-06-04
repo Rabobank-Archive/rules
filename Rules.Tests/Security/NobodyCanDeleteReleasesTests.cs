@@ -8,16 +8,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteReleasesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private readonly IRestClientFactory _factory;
 
         public NobodyCanDeleteReleasesTests(TestConfig config)
         {
             _config = config;
+            _factory = new RestClientFactory();
         }
 
         [Fact]
         public void EvaluateReleaseIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
             var rule = new NobodyCanDeleteReleases(client);
@@ -27,7 +29,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void ReconcileReleaseIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
             var rule = new NobodyCanDeleteReleases(client) as IReconcile;

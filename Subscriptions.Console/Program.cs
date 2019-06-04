@@ -32,7 +32,7 @@ namespace Subscriptions.Console
                     return 1;
                 }
 
-                var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
+                var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value(), new RestClientFactory());
                 var subscriptions = client
                     .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");

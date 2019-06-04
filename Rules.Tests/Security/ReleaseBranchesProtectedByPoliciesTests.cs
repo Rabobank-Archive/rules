@@ -1,22 +1,19 @@
 using System;
-using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
-using AutoFixture.Kernel;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
-using Repository = SecurePipelineScan.VstsService.Response.Repository;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class ReleaseBranchesProtectedByPoliciesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private readonly IRestClientFactory _factory;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
@@ -24,13 +21,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public ReleaseBranchesProtectedByPoliciesTests(TestConfig config)
         {
             _config = config;
+            _factory = new RestClientFactory();
             _fixture.Customize(new AutoNSubstituteCustomization());
         }
 
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
@@ -74,7 +72,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
+            // ReSharper disable once RedundantArgumentDefaultValue
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
+            // ReSharper disable once ArgumentsStyleLiteral
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
 
             SetupClient(_client, _fixture);
@@ -126,7 +126,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void Reconcile()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
             rule.Reconcile(_config.Project, RepositoryId);
         }

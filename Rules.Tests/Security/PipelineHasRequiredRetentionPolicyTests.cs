@@ -3,7 +3,6 @@ using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -13,6 +12,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class PipelineHasRequiredRetentionPolicyTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private readonly IRestClientFactory _factory;
         private const string PipelineId = "1";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
@@ -20,6 +20,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public PipelineHasRequiredRetentionPolicyTests(TestConfig config)
         {
             _config = config;
+            _factory = new RestClientFactory();
             _fixture.Customize(new AutoNSubstituteCustomization());
         }
 
@@ -27,17 +28,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateIntegrationTest()
         {
             //Arrange
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            rule.Evaluate(_config.Project, PipelineId);
         }
 
         [Fact]
         public void EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
         {
             //Arrange
+            // ReSharper disable twice RedundantArgumentDefaultValue
             CustomizePolicySettings(_fixture, 450, true);
             SetupClient(_client, _fixture);
 
@@ -53,6 +55,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
         {
             //Arrange
+            // ReSharper disable once RedundantArgumentDefaultValue
             CustomizePolicySettings(_fixture, 5, true);
             SetupClient(_client, _fixture);
 
@@ -83,7 +86,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void Reconcile()
         {
             //Arrange
-            var client = new VstsRestClient("somecompany", _config.Token);
+            var client = new VstsRestClient("somecompany", _config.Token, _factory);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 

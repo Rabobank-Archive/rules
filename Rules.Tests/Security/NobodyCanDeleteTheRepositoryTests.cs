@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using SecurePipelineScan.VstsService;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -10,25 +8,26 @@ using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
-using SecurityNamespace = SecurePipelineScan.VstsService.Response.SecurityNamespace;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class NobodyCanDeleteTheRepositoryTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private readonly IRestClientFactory _factory;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
 
         public NobodyCanDeleteTheRepositoryTests(TestConfig config)
         {
             _config = config;
+            _factory = new RestClientFactory();
         }
 
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
@@ -122,7 +121,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void ReconcileIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
             
             var rule = new NobodyCanDeleteTheRepository(client);
