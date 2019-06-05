@@ -38,6 +38,7 @@ namespace SecurePipelineScan.VstsService.Tests
             build.Id.ShouldNotBe(0);
             build.Definition.ShouldNotBeNull();
             build.Project.ShouldNotBeNull();
+            build.Result.ShouldNotBeNull();
         }
 
         [Fact]
