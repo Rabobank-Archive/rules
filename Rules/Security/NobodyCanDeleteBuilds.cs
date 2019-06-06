@@ -7,10 +7,17 @@ namespace SecurePipelineScan.Rules.Security
     {
         public NobodyCanDeleteBuilds(IVstsRestClient client) : base(client)
         {
+            //nothing
         }
 
-        protected override string NamespaceId => "33344d9c-fc72-4d6f-aba5-fa317101a7e9"; // build
-        protected override int PermissionBit => 8; //Delete builds
+        protected override string NamespaceId => "33344d9c-fc72-4d6f-aba5-fa317101a7e9"; //build
+        protected override IEnumerable<int> PermissionBits => new[]
+        {
+            8,      //Delete builds
+            32,     //Destroy builds
+            4096,   //Delete build definition
+            16384   //Administer build permissions
+        };
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {
             PermissionId.NotSet,
@@ -20,16 +27,18 @@ namespace SecurePipelineScan.Rules.Security
         protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[]
         {
             "Project Collection Administrators",
-            "Project Collection Build Administrators",
-            "Project Collection Service Accounts"
+            "Project Collection Build Administrators"
         };
 
         string IRule.Description => "Nobody can delete builds";
-        string IRule.Why => "To ensure auditability, no data should be deleted. Therefore, nobody should be able to delete builds.";
+        string IRule.Why => "To ensure auditability, no data should be deleted. " +
+            "Therefore, nobody should be able to delete build runs.";
         string[] IReconcile.Impact => new[]
         {
-            "For all application groups the 'Delete Builds' permission is set to Deny",
-            "For all single users the 'Delete Builds' permission is set to Deny"
+            "For all security groups the 'Delete Builds' permission is set to Deny",
+            "For all security groups the 'Destroy Builds' permission is set to Deny",
+            "For all security groups the 'Delete Build Definitions' permission is set to Deny",
+            "For all security groups the 'Administer Build Permissions' permission is set to Deny"
         };
     }
 }

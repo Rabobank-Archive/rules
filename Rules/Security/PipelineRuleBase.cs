@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
@@ -25,7 +23,5 @@ namespace SecurePipelineScan.Rules.Security
 
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
             _client.Post(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
-
-        protected abstract string NamespaceId { get; } // https://dev.azure.com/somecompany/_apis/securitynamespaces?api-version=5.0
     }
 }

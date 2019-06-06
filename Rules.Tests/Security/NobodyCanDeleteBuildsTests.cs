@@ -10,7 +10,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private readonly TestConfig _config;
         private readonly IRestClientFactory _factory;
 
-
         public NobodyCanDeleteBuildsTests(TestConfig config)
         {
             _config = config;
