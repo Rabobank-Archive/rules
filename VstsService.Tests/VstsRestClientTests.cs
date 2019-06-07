@@ -3,7 +3,8 @@ using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
-using RestSharp;
+using SecurePipelineScan.VstsService.Requests;
+using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 

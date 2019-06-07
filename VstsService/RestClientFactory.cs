@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using RestSharp;
-using RestSharp.Serializers.Newtonsoft.Json;
 using SecurePipelineScan.VstsService.Converters;
 
 namespace SecurePipelineScan.VstsService
@@ -16,16 +15,29 @@ namespace SecurePipelineScan.VstsService
         /// </summary>
         private static IRestClient Configure(IRestClient client)
         {
-            client.AddHandler("application/json", () => new NewtonsoftJsonSerializer(new JsonSerializer
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = {new PolicyConverter()}
-            }));
-
-            client.AddHandler("text/json", () => NewtonsoftJsonSerializer.Default);
-            client.AddHandler("text/x-json", () => NewtonsoftJsonSerializer.Default);
-            client.AddHandler("text/javascript", () => NewtonsoftJsonSerializer.Default);
-            client.AddHandler("*+json",() =>  NewtonsoftJsonSerializer.Default);
+//            client.AddHandler("application/json", () => new NewtonsoftJsonSerializer(new JsonSerializer
+//            {
+//                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+//                Converters = {new PolicyConverter()}
+//            }));
+//
+//            client.AddHandler("text/json", () => NewtonsoftJsonSerializer.Default);
+//            client.AddHandler("text/x-json", () => NewtonsoftJsonSerializer.Default);
+//            client.AddHandler("text/javascript", () => NewtonsoftJsonSerializer.Default);
+//            client.AddHandler("*+json",() =>  NewtonsoftJsonSerializer.Default);
+//
+//            client.ConfigureWebRequest((r) =>
+//            {
+//                r.KeepAlive = true;
+//            });
+            
+//            client.DefaultRequestHeaders.Accept.Add(
+//                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+//
+//            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+//                Convert.ToBase64String(
+//                    System.Text.ASCIIEncoding.ASCII.GetBytes(
+//                        string.Format("{0}:{1}", "", _config.Token))));
 
             return client;
         }
@@ -34,7 +46,7 @@ namespace SecurePipelineScan.VstsService
 
         public IRestClient Create(Uri baseUri)
         {
-            return _cache.GetOrAdd(baseUri, x => Configure(new RestClient(x)));
+            return _cache.GetOrAdd(baseUri, x => Configure(new RestClient()));
         }
     }
 }

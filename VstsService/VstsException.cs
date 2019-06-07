@@ -1,7 +1,7 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Net;
 using System.Runtime.Serialization;
+using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService
 {

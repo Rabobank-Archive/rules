@@ -5,7 +5,7 @@ using Shouldly;
 using System.Net;
 using System.Linq;
 using NSubstitute;
-using RestSharp;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 

@@ -1,5 +1,4 @@
 using NSubstitute;
-using RestSharp;
 using Shouldly;
 using System.Net;
 using SecurePipelineScan.VstsService.Response;

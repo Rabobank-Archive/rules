@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using RestSharp;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService
@@ -28,13 +28,13 @@ namespace SecurePipelineScan.VstsService
                     yield return item;
                 }
 
-                var token = response.Headers.FirstOrDefault(x => x.Name == "x-ms-continuationtoken");
+                var token = response.Headers.FirstOrDefault(x => x.key == "x-ms-continuationtoken").value;
                 if (token == null)
                 {
                     break;
                 }
                 
-                _request.AddOrUpdateParameter("continuationToken", (string)token.Value);
+                _request.AddOrUpdateParameter("continuationToken", token);
             } 
         }
 

@@ -1,11 +1,4 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
-using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using RestSharp;
+﻿using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests

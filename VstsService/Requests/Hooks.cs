@@ -1,4 +1,3 @@
-using RestSharp;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests

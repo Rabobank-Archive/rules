@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using RestSharp;
-using RestSharp.Serializers.Newtonsoft.Json;
 using SecurePipelineScan.VstsService.Converters;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
-using RestRequest = RestSharp.RestRequest;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -56,11 +55,9 @@ namespace SecurePipelineScan.VstsService
         public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.POST)
-            {
-                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
-            }.AddHeader("authorization", _authorization)
-             .AddJsonBody(body);
+            var wrapper = new RestRequest(request.Uri, HttpMethod.Post)
+                .AddHeader("authorization", _authorization)
+                .AddJsonBody(body);
 
             return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
@@ -68,11 +65,9 @@ namespace SecurePipelineScan.VstsService
         public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new()
         {
             var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.PUT)
-            {
-                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })
-            }.AddHeader("authorization", _authorization)
-             .AddJsonBody(body);
+            var wrapper = new RestRequest(request.Uri, HttpMethod.Put)
+                .AddHeader("authorization", _authorization)
+                .AddJsonBody(body);
 
             return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
         }
@@ -80,7 +75,7 @@ namespace SecurePipelineScan.VstsService
         public void Delete(IVstsRequest request)
         {
             var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.DELETE)
+            var wrapper = new RestRequest(request.Uri, HttpMethod.Delete)
                 .AddHeader("authorization", _authorization);
 
             client.Execute(wrapper).ThrowOnError();

@@ -1,5 +1,4 @@
 using System;
-using RestSharp;
 using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
