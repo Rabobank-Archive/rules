@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -23,7 +24,8 @@ namespace SecurePipelineScan.VstsService
 
             public Uri BaseUri(string organization) => _request.BaseUri(organization);
 
-            public string Uri => _request.Uri;
+            public string Resource => _request.Resource;
+            public IDictionary<string, string> QueryParams => _request.QueryParams;
         }
     }
 }

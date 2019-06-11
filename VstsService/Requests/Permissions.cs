@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService.Response;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,26 +11,51 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<PermissionsSetId> PermissionsGroupRepositorySet(string projectId, string permissionSetId, string applicationGroupId)
         {
             return new VstsRequest<PermissionsSetId>(
-                $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken=repoV2%2F{projectId}");
+                $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, string>
+                {
+                    {"__v","5"},
+                    {"tfid", applicationGroupId},
+                    {"permissionSetId", permissionSetId},
+                    {"permissionSetToken", $"repoV2/{projectId}"}
+                    
+                });
         }
         
         public static IVstsRequest<PermissionsSetId> PermissionsGroupRepository(string projectId, string permissionSetId, string applicationGroupId, string repositoryId)
         {
             return new VstsRequest<PermissionsSetId>(
-                $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken=repoV2%2F{projectId}%2F{repositoryId}");
+                $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, string>
+                {
+                    {"__v","5"},
+                    {"tfid", applicationGroupId},
+                    {"permissionSetId", permissionSetId},
+                    {"permissionSetToken", $"repoV2/{projectId}/{repositoryId}"}
+                });
         }
 
         public static IVstsRequest<PermissionsSetId> PermissionsGroupSetId(string projectId,string permissionSetId, string applicationGroupId)
         {
             return new VstsRequest<PermissionsSetId>(
-                $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}");
+                $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, string>
+                {
+                    {"__v","5"},
+                    {"tfid", applicationGroupId},
+                    {"permissionSetId", permissionSetId},
+                    {"permissionSetToken", projectId}
+                });
         }
 
         public static IVstsRequest<PermissionsSetId> PermissionsGroupSetIdDefinition(string projectId,
             string permissionSetId, string applicationGroupId, string definitionId)
         {
             return new VstsRequest<PermissionsSetId>(
-                $"{projectId}/_api/_security/DisplayPermissions?__v=5&tfid={applicationGroupId}&permissionSetId={permissionSetId}&permissionSetToken={projectId}%2F{definitionId}");
+                $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, string>
+                {
+                    {"__v","5"},
+                    {"tfid", applicationGroupId},
+                    {"permissionSetId", permissionSetId},
+                    {"permissionSetToken", $"{projectId}/{definitionId}"}
+                });
         }
         
         /// <summary>
@@ -41,7 +67,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<PermissionsProjectId> PermissionsGroupProjectId(string projectId, string applicationGroupId)
         {
             return new VstsRequest<PermissionsProjectId>(
-                $"{projectId}/_api/_identity/Display?__v=5&tfid={applicationGroupId}");
+                $"{projectId}/_api/_identity/Display", new Dictionary<string, string>
+                {
+                    {"__v", "5"},
+                    {"tfid", applicationGroupId}
+                });
         }
 
         public class ManagePermissionsData
@@ -100,6 +130,9 @@ namespace SecurePipelineScan.VstsService.Requests
         }
 
         public static IVstsRequest<UpdateWrapper, object> ManagePermissions(string project) =>
-            new VstsRequest<UpdateWrapper, object>($"{project}/_api/_security/ManagePermissions?__v=5");
+            new VstsRequest<UpdateWrapper, object>($"{project}/_api/_security/ManagePermissions", new Dictionary<string, string>
+            {
+                {"__v", "5"}
+            });
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
@@ -7,7 +8,11 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Multiple<BuildDefinition>> BuildDefinitions(string projectId, bool includeAllProperties = false)
         {
             return new VstsRequest<Multiple<BuildDefinition>>(
-                $"{projectId}/_apis/build/definitions?includeAllProperties={includeAllProperties}&api-version=5.0-preview.7");
+                $"{projectId}/_apis/build/definitions", new Dictionary<string, string>
+                {
+                    {"includeAllProperties", $"{includeAllProperties}"},
+                    {"api-version", "5.0-preview.7"}
+                });
         }
 
         public static IVstsRequest<Multiple<BuildArtifact>> Artifacts(string project, string id)
@@ -27,7 +32,7 @@ namespace SecurePipelineScan.VstsService.Requests
         
         public static IVstsRequest<Multiple<Build>> All(string project)
         {
-            return new VstsRequest<Multiple<Build>>($"{project}/_apis/build/builds?$top=10");
+            return new VstsRequest<Multiple<Build>>($"{project}/_apis/build/builds");
         }
 
     }

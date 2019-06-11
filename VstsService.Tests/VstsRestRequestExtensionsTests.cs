@@ -15,13 +15,13 @@ namespace SecurePipelineScan.VstsService.Tests
             var request = Substitute.For<IVstsRequest<int>>();
             
             var uri = fixture.Create<string>();
-            request.Uri.Returns(uri);
+            request.Resource.Returns(uri);
 
             var baseUri = fixture.Create<Uri>();
             request.BaseUri(Arg.Any<string>()).Returns(baseUri);
 
             var target = request.AsJson();
-            target.Uri.ShouldBe(uri);
+            target.Resource.ShouldBe(uri);
             target.BaseUri(fixture.Create<string>()).ShouldBe(baseUri);
         }
     }

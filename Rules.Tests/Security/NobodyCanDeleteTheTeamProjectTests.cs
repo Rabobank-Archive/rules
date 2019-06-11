@@ -292,7 +292,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             client
                 .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
-                    x.Uri.Contains("ReadScopedApplicationGroupsJson")))
+                    x.Resource.Contains("ReadScopedApplicationGroupsJson")))
                 .Returns(new Response.ApplicationGroups
                 {
                     Identities = groups
@@ -303,7 +303,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             client
                 .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
-                    x.Uri.Contains("ReadGroupMembers")))
+                    x.Resource.Contains("ReadGroupMembers")))
                 .Returns(new Response.ApplicationGroups
                 {
                     Identities = members

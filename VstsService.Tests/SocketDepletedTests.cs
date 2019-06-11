@@ -2,9 +2,12 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.NetworkInformation;
-using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
+using SecurePipelineScan.VstsService.Response;
 using Xunit;
 using Xunit.Abstractions;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -23,7 +26,7 @@ namespace SecurePipelineScan.VstsService.Tests
             _httpClient = new HttpClient();
         }
         
-       // [Fact]
+       [Fact]
         public void RestSharpDepletesSockets()
         {
             for (var i = 0; i < 100; i++)
@@ -34,7 +37,7 @@ namespace SecurePipelineScan.VstsService.Tests
             _testOutputHelper.WriteLine($"Number of open sockets: {CountWaitingConnections()}");
         }
 
-        //[Fact]
+        [Fact]
         public async Task HttpClientDepletesSockets()
         {
             _httpClient.DefaultRequestHeaders.Accept.Add(
@@ -55,6 +58,22 @@ namespace SecurePipelineScan.VstsService.Tests
                 }
             }
            
+            _testOutputHelper.WriteLine($"Number of open sockets: {CountWaitingConnections()}");
+        }
+
+        [Fact]
+        public async Task FlurlDepletesSockets()
+        {
+            var request = Requests.Builds.Build(_config.Project, _config.BuildId);
+            
+            for (var i = 0; i < 100; i++)
+            {
+                await new Url(request.BaseUri(_config.Organization))
+                    .AppendPathSegment(request.Resource)
+                    .WithBasicAuth(string.Empty, _config.Token)
+                    .GetJsonAsync<Build>();
+                   
+            }
             _testOutputHelper.WriteLine($"Number of open sockets: {CountWaitingConnections()}");
         }
         

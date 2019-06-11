@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Requests
@@ -7,7 +8,10 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Multiple<Hook>> Subscriptions()
         {
             return new VstsRequest<Multiple<Hook>>(
-                $"_apis/hooks/subscriptions?api-version=5.0-preview.1");
+                $"_apis/hooks/subscriptions", new Dictionary<string, string>
+                {
+                    {"api-version", "5.0-preview.1"}
+                });
         }
 
         public static class Add
@@ -174,8 +178,17 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
         
-        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}?api-version=5.0-preview.1");
-        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
-        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions?api-version=5.0-preview.1");
+        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}", new Dictionary<string, string>
+        {
+            {"api-version","5.0-preview.1"}
+        });
+        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, string>
+        {
+            {"api-version","5.0-preview.1"}
+        });
+        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, string>
+        {
+            {"api-version","5.0-preview.1"}
+        });
     }
 }

@@ -106,15 +106,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=11")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=11")));
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=22")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=22")));
             
             client
                 .Received()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=33")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=33")));
 
         }
 

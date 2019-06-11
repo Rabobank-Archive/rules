@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using Flurl.Http;
+using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.VstsService.Requests;
@@ -25,72 +28,74 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void DeleteThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<int>("/delete/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Delete(request));
-        }
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                Assert.Throws<FlurlHttpException>(() => client.Delete(request));
+            }
+         }
 
         [Fact]
         public void PostThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int,int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<int,int>("/get/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                Assert.Throws<FlurlHttpException>(() => client.Post(request, 3));
+            }
+        }
+        
+        [Fact]
+        public void PutThrowsOnError()
+        {
+            var request = new VstsRequest<int,int>("/put/some/data");
 
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Post(request, 3));
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                Assert.Throws<FlurlHttpException>(() => client.Put(request, 3));
+            }
         }
 
         [Fact]
         public void GetThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<int>("/get/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Get(request));
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                Assert.Throws<FlurlHttpException>(() => client.Get(request));
+            }
         }
 
         [Fact]
         public void GetJsonThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<JObject>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<JObject>("/get/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Get(request));
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                Assert.Throws<FlurlHttpException>(() => client.Get(request));
+            }
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public void HtmlInsteadOfXmlShouldThrow()
         {
             var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            Assert.Throws<VstsException>(() => sut.Get(Requests.Project.Projects()).ToList());
+            Assert.Throws<FlurlHttpException>(() => sut.Get(Requests.Project.Projects()).ToList());
         }
 
         [Fact]

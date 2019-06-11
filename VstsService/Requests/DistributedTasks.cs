@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class DistributedTask
@@ -14,7 +16,11 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
         {
-            return new VstsRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents?includeCapabilities=false&includeAssignedRequest=true");
+            return new VstsRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents", new Dictionary<string, string>
+            {
+                {"includeCapabilities", "false"},
+                {"includeAssignedRequest", "true"}
+            });
         }
 
         public static IVstsRequest<Response.Multiple<Response.Task>> Tasks()

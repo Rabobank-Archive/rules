@@ -12,7 +12,11 @@ namespace SecurePipelineScan.VstsService.Requests
             string id) where TExtensionData : ExtensionData, new()
         {
             return new ExtmgmtRequest<TExtensionData>(
-                $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents/{id}?api-version=3.1-preview.1");
+                $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents/{id}",
+                new Dictionary<string, string>
+                {
+                    {"api-version", "3.1-preview.1"}
+                });
         }
 
         public static IVstsRequest<TExtensionData> ExtensionData<TExtensionData>(
@@ -21,7 +25,11 @@ namespace SecurePipelineScan.VstsService.Requests
             string collection) where TExtensionData : ExtensionData, new()
         {
             return new ExtmgmtRequest<TExtensionData>(
-                $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents?api-version=3.1-preview.1");
+                $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents",
+                new Dictionary<string, string>
+                {
+                    {"api-version", "3.1-preview.1"}
+                });
         }
     }
 }

@@ -80,7 +80,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void GetAllPoliciesConvertsToSpecific()
         {
-            var policies = _client.Get(Requests.Policies.All(_config.Project));
+            var policies = _client.Get(Requests.Policies.All(_config.Project)).ToList();
 
             policies.ShouldContain(p => p is RequiredReviewersPolicy);
             policies.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);

@@ -258,7 +258,7 @@ namespace SecurePipelineScan.Rules.Tests
                 Assert.True(report.UsesManagedAgentsOnly);
                 rest.Received()
                     .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
-                        r.Uri.Contains(deployPhaseSnapshot.DeploymentInput.QueueId.ToString())));
+                        r.Resource.Contains(deployPhaseSnapshot.DeploymentInput.QueueId.ToString())));
             }
 
             [Fact]
@@ -297,7 +297,7 @@ namespace SecurePipelineScan.Rules.Tests
 
                 rest
                     .Received()
-                    .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r => r.Uri.Contains("1234")));
+                    .Get(Arg.Is<IVstsRequest<Response.AgentQueue>>(r => r.Resource.Contains("1234")));
             }
 
             [Fact]
