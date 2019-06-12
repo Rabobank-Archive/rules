@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using Shouldly;
@@ -14,23 +15,23 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _config = config;
         }
         [Fact]
-        public void EvaluateBuildPipelineIntegrationTest()
+        public async Task EvaluateBuildPipelineIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteBuildPipelines(client);
-            rule.Evaluate(projectId, "2").ShouldBeTrue();
+            (await rule.Evaluate(projectId, "2")).ShouldBeTrue();
         }
 
         [Fact]
-        public void ReconcileBuildPipelineIntegrationTest()
+        public async Task ReconcileBuildPipelineIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteBuildPipelines(client) as IReconcile;
-            rule.Reconcile(projectId, "2");
+            await rule.Reconcile(projectId, "2");
         }
     }
 }

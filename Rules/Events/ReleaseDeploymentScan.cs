@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -11,7 +10,7 @@ namespace SecurePipelineScan.Rules.Events
 {
     public class ReleaseDeploymentScan : IServiceHookScan<ReleaseDeploymentCompletedReport>
     {
-        private static readonly Guid[] _ignoredTaskIds =
+        private static readonly Guid[] IgnoredTaskIds =
         {
             new Guid("dd84dea2-33b4-4745-a2e2-d88803403c1b"), // auto-lst
             new Guid("291ed61f-1ee4-45d3-b1b0-bf822d9095ef"), // SonarQubePublish
@@ -40,7 +39,7 @@ namespace SecurePipelineScan.Rules.Events
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),
                 CreatedDate = (DateTime)input["createdDate"],
-                UsesProductionEndpoints = UsesProductionEndpoints(project, environment),
+                UsesProductionEndpoints = await UsesProductionEndpoints(project, environment),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
                 UsesManagedAgentsOnly = await CheckAgents(project, environment),
@@ -105,14 +104,15 @@ namespace SecurePipelineScan.Rules.Events
             return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Release(project, releaseId));
         }
 
-        private bool? UsesProductionEndpoints(string project, Response.Environment environment)
+        private async Task<bool?> UsesProductionEndpoints(string project, Response.Environment environment)
         {
-            return environment?.DeployPhasesSnapshot
+            return (await Task.WhenAll(environment?.DeployPhasesSnapshot
                 .SelectMany(s => s.WorkflowTasks)
-                .Where(w => !_ignoredTaskIds.Contains(w.TaskId))
+                .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
                 .SelectMany(w => w.Inputs)
                 .Select(i => i.Value)
-                .Any(x => Guid.TryParse(x, out var id) && _endpoints.IsProduction(project, id));
+                .Select(async x => Guid.TryParse(x, out var id) && await _endpoints.IsProduction(project, id))))
+                .Any(x => x);
         }
 
         private static bool? CheckApprovalOptions(Response.Environment environment)

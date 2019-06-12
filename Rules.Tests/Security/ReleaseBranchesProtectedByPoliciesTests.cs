@@ -7,6 +7,7 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -24,10 +25,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void EvaluateIntegrationTest()
+        public async Task EvaluateIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
             rule.Evaluate(projectId, RepositoryId);

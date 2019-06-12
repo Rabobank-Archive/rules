@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -38,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
             return HasRequiredRetentionPolicy(releasePipeline);
         }
 
-        public async void Reconcile(string project, string pipelineId)
+        public async Task Reconcile(string project, string pipelineId)
         {
             var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(project));
             if (!HasRequiredReleaseSettings(releaseSettings))

@@ -3,6 +3,7 @@ using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGrou
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -17,23 +18,25 @@ namespace SecurePipelineScan.Rules.Security
         protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id);
         protected abstract void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
-        public bool Evaluate(string projectId, string id)
+        public async Task<bool> Evaluate(string projectId, string id)
         {
-            var groups = LoadGroups(projectId, id)
+            var groups = (await LoadGroups(projectId, id))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
-            var permissions = groups.SelectMany(g => LoadPermissionsSetForGroup(projectId, id, g).Permissions);
+            var permissions =
+                (await Task.WhenAll(groups.Select(g => LoadPermissionsSetForGroup(projectId, id, g)))).SelectMany(p =>
+                    p.Permissions);
             return permissions.All(p => p.PermissionBit != PermissionBit || AllowedPermissions.Contains(p.PermissionId));
         }
 
-        public void Reconcile(string projectId, string id)
+        public async Task Reconcile(string projectId, string id)
         {
-            var groups = LoadGroups(projectId, id)
+            var groups = (await LoadGroups(projectId, id))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = LoadPermissionsSetForGroup(projectId, id, @group);
+                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, @group);
                 var permission = permissionSetId.Permissions.Single(p => p.PermissionBit == PermissionBit);
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))

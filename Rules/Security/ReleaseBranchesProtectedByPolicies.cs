@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SecurePipelineScan.Rules.Checks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Security
             return HasRequiredReviewerPolicy(repositoryId, policies);
         }
 
-        public async void Reconcile(string projectId, string id)
+        public async Task Reconcile(string projectId, string id)
         {
             var policies = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, id).SingleOrDefault(x => x.Settings.Scope.Any(s => s.RepositoryId == new Guid(id)));
