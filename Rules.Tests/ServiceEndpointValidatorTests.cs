@@ -10,6 +10,7 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests
 {
@@ -18,41 +19,41 @@ namespace SecurePipelineScan.Rules.Tests
         private readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
         [Fact]
-        public void UsesEndpointsFromClient()
+        public async Task UsesEndpointsFromClient()
         {
             var fixture = Fixture();
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRequest<JObject>>())
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
             validator
                 .IsProduction(fixture.Create<string>(), fixture.Create<Guid>());
         
-            client
+            await client
                 .Received()
-                .Get(Arg.Any<IVstsRequest<JObject>>());
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>());
         }
 
         [Fact]
-        public void CachesResultForSameProject()
+        public async Task CachesResultForSameProject()
         {
             var fixture = Fixture();
             var project = fixture.Create<string>();
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRequest<JObject>>())
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
             validator.IsProduction(project, fixture.Create<Guid>());
             validator.IsProduction(project, fixture.Create<Guid>());
 
-            client
+            await client
                 .Received(1)
-                .Get(Arg.Any<IVstsRequest<JObject>>());
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>());
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace SecurePipelineScan.Rules.Tests
         
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRequest<JObject>>())
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(JObject.FromObject(endpoints));
 
             var validator = new ServiceEndpointValidator(client, _cache);
