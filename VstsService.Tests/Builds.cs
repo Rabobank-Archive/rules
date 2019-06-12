@@ -1,5 +1,6 @@
 using Shouldly;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -17,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public void QueryArtifacts()
+        public async Task QueryArtifacts()
         {
-            var artifacts = _client.Get(Requests.Builds.Artifacts(_config.Project, _config.BuildId));
+            var artifacts = await _client.GetAsync(Requests.Builds.Artifacts(_config.Project, _config.BuildId));
             artifacts.ShouldNotBeEmpty();
 
             var artifact = artifacts.First();
