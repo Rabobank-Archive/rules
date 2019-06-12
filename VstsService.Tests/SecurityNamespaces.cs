@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using SecurePipelineScan.VstsService.Response;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -21,12 +23,13 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryNamespaces()
+        public async Task QueryNamespaces()
         {
-            var target = _client.Get(Requests.SecurityNamespace.SecurityNamespaces());
-            target.ShouldNotBeEmpty();
+            var target = await _client.GetAsync(Requests.SecurityNamespace.SecurityNamespaces());
+            var securityNamespaces = target as SecurityNamespace[] ?? target.ToArray();
+            securityNamespaces.ShouldNotBeEmpty();
 
-            var first = target.First();
+            var first = securityNamespaces.First();
             first.Actions.ShouldNotBeEmpty();
 
             var action = first.Actions.First();
