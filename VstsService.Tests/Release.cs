@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using Shouldly;
-using System.Net;
 using System.Linq;
-using Flurl.Http;
 using Flurl.Http.Testing;
-using NSubstitute;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
@@ -146,18 +142,6 @@ namespace SecurePipelineScan.VstsService.Tests
                 var client = new VstsRestClient("dummy", "pat");
                 client.Get(request);
             }
-        }
-
-        private static IRestResponse MockResponse(string content)
-        {
-            var response = Substitute.For<IRestResponse>();
-            response.Request = Substitute.For<IRestRequest>();
-            response.ContentType = "application/json";
-            response.StatusCode = HttpStatusCode.OK;
-            response.ResponseStatus = ResponseStatus.Completed;
-            response.Content = content;
-
-            return response;
         }
     }
 }

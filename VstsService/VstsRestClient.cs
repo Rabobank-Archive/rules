@@ -19,14 +19,12 @@ namespace SecurePipelineScan.VstsService
         private readonly string _authorization;
         private readonly string _organization;
         private readonly string _token;
-        private readonly IRestClientFactory _factory;
 
-        public VstsRestClient(string organization, string token, IRestClientFactory factory)
+        public VstsRestClient(string organization, string token)
         {
             _authorization = GenerateAuthorizationHeader(token);
             _organization = organization;
             _token = token;
-            _factory = factory;
             
             FlurlHttp.Configure(settings => {
                 var jsonSettings = new JsonSerializerSettings
@@ -36,10 +34,6 @@ namespace SecurePipelineScan.VstsService
                 };
                 settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
             });
-        }
-
-        internal VstsRestClient(string organization, string token) : this(organization, token, new RestClientFactory())
-        {   
         }
 
         public async Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
@@ -79,16 +73,11 @@ namespace SecurePipelineScan.VstsService
             return GetAsync(request).GetAwaiter().GetResult();
         }
 
+#pragma warning disable 1998
         public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
+#pragma warning restore 1998
         {
             return new MultipleEnumerator<TResponse>(request, _organization, _token);
-                      
-//
-// var client = _factory.Create(request.BaseUri(_organization));
-//            var wrapper = new RestRequest(request.Uri)
-//                .AddHeader("authorization", _authorization);
-//
-//            return new MultipleEnumerator<TResponse>(wrapper, client);
         }
 
 
