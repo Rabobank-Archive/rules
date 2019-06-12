@@ -31,7 +31,8 @@ namespace SecurePipelineScan.VstsService
             FlurlHttp.Configure(settings => {
                 var jsonSettings = new JsonSerializerSettings
                 {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Converters = { new PolicyConverter() }
                 };
                 settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
             });

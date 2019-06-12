@@ -12,7 +12,8 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>> MinimumNumberOfReviewersPolicies(string project) => new VstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>($"{project}/_apis/policy/configurations", new Dictionary<string, string> 
             {
-                { "policyType", "fa4e907d-c16b-4)a4c-9dfa-4906e5d171dd" }
+                { "policyType", "fa4e907d-c16b-4a4c-9dfa-4906e5d171dd" }
+                
             });
 
         public static IVstsRequest<Multiple<Policy>> All(string project) => new VstsRequest<Multiple<Policy>>($"{project}/_apis/policy/configurations", new Dictionary<string, string> 

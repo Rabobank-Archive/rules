@@ -40,7 +40,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void QueryMinimumNumberOfReviewersPolicies()
         {
-            var result = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project));
+            var result = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project)).ToList();
 
             result.ShouldNotBeEmpty();
             result.Any(e => e.Id != 0).ShouldBeTrue();
