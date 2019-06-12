@@ -18,15 +18,15 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        protected override Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id) =>
-            _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, id)).Identities;
+        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id) =>
+            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, id))).Identities;
 
-        protected override Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
+        protected override async Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
             ApplicationGroup @group) =>
-            _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, id));
+            await _client.GetAsync(Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, id));
 
-        protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
-            _client.Post(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
+        protected override async void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>
+            await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
 
         protected abstract string NamespaceId { get; } // https://dev.azure.com/somecompany/_apis/securitynamespaces?api-version=5.0
     }

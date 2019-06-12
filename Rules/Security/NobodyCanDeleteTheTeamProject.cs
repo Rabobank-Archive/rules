@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Response;
+using Response = SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
 
 namespace SecurePipelineScan.Rules.Security
@@ -27,16 +27,16 @@ namespace SecurePipelineScan.Rules.Security
         public async Task<bool> Evaluate(string project)
         {
             var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
-            return CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProject(project, groups) &&
-                   CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(project, groups);
+            return await CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProject(project, groups) &&
+                   await CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(project, groups);
         }
 
-        private bool CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProject(string project, ApplicationGroups groups)
+        private async Task<bool> CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProject(string project, Response.ApplicationGroups groups)
         {
-            var permissions = groups
+            var permissions =  await Task.WhenAll(groups
                 .Identities
                 .Where(g => g.FriendlyDisplayName != "Project Administrators")
-                .Select(async g => await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, g.TeamFoundationId)));
+                .Select(async g => await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, g.TeamFoundationId))));
 
             return !permissions
                        .SelectMany(p => p.Security.Permissions)
@@ -44,10 +44,10 @@ namespace SecurePipelineScan.Rules.Security
                                    (s.PermissionId == PermissionId.Allow || s.PermissionId == PermissionId.AllowInherited));
         }
 
-        private bool CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(string project, ApplicationGroups groups)
+        private async Task<bool> CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(string project, Response.ApplicationGroups groups)
         {
             var id = groups.Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
-            var members = _client.Get(VstsService.Requests.ApplicationGroup.GroupMembers(project, id)).Identities;
+            var members = (await _client.GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(project, id))).Identities;
 
             return
                 members.All(m => m.FriendlyDisplayName == RabobankProjectAdministrators);
@@ -61,14 +61,14 @@ namespace SecurePipelineScan.Rules.Security
             "Delete team project permission is set to 'not set' for all other groups"
         };
 
-        public void Reconcile(string project)
+        public async void Reconcile(string project)
         {
-            var groups = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
+            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
             var paId = groups.Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
-            var raboId = CreateRabobankProjectAdministratorsGroupsIfNotExists(project, groups).TeamFoundationId;
+            var raboId = (await CreateRabobankProjectAdministratorsGroupsIfNotExists(project, groups)).TeamFoundationId;
             
-            var members = _client
-                .Get(VstsService.Requests.ApplicationGroup.GroupMembers(project, paId))
+            var members = (await _client
+                .GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(project, paId)))
                 .Identities
                 .Where(x => x.TeamFoundationId != raboId);
                             
@@ -80,7 +80,7 @@ namespace SecurePipelineScan.Rules.Security
             UpdatePermissionToDeleteTeamProjectToDeny(project, raboId);
         }
 
-        private void UpdatePermissionToDeleteTeamProjectToNotSet(string project, ApplicationGroups groups)
+        private async void UpdatePermissionToDeleteTeamProjectToNotSet(string project, Response.ApplicationGroups groups)
         {
             foreach (var identity in groups
                 .Identities
@@ -88,12 +88,12 @@ namespace SecurePipelineScan.Rules.Security
                 .Where(i => i.FriendlyDisplayName != RabobankProjectAdministrators))
             {
                 var permissions =
-                    _client.Get(Permissions.PermissionsGroupProjectId(project, identity.TeamFoundationId));
+                    await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, identity.TeamFoundationId));
 
                 var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
                 delete.PermissionId = PermissionId.NotSet;
 
-                _client.Post(Permissions.ManagePermissions(project),
+                await _client.PostAsync(Permissions.ManagePermissions(project),
                     new Permissions.ManagePermissionsData(
                         identity.TeamFoundationId,
                         permissions.Security.DescriptorIdentifier,
@@ -102,14 +102,14 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private void UpdatePermissionToDeleteTeamProjectToDeny(string project, string tfsId)
+        private async void UpdatePermissionToDeleteTeamProjectToDeny(string project, string tfsId)
         {
-            var permissions = _client.Get(Permissions.PermissionsGroupProjectId(project, tfsId));
+            var permissions = await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, tfsId));
             var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
             delete.PermissionId = 2;
             delete.PermissionBit = 4;
 
-            _client.Post(Permissions.ManagePermissions(project),
+            await _client.PostAsync(Permissions.ManagePermissions(project),
                 new Permissions.ManagePermissionsData(
                     tfsId,
                     permissions.Security.DescriptorIdentifier,
@@ -117,33 +117,33 @@ namespace SecurePipelineScan.Rules.Security
                     delete).Wrap());
         }
 
-        private ApplicationGroup CreateRabobankProjectAdministratorsGroupsIfNotExists(string project, ApplicationGroups groups)
+        private async Task<ApplicationGroup> CreateRabobankProjectAdministratorsGroupsIfNotExists(string project, Response.ApplicationGroups groups)
         {
             return groups.Identities.SingleOrDefault(p => p.FriendlyDisplayName == RabobankProjectAdministrators) ??
-                   _client.Post(VstsService.Requests.Security.ManageGroup(project),
+                   await _client.PostAsync(VstsService.Requests.Security.ManageGroup(project),
                        new VstsService.Requests.Security.ManageGroupData
                        {
                            Name = RabobankProjectAdministrators
                        });
         }
 
-        private void AddAllMembersToRabobankProjectAdministratorsGroup(string project, IEnumerable<ApplicationGroup> members, string rabo)
+        private async void AddAllMembersToRabobankProjectAdministratorsGroup(string project, IEnumerable<ApplicationGroup> members, string rabo)
         {
-            _client.Post(VstsService.Requests.Security.AddMember(project),
+            await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(
                     members.Select(m => m.TeamFoundationId),
                     new[] {rabo}));
         }
 
-        private void RemoveAllOtherMembersFromProjectAdministrators(string project, IEnumerable<ApplicationGroup> members, string id)
+        private async void RemoveAllOtherMembersFromProjectAdministrators(string project, IEnumerable<ApplicationGroup> members, string id)
         {
-            _client.Post(VstsService.Requests.Security.EditMembership(project),
+            await _client.PostAsync(VstsService.Requests.Security.EditMembership(project),
                 new VstsService.Requests.Security.RemoveMembersData(members.Select(m => m.TeamFoundationId), id));
         }
 
-        private void AddRabobankProjectAdministratorsToProjectAdministratorsGroup(string project, string rabo, string id)
+        private async void AddRabobankProjectAdministratorsToProjectAdministratorsGroup(string project, string rabo, string id)
         {
-            _client.Post(VstsService.Requests.Security.AddMember(project),
+            await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}));
         }
     }
