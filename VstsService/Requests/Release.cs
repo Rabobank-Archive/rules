@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
@@ -18,7 +19,11 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project, string expand, string asof)
         {
-            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases?$expand={expand}&minCreatedTime={asof}");
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases", new Dictionary<string, string> 
+            {
+                { "expand", $"{expand}" },
+                { "minCreatedTime", $"{asof}" }
+            });
         }
 
         public static IVstsRequest<Response.ReleaseDefinition> Definition(string project, string id)
@@ -38,7 +43,10 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.ReleaseSettings> Settings(string project)
         {
-            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings?api-version=5.0-preview");
+            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings", new Dictionary<string, string> 
+            {
+                { "api-version", "5.0-preview" }
+            });
         }
     }
 }

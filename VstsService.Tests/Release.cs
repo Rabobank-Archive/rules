@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using Shouldly;
 using System.Net;
 using System.Linq;
+using Flurl.Http;
+using Flurl.Http.Testing;
 using NSubstitute;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
@@ -27,55 +30,62 @@ namespace SecurePipelineScan.VstsService.Tests
             _client = new VstsRestClient(config.Organization, config.Token);
             _project = config.Project;
         }
-    
+
 
         [Fact]
         public void ReleaseWithApproval()
         {
             const int id = 79;
-            
-            // var release = _client.Get(Requests.Release.Releases(_project, id));          
-            var release = MockClientResponse<Response.Release>(Path.Join(ReleaseAssets, "Approved.json"));
-            release.Id.ShouldBe(id);
-            release.Environments.ShouldNotBeEmpty();
-            release.Tags.ShouldNotBeEmpty();
 
-            var env = release.Environments.Skip(1).First();
-            env.Id.ShouldNotBe(0);
-            env.PreDeployApprovals.ShouldNotBeEmpty();
-            env.DeploySteps.ShouldNotBeEmpty();
-            env.Name.ShouldNotBeNullOrEmpty();
-            env.DeployPhasesSnapshot.ShouldNotBeEmpty();
+            var response = File.ReadAllText(Path.Join(ReleaseAssets, "Approved.json"));
 
-            var phaseSnapshot = env.DeployPhasesSnapshot.First();
-            phaseSnapshot.PhaseType.ShouldNotBeEmpty();
-            phaseSnapshot.DeploymentInput.ShouldNotBeNull();
-            phaseSnapshot.DeploymentInput.QueueId.ShouldNotBe(0);
+            var request = new VstsRequest<Response.Release>("/keeas");
 
-            var deploy = env.DeploySteps.First();
-            deploy.RequestedFor.ShouldNotBeNull();
-            deploy.RequestedFor.Id.ShouldNotBeNull();
-            deploy.LastModifiedBy.ShouldNotBeNull();
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 200, body: response);
+                var client = new VstsRestClient("dummy", "pat");
+                var release = client.Get(request);
+                release.Id.ShouldBe(id);
+                release.Environments.ShouldNotBeEmpty();
+                release.Tags.ShouldNotBeEmpty();
+                var env = release.Environments.Skip(1).First();
+                env.Id.ShouldNotBe(0);
+                env.PreDeployApprovals.ShouldNotBeEmpty();
+                env.DeploySteps.ShouldNotBeEmpty();
+                env.Name.ShouldNotBeNullOrEmpty();
+                env.DeployPhasesSnapshot.ShouldNotBeEmpty();
 
-            var predeploy = env.PreDeployApprovals.First();
-            predeploy.Status.ShouldNotBeNullOrEmpty();
-            predeploy.ApprovalType.ShouldNotBeNullOrEmpty();
-            predeploy.IsAutomated.ShouldBe(false);
-            predeploy.ApprovedBy.ShouldNotBeNull();
-            predeploy.ApprovedBy.DisplayName.ShouldNotBeNullOrEmpty();
+                var phaseSnapshot = env.DeployPhasesSnapshot.First();
+                phaseSnapshot.PhaseType.ShouldNotBeEmpty();
+                phaseSnapshot.DeploymentInput.ShouldNotBeNull();
+                phaseSnapshot.DeploymentInput.QueueId.ShouldNotBe(0);
 
-            var conditions = env.Conditions;
-            conditions.ShouldNotBeEmpty();
+                var deploy = env.DeploySteps.First();
+                deploy.RequestedFor.ShouldNotBeNull();
+                deploy.RequestedFor.Id.ShouldNotBeNull();
+                deploy.LastModifiedBy.ShouldNotBeNull();
 
-            var condition = conditions.First();
-            condition.Result.ShouldBe(false);
-            condition.Name.ShouldNotBeNullOrEmpty();
-            condition.ConditionType.ShouldNotBeEmpty();
-            condition.Value.ShouldNotBeNull();
+                var predeploy = env.PreDeployApprovals.First();
+                predeploy.Status.ShouldNotBeNullOrEmpty();
+                predeploy.ApprovalType.ShouldNotBeNullOrEmpty();
+                predeploy.IsAutomated.ShouldBe(false);
+                predeploy.ApprovedBy.ShouldNotBeNull();
+                predeploy.ApprovedBy.DisplayName.ShouldNotBeNullOrEmpty();
 
-            var artifact = release.Artifacts.First();
-            artifact.Type.ShouldNotBeNull();
-            artifact.Alias.ShouldNotBeNull();           
+                var conditions = env.Conditions.ToList();
+                conditions.ShouldNotBeEmpty();
+
+                var condition = conditions.First();
+                condition.Result.ShouldBe(false);
+                condition.Name.ShouldNotBeNullOrEmpty();
+                condition.ConditionType.ShouldNotBeEmpty();
+                condition.Value.ShouldNotBeNull();
+
+                var artifact = release.Artifacts.First();
+                artifact.Type.ShouldNotBeNull();
+                artifact.Alias.ShouldNotBeNull();
+            }
         }
 
 
@@ -93,12 +103,12 @@ namespace SecurePipelineScan.VstsService.Tests
             var task = snapshot.WorkflowTasks.First();
             task.TaskId.ShouldNotBe(Guid.Empty);
             task.Inputs.ShouldNotBeEmpty();
-            
+
             var preApprovalSnapshot = environment.PreApprovalsSnapshot;
             preApprovalSnapshot.ShouldNotBeNull();
             preApprovalSnapshot.ApprovalOptions.ShouldNotBeNull();
             preApprovalSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover.ShouldBeTrue();
-            
+
             var approval = preApprovalSnapshot.Approvals.FirstOrDefault();
             approval.ShouldNotBeNull();
             approval.IsAutomated.ShouldBeFalse();
@@ -107,7 +117,13 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void RequestForMultipleContinuesUsingContinuationToken()
         {
-            var releases = _client.Get(new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/?$top=2"));
+            var releases =
+                _client.Get(
+                    new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/",
+                        new Dictionary<string, string>
+                        {
+                            {"$top", "2"}
+                        }));
             releases.Count().ShouldBeGreaterThan(2);
         }
 
@@ -119,15 +135,17 @@ namespace SecurePipelineScan.VstsService.Tests
              *   Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
              *   _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
              */
-            MockClientResponse<Environment>(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
-        }
-        
-        private static T MockClientResponse<T>(string path)
-        {
-            var response = MockResponse(File.ReadAllText(path));
-            var client = new RestClientFactory().Create(new Uri("https://some-uri"));
-            
-            return client.Deserialize<T>(response).ThrowOnError().Data;
+
+            var response = File.ReadAllText(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
+
+            var request = new VstsRequest<Environment>("/keeas");
+
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 200, body: response);
+                var client = new VstsRestClient("dummy", "pat");
+                client.Get(request);
+            }
         }
 
         private static IRestResponse MockResponse(string content)
