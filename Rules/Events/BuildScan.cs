@@ -23,6 +23,9 @@ namespace SecurePipelineScan.Rules.Events
             var id = (string)input.SelectToken("resource.id");
             var build = await _client.GetAsync<VstsService.Response.Build>((string)input.SelectToken("resource.url"));
 
+            if (build.Result == "failed" || build.Result == "cancelled")
+                return null;
+
             var project = build.Project.Name;
             var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson());
             var usedTaskIds = timeline.SelectTokens("records[*].task.id").Values<string>();
