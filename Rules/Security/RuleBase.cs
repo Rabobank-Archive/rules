@@ -2,6 +2,7 @@
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -11,8 +12,9 @@ namespace SecurePipelineScan.Rules.Security
         protected abstract IEnumerable<string> IgnoredIdentitiesDisplayNames { get; }
         protected abstract IEnumerable<int> AllowedPermissions { get; }
 
-        protected abstract PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group);
-        protected abstract IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id);
+        protected abstract Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
+            ApplicationGroup @group);
+        protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id);
         protected abstract void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
         public bool Evaluate(string projectId, string id)
@@ -31,7 +33,7 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups)
             {
-                var permissionSetId = LoadPermissionsSetForGroup(projectId, id, group);
+                var permissionSetId = LoadPermissionsSetForGroup(projectId, id, @group);
                 var permission = permissionSetId.Permissions.Single(p => p.PermissionBit == PermissionBit);
 
                 if (!AllowedPermissions.Contains(permission.PermissionId))
