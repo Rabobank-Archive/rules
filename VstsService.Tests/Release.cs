@@ -7,6 +7,7 @@ using System.Linq;
 using Flurl.Http.Testing;
 using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -29,7 +30,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
 
         [Fact]
-        public void ReleaseWithApproval()
+        public async Task ReleaseWithApproval()
         {
             const int id = 79;
 
@@ -41,7 +42,7 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 200, body: response);
                 var client = new VstsRestClient("dummy", "pat");
-                var release = client.Get(request);
+                var release = await client.GetAsync(request);
                 release.Id.ShouldBe(id);
                 release.Environments.ShouldNotBeEmpty();
                 release.Tags.ShouldNotBeEmpty();
@@ -86,9 +87,9 @@ namespace SecurePipelineScan.VstsService.Tests
 
 
         [Fact]
-        public void QueryEnvironment()
+        public async Task QueryEnvironment()
         {
-            var environment = _client.Get(Requests.ReleaseManagement.Environment(_project, "5", "7"));
+            var environment = await _client.GetAsync(Requests.ReleaseManagement.Environment(_project, "5", "7"));
 
             environment.ShouldNotBeNull();
             environment.DeployPhasesSnapshot.ShouldNotBeEmpty();
@@ -111,10 +112,10 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void RequestForMultipleContinuesUsingContinuationToken()
+        public async Task RequestForMultipleContinuesUsingContinuationToken()
         {
-            var releases =
-                _client.Get(
+            var releases = await 
+                _client.GetAsync(
                     new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/",
                         new Dictionary<string, string>
                         {
@@ -124,7 +125,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void ConditionResultOnReleaseEnvironmentMustBeNullable()
+        public async Task ConditionResultOnReleaseEnvironmentMustBeNullable()
         {
             /*
              * First test to use json file for test deserialization.
@@ -140,7 +141,7 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 200, body: response);
                 var client = new VstsRestClient("dummy", "pat");
-                client.Get(request);
+                await client.GetAsync(request);
             }
         }
     }
