@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -14,20 +15,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteTheRepositoryTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
 
         public NobodyCanDeleteTheRepositoryTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
         }
 
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
@@ -106,22 +105,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=11")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","11"))));
             
             client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=22")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","22"))));
             
             client
                 .Received()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Resource.Contains("tfid=33")));
+                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","33"))));
 
         }
 
         [Fact]
         public void ReconcileIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
             
             var rule = new NobodyCanDeleteTheRepository(client);

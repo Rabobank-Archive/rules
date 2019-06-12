@@ -11,7 +11,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteTheTeamProjectTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private readonly Response.ApplicationGroup _pa = new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators", TeamFoundationId = "1234"};
         private readonly Response.ApplicationGroup _rpa = new Response.ApplicationGroup{FriendlyDisplayName = "Rabobank Project Administrators", TeamFoundationId = "adgasge"};
         private readonly Response.Permission _deleteTeamProjectAllow = new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow, PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"};
@@ -19,20 +18,19 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public NobodyCanDeleteTheTeamProjectTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
         }
         
         [Fact]
         public void EvaluateIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token, _factory));
+            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
             rule.Evaluate(_config.Project).ShouldBeTrue();
         }
         
         [Fact]
         public void FixIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token, _factory));
+            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
             rule.Reconcile(_config.Project);
         }
         

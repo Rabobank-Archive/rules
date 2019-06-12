@@ -12,7 +12,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class PipelineHasRequiredRetentionPolicyTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private const string PipelineId = "1";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
@@ -20,7 +19,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public PipelineHasRequiredRetentionPolicyTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
             _fixture.Customize(new AutoNSubstituteCustomization());
         }
 
@@ -28,7 +26,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void EvaluateIntegrationTest()
         {
             //Arrange
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
@@ -86,7 +84,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void Reconcile()
         {
             //Arrange
-            var client = new VstsRestClient("somecompany", _config.Token, _factory);
+            var client = new VstsRestClient("somecompany", _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
