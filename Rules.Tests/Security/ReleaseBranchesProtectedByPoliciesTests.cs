@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public void EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
+        public async void EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -46,28 +46,28 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeTrue();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
+        public async void EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
             //Arrange
             SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
+        public async void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -80,14 +80,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
+        public async void EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -98,14 +98,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
+        public async void EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
         {
             //Arrange
             CustomizeScope(_fixture, refName: "ref/heads/not-master");
@@ -116,7 +116,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -131,7 +131,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void GivenNoPolicyPresent_WhenReconcile_PostIsUsed()
+        public async void GivenNoPolicyPresent_WhenReconcile_PostIsUsed()
         {
             // Arrange
             CustomizeScope(_fixture, refName: "some/other/branch");
@@ -142,13 +142,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
-            _client
+            await _client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<Policy,Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+                .PostAsync(Arg.Any<IVstsRequest<Policy,Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
         }
         
         [Fact]
-        public void GivenExistingPolicyPresent_WhenReconcile_PutIsUsed()
+        public async void GivenExistingPolicyPresent_WhenReconcile_PutIsUsed()
         {
             // Arrange
             CustomizeScope(_fixture);
@@ -159,13 +159,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
-            _client
+            await _client
                 .Received()
-                .Put(Arg.Any<IVstsRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+                .PutAsync(Arg.Any<IVstsRequest<Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
         }
         
         [Fact]
-        public void GivenExistingPolicyHasApproverCount_WhenReconcile_NotUpdated()
+        public async void GivenExistingPolicyHasApproverCount_WhenReconcile_NotUpdated()
         {
             // Arrange
             CustomizeScope(_fixture);
@@ -177,9 +177,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
             rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
-            _client
+            await _client
                 .Received()
-                .Put(Arg.Any<IVstsRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
+                .PutAsync(Arg.Any<IVstsRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
         }
         
         private static void CustomizeScope(IFixture fixture, 
@@ -209,10 +209,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
 
-        private static void SetupClient(IVstsRestClient client, IFixture fixture)
+        private static async void SetupClient(IVstsRestClient client, IFixture fixture)
         {
-            client
-                .Get(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
+            (await client
+                .GetAsync(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>()))
                 .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
         }
     }

@@ -61,7 +61,7 @@ namespace SecurePipelineScan.Rules.Security
             "Delete team project permission is set to 'not set' for all other groups"
         };
 
-        public async void Reconcile(string project)
+        public async Task Reconcile(string project)
         {
             var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
             var paId = groups.Identities.Single(p => p.FriendlyDisplayName == "Project Administrators").TeamFoundationId;
@@ -80,7 +80,7 @@ namespace SecurePipelineScan.Rules.Security
             UpdatePermissionToDeleteTeamProjectToDeny(project, raboId);
         }
 
-        private async void UpdatePermissionToDeleteTeamProjectToNotSet(string project, Response.ApplicationGroups groups)
+        private async Task UpdatePermissionToDeleteTeamProjectToNotSet(string project, Response.ApplicationGroups groups)
         {
             foreach (var identity in groups
                 .Identities
@@ -102,7 +102,7 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private async void UpdatePermissionToDeleteTeamProjectToDeny(string project, string tfsId)
+        private async Task UpdatePermissionToDeleteTeamProjectToDeny(string project, string tfsId)
         {
             var permissions = await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, tfsId));
             var delete = permissions.Security.Permissions.Single(p => p.DisplayName == DeleteTeamProject);
@@ -127,7 +127,7 @@ namespace SecurePipelineScan.Rules.Security
                        });
         }
 
-        private async void AddAllMembersToRabobankProjectAdministratorsGroup(string project, IEnumerable<ApplicationGroup> members, string rabo)
+        private async Task AddAllMembersToRabobankProjectAdministratorsGroup(string project, IEnumerable<ApplicationGroup> members, string rabo)
         {
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(
@@ -135,13 +135,13 @@ namespace SecurePipelineScan.Rules.Security
                     new[] {rabo}));
         }
 
-        private async void RemoveAllOtherMembersFromProjectAdministrators(string project, IEnumerable<ApplicationGroup> members, string id)
+        private async Task RemoveAllOtherMembersFromProjectAdministrators(string project, IEnumerable<ApplicationGroup> members, string id)
         {
             await _client.PostAsync(VstsService.Requests.Security.EditMembership(project),
                 new VstsService.Requests.Security.RemoveMembersData(members.Select(m => m.TeamFoundationId), id));
         }
 
-        private async void AddRabobankProjectAdministratorsToProjectAdministratorsGroup(string project, string rabo, string id)
+        private async Task AddRabobankProjectAdministratorsToProjectAdministratorsGroup(string project, string rabo, string id)
         {
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}));

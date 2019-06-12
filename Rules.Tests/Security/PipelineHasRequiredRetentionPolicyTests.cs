@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
+        public async void EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
         {
             //Arrange
             // ReSharper disable twice RedundantArgumentDefaultValue
@@ -46,11 +46,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeTrue();
+            (await evaluatedRule).ShouldBeTrue();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
+        public async void EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
         {
             //Arrange
             // ReSharper disable once RedundantArgumentDefaultValue
@@ -62,11 +62,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            (await evaluatedRule).ShouldBeFalse();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
+        public async void EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
         {
             //Arrange
             CustomizePolicySettings(_fixture, 500, false);
@@ -77,7 +77,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            (await evaluatedRule).ShouldBeFalse();
         }
 
         [Fact(Skip = "unable to increase the max retention (to 450 days) on other organizations than somecompany")]
@@ -99,9 +99,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(r => r.RetainBuild, retainBuild));
         }
 
-        private static void SetupClient(IVstsRestClient client, IFixture fixture) =>
-            client
-                .Get(Arg.Any<IVstsRequest<ReleaseDefinition>>())
+        private static async void SetupClient(IVstsRestClient client, IFixture fixture) =>
+            (await client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>()))
                 .Returns(fixture.Create<ReleaseDefinition>());
     }
 }
