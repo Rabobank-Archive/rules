@@ -26,15 +26,15 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync(Arg.Any<IVstsRequest<Build>>())
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .GetAsync(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
-                .Get(Arg.Any<IVstsRequest<JObject>>())
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(_fixture.Create<JObject>());
 
             var scan = new BuildScan(client);
@@ -57,15 +57,15 @@ namespace SecurePipelineScan.Rules.Tests
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .Get(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync(Arg.Any<IVstsRequest<Build>>())
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .GetAsync(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
-                .Get(Arg.Any<IVstsRequest<JObject>>())
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(timeline);
 
             var scan = new BuildScan(client);

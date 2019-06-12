@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
@@ -23,9 +24,9 @@ namespace SecurePipelineScan.Rules.Security
 
         string IProjectRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
 
-        public bool Evaluate(string project)
+        public async Task<bool> Evaluate(string project)
         {
-            var groups = _client.Get(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
+            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project));
             return CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProject(project, groups) &&
                    CheckProjectAdministratorsGroupOnlyContainsRabobankAdministrators(project, groups);
         }
@@ -35,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
             var permissions = groups
                 .Identities
                 .Where(g => g.FriendlyDisplayName != "Project Administrators")
-                .Select(g => _client.Get(Permissions.PermissionsGroupProjectId(project, g.TeamFoundationId)));
+                .Select(async g => await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, g.TeamFoundationId)));
 
             return !permissions
                        .SelectMany(p => p.Security.Permissions)

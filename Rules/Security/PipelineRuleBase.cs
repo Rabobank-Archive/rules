@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
@@ -17,10 +18,11 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        protected override IEnumerable<ApplicationGroup> LoadGroups(string projectId, string id) =>
+        protected override Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id) =>
             _client.Get(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, id)).Identities;
 
-        protected override PermissionsSetId LoadPermissionsSetForGroup(string projectId, string id, ApplicationGroup group) =>
+        protected override Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
+            ApplicationGroup @group) =>
             _client.Get(Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, id));
 
         protected override void UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission) =>

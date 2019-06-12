@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Events
 {
-    public interface IServiceHookScan<out TReport>
+    public interface IServiceHookScan<TReport>
     {
-        TReport Completed(JObject input);
+        Task<TReport> Completed(JObject input);
     }
 }
