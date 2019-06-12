@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -6,25 +8,26 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Repository: IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient Vsts;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _vsts;
 
         public Repository(TestConfig config)
         {
-            this.config = config;
-            Vsts = new VstsRestClient(config.Organization, config.Token);
+            this._config = config;
+            _vsts = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public void QueryRepository()
+        public async Task QueryRepository()
         {
-            var definition = Vsts.Get(Requests.Repository.Repositories(config.Project));
-            definition.ShouldNotBeEmpty();
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
-            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
+            var definition = await _vsts.GetAsync(Requests.Repository.Repositories(_config.Project));
+            var repositories = definition.ToList();
+            repositories.ShouldNotBeEmpty();
+            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
+            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
+            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
+            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
         }
     }
 }

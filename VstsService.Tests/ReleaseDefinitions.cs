@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
 
@@ -17,16 +18,16 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryReleaseDefinitions()
+        public async Task QueryReleaseDefinitions()
         {
-            var definitions = client.Get(Requests.ReleaseManagement.Definitions(config.Project));
+            var definitions = await client.GetAsync(Requests.ReleaseManagement.Definitions(config.Project));
             definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
-        public void QueryReleaseDefinitionDetails()
+        public async Task QueryReleaseDefinitionDetails()
         {
-            var definition = client.Get(Requests.ReleaseManagement.Definition(config.Project, config.ReleaseDefinitionId));
+            var definition = await client.GetAsync(Requests.ReleaseManagement.Definition(config.Project, config.ReleaseDefinitionId));
             definition.Name.ShouldBe(config.ReleaseDefinitionName);
             definition.Links.ShouldNotBeNull();
             definition.Environments.ShouldNotBeEmpty();
