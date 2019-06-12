@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,14 +69,15 @@ namespace SecurePipelineScan.Rules.Security
             var members = (await _client
                 .GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(project, paId)))
                 .Identities
-                .Where(x => x.TeamFoundationId != raboId);
+                .Where(x => x.TeamFoundationId != raboId)
+                .ToList();
                             
-            RemoveAllOtherMembersFromProjectAdministrators(project, members, paId);
-            AddAllMembersToRabobankProjectAdministratorsGroup(project, members, raboId);
-            AddRabobankProjectAdministratorsToProjectAdministratorsGroup(project, raboId, paId);
+            await RemoveAllOtherMembersFromProjectAdministrators(project, members, paId);
+            await AddAllMembersToRabobankProjectAdministratorsGroup(project, members, raboId);
+            await AddRabobankProjectAdministratorsToProjectAdministratorsGroup(project, raboId, paId);
 
-            UpdatePermissionToDeleteTeamProjectToNotSet(project, groups);
-            UpdatePermissionToDeleteTeamProjectToDeny(project, raboId);
+            await UpdatePermissionToDeleteTeamProjectToNotSet(project, groups);
+            await UpdatePermissionToDeleteTeamProjectToDeny(project, raboId);
         }
 
         private async Task UpdatePermissionToDeleteTeamProjectToNotSet(string project, Response.ApplicationGroups groups)

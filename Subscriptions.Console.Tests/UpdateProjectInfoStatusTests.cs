@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using ExpectedObjects;
 using System.Linq;
+using System.Threading.Tasks;
 using NSubstitute;
 using SecurePipelineScan.VstsService;
 using Xunit;
@@ -65,7 +65,7 @@ namespace Subscriptions.Console.Tests
         [InlineData(false, true, false, false, 3)]
         [InlineData(false, false, false, true, 3)]
         [InlineData(false, false, false, false, 4)]
-        public void OnlySetsHookIfNotAlreadySet(bool a, bool b, bool c, bool d, int calls)
+        public async Task OnlySetsHookIfNotAlreadySet(bool a, bool b, bool c, bool d, int calls)
         {
             // Arrange
             var client = Substitute.For<IVstsRestClient>();
@@ -81,10 +81,10 @@ namespace Subscriptions.Console.Tests
             };
 
             // Act
-            Program.AddHooksToProjects("asdf", "asdf", client, items);
+            await Program.AddHooksToProjects("asdf", "asdf", client, items);
 
             // Assert
-            client.Received(calls).Post(Arg.Any<IVstsRequest<Requests.Hooks.Add.Body, Response.Hook>>(), Arg.Any<Requests.Hooks.Add.Body>());
+            await client.Received(calls).PostAsync(Arg.Any<IVstsRequest<Requests.Hooks.Add.Body, Response.Hook>>(), Arg.Any<Requests.Hooks.Add.Body>());
         }
     }
 }

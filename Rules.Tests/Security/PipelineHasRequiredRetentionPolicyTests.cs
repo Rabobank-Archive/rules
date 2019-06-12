@@ -99,9 +99,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(r => r.RetainBuild, retainBuild));
         }
 
-        private static async void SetupClient(IVstsRestClient client, IFixture fixture) =>
-            (await client
-                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>()))
+        private static void SetupClient(IVstsRestClient client, IFixture fixture) =>
+            client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
                 .Returns(fixture.Create<ReleaseDefinition>());
     }
 }

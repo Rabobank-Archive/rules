@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
-            rule.Evaluate(projectId, RepositoryId);
+            await rule.Evaluate(projectId, RepositoryId);
         }
         
         [Fact]
@@ -139,7 +139,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            rule.Reconcile(_config.Project, RepositoryId);
+            await rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -156,7 +156,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            rule.Reconcile(_config.Project, RepositoryId);
+            await rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -174,7 +174,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            rule.Reconcile(_config.Project, RepositoryId);
+            await rule.Reconcile(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -209,10 +209,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
 
-        private static async void SetupClient(IVstsRestClient client, IFixture fixture)
+        private static void SetupClient(IVstsRestClient client, IFixture fixture)
         {
-            (await client
-                .GetAsync(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>()))
+            client
+                .GetAsync(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
                 .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
         }
     }

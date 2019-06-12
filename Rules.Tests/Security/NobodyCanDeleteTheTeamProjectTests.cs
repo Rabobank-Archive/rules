@@ -118,7 +118,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             await client
                 .Received()
@@ -141,7 +141,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             await client
                 .Received()
@@ -161,7 +161,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, _rpa);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             await client
                 .DidNotReceive()
@@ -179,7 +179,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             await client
                 .Received()
@@ -200,7 +200,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                       
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             // Assert
             await client
@@ -219,13 +219,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeApplicationGroupsLookup(client, _pa);
             InitializeMembersLookup(client);
                             
-            (await client
-                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>()))
+            client
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
                 .Returns(_rpa);
             
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
             // Assert
             await client
@@ -244,7 +244,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
             await client
                 .Received()
@@ -264,7 +264,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
             await client
                 .Received()
@@ -287,11 +287,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         }
 
-        private static async Task InitializeApplicationGroupsLookup(IVstsRestClient client, params Response.ApplicationGroup[] groups)
+        private static void InitializeApplicationGroupsLookup(IVstsRestClient client, params Response.ApplicationGroup[] groups)
         {
-            (await client
+            client
                 .GetAsync(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
-                    x.Resource.Contains("ReadScopedApplicationGroupsJson"))))
+                    x.Resource.Contains("ReadScopedApplicationGroupsJson")))
                 .Returns(new Response.ApplicationGroups
                 {
                     Identities = groups

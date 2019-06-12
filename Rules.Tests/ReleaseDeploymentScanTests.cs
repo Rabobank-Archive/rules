@@ -153,7 +153,7 @@ namespace SecurePipelineScan.Rules.Tests
                 var scan = new ReleaseDeploymentScan(endpoints, client);
                 await scan.Completed(input);
                 
-                endpoints
+                await endpoints
                     .Received()
                     .IsProduction("TAS", Arg.Any<Guid>());
             }

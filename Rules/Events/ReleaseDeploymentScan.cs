@@ -106,12 +106,17 @@ namespace SecurePipelineScan.Rules.Events
 
         private async Task<bool?> UsesProductionEndpoints(string project, Response.Environment environment)
         {
+            if (environment == null)
+            {
+                return null;
+            }
+
             return (await Task.WhenAll(environment?.DeployPhasesSnapshot
-                .SelectMany(s => s.WorkflowTasks)
-                .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
-                .SelectMany(w => w.Inputs)
-                .Select(i => i.Value)
-                .Select(async x => Guid.TryParse(x, out var id) && await _endpoints.IsProduction(project, id))))
+                    .SelectMany(s => s.WorkflowTasks)
+                    .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
+                    .SelectMany(w => w.Inputs)
+                    .Select(i => i.Value)
+                    .Select(async x => Guid.TryParse(x, out var id) && await _endpoints.IsProduction(project, id))))
                 .Any(x => x);
         }
 

@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
@@ -28,7 +25,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
-            validator
+            await validator
                 .IsProduction(fixture.Create<string>(), fixture.Create<Guid>());
         
             await client
@@ -48,8 +45,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
-            validator.IsProduction(project, fixture.Create<Guid>());
-            validator.IsProduction(project, fixture.Create<Guid>());
+            await validator.IsProduction(project, fixture.Create<Guid>());
+            await validator.IsProduction(project, fixture.Create<Guid>());
 
             await client
                 .Received(1)
@@ -57,7 +54,7 @@ namespace SecurePipelineScan.Rules.Tests
         }
 
         [Fact]
-        public void IncludesEndpointValidation()
+        public async Task IncludesEndpointValidation()
         {
             var fixture = Fixture();
             var id = fixture.Create<Guid>();
@@ -71,12 +68,12 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(JObject.FromObject(endpoints));
 
             var validator = new ServiceEndpointValidator(client, _cache);
-            validator
-                .IsProduction(fixture.Create<string>(), id)
+            (await validator
+                .IsProduction(fixture.Create<string>(), id))
                 .ShouldBeTrue();
             
-            validator
-                .IsProduction(fixture.Create<string>(), fixture.Create<Guid>())
+            (await validator
+                .IsProduction(fixture.Create<string>(), fixture.Create<Guid>()))
                 .ShouldBeFalse();
         }
 
