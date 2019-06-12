@@ -16,13 +16,11 @@ namespace SecurePipelineScan.VstsService
 {
     public class VstsRestClient : IVstsRestClient
     {
-        private readonly string _authorization;
         private readonly string _organization;
         private readonly string _token;
 
         public VstsRestClient(string organization, string token)
         {
-            _authorization = GenerateAuthorizationHeader(token);
             _organization = organization;
             _token = token;
             
@@ -33,6 +31,7 @@ namespace SecurePipelineScan.VstsService
                     Converters = { new PolicyConverter() }
                 };
                 settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
+                settings.HttpClientFactory = new HttpClientFactory();
             });
         }
 
@@ -62,28 +61,11 @@ namespace SecurePipelineScan.VstsService
             return retval;
         }
         
-        public TResponse Get<TResponse>(IVstsRequest<TResponse> request)
-            where TResponse : new()
-        {
-            return GetAsync(request).GetAwaiter().GetResult();
-        }
-
-        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
-        {
-            return GetAsync(request).GetAwaiter().GetResult();
-        }
-
 #pragma warning disable 1998
         public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
 #pragma warning restore 1998
         {
             return new MultipleEnumerator<TResponse>(request, _organization, _token);
-        }
-
-
-        public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
-        {
-            return PostAsync(request, body).GetAwaiter().GetResult();
         }
 
         public async Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
@@ -99,11 +81,6 @@ namespace SecurePipelineScan.VstsService
             return retval;
         }
 
-        public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new()
-        {
-            return PutAsync(request, body).GetAwaiter().GetResult();
-        }
-
         public async Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             TResponse retval = default(TResponse);
@@ -117,11 +94,6 @@ namespace SecurePipelineScan.VstsService
             return retval;
         }
 
-        public void Delete(IVstsRequest request)
-        {
-            DeleteAsync(request).GetAwaiter().GetResult();
-        }
-
         public async Task DeleteAsync(IVstsRequest request)
         {
             await new Url(request.BaseUri(_organization))
@@ -129,18 +101,6 @@ namespace SecurePipelineScan.VstsService
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .DeleteAsync();
-        }
-
-        private static string GenerateAuthorizationHeader(string token)
-        {
-            var encoded = Base64Encode($":{token}");
-            return ($"Basic {encoded}");
-        }
-
-        private static string Base64Encode(string plainText)
-        {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
         }
     }
 }
