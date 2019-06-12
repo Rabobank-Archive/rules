@@ -1,13 +1,8 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
-using NSubstitute;
 using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 
@@ -26,7 +21,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void DeleteThrowsOnError()
+        public async Task DeleteThrowsOnError()
         {
             var request = new VstsRequest<int>("/delete/some/data");
 
@@ -34,12 +29,12 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 500);
                 var client = new VstsRestClient("dummy", "pat");
-                Assert.Throws<FlurlHttpException>(() => client.Delete(request));
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
             }
          }
 
         [Fact]
-        public void PostThrowsOnError()
+        public async Task PostThrowsOnError()
         {
             var request = new VstsRequest<int,int>("/get/some/data");
 
@@ -47,12 +42,12 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 500);
                 var client = new VstsRestClient("dummy", "pat");
-                Assert.Throws<FlurlHttpException>(() => client.Post(request, 3));
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PostAsync(request, 3));
             }
         }
         
         [Fact]
-        public void PutThrowsOnError()
+        public async Task PutThrowsOnError()
         {
             var request = new VstsRequest<int,int>("/put/some/data");
 
@@ -60,12 +55,12 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 500);
                 var client = new VstsRestClient("dummy", "pat");
-                Assert.Throws<FlurlHttpException>(() => client.Put(request, 3));
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PutAsync(request, 3));
             }
         }
 
         [Fact]
-        public void GetThrowsOnError()
+        public async Task GetThrowsOnError()
         {
             var request = new VstsRequest<int>("/get/some/data");
 
@@ -73,12 +68,12 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 500);
                 var client = new VstsRestClient("dummy", "pat");
-                Assert.Throws<FlurlHttpException>(() => client.Get(request));
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
             }
         }
 
         [Fact]
-        public void GetJsonThrowsOnError()
+        public async Task GetJsonThrowsOnError()
         {
             var request = new VstsRequest<JObject>("/get/some/data");
 
@@ -86,31 +81,34 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 httpTest.RespondWith(status: 500);
                 var client = new VstsRestClient("dummy", "pat");
-                Assert.Throws<FlurlHttpException>(() => client.Get(request));
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
             }
         }
 
         [Fact]
         [Trait("category", "integration")]
-        public void HtmlInsteadOfXmlShouldThrow()
+        public async Task HtmlInsteadOfXmlShouldThrow()
         {
             var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            Assert.Throws<FlurlHttpException>(() => sut.Get(Requests.Project.Projects()).ToList());
+            await Assert.ThrowsAsync<FlurlHttpException>(async () =>
+            {
+                await sut.GetAsync(Project.Projects());
+            });
         }
 
         [Fact]
         [Trait("category", "integration")]
-        public void RestRequestResultAsJsonObject()
+        public async Task RestRequestResultAsJsonObject()
         {
-            var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
+            var endpoints = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
             endpoints.SelectToken("value[?(@.data.subscriptionId == '45cfa52a-a2aa-4a18-8d3d-29896327b51d')]").ShouldNotBeNull();
         }
 
         
         [Fact]
-        public void NotFoundIsNull()
+        public async Task NotFoundIsNull()
         {
-            _vsts.Get(Requests.Builds.Build("TAS", "2342423")).ShouldBeNull();
+            (await _vsts.GetAsync(Requests.Builds.Build("TAS", "2342423"))).ShouldBeNull();
         }
     }
 }
