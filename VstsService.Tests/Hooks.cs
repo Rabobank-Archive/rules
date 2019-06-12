@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using AutoFixture;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -18,14 +18,14 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QuerySubscriptions()
+        public async Task QuerySubscriptions()
         {
-            var subscriptions = _fixture.Client.Get(Requests.Hooks.Subscriptions());
+            var subscriptions = await _fixture.Client.GetAsync(Requests.Hooks.Subscriptions());
             subscriptions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
         }
 
         [Fact]
-        public void BuildCompleted()
+        public async Task BuildCompleted()
         {
             var body = Requests.Hooks.Add.BuildCompleted(
                 _fixture.AccountName,
@@ -34,14 +34,14 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
+            var hook = await _fixture.Client.PostAsync(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
-            _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
+            await _fixture.Client.DeleteAsync(Requests.Hooks.Subscription(hook.Id));
         }
 
         [Fact]
-        public void GitPushed()
+        public async Task GitPushed()
         {
             var body = Requests.Hooks.Add.GitPushed(
                 _fixture.AccountName,
@@ -50,14 +50,14 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
+            var hook = await _fixture.Client.PostAsync(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
-            _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
+            await _fixture.Client.DeleteAsync(Requests.Hooks.Subscription(hook.Id));
         }
 
         [Fact]
-        public void GitPullRequestCreated()
+        public async Task GitPullRequestCreated()
         {
             var body = Requests.Hooks.Add.GitPullRequestCreated(
                 _fixture.AccountName,
@@ -66,15 +66,15 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(Requests.Hooks.AddHookSubscription(), body);
+            var hook = await _fixture.Client.PostAsync(Requests.Hooks.AddHookSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
             hook.PublisherInputs.PullrequestCreatedBy.ShouldNotBeNull();
 
-            _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
+            await _fixture.Client.DeleteAsync(Requests.Hooks.Subscription(hook.Id));
         }
 
         [Fact]
-        public void ReleaseDeploymentCompleted()
+        public async Task ReleaseDeploymentCompleted()
         {
             var body = Requests.Hooks.Add.ReleaseDeploymentCompleted(
                 _fixture.AccountName,
@@ -83,10 +83,10 @@ namespace SecurePipelineScan.VstsService.Tests
                 _fixture.ProjectId
             );
 
-            var hook = _fixture.Client.Post(Requests.Hooks.AddReleaseManagementSubscription(), body);
+            var hook = await _fixture.Client.PostAsync(Requests.Hooks.AddReleaseManagementSubscription(), body);
             hook.Id.ShouldNotBeNullOrEmpty();
 
-            _fixture.Client.Delete(Requests.Hooks.Subscription(hook.Id));
+            await _fixture.Client.DeleteAsync(Requests.Hooks.Subscription(hook.Id));
         }
 
         public class HookFixture : IDisposable
@@ -103,7 +103,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 var config = new TestConfig();
 
                 Client = new VstsRestClient(config.Organization, config.Token);
-                ProjectId = Client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
+                ProjectId = Client.GetAsync(Requests.Project.Projects()).GetAwaiter().GetResult().Single(p => p.Name == config.Project).Id;
 
                 var fixture = new Fixture();
                 AccountName = fixture.Create("integration-test-hook");
@@ -113,7 +113,7 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 // Make sure all hooks from this test run are properly deleted.
                 Client
-                    .Get(Requests.Hooks.Subscriptions())
+                    .GetAsync(Requests.Hooks.Subscriptions()).GetAwaiter().GetResult()
                     .ShouldNotContain(x => x.ConsumerInputs.AccountName == AccountName);
             }
         }

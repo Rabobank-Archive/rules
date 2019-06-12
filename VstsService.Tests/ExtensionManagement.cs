@@ -3,6 +3,7 @@ using ExpectedObjects;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -18,13 +19,13 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void PutExtensionDataReturnsId()
+        public async Task PutExtensionDataReturnsId()
         {
             // Arrange
             var data = _fixture.Create<TestObject>();
 
             // Act
-            var result = _client.Put(Requests.ExtensionManagement.ExtensionData<TestObject>(
+            var result = await _client.PutAsync(Requests.ExtensionManagement.ExtensionData<TestObject>(
                 "ms",
                 "vss-analytics",
                 "DevOps Demo"), data);
@@ -36,11 +37,11 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void GetReturnsDataFromPut()
+        public async Task GetReturnsDataFromPut()
         {
             // Arrange
             var data = _fixture.Create<TestObject>();
-            _client.Put(Requests.ExtensionManagement.ExtensionData<TestObject>(
+            await _client.PutAsync(Requests.ExtensionManagement.ExtensionData<TestObject>(
                 "ms",
                 "vss-analytics",
                 "DevOps Demo"), data);
@@ -55,7 +56,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 .ToExpectedObject();
 
             // Act
-            var result = _client.Get(Requests.ExtensionManagement.ExtensionData<TestObject>(
+            var result = await _client.GetAsync(Requests.ExtensionManagement.ExtensionData<TestObject>(
                 "ms",
                 "vss-analytics",
                 "DevOps Demo",

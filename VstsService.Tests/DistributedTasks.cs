@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -6,51 +8,51 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class DistributedTasks : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient client;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _client;
 
         public DistributedTasks(TestConfig config)
         {
-            this.config = config;
-            client = new VstsRestClient(config.Organization, config.Token);
+            _config = config;
+            _client = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public void GetAllOrganizationalPools()
+        public async Task GetAllOrganizationalPools()
         {
-            var orgPools = client.Get(Requests.DistributedTask.OrganizationalAgentPools());
+            var orgPools = (await _client.GetAsync(Requests.DistributedTask.OrganizationalAgentPools())).ToList();
 
             orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
             orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
         }
 
         [Fact]
-        public void GetAgentPool()
+        public async Task GetAgentPool()
         {
-            var agentPool = client.Get(Requests.DistributedTask.AgentPool(config.AgentPoolId));
-            agentPool.Name.ShouldBe(config.ExpectedAgentPoolName);
+            var agentPool = await _client.GetAsync(Requests.DistributedTask.AgentPool(_config.AgentPoolId));
+            agentPool.Name.ShouldBe(_config.ExpectedAgentPoolName);
         }
 
         [Fact]
-        public void GetAgentStatus()
+        public async Task GetAgentStatus()
         {
-            var agentStatus = client.Get(Requests.DistributedTask.AgentPoolStatus(config.AgentPoolId));
+            var agentStatus = await _client.GetAsync(Requests.DistributedTask.AgentPoolStatus(_config.AgentPoolId));
 
             agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
-        public void GetTask()
+        public async Task GetTask()
         {
-            var task = client.Get(Requests.DistributedTask.Tasks());
+            var task = await _client.GetAsync(Requests.DistributedTask.Tasks());
 
             task.ShouldAllBe(_ => !string.IsNullOrWhiteSpace(_.Id));
         }
 
         [Fact]
-        public void QueryAgentQueueTest()
+        public async Task QueryAgentQueueTest()
         {
-            var response = client.Get(Requests.DistributedTask.AgentQueue(config.Project, 754));
+            var response = await _client.GetAsync(Requests.DistributedTask.AgentQueue(_config.Project, 754));
             response.Id.ShouldBe(754);
             response.Pool.ShouldNotBeNull();
             response.Pool.Id.ShouldBe(9);
