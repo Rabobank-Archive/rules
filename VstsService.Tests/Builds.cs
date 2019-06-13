@@ -20,7 +20,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Trait("category", "integration")]
         public async Task QueryArtifacts()
         {
-            var artifacts = await _client.GetAsync(Requests.Builds.Artifacts(_config.Project, _config.BuildId));
+            var artifacts = (await _client.GetAsync(Requests.Builds.Artifacts(_config.Project, _config.BuildId))).ToList();
             artifacts.ShouldNotBeEmpty();
 
             var artifact = artifacts.First();
@@ -32,32 +32,33 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public void QueryBuild()
+        public async Task QueryBuild()
         {
-            var build = _client.Get(Requests.Builds.Build(_config.Project, _config.BuildId));
+            var build = await _client.GetAsync(Requests.Builds.Build(_config.Project, _config.BuildId));
             build.ShouldNotBeNull();
             build.Id.ShouldNotBe(0);
             build.Definition.ShouldNotBeNull();
             build.Project.ShouldNotBeNull();
+            build.Result.ShouldNotBeNull();
         }
 
         [Fact]
-        public void QueryBuildDefinitionsReturnsBuildDefinitions()
+        public async Task QueryBuildDefinitionsReturnsBuildDefinitions()
         {
-            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
+            var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
 
-            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId));
+            var buildDefinitions = (await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId))).ToList();
 
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.First().Id.ShouldNotBeNull();
         }
 
         [Fact]
-        public void QueryBuildDefinitionsReturnsBuildDefinitionsWithExtendedProperties()
+        public async Task QueryBuildDefinitionsReturnsBuildDefinitionsWithExtendedProperties()
         {
-            var projectId = _client.Get(Requests.Project.Properties(_config.Project)).Id;
+            var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
 
-            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId, true).AsJson());
+            var buildDefinitions = await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId, true).AsJson());
 
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.SelectTokens("value[*].process").Count().ShouldBeGreaterThan(0);

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Testing;
@@ -92,7 +93,7 @@ namespace SecurePipelineScan.VstsService.Tests
             var sut = new VstsRestClient("somecompany-test", InvalidToken);
             await Assert.ThrowsAsync<FlurlHttpException>(async () =>
             {
-                await sut.GetAsync(Project.Projects());
+                (await sut.GetAsync(Project.Projects())).ToList();
             });
         }
 

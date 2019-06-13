@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
@@ -17,20 +18,20 @@ namespace SecurePipelineScan.Rules
             _cache = cache;
         }
 
-        public bool IsProduction(string project, Guid id)
+        public async Task<bool> IsProduction(string project, Guid id)
         {
             // Cache the results per project to avoid stressing the REST API.
-            return _cache.GetOrCreate(project, ResolveEndpoints(project))
+            return (await _cache.GetOrCreate(project, ResolveEndpoints(project)))
                 .ProductionEndpoints()
                 .Any(e => (Guid)e["id"] == id);
         }
 
-        private Func<ICacheEntry, JToken> ResolveEndpoints(string project)
+        private Func<ICacheEntry, Task<JToken>> ResolveEndpoints(string project)
         {
-            return entry =>
+            return async entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
-                return _client.Get(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson());
+                return await _client.GetAsync(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson());
             };
         }
     }
