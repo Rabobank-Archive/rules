@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Flurl;
 using Flurl.Http;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService
@@ -28,12 +26,7 @@ namespace SecurePipelineScan.VstsService
             
             while(true)
             {
-                var request = continuationtoken == null
-                    ? new Url(_request.BaseUri(_organization))
-                        .AppendPathSegment(_request.Resource)
-                        .SetQueryParams(_request.QueryParams)
-                        .WithBasicAuth(string.Empty, _token)
-                    : new Url(_request.BaseUri(_organization))
+                var request = new Url(_request.BaseUri(_organization))
                         .AppendPathSegment(_request.Resource)
                         .WithBasicAuth(string.Empty, _token)
                         .SetQueryParams(_request.QueryParams)
