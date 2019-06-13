@@ -6,6 +6,7 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -23,14 +24,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void EvaluateIntegrationTest()
+        public async Task EvaluateIntegrationTest()
         {
             //Arrange
             var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            rule.Evaluate(_config.Project, PipelineId);
+            await rule.Evaluate(_config.Project, PipelineId);
         }
 
         [Fact]
@@ -81,14 +82,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public void Reconcile()
+        public async Task Reconcile()
         {
             //Arrange
             var client = new VstsRestClient("somecompany", _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
-            rule.Reconcile(_config.Project, PipelineId);
+            await rule.Reconcile(_config.Project, PipelineId);
         }
 
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,
