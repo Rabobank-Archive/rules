@@ -1,5 +1,6 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
+using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -85,13 +86,47 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Reconcile()
         {
             //Arrange
-            var client = new VstsRestClient("somecompany", _config.Token);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
             await rule.Reconcile(_config.Project, PipelineId);
         }
 
+        [Fact]
+        public async Task GivenPolicySettingsAreNotCorrect_WhenReconcile_ThenSettingsArePut()
+        {
+            //Arrange
+            CustomizePolicySettings(_fixture, 10, false);
+            SetupClient(_client, _fixture);
+
+            //Act
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
+            await rule.Reconcile(_config.Project, PipelineId);
+
+            // Assert
+            await _client
+                .Received()
+                .PutAsync(Arg.Any<IVstsRequest<ReleaseSettings>>(), Arg.Any<ReleaseSettings>());
+        }
+        
+        [Fact]
+        public async Task GivenPolicySettingsAreCorrect_WhenReconcile_ThenPipelineIsUpdatedAnyway()
+        {
+            //Arrange
+            CustomizePolicySettings(_fixture);
+            SetupClient(_client, _fixture);
+
+            //Act
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
+            await rule.Reconcile(_config.Project, PipelineId);
+
+            // Assert
+            await _client
+                .Received()
+                .PutAsync(Arg.Any<IVstsRequest<object>>(), Arg.Any<JObject>());
+        }
+        
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,
             bool retainBuild = true)
         {
@@ -100,9 +135,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(r => r.RetainBuild, retainBuild));
         }
 
-        private static void SetupClient(IVstsRestClient client, IFixture fixture) =>
+        private static void SetupClient(IVstsRestClient client, IFixture fixture)
+        {
             client
                 .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
                 .Returns(fixture.Create<ReleaseDefinition>());
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseSettings>>())
+                .Returns(fixture.Create<ReleaseSettings>());
+
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
+                .Returns(new JObject());
+        }
     }
 }
