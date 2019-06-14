@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
+        public async Task EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
         {
             //Arrange
             // ReSharper disable twice RedundantArgumentDefaultValue
@@ -45,14 +45,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            (await evaluatedRule).ShouldBeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
+        public async Task EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
         {
             //Arrange
             // ReSharper disable once RedundantArgumentDefaultValue
@@ -61,14 +61,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            (await evaluatedRule).ShouldBeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
+        public async Task EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
         {
             //Arrange
             CustomizePolicySettings(_fixture, 500, false);
@@ -76,10 +76,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            (await evaluatedRule).ShouldBeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
