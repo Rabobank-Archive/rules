@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
+using Response = SecurePipelineScan.VstsService.Response;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -23,9 +25,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryTASApplicationGroupDataReturnsGroupData()
+        public async Task QueryTASApplicationGroupDataReturnsGroupData()
         {
-            var identity = Vsts.Get(Requests.ApplicationGroup.ApplicationGroups(config.Project));
+            var identity = await Vsts.GetAsync(Requests.ApplicationGroup.ApplicationGroups(config.Project));
             identity.ShouldNotBeNull();
             identity.Identities.ShouldNotBeEmpty();
 
@@ -34,23 +36,23 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void ExplicitIdentitiesShouldGetIdentities()
+        public async Task ExplicitIdentitiesShouldGetIdentities()
         {
             string projectId = "53410703-e2e5-4238-9025-233bd7c811b3";
             string nameSpaceId = "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87";
 
-            var explicitIdentities = Vsts.Get(Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, nameSpaceId));
+            var explicitIdentities = await Vsts.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, nameSpaceId));
             explicitIdentities.ShouldNotBeNull();
         }
 
         [Fact]
-        public void ExplicitIdentitiesForBuildDefinitionShouldGetIdentities()
+        public async Task ExplicitIdentitiesForBuildDefinitionShouldGetIdentities()
         {
             string projectId = "53410703-e2e5-4238-9025-233bd7c811b3";
             string nameSpaceId = "33344d9c-fc72-4d6f-aba5-fa317101a7e9";
             string buildPipelineId = "2";
 
-            var explicitIdentities = Vsts.Get(Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, nameSpaceId, buildPipelineId));
+            var explicitIdentities = await Vsts.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, nameSpaceId, buildPipelineId));
             explicitIdentities.ShouldNotBeNull();
             explicitIdentities.Identities.ShouldNotBeEmpty();
         }

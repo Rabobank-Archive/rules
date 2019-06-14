@@ -1,11 +1,6 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using RestSharp;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -13,19 +8,19 @@ namespace SecurePipelineScan.VstsService.Tests
     [Trait("category", "integration")]
     public class Repository: IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient Vsts;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _vsts;
 
         public Repository(TestConfig config)
         {
-            this.config = config;
-            Vsts = new VstsRestClient(config.Organization, config.Token);
+            this._config = config;
+            _vsts = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public void QueryRepository()
+        public async Task QueryRepository()
         {
-            var definition = Vsts.Get(Requests.Repository.Repositories(config.Project));
+            var definition = (await _vsts.GetAsync(Requests.Repository.Repositories(_config.Project))).ToList();
             definition.ShouldNotBeEmpty();
             definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
             definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));

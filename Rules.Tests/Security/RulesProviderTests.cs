@@ -48,5 +48,31 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .OfType<NobodyCanDeleteReleases>()
                 .ShouldNotBeEmpty();
         }
+
+        [Fact]
+        public void AllRulesShouldBeInProvider()
+        {
+            var types = typeof(RulesProvider).Assembly.GetTypes().Where(t => typeof(IRule).IsAssignableFrom(t) && !t.IsInterface);
+            types.ShouldNotBeEmpty();
+            
+            var provider = new RulesProvider();
+            var rules = provider.BuildRules(null).Concat(
+                provider.ReleaseRules(null)).Concat(
+                provider.RepositoryRules(null));
+            
+            types.ShouldAllBe(t => rules.Select(r => r.GetType()).Contains(t));
+        }
+        
+        [Fact]
+        public void AllProjectRulesShouldBeInProvider()
+        {
+            var types = typeof(RulesProvider).Assembly.GetTypes().Where(t => typeof(IProjectRule).IsAssignableFrom(t) && !t.IsInterface);
+            types.ShouldNotBeEmpty();
+            
+            var provider = new RulesProvider();
+            var rules = provider.GlobalPermissions(null);
+            
+            types.ShouldAllBe(t => rules.Select(r => r.GetType()).Contains(t));
+        }
     }
 }

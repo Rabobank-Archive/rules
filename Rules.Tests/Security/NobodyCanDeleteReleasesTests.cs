@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using Shouldly;
@@ -8,32 +9,30 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteReleasesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
 
         public NobodyCanDeleteReleasesTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
         }
 
         [Fact]
-        public void EvaluateReleaseIntegrationTest()
+        public async Task EvaluateReleaseIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteReleases(client);
-            rule.Evaluate(projectId, "1").ShouldBeTrue();
+            (await rule.Evaluate(projectId, "1")).ShouldBeTrue();
         }
 
         [Fact]
-        public void ReconcileReleaseIntegrationTest()
+        public async Task ReconcileReleaseIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteReleases(client) as IReconcile;
-            rule.Reconcile(projectId, "1");
+            await rule.Reconcile(projectId, "1");
         }
     }
 }

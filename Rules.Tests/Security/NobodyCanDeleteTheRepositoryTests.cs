@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -8,67 +9,66 @@ using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class NobodyCanDeleteTheRepositoryTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
 
         public NobodyCanDeleteTheRepositoryTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
         }
 
         [Fact]
-        public void EvaluateIntegrationTest()
+        public async Task EvaluateIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(projectId, RepositoryId).ShouldBeTrue();
+            (await rule.Evaluate(projectId, RepositoryId)).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllow_WhenEvaluating_ThenFalse()
+        public async Task GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllow_WhenEvaluating_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
             
             InitializeLookupData(client, PermissionId.Allow);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, RepositoryId).ShouldBeFalse();
+            (await rule.Evaluate(_config.Project, RepositoryId)).ShouldBeFalse();
         }
         
         [Fact]
-        public void GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllowInHerited_WhenEvaluating_ThenFalse()
+        public async Task GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllowInHerited_WhenEvaluating_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
             
             InitializeLookupData(client, PermissionId.AllowInherited);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, RepositoryId).ShouldBeFalse();
+            (await rule.Evaluate(_config.Project, RepositoryId)).ShouldBeFalse();
         }
         
         [Fact]
-        public void GivenNoApplicationGroupHasPermissionToDeleteRepo_WhenEvaluating_ThenTrue()
+        public async Task GivenNoApplicationGroupHasPermissionToDeleteRepo_WhenEvaluating_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
 
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project, RepositoryId)).ShouldBeTrue();
         }
 
         [Fact]
-        public void IgnoreGroupsProjectCollectionAdminAndProjectCollectionServiceAccounts()
+        public async Task IgnoreGroupsProjectCollectionAdminAndProjectCollectionServiceAccounts()
         {
             var client = Substitute.For<IVstsRestClient>();
             
@@ -98,95 +98,95 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             InitializeLookupData(client, PermissionId.Deny);
             
-            client.Get(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
+            client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Evaluate(_config.Project, RepositoryId).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project, RepositoryId)).ShouldBeTrue();
             
             
-            client
+            await client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=11")));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","11"))));
             
-            client
+            await client
                 .DidNotReceive()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=22")));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","22"))));
             
-            client
+            await client
                 .Received()
-                .Get(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.Uri.Contains("tfid=33")));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","33"))));
 
         }
 
         [Fact]
-        public void ReconcileIntegrationTest()
+        public async Task ReconcileIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
-            var projectId = client.Get(VstsService.Requests.Project.Properties(_config.Project)).Id;
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Reconcile(projectId, RepositoryId);
+            await rule.Reconcile(projectId, RepositoryId);
         }
 
         [Fact]
-        public void GivenPermissionIsAllowWhenFixPermissionIsUpdatedToDeny()
+        public async Task GivenPermissionIsAllowWhenFixPermissionIsUpdatedToDeny()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.Allow);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Reconcile("TAS", "123");
+            await rule.Reconcile("TAS", "123");
             
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
                     x.UpdatePackage.Contains("123") &&
                     x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
         
         [Fact]
-        public void GivenPermissionIsDeny_WhenFixPermission_IsNotUpdated()
+        public async Task GivenPermissionIsDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.Deny);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Reconcile("TAS", "123");
+            await rule.Reconcile("TAS", "123");
 
-            client
+            await client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
-        public void GivenPermissionIsInheritedDeny_WhenFixPermission_IsNotUpdated()
+        public async Task GivenPermissionIsInheritedDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.DenyInherited);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Reconcile("TAS", "123");
+            await rule.Reconcile("TAS", "123");
 
-            client
+            await client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
         
         [Fact]
-        public void GivenPermissionIsNotSet_WhenFixPermission_IsNotUpdated()
+        public async Task GivenPermissionIsNotSet_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.NotSet);
             
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            rule.Reconcile("TAS", "123");
+            await rule.Reconcile("TAS", "123");
 
-            client
+            await client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
 
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
@@ -194,10 +194,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            client.Get(Arg.Any<IVstsRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
-            client.Get(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
+            client.GetAsync(Arg.Any<IVstsRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
+            client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
 
-            client.Get(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
+            client.GetAsync(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
                 Permissions = new[] {new Permission {DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
             });

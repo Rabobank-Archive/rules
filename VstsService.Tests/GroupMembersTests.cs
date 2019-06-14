@@ -1,43 +1,40 @@
-﻿using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
-using Shouldly;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
-using Requests = SecurePipelineScan.VstsService.Requests;
 
-namespace VstsService.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     [Trait("category", "integration")]
     public class GroupMembersTests : IClassFixture<TestConfig>
     {
-        private readonly TestConfig config;
-        private readonly IVstsRestClient client;
+        private readonly TestConfig _config;
+        private readonly IVstsRestClient _client;
 
         public GroupMembersTests(TestConfig config)
         {
-            this.config = config;
-            client = new VstsRestClient(config.Organization, config.Token);
+            _config = config;
+            _client = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public void ReadGroupMembers()
+        public async Task ReadGroupMembers()
         {
-            var projectId = client
-                .Get(Requests.Project.Projects())
+            var projectId = (await _client
+                .GetAsync(Requests.Project.Projects()))
                 .Single(x => x.Name == "SOx-compliant-demo").Id;
 
-            var groupId = client
-                .Get(Requests.Security.Groups(projectId))
+            var groupId = (await _client
+                .GetAsync(Requests.Security.Groups(projectId)))
                 .Identities
                 .Single(x => x.FriendlyDisplayName == "Project Administrators")
                 .TeamFoundationId;
 
             Guid.TryParse(groupId,  out _).ShouldBeTrue();
 
-            var groupMembers = client
-                .Get(Requests.Security.GroupMembers(projectId, groupId));
+            var groupMembers = await _client
+                .GetAsync(Requests.Security.GroupMembers(projectId, groupId));
             
             groupMembers.TotalIdentityCount.ShouldNotBe(0);
         }
@@ -45,34 +42,34 @@ namespace VstsService.Tests
         
 
         [Fact]
-        public void AddAndRemoveGroupMember()
+        public async Task AddAndRemoveGroupMember()
         {
-            var projectId = client
-                .Get(Requests.Project.Projects())
+            var projectId = (await _client
+                .GetAsync(Requests.Project.Projects()))
                 .Single(x => x.Name == "SOx-compliant-demo").Id;
 
-            var groupId = client
-                .Get(Requests.Security.Groups(projectId))
+            var groupId = (await _client
+                .GetAsync(Requests.Security.Groups(projectId)))
                 .Identities
                 .Single(x => x.FriendlyDisplayName == "Project Administrators")
                 .TeamFoundationId;
             
-            client.Post(
-                Requests.Security.AddMember(config.Project), 
+            await _client.PostAsync(
+                Requests.Security.AddMember(_config.Project), 
                     new Requests.Security.AddMemberData(
                         new []{ "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c" }, 
                         new [] { groupId }));
 
-            client.Post(
-                Requests.Security.EditMembership(config.Project),
+            await _client.PostAsync(
+                Requests.Security.EditMembership(_config.Project),
                     new Requests.Security.RemoveMembersData(new[] { "ab84d5a2-4b8d-68df-9ad3-cc9c8884270c"}, groupId));
         }
 
         [Fact(Skip = "unable to delete created group with API")]
-        public void CreateGroup()
+        public async Task CreateGroup()
         {
-            client.Post(
-                Requests.Security.ManageGroup(config.Project),
+            await _client.PostAsync(
+                Requests.Security.ManageGroup(_config.Project),
                     new Requests.Security.ManageGroupData
                     {
                         Name = "asdf"

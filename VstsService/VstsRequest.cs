@@ -1,15 +1,23 @@
 using System;
+using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
     public class VstsRequest<TInput, TResponse> : IVstsRequest<TInput, TResponse>
         where TResponse: new()
     {
-        public string Uri { get; }
+        public string Resource { get; }
+        public IDictionary<string, string> QueryParams { get; }
 
-        public VstsRequest(string uri)
+        public VstsRequest(string resource)
         {
-            Uri = uri;
+            Resource = resource;
+        }
+
+        public VstsRequest(string resource, IDictionary<string, string> queryParams)
+        {
+            Resource = resource;
+            QueryParams = queryParams;
         }
 
         public Uri BaseUri(string organization)
@@ -21,7 +29,11 @@ namespace SecurePipelineScan.VstsService
     public class VstsRequest<TResponse> : VstsRequest<TResponse, TResponse>, IVstsRequest<TResponse>
         where TResponse: new()
     {
-        public VstsRequest(string uri) : base(uri)
+        public VstsRequest(string resource) : base(resource)
+        {
+        }
+
+        public VstsRequest(string resource, IDictionary<string, string> queryParams) : base(resource, queryParams)
         {
         }
     }

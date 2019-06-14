@@ -6,6 +6,7 @@ using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -22,9 +23,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryRequiredReviewersPolicies()
+        public async Task QueryRequiredReviewersPolicies()
         {
-            var result = _client.Get(Requests.Policies.RequiredReviewersPolicies(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.RequiredReviewersPolicies(_config.Project))).ToList();
 
             result.ShouldNotBeEmpty();
             result.Any(e => e.Id != 0).ShouldBeTrue();
@@ -38,9 +39,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryMinimumNumberOfReviewersPolicies()
+        public async Task QueryMinimumNumberOfReviewersPolicies()
         {
-            var result = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project))).ToList();
 
             result.ShouldNotBeEmpty();
             result.Any(e => e.Id != 0).ShouldBeTrue();
@@ -59,16 +60,16 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryPolicy()
+        public async Task QueryPolicy()
         {
-            var result = _client.Get(Requests.Policies.Policy(_config.Project, 28));
+            var result = await _client.GetAsync(Requests.Policies.Policy(_config.Project, 28));
             result.ShouldNotBeNull();
         }
 
         [Fact]
-        public void GetAllPoliciesForProject()
+        public async Task GetAllPoliciesForProject()
         {
-            var result = _client.Get(Requests.Policies.All(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
 
             result.ShouldNotBeEmpty();
             result.ShouldAllBe(e => e.Id != 0);
@@ -78,9 +79,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void GetAllPoliciesConvertsToSpecific()
+        public async Task GetAllPoliciesConvertsToSpecific()
         {
-            var policies = _client.Get(Requests.Policies.All(_config.Project));
+            var policies = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
 
             policies.ShouldContain(p => p is RequiredReviewersPolicy);
             policies.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -11,7 +12,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class NobodyCanDeleteTheTeamProjectTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private readonly Response.ApplicationGroup _pa = new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators", TeamFoundationId = "1234"};
         private readonly Response.ApplicationGroup _rpa = new Response.ApplicationGroup{FriendlyDisplayName = "Rabobank Project Administrators", TeamFoundationId = "adgasge"};
         private readonly Response.Permission _deleteTeamProjectAllow = new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow, PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"};
@@ -19,25 +19,24 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public NobodyCanDeleteTheTeamProjectTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
         }
         
         [Fact]
-        public void EvaluateIntegrationTest()
+        public async void EvaluateIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token, _factory));
-            rule.Evaluate(_config.Project).ShouldBeTrue();
+            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
+            (await rule.Evaluate(_config.Project)).ShouldBeTrue();
         }
         
         [Fact]
-        public void FixIntegrationTest()
+        public async Task FixIntegrationTest()
         {
-            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token, _factory));
-            rule.Reconcile(_config.Project);
+            var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
+            await rule.Reconcile(_config.Project);
         }
         
         [Fact]
-        public void GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
+        public async void GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);           
@@ -45,11 +44,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project)).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenProjectAdministratorsHasOnlyRabobankProjectAdministrators_WhenEvaluating_ThenTrue()
+        public async Task GivenProjectAdministratorsHasOnlyRabobankProjectAdministrators_WhenEvaluating_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);           
@@ -57,11 +56,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, _rpa);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project)).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenProjectAdministratorsHasOtherMember_WhenEvaluate_ThenFalse()
+        public async Task GivenProjectAdministratorsHasOtherMember_WhenEvaluate_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);
@@ -69,11 +68,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, new Response.ApplicationGroup());
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeFalse();
+            (await rule.Evaluate(_config.Project)).ShouldBeFalse();
         }
 
         [Fact]
-        public void GivenOnlyProjectAdministratorHasPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
+        public async Task GivenOnlyProjectAdministratorHasPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -81,11 +80,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project)).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenContributorsHasPermissionToDeleteTeamProject_WhenEvaluate_ThenFalse()
+        public async Task GivenContributorsHasPermissionToDeleteTeamProject_WhenEvaluate_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -93,11 +92,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeFalse();
+            (await rule.Evaluate(_config.Project)).ShouldBeFalse();
         }
 
         [Fact]
-        public void GivenProjectAdministratorHasNoPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
+        public async Task GivenProjectAdministratorHasNoPermissionToDeleteTeamProject_WhenEvaluate_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, new Response.Permission());
@@ -105,11 +104,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Evaluate(_config.Project).ShouldBeTrue();
+            (await rule.Evaluate(_config.Project)).ShouldBeTrue();
         }
 
         [Fact]
-        public void GivenProjectAdministratorsGroupContainsOtherMembers_WhenFix_ThenMembersAreRemoved()
+        public async Task GivenProjectAdministratorsGroupContainsOtherMembers_WhenFix_ThenMembersAreRemoved()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -119,11 +118,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.EditMembersData, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.EditMembersData, object>>(),
                     Arg.Is<VstsService.Requests.Security.RemoveMembersData>(x => 
                         x.RemoveItemsJson.Contains("asdf") &&
                         x.RemoveItemsJson.Contains("gsdgs") &&
@@ -131,7 +130,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public void GivenProjectAdministratorsGroupContainsOtherMembers_WhenFix_ThenMembersAreAddedToRabobankProjectAdministratorsGroup()
+        public async Task GivenProjectAdministratorsGroupContainsOtherMembers_WhenFix_ThenMembersAreAddedToRabobankProjectAdministratorsGroup()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -142,11 +141,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new Response.ApplicationGroup { TeamFoundationId = "gsdgs"});
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
                     Arg.Is<VstsService.Requests.Security.AddMemberData>(x => 
                         x.GroupsToJoinJson.Contains(_rpa.TeamFoundationId) &&
                         x.ExistingUsersJson.Contains("asdf") &&
@@ -154,7 +153,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public void GivenProjectAdministratorsGroupContainsRabobankAdministratorsGroups_WhenFix_ThenThatMemberIsNotRemoved()
+        public async Task GivenProjectAdministratorsGroupContainsRabobankAdministratorsGroups_WhenFix_ThenThatMemberIsNotRemoved()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -162,17 +161,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, _rpa);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
-            client
+            await client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.RemoveMembersData, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.RemoveMembersData, object>>(),
                     Arg.Any<VstsService.Requests.Security.RemoveMembersData>());
         }
 
 
         [Fact]
-        public void GivenProjectAdministratorsGroupProbablyDoesNotContainRabobankAdministratorsGroups_WhenFix_ThenThatGroupIsAdded()
+        public async Task GivenProjectAdministratorsGroupProbablyDoesNotContainRabobankAdministratorsGroups_WhenFix_ThenThatGroupIsAdded()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -180,18 +179,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.AddMemberData, object>>(),
                     Arg.Is<VstsService.Requests.Security.AddMemberData>(x =>
                         x.ExistingUsersJson.Contains(_rpa.TeamFoundationId) &&
                         x.GroupsToJoinJson.Contains(_pa.TeamFoundationId)));
         }
         
         [Fact]
-        public void GivenRabobankProjectAdministratorsGroupExists_WhenFix_ThenThatGroupIsNotCreated()
+        public async Task GivenRabobankProjectAdministratorsGroupExists_WhenFix_ThenThatGroupIsNotCreated()
         {
             // Arrange
             var client = Substitute.For<IVstsRestClient>();
@@ -201,18 +200,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
                       
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
 
             // Assert
-            client
+            await client
                 .DidNotReceive()
-                .Post(
+                .PostAsync(
                     Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
                     Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
         [Fact]
-        public void GivenRabobankProjectAdministratorsGroupDoesNotExist_WhenFix_ThenThatGroupIsCreated()
+        public async Task GivenRabobankProjectAdministratorsGroupDoesNotExist_WhenFix_ThenThatGroupIsCreated()
         {
             // Arrange 
             var client = Substitute.For<IVstsRestClient>();
@@ -221,23 +220,23 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
                             
             client
-                .Post(Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
+                .PostAsync(Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), Arg.Any<VstsService.Requests.Security.ManageGroupData>())
                 .Returns(_rpa);
             
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
             // Assert
-            client
+            await client
                 .Received()
-                .Post(
+                .PostAsync(
                     Arg.Any<IVstsRequest<VstsService.Requests.Security.ManageGroupData, Response.ApplicationGroup>>(), 
                     Arg.Any<VstsService.Requests.Security.ManageGroupData>());
         }
         
         [Fact]
-        public void GivenRabobankProjectAdministratorsHasInheritedAllowToDeleteTeamProject_WhenFix_ThenPermissionsAreUpdated()
+        public async Task GivenRabobankProjectAdministratorsHasInheritedAllowToDeleteTeamProject_WhenFix_ThenPermissionsAreUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -245,11 +244,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
                         x.UpdatePackage.Contains(@"PermissionBit"":4") &&
@@ -257,7 +256,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public void GivenOtherMembersHavePermissionsToDeleteTeamProject_WhenFix_ThenPermissionsAreUpdated()
+        public async Task GivenOtherMembersHavePermissionsToDeleteTeamProject_WhenFix_ThenPermissionsAreUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client, _deleteTeamProjectAllow);
@@ -265,24 +264,24 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
             
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            rule.Reconcile(_config.Project);
+            await rule.Reconcile(_config.Project);
             
-            client
+            await client
                 .Received()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("afewsf") &&
                     x.UpdatePackage.Contains(@"PermissionId"":0")));
             
-            client
+            await client
                 .DidNotReceive()
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_pa.TeamFoundationId)));
             
-            client
+            await client
                 .Received(1)
-                .Post(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
                     Arg.Is<Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId))); // Only the DENY update
 
@@ -291,8 +290,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void InitializeApplicationGroupsLookup(IVstsRestClient client, params Response.ApplicationGroup[] groups)
         {
             client
-                .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
-                    x.Uri.Contains("ReadScopedApplicationGroupsJson")))
+                .GetAsync(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
+                    x.Resource.Contains("ReadScopedApplicationGroupsJson")))
                 .Returns(new Response.ApplicationGroups
                 {
                     Identities = groups
@@ -302,8 +301,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void InitializeMembersLookup(IVstsRestClient client, params Response.ApplicationGroup[] members)
         {
             client
-                .Get(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
-                    x.Uri.Contains("ReadGroupMembers")))
+                .GetAsync(Arg.Is<IVstsRequest<Response.ApplicationGroups>>(x =>
+                    x.Resource.Contains("ReadGroupMembers")))
                 .Returns(new Response.ApplicationGroups
                 {
                     Identities = members
@@ -312,7 +311,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         
         private static void InitializePermissions(IVstsRestClient client, params Response.Permission[] permissions)
         {
-            client.Get(Arg.Any<IVstsRequest<Response.PermissionsProjectId>>())
+            client.GetAsync(Arg.Any<IVstsRequest<Response.PermissionsProjectId>>())
                 .Returns(new Response.PermissionsProjectId
                     {Security = new Response.PermissionsSetId {Permissions = permissions}});
         }

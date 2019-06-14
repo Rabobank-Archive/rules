@@ -1,9 +1,7 @@
 using System;
 using Xunit;
 using Shouldly;
-using System.Net;
 using System.Linq;
-using RestSharp;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -20,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryServiceConnections()
+        public async void QueryServiceConnections()
         {
-            var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project));
+            var endpoints = (await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project))).ToList();
             endpoints.ShouldNotBeEmpty();
 
             var endpoint = endpoints.First();
@@ -31,30 +29,5 @@ namespace SecurePipelineScan.VstsService.Tests
             endpoint.Type.ShouldNotBeNullOrEmpty();
             endpoint.Url.ShouldNotBeNullOrEmpty();
         }
-
-        //[Fact]
-        //public void QueryServiceConnectionHistory()
-        //{
-        //    //your user needs to be endpoint admin in the project you are running this.
-        //    //your PAT needs "ALL scope". selecting all checkboxes does not work.
-            
-        //    var history = _vsts.Get(Requests.ServiceEndpoint.History(_config.Project, 
-        //        _config.ServiceEndpointId));
-        //    history.ShouldNotBeEmpty();
-        //    history.ShouldAllBe(e => e.Data != null);
-        //    history.ShouldAllBe(e => e.Data.Definition != null);
-        //    history.ShouldAllBe(e => !string.IsNullOrEmpty(e.Data.Definition.Id));
-
-        //    var data = history.First().Data;
-        //    data.Id.ShouldNotBe(0);
-        //    data.Owner.ShouldNotBeNull();
-        //    data.Owner.Id.ShouldNotBe(0);
-        //    data.Owner.Name.ShouldNotBeNullOrEmpty();
-        //    data.Owner.Links.ShouldNotBeNull();
-        //    data.Owner.Links.Web.ShouldNotBeNull();
-        //    data.Owner.Links.Self.ShouldNotBeNull();
-        //    data.Owner.Links.Self.Href.ShouldNotBeNull();
-        //    data.PlanType.ShouldNotBeNullOrEmpty();
-        //}
     }
 }

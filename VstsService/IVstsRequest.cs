@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -10,7 +11,8 @@ namespace SecurePipelineScan.VstsService
     public interface IVstsRequest
     {
         Uri BaseUri(string organization);
-        string Uri { get; }
+        string Resource { get; }
+        IDictionary<string, string> QueryParams { get; }
     }
 
     public interface IVstsRequest<TResponse> : IVstsRequest<TResponse, TResponse>

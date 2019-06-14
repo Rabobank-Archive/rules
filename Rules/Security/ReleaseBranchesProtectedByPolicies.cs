@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SecurePipelineScan.Rules.Checks;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -28,28 +29,28 @@ namespace SecurePipelineScan.Rules.Security
             "Reset code reviewer votes when there are new changes is enabled."
         };
 
-        public bool Evaluate(string project, string repositoryId)
+        public async Task<bool> Evaluate(string project, string repositoryId)
         {
-            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
+            var policies = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
             return HasRequiredReviewerPolicy(repositoryId, policies);
         }
 
-        public void Reconcile(string projectId, string id)
+        public async Task Reconcile(string projectId, string id)
         {
-            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
+            var policies = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, id).SingleOrDefault(x => x.Settings.Scope.Any(s => s.RepositoryId == new Guid(id)));
 
             if (policy != null)
             {
                 UpdateSettings(policy.Settings);
-                _client.Put(Requests.Policies.Policy(projectId, policy.Id), policy);
+                await _client.PutAsync(Requests.Policies.Policy(projectId, policy.Id), policy);
             }
             else
             {
                  policy = InitializeMinimumNumberOfReviewersPolicy(id);
                  UpdateSettings(policy.Settings);
                  
-                _client.Post(Requests.Policies.Policy(projectId), policy);
+                await _client.PostAsync(Requests.Policies.Policy(projectId), policy);
             }
         }
 

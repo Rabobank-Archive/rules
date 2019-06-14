@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace SecurePipelineScan.Rules.Security
 {
     public interface IProjectReconcile
     {
-        void Reconcile(string project);
+        Task Reconcile(string project);
         string[] Impact { get; }
     }
 }

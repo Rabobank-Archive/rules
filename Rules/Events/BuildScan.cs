@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.Rules.Reports;
 using SecurePipelineScan.VstsService;
@@ -17,19 +18,19 @@ namespace SecurePipelineScan.Rules.Events
             _client = client;
         }
 
-        public BuildScanReport Completed(JObject input)
+        public async Task<BuildScanReport> Completed(JObject input)
         {
             var id = (string)input.SelectToken("resource.id");
-            var build = _client.Get<VstsService.Response.Build>((string)input.SelectToken("resource.url"));
+            var build = await _client.GetAsync<VstsService.Response.Build>((string)input.SelectToken("resource.url"));
 
             if (build.Result == "failed" || build.Result == "cancelled")
                 return null;
 
             var project = build.Project.Name;
-            var timeline = _client.Get(VstsService.Requests.Builds.Timeline(project, id).AsJson());
+            var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson());
             var usedTaskIds = timeline.SelectTokens("records[*].task.id").Values<string>();
 
-            var artifacts = _client.Get(VstsService.Requests.Builds.Artifacts(project, id));
+            var artifacts = await _client.GetAsync(VstsService.Requests.Builds.Artifacts(project, id));
 
             return new BuildScanReport
             {

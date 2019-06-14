@@ -1,101 +1,84 @@
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
+using Flurl.Http.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using RestSharp;
-using RestSharp.Serializers.Newtonsoft.Json;
 using SecurePipelineScan.VstsService.Converters;
-using SecurePipelineScan.VstsService.Response;
-using RestRequest = RestSharp.RestRequest;
+using SecurePipelineScan.VstsService.Requests;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService
 {
     public class VstsRestClient : IVstsRestClient
     {
-        private readonly string _authorization;
         private readonly string _organization;
-        private readonly IRestClientFactory _factory;
+        private readonly string _token;
 
-        public VstsRestClient(string organization, string token, IRestClientFactory factory)
+        public VstsRestClient(string organization, string token)
         {
-            _authorization = GenerateAuthorizationHeader(token);
             _organization = organization;
-            _factory = factory;
-        }
-
-        internal VstsRestClient(string organization, string token) : this(organization, token, new RestClientFactory())
-        {   
-        }
-
-        public TResponse Get<TResponse>(IVstsRequest<TResponse> request)
-            where TResponse : new()
-        {
-            var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri)
-                .AddHeader("authorization", _authorization);
-
-            if (request is IVstsRequest<JObject>)
-            {
-                return (TResponse) (object) JObject.Parse(client.Execute(wrapper).ThrowOnError().Content);
-            }
+            _token = token;
             
-            return client.Execute<TResponse>(wrapper)
-                .ThrowOnError()
-                .DefaultIfNotFound();
+            FlurlHttp.Configure(settings => {
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Converters = { new PolicyConverter() }
+                };
+                settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
+                settings.HttpClientFactory = new HttpClientFactory();
+            });
         }
 
-        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
+        public async Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
         {
-            var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri)
-                .AddHeader("authorization", _authorization);
-
-            return new MultipleEnumerator<TResponse>(wrapper, client);
+            return await new Url(request.BaseUri(_organization))
+                .AllowHttpStatus(HttpStatusCode.NotFound)
+                .AppendPathSegment(request.Resource)
+                .SetQueryParams(request.QueryParams)
+                .WithBasicAuth(string.Empty, _token)
+                .GetJsonAsync<TResponse>();
+        }
+        
+#pragma warning disable 1998
+        public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
+#pragma warning restore 1998
+        {
+            return new MultipleEnumerator<TResponse>(request, _organization, _token);
         }
 
-        public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        public async Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.POST)
-            {
-                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), Converters = { new PolicyConverter()}})
-            }.AddHeader("authorization", _authorization)
-             .AddJsonBody(body);
-
-            return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            return await new Url(request.BaseUri(_organization))
+                .AppendPathSegment(request.Resource)
+                .WithBasicAuth(string.Empty, _token)
+                .SetQueryParams(request.QueryParams)
+                .PostJsonAsync(body)
+                .ReceiveJson<TResponse>();
         }
 
-        public TResponse Put<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new()
+        public async Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.PUT)
-            {
-                JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })
-            }.AddHeader("authorization", _authorization)
-             .AddJsonBody(body);
-
-            return client.Execute<TResponse>(wrapper).ThrowOnError().Data;
+            return await new Url(request.BaseUri(_organization))
+                .AppendPathSegment(request.Resource)
+                .WithBasicAuth(string.Empty, _token)
+                .SetQueryParams(request.QueryParams)
+                .PutJsonAsync(body)
+                .ReceiveJson<TResponse>();
         }
 
-        public void Delete(IVstsRequest request)
+        public async Task DeleteAsync(IVstsRequest request)
         {
-            var client = _factory.Create(request.BaseUri(_organization));
-            var wrapper = new RestRequest(request.Uri, Method.DELETE)
-                .AddHeader("authorization", _authorization);
-
-            client.Execute(wrapper).ThrowOnError();
-        }
-
-        private static string GenerateAuthorizationHeader(string token)
-        {
-            var encoded = Base64Encode($":{token}");
-            return ($"Basic {encoded}");
-        }
-
-        private static string Base64Encode(string plainText)
-        {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            await new Url(request.BaseUri(_organization))
+                .AppendPathSegment(request.Resource)
+                .WithBasicAuth(string.Empty, _token)
+                .SetQueryParams(request.QueryParams)
+                .DeleteAsync();
         }
     }
 }

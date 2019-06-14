@@ -1,10 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -31,24 +32,24 @@ namespace SecurePipelineScan.Rules.Security
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
-        public bool Evaluate(string project, string pipelineId)
+        public async Task<bool> Evaluate(string project, string pipelineId)
         {
-            var releasePipeline = _client.Get(Requests.ReleaseManagement.Definition(project, pipelineId));
+            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, pipelineId));
             return HasRequiredRetentionPolicy(releasePipeline);
         }
 
-        public void Reconcile(string project, string pipelineId)
+        public async Task Reconcile(string project, string pipelineId)
         {
-            var releaseSettings = _client.Get(Requests.ReleaseManagement.Settings(project));
+            var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(project));
             if (!HasRequiredReleaseSettings(releaseSettings))
             {
-                _client.Put(Requests.ReleaseManagement.Settings(project),
+                await _client.PutAsync(Requests.ReleaseManagement.Settings(project),
                     UpdateReleaseSettings(releaseSettings));
             }
 
-            var releasePipeline = _client.Get(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}")
+            var releasePipeline = await _client.GetAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}")
                 .AsJson());
-            _client.Put(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}?api-version=5.0"),
+            await _client.PutAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}", new Dictionary<string, string> { {"api-version", "5.0" }}), 
                 UpdateReleaseDefinition(releasePipeline));
         }
 

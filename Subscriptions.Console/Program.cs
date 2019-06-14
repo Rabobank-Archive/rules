@@ -3,6 +3,7 @@ using SecurePipelineScan.VstsService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Requests = SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
@@ -22,7 +23,7 @@ namespace Subscriptions.Console
             var deleteOption = app.Option("-d|--delete", "if this command should delete service hooks instead of creating them add -d true", CommandOptionType.NoValue);
 
             // Currently only check build.completed
-            app.OnExecute(() =>
+            app.OnExecute(async () =>
             {
                 if (!tokenOption.HasValue() ||
                     !organizationOption.HasValue() ||
@@ -32,14 +33,14 @@ namespace Subscriptions.Console
                     return 1;
                 }
 
-                var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value(), new RestClientFactory());
-                var subscriptions = client
-                    .Get(Requests.Hooks.Subscriptions())
+                var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
+                var subscriptions = (await client
+                    .GetAsync(Requests.Hooks.Subscriptions()))
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
                 if (deleteOption.Values.Any())
                 {
-                    RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
+                    await RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
                 }
                 else
                 {
@@ -48,11 +49,11 @@ namespace Subscriptions.Console
                         app.ShowHelp();
                         return 1;
                     }
-                    var projects = client
-                        .Get(Requests.Project.Projects());
+                    var projects = await client
+                        .GetAsync(Requests.Project.Projects());
 
                     var items = SubscriptionsPerProject(subscriptions, projects);
-                    AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
+                    await AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
                 }
                 return 0;
             });
@@ -60,26 +61,26 @@ namespace Subscriptions.Console
             app.Execute(args);
         }
 
-        private static void RemoveStorageHook(string storageAccountName, VstsRestClient client, IEnumerable<Response.Hook> subscriptions)
+        private static async Task RemoveStorageHook(string storageAccountName, VstsRestClient client, IEnumerable<Response.Hook> subscriptions)
         {
             foreach (var subscription in subscriptions)
             {
                 if (subscription.ActionDescription.Contains(storageAccountName))
                 {
-                    client.Delete(Requests.Hooks.Subscription(subscription.Id));
+                    await client.DeleteAsync(Requests.Hooks.Subscription(subscription.Id));
                 }
 
             }
         }
 
-        internal static void AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
+        internal static async Task AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
         {
-            List<Exception> aggregateExceptions = new List<Exception>();
+            var aggregateExceptions = new List<Exception>();
             foreach (var item in items)
             {
                 try
                 {
-                    AddHooksToProject(accountName, accountKey, client, item);
+                    await AddHooksToProject(accountName, accountKey, client, item);
                 }
                 catch (Exception e)
                 {
@@ -92,30 +93,30 @@ namespace Subscriptions.Console
             }
         }
 
-        private static void AddHooksToProject(string accountName, string accountKey, IVstsRestClient client, ProjectInfo item)
+        private static async Task AddHooksToProject(string accountName, string accountKey, IVstsRestClient client, ProjectInfo item)
         {
             if (!item.BuildComplete)
             {
                 System.Console.WriteLine($"Add build.completed subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
+                await client.PostAsync(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.BuildCompleted(accountName, accountKey, "buildcompleted", item.Id));
             }
             if (!item.GitPullRequestCreated)
             {
                 System.Console.WriteLine($"Add GitPullRequestCreated subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
+                await client.PostAsync(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPullRequestCreated(accountName, accountKey, "pullrequestcreated", item.Id));
             }
             if (!item.GitPushed)
             {
                 System.Console.WriteLine($"Add GitPushed subscription to project: {item.Id}");
-                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
+                await client.PostAsync(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.GitPushed(accountName, accountKey, "gitpushed", item.Id));
             }
             if (!item.ReleaseDeploymentCompleted)
             {
                 System.Console.WriteLine($"Add Release deployment completed subscription to project: {item.Id}");
 
                 // We make sure the Release definition module is loaded.
-                client.Get(Requests.ReleaseManagement.Definitions(item.Id));
-                client.Post(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
+                await client.GetAsync(Requests.ReleaseManagement.Definitions(item.Id));
+                await client.PostAsync(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
             }
         }
 

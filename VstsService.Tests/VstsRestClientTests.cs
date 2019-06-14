@@ -1,9 +1,9 @@
-using System;
 using System.Linq;
-using System.Net.Http;
+using System.Threading.Tasks;
+using Flurl.Http;
+using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
-using NSubstitute;
-using RestSharp;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 
@@ -22,89 +22,95 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void DeleteThrowsOnError()
+        public async Task DeleteThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<int>("/delete/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
+            }
+         }
 
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
+        [Fact]
+        public async Task PostThrowsOnError()
+        {
+            var request = new VstsRequest<int,int>("/get/some/data");
 
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Delete(request));
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PostAsync(request, 3));
+            }
+        }
+        
+        [Fact]
+        public async Task PutThrowsOnError()
+        {
+            var request = new VstsRequest<int,int>("/put/some/data");
+
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PutAsync(request, 3));
+            }
         }
 
         [Fact]
-        public void PostThrowsOnError()
+        public async Task GetThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int,int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<int>("/get/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Post(request, 3));
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
+            }
         }
 
         [Fact]
-        public void GetThrowsOnError()
+        public async Task GetJsonThrowsOnError()
         {
-            var request = Substitute.For<IVstsRequest<int>>();
-            var response = Substitute.For<IRestResponse>();
+            var request = new VstsRequest<JObject>("/get/some/data");
 
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Get(request));
-        }
-
-        [Fact]
-        public void GetJsonThrowsOnError()
-        {
-            var request = Substitute.For<IVstsRequest<JObject>>();
-            var response = Substitute.For<IRestResponse>();
-
-            var rest = Substitute.For<IRestClient>();
-            rest.Execute(Arg.Any<IRestRequest>()).Returns(response);
-
-            var factory = Substitute.For<IRestClientFactory>();
-            factory.Create(Arg.Any<Uri>()).Returns(rest);
-
-            var client = new VstsRestClient("dummy", "pat", factory);
-            Assert.Throws<VstsException>(() => client.Get(request));
-        }
-
-        [Fact]
-        public void HtmlInsteadOfXmlShouldThrow()
-        {
-            var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            Assert.Throws<VstsException>(() => sut.Get(Requests.Project.Projects()).ToList());
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new VstsRestClient("dummy", "pat");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
+            }
         }
 
         [Fact]
         [Trait("category", "integration")]
-        public void RestRequestResultAsJsonObject()
+        public async Task HtmlInsteadOfXmlShouldThrow()
         {
-            var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
+            var sut = new VstsRestClient("somecompany-test", InvalidToken);
+            await Assert.ThrowsAsync<FlurlHttpException>(async () =>
+            {
+                (await sut.GetAsync(Project.Projects())).ToList();
+            });
+        }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public async Task RestRequestResultAsJsonObject()
+        {
+            var endpoints = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
             endpoints.SelectToken("value[?(@.data.subscriptionId == '45cfa52a-a2aa-4a18-8d3d-29896327b51d')]").ShouldNotBeNull();
         }
 
         
         [Fact]
-        public void NotFoundIsNull()
+        public async Task NotFoundIsNull()
         {
-            _vsts.Get(Requests.Builds.Build("TAS", "2342423")).ShouldBeNull();
+            var result = await _vsts.GetAsync(Requests.Builds.Build("TAS", "2342423"));
+            result.ShouldBeNull();
         }
     }
 }

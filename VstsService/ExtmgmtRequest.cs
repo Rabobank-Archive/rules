@@ -1,16 +1,24 @@
 
 using System;
+using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
     public class ExtmgmtRequest<TResponse> : IVstsRequest<TResponse>
         where TResponse: new()
     {
-        public string Uri { get; }
+        public string Resource { get; }
+        public IDictionary<string, string> QueryParams { get; }
 
-        public ExtmgmtRequest(string uri)
+        public ExtmgmtRequest(string resource)
         {
-            Uri = uri;
+            Resource = resource;
+        }
+
+        public ExtmgmtRequest(string resource, IDictionary<string, string> queryParams)
+        {
+            Resource = resource;
+            QueryParams = queryParams;
         }
 
         public Uri BaseUri(string organization)

@@ -16,9 +16,9 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public void QueryTimeline()
+        public async void QueryTimeline()
         {
-            var timeline = _client.Get(Requests.Builds.Timeline(_config.Project, _config.BuildId));
+            var timeline = await _client.GetAsync(Requests.Builds.Timeline(_config.Project, _config.BuildId));
             timeline.ShouldNotBeNull();
         }
     }

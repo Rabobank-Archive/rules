@@ -1,18 +1,19 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
+using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class PipelineHasRequiredRetentionPolicyTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IRestClientFactory _factory;
         private const string PipelineId = "1";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
@@ -20,23 +21,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public PipelineHasRequiredRetentionPolicyTests(TestConfig config)
         {
             _config = config;
-            _factory = new RestClientFactory();
             _fixture.Customize(new AutoNSubstituteCustomization());
         }
 
         [Fact]
-        public void EvaluateIntegrationTest()
+        public async Task EvaluateIntegrationTest()
         {
             //Arrange
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            rule.Evaluate(_config.Project, PipelineId);
+            await rule.Evaluate(_config.Project, PipelineId);
         }
 
         [Fact]
-        public void EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
+        public async Task EvaluateShouldReturnTrueWhenPipelineHasRequiredRetentionPolicy()
         {
             //Arrange
             // ReSharper disable twice RedundantArgumentDefaultValue
@@ -45,14 +45,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
+        public async Task EvaluateShouldReturnFalseWhenReleasesAreRetainedShorterThenRequired()
         {
             //Arrange
             // ReSharper disable once RedundantArgumentDefaultValue
@@ -61,14 +61,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
-        public void EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
+        public async Task EvaluateShouldReturnFalseWhenRetainBuildsIsDisabled()
         {
             //Arrange
             CustomizePolicySettings(_fixture, 500, false);
@@ -76,23 +76,57 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var evaluatedRule = rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.Evaluate(_config.Project, PipelineId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
-        public void Reconcile()
+        public async Task Reconcile()
         {
             //Arrange
-            var client = new VstsRestClient(_config.Organization, _config.Token, _factory);
+            var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
-            rule.Reconcile(_config.Project, PipelineId);
+            await rule.Reconcile(_config.Project, PipelineId);
         }
 
+        [Fact]
+        public async Task GivenPolicySettingsAreNotCorrect_WhenReconcile_ThenSettingsArePut()
+        {
+            //Arrange
+            CustomizePolicySettings(_fixture, 10, false);
+            SetupClient(_client, _fixture);
+
+            //Act
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
+            await rule.Reconcile(_config.Project, PipelineId);
+
+            // Assert
+            await _client
+                .Received()
+                .PutAsync(Arg.Any<IVstsRequest<ReleaseSettings>>(), Arg.Any<ReleaseSettings>());
+        }
+        
+        [Fact]
+        public async Task GivenPolicySettingsAreCorrect_WhenReconcile_ThenPipelineIsUpdatedAnyway()
+        {
+            //Arrange
+            CustomizePolicySettings(_fixture);
+            SetupClient(_client, _fixture);
+
+            //Act
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
+            await rule.Reconcile(_config.Project, PipelineId);
+
+            // Assert
+            await _client
+                .Received()
+                .PutAsync(Arg.Any<IVstsRequest<object>>(), Arg.Any<JObject>());
+        }
+        
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,
             bool retainBuild = true)
         {
@@ -101,9 +135,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(r => r.RetainBuild, retainBuild));
         }
 
-        private static void SetupClient(IVstsRestClient client, IFixture fixture) =>
+        private static void SetupClient(IVstsRestClient client, IFixture fixture)
+        {
             client
-                .Get(Arg.Any<IVstsRequest<ReleaseDefinition>>())
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
                 .Returns(fixture.Create<ReleaseDefinition>());
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseSettings>>())
+                .Returns(fixture.Create<ReleaseSettings>());
+
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
+                .Returns(new JObject());
+        }
     }
 }
