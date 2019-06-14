@@ -35,7 +35,6 @@ namespace SecurePipelineScan.VstsService
                 var task = request.GetAsync();
 
                 var response = task.GetAwaiter().GetResult();
-                var headers = response.Headers;
                 var data = task.ReceiveJson<Multiple<TResponse>>().GetAwaiter().GetResult();
                 
                 foreach (var item in data.Value)
@@ -43,7 +42,7 @@ namespace SecurePipelineScan.VstsService
                     yield return item;
                 }
 
-                continuationtoken = headers.TryGetValues("x-ms-continuationtoken", out var values) ? values.FirstOrDefault() : null;
+                continuationtoken = response.Headers.TryGetValues("x-ms-continuationtoken", out var values) ? values.FirstOrDefault() : null;
                 if (continuationtoken == null)
                 {
                     break;
