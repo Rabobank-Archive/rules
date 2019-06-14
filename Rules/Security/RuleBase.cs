@@ -37,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, @group);
+                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, group);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit) && !AllowedPermissions.Contains(p.PermissionId));
 
