@@ -18,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task GetAllOrganizationalPools()
+        public void GetAllOrganizationalPools()
         {
-            var orgPools = (await _client.GetAsync(Requests.DistributedTask.OrganizationalAgentPools())).ToList();
+            var orgPools = _client.Get(Requests.DistributedTask.OrganizationalAgentPools()).ToList();
 
             orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
             orgPools.ShouldAllBe(_ => !string.IsNullOrEmpty(_.PoolType));
@@ -34,18 +34,16 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task GetAgentStatus()
+        public void GetAgentStatus()
         {
-            var agentStatus = await _client.GetAsync(Requests.DistributedTask.AgentPoolStatus(_config.AgentPoolId));
-
+            var agentStatus = _client.Get(Requests.DistributedTask.AgentPoolStatus(_config.AgentPoolId));
             agentStatus.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 
         [Fact]
-        public async Task GetTask()
+        public void GetTask()
         {
-            var task = await _client.GetAsync(Requests.DistributedTask.Tasks());
-
+            var task = _client.Get(Requests.DistributedTask.Tasks());
             task.ShouldAllBe(_ => !string.IsNullOrWhiteSpace(_.Id));
         }
 

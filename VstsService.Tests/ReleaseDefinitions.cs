@@ -18,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryReleaseDefinitions()
+        public void QueryReleaseDefinitions()
         {
-            var definitions = await client.GetAsync(Requests.ReleaseManagement.Definitions(config.Project));
+            var definitions = client.Get(Requests.ReleaseManagement.Definitions(config.Project));
             definitions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Name));
         }
 

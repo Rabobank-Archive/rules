@@ -54,9 +54,7 @@ namespace SecurePipelineScan.VstsService
         }
 
         
-#pragma warning disable 1998
-        public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
-#pragma warning restore 1998
+        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
         {
             return new MultipleEnumerator<TResponse>(request, _organization, _token);
         }

@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Events
             var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson());
             var usedTaskIds = timeline.SelectTokens("records[*].task.id").Values<string>();
 
-            var artifacts = await _client.GetAsync(VstsService.Requests.Builds.Artifacts(project, id));
+            var artifacts = _client.Get(VstsService.Requests.Builds.Artifacts(project, id));
 
             return new BuildScanReport
             {

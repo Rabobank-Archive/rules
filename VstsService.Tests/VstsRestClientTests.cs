@@ -102,13 +102,10 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task HtmlInsteadOfXmlShouldThrow()
+        public void HtmlInsteadOfXmlShouldThrow()
         {
             var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            await Assert.ThrowsAsync<FlurlHttpException>(async () =>
-            {
-                (await sut.GetAsync(Project.Projects())).ToList();
-            });
+            Assert.Throws<FlurlHttpException>(() => sut.Get(Project.Projects()).ToList());
         }
 
         [Fact]

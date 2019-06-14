@@ -22,9 +22,7 @@ namespace SecurePipelineScan.Rules.Tests
             return _fixture.Create<TResponse>();
         }
 
-#pragma warning disable 1998
         public async Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse : new()
-#pragma warning restore 1998
         {
             return Get(request);
         }
@@ -37,13 +35,6 @@ namespace SecurePipelineScan.Rules.Tests
         public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
         {
             return _fixture.CreateMany<TResponse>();
-        }
-
-#pragma warning disable 1998
-        public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
-#pragma warning restore 1998
-        {
-            return Get(request);
         }
 
         public TResponse Post<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
