@@ -20,10 +20,10 @@ namespace SecurePipelineScan.Rules.Security
             (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, id))).Identities;
 
         protected override async Task<Response.PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
-            ApplicationGroup @group) =>
+            ApplicationGroup group) =>
             await _client.GetAsync(Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, id));
 
         protected override async Task UpdatePermissionToDeny(string projectId, ApplicationGroup group, Response.PermissionsSetId permissionSetId, Response.Permission permission) =>
-            await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(@group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
+            await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
     }
 }
