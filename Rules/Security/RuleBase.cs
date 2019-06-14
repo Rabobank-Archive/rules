@@ -15,7 +15,7 @@ namespace SecurePipelineScan.Rules.Security
         protected abstract IEnumerable<int> AllowedPermissions { get; }
 
         protected abstract Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
-            ApplicationGroup @group);
+            ApplicationGroup group);
         protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id);
         protected abstract Task UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
