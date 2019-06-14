@@ -25,40 +25,38 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryRequiredReviewersPolicies()
         {
-            var result = await _client.GetAsync(Requests.Policies.RequiredReviewersPolicies(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.RequiredReviewersPolicies(_config.Project))).ToList();
 
-            var requiredReviewersPolicies = result.ToList();
-            requiredReviewersPolicies.ShouldNotBeEmpty();
-            requiredReviewersPolicies.Any(e => e.Id != 0).ShouldBeTrue();
-            requiredReviewersPolicies.Any(e => e.IsBlocking).ShouldBeTrue();
-            requiredReviewersPolicies.All(e => e.IsDeleted).ShouldBeFalse();
-            requiredReviewersPolicies.All(e => e.IsEnabled).ShouldBeTrue();
-            requiredReviewersPolicies.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
-            requiredReviewersPolicies.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            requiredReviewersPolicies.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            requiredReviewersPolicies.ShouldAllBe(e => e.Settings.Scope[0].RepositoryId != Guid.Empty);
+            result.ShouldNotBeEmpty();
+            result.Any(e => e.Id != 0).ShouldBeTrue();
+            result.Any(e => e.IsBlocking).ShouldBeTrue();
+            result.All(e => e.IsDeleted).ShouldBeFalse();
+            result.All(e => e.IsEnabled).ShouldBeTrue();
+            result.ShouldAllBe(e => e.Settings.RequiredReviewerIds.Count > 0);
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            result.ShouldAllBe(e => e.Settings.Scope[0].RepositoryId != Guid.Empty);
         }
 
         [Fact]
         public async Task QueryMinimumNumberOfReviewersPolicies()
         {
-            var result = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project))).ToList();
 
-            var minimumNumberOfReviewersPolicies = result.ToList();
-            minimumNumberOfReviewersPolicies.ShouldNotBeEmpty();
-            minimumNumberOfReviewersPolicies.Any(e => e.Id != 0).ShouldBeTrue();
-            minimumNumberOfReviewersPolicies.Any(e => e.IsBlocking).ShouldBeTrue();
-            minimumNumberOfReviewersPolicies.All(e => e.IsDeleted).ShouldBeFalse();
-            minimumNumberOfReviewersPolicies.Any(e => e.IsEnabled).ShouldBeTrue();
+            result.ShouldNotBeEmpty();
+            result.Any(e => e.Id != 0).ShouldBeTrue();
+            result.Any(e => e.IsBlocking).ShouldBeTrue();
+            result.All(e => e.IsDeleted).ShouldBeFalse();
+            result.Any(e => e.IsEnabled).ShouldBeTrue();
 
-            minimumNumberOfReviewersPolicies.Any(e => e.Settings.MinimumApproverCount != 0).ShouldBeTrue();
-            minimumNumberOfReviewersPolicies.All(e => e.Settings.AllowDownvotes).ShouldBeFalse();
-            minimumNumberOfReviewersPolicies.Any(e => e.Settings.CreatorVoteCounts).ShouldBeTrue();
-            minimumNumberOfReviewersPolicies.Any(e => e.Settings.ResetOnSourcePush).ShouldBeTrue();
+            result.Any(e => e.Settings.MinimumApproverCount != 0).ShouldBeTrue();
+            result.All(e => e.Settings.AllowDownvotes).ShouldBeFalse();
+            result.Any(e => e.Settings.CreatorVoteCounts).ShouldBeTrue();
+            result.Any(e => e.Settings.ResetOnSourcePush).ShouldBeTrue();
 
-            minimumNumberOfReviewersPolicies.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            minimumNumberOfReviewersPolicies.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
-            minimumNumberOfReviewersPolicies.ShouldAllBe(e => e.Settings.Scope[0].RepositoryId != Guid.Empty);
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
+            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            result.ShouldAllBe(e => e.Settings.Scope[0].RepositoryId != Guid.Empty);
         }
 
         [Fact]
@@ -71,24 +69,22 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task GetAllPoliciesForProject()
         {
-            var result = await _client.GetAsync(Requests.Policies.All(_config.Project));
+            var result = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
 
-            var enumerable = result.ToList();
-            enumerable.ShouldNotBeEmpty();
-            enumerable.ShouldAllBe(e => e.Id != 0);
-            enumerable.Any(e => e.IsBlocking).ShouldBeTrue();
-            enumerable.All(e => e.IsDeleted).ShouldBeFalse();
-            enumerable.Any(e => e.IsEnabled).ShouldBeTrue();
+            result.ShouldNotBeEmpty();
+            result.ShouldAllBe(e => e.Id != 0);
+            result.Any(e => e.IsBlocking).ShouldBeTrue();
+            result.All(e => e.IsDeleted).ShouldBeFalse();
+            result.Any(e => e.IsEnabled).ShouldBeTrue();
         }
 
         [Fact]
         public async Task GetAllPoliciesConvertsToSpecific()
         {
-            var policies = await _client.GetAsync(Requests.Policies.All(_config.Project));
+            var policies = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
 
-            var policiesToList = policies as Policy[] ?? policies.ToArray();
-            policiesToList.ShouldContain(p => p is RequiredReviewersPolicy);
-            policiesToList.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);
+            policies.ShouldContain(p => p is RequiredReviewersPolicy);
+            policies.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);
         }
     }
 }
