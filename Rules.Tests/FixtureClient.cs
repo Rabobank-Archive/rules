@@ -29,6 +29,11 @@ namespace SecurePipelineScan.Rules.Tests
             return Get(request);
         }
 
+        public Task<TResponse> GetAsync<TResponse>(string url) where TResponse : new()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
         {
             return _fixture.CreateMany<TResponse>();

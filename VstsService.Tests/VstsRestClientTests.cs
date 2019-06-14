@@ -61,6 +61,20 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
+        public async Task GetRawUrl()
+        {
+            var url = "http://www.bla.nl";
+
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 200, body: "{}");
+                var client = new VstsRestClient("dummy", "token");
+                await client.GetAsync<Response.Build>(url);
+                httpTest.ShouldHaveCalled(url);
+            }
+        }
+        
+        [Fact]
         public async Task GetThrowsOnError()
         {
             var request = new VstsRequest<int>("/get/some/data");
