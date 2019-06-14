@@ -111,7 +111,7 @@ namespace SecurePipelineScan.Rules.Events
                 return null;
             }
 
-            return (await Task.WhenAll(environment?.DeployPhasesSnapshot
+            return (await Task.WhenAll(environment.DeployPhasesSnapshot
                     .SelectMany(s => s.WorkflowTasks)
                     .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
                     .SelectMany(w => w.Inputs)
