@@ -48,7 +48,7 @@ namespace SecurePipelineScan.Rules.Security
             (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))).Identities;
 
         protected override async Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
-            ApplicationGroup @group) =>
+            ApplicationGroup group) =>
             (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id)));
 
         protected override async Task UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission) =>

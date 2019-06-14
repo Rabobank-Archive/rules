@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Tests
         private readonly IFixture _fixture = new Fixture();
         
         [Fact]
-        public async Task CompletedIncludesBuildDetailsLikeProjecName()
+        public async Task CompletedIncludesBuildDetailsLikeProjectName()
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
@@ -159,6 +159,25 @@ namespace SecurePipelineScan.Rules.Tests
             report
                 .ArtifactsStoredSecure
                 .ShouldBeFalse();
+        }
+
+        [Theory]
+        [InlineData("failed")]
+        [InlineData("cancelled")]
+        public async Task GivenBuildNotSucceeded_WhenAnalysing_ThenReportIsNull(string result)
+        {
+            _fixture.Customize<Build>(ctx => ctx.With(x => x.Result, result));
+            
+            var input = ReadInput("Completed.json");
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .Returns(_fixture.Create<Build>());
+            
+            var scan = new BuildScan(client);
+            var report = await scan.Completed(input);
+
+            report.ShouldBeNull();
         }
 
         private static JObject ReadInput(string eventType)
