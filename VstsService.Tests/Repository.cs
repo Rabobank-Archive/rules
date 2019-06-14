@@ -20,14 +20,13 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryRepository()
         {
-            var definition = await _vsts.GetAsync(Requests.Repository.Repositories(_config.Project));
-            var repositories = definition.ToList();
-            repositories.ShouldNotBeEmpty();
-            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
-            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
-            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
-            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
-            repositories.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
+            var definition = (await _vsts.GetAsync(Requests.Repository.Repositories(_config.Project))).ToList();
+            definition.ShouldNotBeEmpty();
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Id));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Project.Name));
+            definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.DefaultBranch));
         }
     }
 }

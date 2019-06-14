@@ -25,11 +25,10 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryNamespaces()
         {
-            var target = await _client.GetAsync(Requests.SecurityNamespace.SecurityNamespaces());
-            var securityNamespaces = target as SecurityNamespace[] ?? target.ToArray();
-            securityNamespaces.ShouldNotBeEmpty();
+            var target = (await _client.GetAsync(Requests.SecurityNamespace.SecurityNamespaces())).ToList();
+            target.ShouldNotBeEmpty();
 
-            var first = securityNamespaces.First();
+            var first = target.First();
             first.Actions.ShouldNotBeEmpty();
 
             var action = first.Actions.First();
