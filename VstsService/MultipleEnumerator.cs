@@ -32,10 +32,11 @@ namespace SecurePipelineScan.VstsService
                         .SetQueryParams(_request.QueryParams)
                         .SetQueryParam("continuationToken", continuationtoken);
                 
+                // Need headers & result so capture task first: https://stackoverflow.com/a/53514668/129269
                 var task = request.GetAsync();
 
-                var response = task.GetAwaiter().GetResult();
-                var data = task.ReceiveJson<Multiple<TResponse>>().GetAwaiter().GetResult();
+                var response = task.ConfigureAwait(false).GetAwaiter().GetResult();
+                var data = task.ReceiveJson<Multiple<TResponse>>().ConfigureAwait(false).GetAwaiter().GetResult();
                 
                 foreach (var item in data.Value)
                 {
