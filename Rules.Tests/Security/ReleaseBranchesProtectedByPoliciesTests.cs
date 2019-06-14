@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public async void EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
+        public async Task EvaluateShouldReturnTrueForRepoHasCorrectPolicies()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
+        public async Task EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
             //Arrange
             SetupClient(_client, _fixture);
@@ -67,7 +67,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
+        public async Task EvaluateShouldReturnFalseWhenMinimumApproverCountIsLessThan2()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -87,7 +87,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
+        public async Task EvaluateShouldReturnFalseWhenPolicyIsNotEnabled()
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
@@ -105,7 +105,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
+        public async Task EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
         {
             //Arrange
             CustomizeScope(_fixture, refName: "ref/heads/not-master");
@@ -131,7 +131,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async void GivenNoPolicyPresent_WhenReconcile_PostIsUsed()
+        public async Task GivenNoPolicyPresent_WhenReconcile_PostIsUsed()
         {
             // Arrange
             CustomizeScope(_fixture, refName: "some/other/branch");
@@ -148,7 +148,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public async void GivenExistingPolicyPresent_WhenReconcile_PutIsUsed()
+        public async Task GivenExistingPolicyPresent_WhenReconcile_PutIsUsed()
         {
             // Arrange
             CustomizeScope(_fixture);
@@ -165,7 +165,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public async void GivenExistingPolicyHasApproverCount_WhenReconcile_NotUpdated()
+        public async Task GivenExistingPolicyHasApproverCount_WhenReconcile_NotUpdated()
         {
             // Arrange
             CustomizeScope(_fixture);
