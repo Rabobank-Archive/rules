@@ -37,28 +37,12 @@ namespace SecurePipelineScan.VstsService
 
         public async Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
         {
-            TResponse retval = default(TResponse);
-            try
-            {
-                retval = await new Url(request.BaseUri(_organization))
-                    .AppendPathSegment(request.Resource)
-                    .SetQueryParams(request.QueryParams)
-                    .WithBasicAuth(string.Empty, _token)
-                    .GetJsonAsync<TResponse>();
-            }
-            catch (FlurlHttpException ex)
-            {
-                if (ex.Call.HttpStatus == HttpStatusCode.NotFound)
-                {
-                    retval = default(TResponse);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return retval;
+            return await new Url(request.BaseUri(_organization))
+                .AllowHttpStatus(HttpStatusCode.NotFound)
+                .AppendPathSegment(request.Resource)
+                .SetQueryParams(request.QueryParams)
+                .WithBasicAuth(string.Empty, _token)
+                .GetJsonAsync<TResponse>();
         }
         
 #pragma warning disable 1998
@@ -70,28 +54,22 @@ namespace SecurePipelineScan.VstsService
 
         public async Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            TResponse retval = default(TResponse);
-            retval = await new Url(request.BaseUri(_organization))
+            return await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .PostJsonAsync(body)
                 .ReceiveJson<TResponse>();
-
-            return retval;
         }
 
         public async Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            TResponse retval = default(TResponse);
-            retval = await new Url(request.BaseUri(_organization))
+            return await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .PutJsonAsync(body)
                 .ReceiveJson<TResponse>();
-
-            return retval;
         }
 
         public async Task DeleteAsync(IVstsRequest request)
