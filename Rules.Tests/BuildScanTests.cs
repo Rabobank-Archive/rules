@@ -27,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -58,7 +58,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -87,7 +87,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -115,7 +115,7 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
             
             client
@@ -141,7 +141,7 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
             
             client
@@ -171,7 +171,7 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync(Arg.Any<IVstsRequest<Build>>())
+                .GetAsync<Build>(Arg.Any<string>())
                 .Returns(_fixture.Create<Build>());
             
             var scan = new BuildScan(client);

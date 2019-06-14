@@ -44,6 +44,15 @@ namespace SecurePipelineScan.VstsService
                 .WithBasicAuth(string.Empty, _token)
                 .GetJsonAsync<TResponse>();
         }
+
+        public async Task<TResponse> GetAsync<TResponse>(string url) where TResponse : new()
+        {
+            return await new Url(url)
+                .AllowHttpStatus(HttpStatusCode.NotFound)
+                .WithBasicAuth(string.Empty, _token)
+                .GetJsonAsync<TResponse>();
+        }
+
         
 #pragma warning disable 1998
         public async Task<IEnumerable<TResponse>> GetAsync<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
