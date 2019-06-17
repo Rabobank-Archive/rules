@@ -163,7 +163,7 @@ namespace SecurePipelineScan.Rules.Tests
 
         [Theory]
         [InlineData("failed")]
-        [InlineData("cancelled")]
+        [InlineData("canceled")]
         public async Task GivenBuildNotSucceeded_WhenAnalysing_ThenReportIsNull(string result)
         {
             _fixture.Customize<Build>(ctx => ctx.With(x => x.Result, result));
