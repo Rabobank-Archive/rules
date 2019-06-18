@@ -70,6 +70,22 @@ namespace SecurePipelineScan.Rules.Tests
             }
             
             [Fact]
+            public async Task NoPreApprovalsSnapshotApprovalOptionsShouldFail()
+            {
+                var input = ReadInput("Completed", "NotApproved.json");
+                _fixture
+                    .Customize<Response.PreApprovalSnapshot>(x => x.With(a => a.ApprovalOptions, null));
+
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+
+                var report = await scan.Completed(input);
+                report
+                    .HasApprovalOptions
+                    .ShouldBe(false);
+            }
+            
+            [Fact]
             public async Task NoBranchFilterForAllArtifacts()
             {
                 var input = ReadInput("Completed", "Approved.json");

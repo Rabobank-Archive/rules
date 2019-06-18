@@ -127,7 +127,8 @@ namespace SecurePipelineScan.Rules.Events
                 return null;
             }
             
-            return !environment.PreApprovalsSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover &&
+            return environment.PreApprovalsSnapshot.ApprovalOptions != null &&
+                   !environment.PreApprovalsSnapshot.ApprovalOptions.ReleaseCreatorCanBeApprover &&
                    environment.PreApprovalsSnapshot.Approvals.Any(approval => !approval.IsAutomated);
         }
 
