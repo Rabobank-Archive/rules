@@ -112,10 +112,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task RequestForMultipleContinuesUsingContinuationToken()
+        public void RequestForMultipleContinuesUsingContinuationToken()
         {
-            var releases = await 
-                _client.GetAsync(
+            var releases = _client.Get(
                     new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/",
                         new Dictionary<string, string>
                         {

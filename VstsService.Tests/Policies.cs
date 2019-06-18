@@ -23,9 +23,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryRequiredReviewersPolicies()
+        public void QueryRequiredReviewersPolicies()
         {
-            var result = (await _client.GetAsync(Requests.Policies.RequiredReviewersPolicies(_config.Project))).ToList();
+            var result = _client.Get(Requests.Policies.RequiredReviewersPolicies(_config.Project)).ToList();
 
             result.ShouldNotBeEmpty();
             result.Any(e => e.Id != 0).ShouldBeTrue();
@@ -39,9 +39,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryMinimumNumberOfReviewersPolicies()
+        public void QueryMinimumNumberOfReviewersPolicies()
         {
-            var result = (await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project))).ToList();
+            var result = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(_config.Project)).ToList();
 
             result.ShouldNotBeEmpty();
             result.Any(e => e.Id != 0).ShouldBeTrue();
@@ -67,9 +67,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task GetAllPoliciesForProject()
+        public void GetAllPoliciesForProject()
         {
-            var result = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
+            var result = _client.Get(Requests.Policies.All(_config.Project)).ToList();
 
             result.ShouldNotBeEmpty();
             result.ShouldAllBe(e => e.Id != 0);
@@ -79,9 +79,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task GetAllPoliciesConvertsToSpecific()
+        public void GetAllPoliciesConvertsToSpecific()
         {
-            var policies = (await _client.GetAsync(Requests.Policies.All(_config.Project))).ToList();
+            var policies = _client.Get(Requests.Policies.All(_config.Project)).ToList();
 
             policies.ShouldContain(p => p is RequiredReviewersPolicy);
             policies.ShouldContain(p => p is MinimumNumberOfReviewersPolicy);

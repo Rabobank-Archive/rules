@@ -18,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async void QueryServiceConnections()
+        public void QueryServiceConnections()
         {
-            var endpoints = (await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project))).ToList();
+            var endpoints = _vsts.Get(Requests.ServiceEndpoint.Endpoints(_config.Project)).ToList();
             endpoints.ShouldNotBeEmpty();
 
             var endpoint = endpoints.First();

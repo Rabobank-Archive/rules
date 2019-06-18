@@ -21,8 +21,8 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task ReadGroupMembers()
         {
-            var projectId = (await _client
-                .GetAsync(Requests.Project.Projects()))
+            var projectId = _client
+                .Get(Requests.Project.Projects())
                 .Single(x => x.Name == "SOx-compliant-demo").Id;
 
             var groupId = (await _client
@@ -44,8 +44,8 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task AddAndRemoveGroupMember()
         {
-            var projectId = (await _client
-                .GetAsync(Requests.Project.Projects()))
+            var projectId = _client
+                .Get(Requests.Project.Projects())
                 .Single(x => x.Name == "SOx-compliant-demo").Id;
 
             var groupId = (await _client

@@ -21,7 +21,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryPermissionsGroupRepositorySetReturnsPermissions()
         {
-            var namespaceId = (await _client.GetAsync(SecurityNamespace.SecurityNamespaces())).ToList()
+            var namespaceId = _client.Get(SecurityNamespace.SecurityNamespaces()).ToList()
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
@@ -39,7 +39,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryPermissionsGroupRepositoryReturnsPermissions()
         {
-            var namespaceId = (await _client.GetAsync(SecurityNamespace.SecurityNamespaces()))
+            var namespaceId = _client.Get(SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
@@ -47,7 +47,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
 
-            var repositories = (await _client.GetAsync(Requests.Repository.Repositories(_config.Project)));
+            var repositories = _client.Get(Requests.Repository.Repositories(_config.Project));
 
             foreach (var repository in repositories)
             {
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryPermissionsGroupSetIdReturnsPermissionsForSetId()
         {
-            var permissionSetId = (await _client.GetAsync(SecurityNamespace.SecurityNamespaces()))
+            var permissionSetId = _client.Get(SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.Name == "Build").NamespaceId;
 
             var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
@@ -81,15 +81,14 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryPermissionsGroupSetIdDefinitionReturnsPermissionsForSetId()
         {
-            var permissionSetId = (await _client.GetAsync(SecurityNamespace.SecurityNamespaces()))
+            var permissionSetId = _client.Get(SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.Name == "Build").NamespaceId;
 
             var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
                 .First(gi => gi.DisplayName == $"[{_config.Project}]\\Project Administrators").TeamFoundationId;
 
             var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
-
-            var buildDefinitions = (await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId)));
+            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId));
 
             foreach (var buildDefinition in buildDefinitions)
             {

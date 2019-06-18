@@ -13,14 +13,14 @@ namespace SecurePipelineScan.VstsService.Tests
 
         public Repository(TestConfig config)
         {
-            this._config = config;
+            _config = config;
             _vsts = new VstsRestClient(config.Organization, config.Token);
         }
 
         [Fact]
-        public async Task QueryRepository()
+        public void QueryRepository()
         {
-            var definition = (await _vsts.GetAsync(Requests.Repository.Repositories(_config.Project))).ToList();
+            var definition = _vsts.Get(Requests.Repository.Repositories(_config.Project)).ToList();
             definition.ShouldNotBeEmpty();
             definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Name));
             definition.ShouldAllBe(e => !string.IsNullOrEmpty(e.Id));

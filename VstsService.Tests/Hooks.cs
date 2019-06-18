@@ -18,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QuerySubscriptions()
+        public void QuerySubscriptions()
         {
-            var subscriptions = await _fixture.Client.GetAsync(Requests.Hooks.Subscriptions());
+            var subscriptions = _fixture.Client.Get(Requests.Hooks.Subscriptions());
             subscriptions.ShouldAllBe(_ => !string.IsNullOrEmpty(_.Id));
         }
 
@@ -103,7 +103,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 var config = new TestConfig();
 
                 Client = new VstsRestClient(config.Organization, config.Token);
-                ProjectId = Client.GetAsync(Requests.Project.Projects()).GetAwaiter().GetResult().Single(p => p.Name == config.Project).Id;
+                ProjectId = Client.Get(Requests.Project.Projects()).Single(p => p.Name == config.Project).Id;
 
                 var fixture = new Fixture();
                 AccountName = fixture.Create("integration-test-hook");
@@ -113,7 +113,7 @@ namespace SecurePipelineScan.VstsService.Tests
             {
                 // Make sure all hooks from this test run are properly deleted.
                 Client
-                    .GetAsync(Requests.Hooks.Subscriptions()).GetAwaiter().GetResult()
+                    .Get(Requests.Hooks.Subscriptions())
                     .ShouldNotContain(x => x.ConsumerInputs.AccountName == AccountName);
             }
         }

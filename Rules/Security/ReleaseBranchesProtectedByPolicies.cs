@@ -29,15 +29,15 @@ namespace SecurePipelineScan.Rules.Security
             "Reset code reviewer votes when there are new changes is enabled."
         };
 
-        public async Task<bool> Evaluate(string project, string repositoryId)
+        public Task<bool> Evaluate(string project, string repositoryId)
         {
-            var policies = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
-            return HasRequiredReviewerPolicy(repositoryId, policies);
+            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
+            return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
         public async Task Reconcile(string projectId, string id)
         {
-            var policies = await _client.GetAsync(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
+            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, id).SingleOrDefault(x => x.Settings.Scope.Any(s => s.RepositoryId == new Guid(id)));
 
             if (policy != null)
@@ -94,5 +94,5 @@ namespace SecurePipelineScan.Rules.Security
                 }
             };
         }
-}
+    }
 }

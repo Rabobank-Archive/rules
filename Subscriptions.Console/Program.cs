@@ -34,8 +34,8 @@ namespace Subscriptions.Console
                 }
 
                 var client = new VstsRestClient(organizationOption.Value(), tokenOption.Value());
-                var subscriptions = (await client
-                    .GetAsync(Requests.Hooks.Subscriptions()))
+                var subscriptions = client
+                    .Get(Requests.Hooks.Subscriptions())
                     .Where(_ => _.ConsumerId == "azureStorageQueue");
 
                 if (deleteOption.Values.Any())
@@ -49,8 +49,7 @@ namespace Subscriptions.Console
                         app.ShowHelp();
                         return 1;
                     }
-                    var projects = await client
-                        .GetAsync(Requests.Project.Projects());
+                    var projects = client.Get(Requests.Project.Projects());
 
                     var items = SubscriptionsPerProject(subscriptions, projects);
                     await AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
@@ -115,7 +114,7 @@ namespace Subscriptions.Console
                 System.Console.WriteLine($"Add Release deployment completed subscription to project: {item.Id}");
 
                 // We make sure the Release definition module is loaded.
-                await client.GetAsync(Requests.ReleaseManagement.Definitions(item.Id));
+                client.Get(Requests.ReleaseManagement.Definitions(item.Id));
                 await client.PostAsync(Requests.Hooks.AddHookSubscription(), Requests.Hooks.Add.ReleaseDeploymentCompleted(accountName, accountKey, "releasedeploymentcompleted", item.Id));
             }
         }

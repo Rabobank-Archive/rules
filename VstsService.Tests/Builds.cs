@@ -18,9 +18,9 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task QueryArtifacts()
+        public void QueryArtifacts()
         {
-            var artifacts = (await _client.GetAsync(Requests.Builds.Artifacts(_config.Project, _config.BuildId))).ToList();
+            var artifacts = _client.Get(Requests.Builds.Artifacts(_config.Project, _config.BuildId)).ToList();
             artifacts.ShouldNotBeEmpty();
 
             var artifact = artifacts.First();
@@ -47,7 +47,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
 
-            var buildDefinitions = (await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId))).ToList();
+            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId)).ToList();
 
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.First().Id.ShouldNotBeNull();
