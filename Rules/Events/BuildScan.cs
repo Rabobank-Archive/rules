@@ -23,7 +23,7 @@ namespace SecurePipelineScan.Rules.Events
             var id = (string)input.SelectToken("resource.id");
             var build = await _client.GetAsync<VstsService.Response.Build>((string)input.SelectToken("resource.url"));
 
-            if (build.Result == "failed" || build.Result == "cancelled")
+            if (build.Result == "failed" || build.Result == "canceled")
                 return null;
 
             var project = build.Project.Name;
