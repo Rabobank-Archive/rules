@@ -26,7 +26,8 @@ namespace SecurePipelineScan.Rules.Security
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",
-            "Reset code reviewer votes when there are new changes is enabled."
+            "Reset code reviewer votes when there are new changes is enabled.",
+            "Policy is blocking the PR."
         };
 
         public Task<bool> Evaluate(string project, string repositoryId)
@@ -38,30 +39,36 @@ namespace SecurePipelineScan.Rules.Security
         public async Task Reconcile(string projectId, string id)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
-            var policy = Find(policies, id).SingleOrDefault(x => x.Settings.Scope.Any(s => s.RepositoryId == new Guid(id)));
+            var policy = Find(policies, id).SingleOrDefault();
 
             if (policy != null)
             {
-                UpdateSettings(policy.Settings);
-                await _client.PutAsync(Requests.Policies.Policy(projectId, policy.Id), policy);
+                await _client.PutAsync(Requests.Policies.Policy(projectId, policy.Id), UpdatePolicy(policy));
             }
             else
             {
-                 policy = InitializeMinimumNumberOfReviewersPolicy(id);
-                 UpdateSettings(policy.Settings);
-                 
-                await _client.PostAsync(Requests.Policies.Policy(projectId), policy);
+                await _client.PostAsync(Requests.Policies.Policy(projectId), InitializeMinimumNumberOfReviewersPolicy(id));
             }
         }
 
         private static bool HasRequiredReviewerPolicy(string repositoryId, IEnumerable<MinimumNumberOfReviewersPolicy> policies) =>
             Find(policies, repositoryId).Any(p => p.IsEnabled &&
+                                                  p.IsBlocking &&
                                                   p.Settings.ResetOnSourcePush &&
                                                   p.Settings.MinimumApproverCount >= 2);
 
         private static IEnumerable<MinimumNumberOfReviewersPolicy> Find(IEnumerable<MinimumNumberOfReviewersPolicy> policies, string repositoryId) =>
             policies.Where(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repositoryId &&
                                                               scope.RefName == "refs/heads/master"));
+
+        private static MinimumNumberOfReviewersPolicy UpdatePolicy(MinimumNumberOfReviewersPolicy policy)
+        {
+            UpdateSettings(policy.Settings);
+            policy.IsEnabled = true;
+            policy.IsBlocking = true;
+
+            return policy;
+        }
 
         private static void UpdateSettings(MinimumNumberOfReviewersPolicySettings settings)
         {
@@ -76,9 +83,8 @@ namespace SecurePipelineScan.Rules.Security
 
         private static MinimumNumberOfReviewersPolicy InitializeMinimumNumberOfReviewersPolicy(string repositoryId)
         {
-            return new MinimumNumberOfReviewersPolicy
+            return UpdatePolicy(new MinimumNumberOfReviewersPolicy
             {
-                IsEnabled =  true,
                 Settings =  new MinimumNumberOfReviewersPolicySettings
                 {
                     Scope = new[]
@@ -92,7 +98,7 @@ namespace SecurePipelineScan.Rules.Security
                     }
                             
                 }
-            };
+            });
         }
     }
 }

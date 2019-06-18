@@ -103,6 +103,24 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Assert
             evaluatedRule.ShouldBeFalse();
         }
+        
+        [Fact]
+        public async Task EvaluateShouldReturnFalseWhenPolicyIsNotBlocking()
+        {
+            //Arrange
+            CustomizeScope(_fixture, RepositoryId);
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture, isBlocking: false);
+            CustomizePolicySettings(_fixture);
+
+            SetupClient(_client, _fixture);
+
+            //Act
+            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+
+            //Assert
+            evaluatedRule.ShouldBeFalse();
+        }
 
         [Fact]
         public async Task EvaluateShouldReturnFalseWhenThereAreNoCorrectPoliciesForMasterBranch()
@@ -145,6 +163,23 @@ namespace SecurePipelineScan.Rules.Tests.Security
             await _client
                 .Received()
                 .PostAsync(Arg.Any<IVstsRequest<Policy,Policy>>(), Arg.Any<MinimumNumberOfReviewersPolicy>());
+        }
+
+        [Fact]
+        public async Task PolicySettingsOnReconcile()
+        {
+            // Arrange
+            CustomizeScope(_fixture);
+            SetupClient(_client, _fixture);
+            
+            // Act
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
+            await rule.Reconcile(_config.Project, RepositoryId);
+
+            // Assert
+            await _client
+                .Received()
+                .PutAsync(Arg.Any<IVstsRequest<Policy,Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(p => !p.IsDeleted && p.IsBlocking && p.IsEnabled));
         }
         
         [Fact]
@@ -202,10 +237,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(r => r.CreatorVoteCounts, creatorVoteCounts));
         }
 
-        private static void CustomizeMinimumNumberOfReviewersPolicy(IFixture fixture, bool enabled = true)
+        private static void CustomizeMinimumNumberOfReviewersPolicy(IFixture fixture, 
+            bool isBlocking = true,
+            bool isDeleted = true,
+            bool isEnabled = true)
         {
             fixture.Customize<MinimumNumberOfReviewersPolicy>(ctx => ctx
-                .With(r => r.IsEnabled, enabled));
+                .With(r => r.IsEnabled, isEnabled)
+                .With(r => r.IsDeleted, isDeleted)
+                .With(r => r.IsBlocking, isBlocking));
         }
 
 
