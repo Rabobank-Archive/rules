@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Multiple<BuildDefinition>> BuildDefinitions(string projectId, bool includeAllProperties = false)
         {
             return new VstsRequest<Multiple<BuildDefinition>>(
-                $"{projectId}/_apis/build/definitions", new Dictionary<string, string>
+                $"{projectId}/_apis/build/definitions", new Dictionary<string, object>
                 {
                     {"includeAllProperties", $"{includeAllProperties}"},
                     {"api-version", "5.0-preview.7"}

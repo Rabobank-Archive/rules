@@ -16,7 +16,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.Multiple<Response.AgentStatus>> AgentPoolStatus(int id)
         {
-            return new VstsRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents", new Dictionary<string, string>
+            return new VstsRequest<Response.Multiple<Response.AgentStatus>>($"_apis/distributedtask/pools/{id}/agents", new Dictionary<string, object>
             {
                 {"includeCapabilities", "false"},
                 {"includeAssignedRequest", "true"}

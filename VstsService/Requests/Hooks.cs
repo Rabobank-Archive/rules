@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Multiple<Hook>> Subscriptions()
         {
             return new VstsRequest<Multiple<Hook>>(
-                $"_apis/hooks/subscriptions", new Dictionary<string, string>
+                $"_apis/hooks/subscriptions", new Dictionary<string, object>
                 {
                     {"api-version", "5.0-preview.1"}
                 });
@@ -178,15 +178,15 @@ namespace SecurePipelineScan.VstsService.Requests
             }
         }
         
-        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}", new Dictionary<string, string>
+        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}", new Dictionary<string, object>
         {
             {"api-version","5.0-preview.1"}
         });
-        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, string>
+        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, object>
         {
             {"api-version","5.0-preview.1"}
         });
-        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, string>
+        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, object>
         {
             {"api-version","5.0-preview.1"}
         });

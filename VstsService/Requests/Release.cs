@@ -19,7 +19,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.Multiple<Response.Release>> Releases(string project, string expand, string asof)
         {
-            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases", new Dictionary<string, string> 
+            return new VsrmRequest<Response.Multiple<Response.Release>>($"{project}/_apis/release/releases", new Dictionary<string, object> 
             {
                 { "expand", $"{expand}" },
                 { "minCreatedTime", $"{asof}" }
@@ -43,7 +43,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Response.ReleaseSettings> Settings(string project)
         {
-            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings", new Dictionary<string, string> 
+            return new VsrmRequest<Response.ReleaseSettings>($"{project}/_apis/release/releasesettings", new Dictionary<string, object> 
             {
                 { "api-version", "5.0-preview" }
             });

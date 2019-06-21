@@ -8,14 +8,14 @@ namespace SecurePipelineScan.VstsService
         where TResponse: new()
     {
         public string Resource { get; }
-        public IDictionary<string, string> QueryParams { get; }
+        public IDictionary<string, object> QueryParams { get; }
 
         public ExtmgmtRequest(string resource)
         {
             Resource = resource;
         }
 
-        public ExtmgmtRequest(string resource, IDictionary<string, string> queryParams)
+        public ExtmgmtRequest(string resource, IDictionary<string, object> queryParams)
         {
             Resource = resource;
             QueryParams = queryParams;

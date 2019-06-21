@@ -12,7 +12,7 @@ namespace SecurePipelineScan.VstsService
     {
         Uri BaseUri(string organization);
         string Resource { get; }
-        IDictionary<string, string> QueryParams { get; }
+        IDictionary<string, object> QueryParams { get; }
     }
 
     public interface IVstsRequest<TResponse> : IVstsRequest<TResponse, TResponse>

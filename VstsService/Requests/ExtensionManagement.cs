@@ -13,7 +13,7 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new ExtmgmtRequest<TExtensionData>(
                 $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents/{id}",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"api-version", "3.1-preview.1"}
                 });
@@ -26,7 +26,7 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new ExtmgmtRequest<TExtensionData>(
                 $"_apis/ExtensionManagement/InstalledExtensions/{publisher}/{extensionName}/Data/Scopes/Default/Current/Collections/{collection}/Documents",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"api-version", "3.1-preview.1"}
                 });

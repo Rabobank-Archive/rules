@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Multiple<Response.SecurityNamespace>> SecurityNamespaces()
         {
             return new VstsRequest<Multiple<Response.SecurityNamespace>>(
-                $"_apis/securitynamespaces", new Dictionary<string, string>
+                $"_apis/securitynamespaces", new Dictionary<string, object>
                 {
                     {"api-version", "5.1-preview.1"}
                 });

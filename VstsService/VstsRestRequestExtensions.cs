@@ -25,7 +25,7 @@ namespace SecurePipelineScan.VstsService
             public Uri BaseUri(string organization) => _request.BaseUri(organization);
 
             public string Resource => _request.Resource;
-            public IDictionary<string, string> QueryParams => _request.QueryParams;
+            public IDictionary<string, object> QueryParams => _request.QueryParams;
         }
     }
 }

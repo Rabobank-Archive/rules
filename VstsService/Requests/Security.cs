@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.Security.IdentityGroup> GroupMembers(string projectId, string groupId)
         {
             return new VstsRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadGroupMembers",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"},
                     {"scope", groupId},
@@ -20,7 +20,7 @@ namespace SecurePipelineScan.VstsService.Requests
         {
             return new VstsRequest<Response.Security.IdentityGroup>(
                 $"/{projectId}/_api/_identity/ReadScopedApplicationGroupsJson",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
@@ -28,7 +28,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<AddMemberData, object> AddMember(string project) => 
             new VstsRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
@@ -36,7 +36,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<EditMembersData, object> EditMembership(string project) =>
             new VstsRequest<EditMembersData, object>($"/{project}/_api/_identity/EditMembership",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
@@ -74,7 +74,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<ManageGroupData, Response.ApplicationGroup> ManageGroup(string project) =>
             new VstsRequest<ManageGroupData, Response.ApplicationGroup>($"/{project}/_api/_identity/ManageGroup",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
@@ -87,7 +87,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<string, object> DeleteIdentity(string project) =>
             new VstsRequest<string, object>($"/{project}/_api/_identity/DeleteIdentity",
-                new Dictionary<string, string>
+                new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });

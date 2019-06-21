@@ -7,14 +7,14 @@ namespace SecurePipelineScan.VstsService
         where TResponse: new()
     {
         public string Resource { get; }
-        public IDictionary<string, string> QueryParams { get; }
+        public IDictionary<string, object> QueryParams { get; }
 
         public VstsRequest(string resource)
         {
             Resource = resource;
         }
 
-        public VstsRequest(string resource, IDictionary<string, string> queryParams)
+        public VstsRequest(string resource, IDictionary<string, object> queryParams)
         {
             Resource = resource;
             QueryParams = queryParams;
@@ -33,7 +33,7 @@ namespace SecurePipelineScan.VstsService
         {
         }
 
-        public VstsRequest(string resource, IDictionary<string, string> queryParams) : base(resource, queryParams)
+        public VstsRequest(string resource, IDictionary<string, object> queryParams) : base(resource, queryParams)
         {
         }
     }

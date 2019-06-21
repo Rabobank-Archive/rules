@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.ApplicationGroups> ApplicationGroups(string project)
         {
             return new VstsRequest<Response.ApplicationGroups>(
-                $"{project}/_api/_identity/ReadScopedApplicationGroupsJson", new Dictionary<string, string>
+                $"{project}/_api/_identity/ReadScopedApplicationGroupsJson", new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
@@ -16,7 +16,7 @@ namespace SecurePipelineScan.VstsService.Requests
         
         public static IVstsRequest<Response.ApplicationGroups> GroupMembers(string project, string groupId)
         {
-            return new VstsRequest<Response.ApplicationGroups>($"/{project}/_api/_identity/ReadGroupMembers", new Dictionary<string, string>
+            return new VstsRequest<Response.ApplicationGroups>($"/{project}/_api/_identity/ReadGroupMembers", new Dictionary<string, object>
             {
                 {"__v", "5"},
                 {"scope", groupId},
@@ -27,7 +27,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesRepos(string projectId, string namespaceId)
         {
             return new VstsRequest<Response.ApplicationGroups>(
-                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, string>
+                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, object>
                 {
                     {"__v", "5"},
                     {"permissionSetId", namespaceId},
@@ -38,7 +38,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesPipelines(string projectId, string namespaceId, string pipelineId)
         {
             return new VstsRequest<Response.ApplicationGroups>(
-                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, string>
+                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, object>
                 {
                     {"__v", "5"},
                     {"permissionSetId", namespaceId},

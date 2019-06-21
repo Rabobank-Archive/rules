@@ -106,15 +106,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","11"))));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","11"))));
             
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","22"))));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","22"))));
             
             await client
                 .Received()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, string>("tfid","33"))));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","33"))));
 
         }
 

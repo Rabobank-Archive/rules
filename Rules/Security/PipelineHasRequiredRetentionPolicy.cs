@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Security
 
             var releasePipeline = await _client.GetAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}")
                 .AsJson());
-            await _client.PutAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}", new Dictionary<string, string> { {"api-version", "5.0" }}), 
+            await _client.PutAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}", new Dictionary<string, object> { {"api-version", "5.0" }}), 
                 UpdateReleaseDefinition(releasePipeline));
         }
 

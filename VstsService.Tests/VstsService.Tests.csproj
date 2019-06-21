@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>SecurePipelineScan.VstsService.Tests</RootNamespace>
     <Version>1.0.0.0</Version>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
