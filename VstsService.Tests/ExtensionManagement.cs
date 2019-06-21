@@ -88,7 +88,7 @@ namespace SecurePipelineScan.VstsService.Tests
                     "DevOps Demo"), result));
            
             ex.Call.HttpStatus.ShouldBe(HttpStatusCode.BadRequest);
-            ex.Call.Request.RequestUri.ToString().ShouldStartWith(new ExtmgmtRequest<TestObject>("bla").BaseUri(_organization).ToString()); // Verify that the call was indeed to the extmgt API
+            ex.Call.Request.IsExtMgtRequest(_organization).ShouldBeTrue(); // Verify that the call was indeed to the extmgt API
         }
 
         private class TestObject : ExtensionData
