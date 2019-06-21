@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SecurePipelineScan.VstsService
+namespace SecurePipelineScan.VstsService.Handlers
 {
     public class NotFoundHandler : DelegatingHandler
     {
@@ -13,7 +13,9 @@ namespace SecurePipelineScan.VstsService
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var result = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var result =
+                   await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            
             if (result.StatusCode == HttpStatusCode.NotFound)
             {
                 // Clear the contents from a 404 response because it deserializes to an empty object otherwise.

@@ -1,5 +1,6 @@
 using System.Net.Http;
 using Flurl.Http.Configuration;
+using SecurePipelineScan.VstsService.Handlers;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -7,7 +8,7 @@ namespace SecurePipelineScan.VstsService
     {
         public override HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
-            return base.CreateHttpClient(new NotFoundHandler(handler));
+            return base.CreateHttpClient(new RetryHandler(new NotFoundHandler(handler)));
         }
     }
 }
