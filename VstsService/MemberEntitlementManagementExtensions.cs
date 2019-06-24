@@ -6,7 +6,13 @@ namespace SecurePipelineScan.VstsService
 {
     public static class MemberEntitlementManagementExtensions
     {
-        public static IEnumerable<T> Get<T>(this IVstsRestClient client, IVstsRequest<Entitlements<T>> request, int take = 100)
+        private const int MaxIterationSize = 100;
+        
+        public static IEnumerable<T> Get<T>(this IVstsRestClient client, IVstsRequest<Entitlements<T>> request) =>
+            Get(client, request, MaxIterationSize);
+
+        internal static IEnumerable<T> Get<T>(this IVstsRestClient client, IVstsRequest<Entitlements<T>> request,
+            int take)
         {
             request.QueryParams["take"] = take;
             var skip = 0;
