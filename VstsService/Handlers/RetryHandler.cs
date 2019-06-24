@@ -12,14 +12,9 @@ namespace SecurePipelineScan.VstsService.Handlers
         {
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            var result =
-                await HttpPolicies.RetryPolicy.ExecuteAsync(
-                    ct => base.SendAsync(request, ct), cancellationToken).ConfigureAwait(false);
-
-            return result;
-        }
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken) =>
+            HttpPolicies.RetryPolicy.ExecuteAsync(
+                ct => base.SendAsync(request, ct), cancellationToken);
     }
 }

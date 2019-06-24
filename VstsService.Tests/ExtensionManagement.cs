@@ -13,13 +13,11 @@ namespace SecurePipelineScan.VstsService.Tests
     public class ExtensionManagement : IClassFixture<TestConfig>
     {
         private readonly IVstsRestClient _client;
-        private readonly string _organization;
         private readonly Fixture _fixture = new Fixture();
 
         public ExtensionManagement(TestConfig config)
         {
             _client = new VstsRestClient(config.Organization, config.Token);
-            _organization = config.Organization;
         }
 
         [Fact]
@@ -88,11 +86,11 @@ namespace SecurePipelineScan.VstsService.Tests
                     "DevOps Demo"), result));
            
             ex.Call.HttpStatus.ShouldBe(HttpStatusCode.BadRequest);
-            ex.Call.Request.IsExtMgtRequest(_organization).ShouldBeTrue(); // Verify that the call was indeed to the extmgt API
         }
 
         private class TestObject : ExtensionData
         {
+            // ReSharper disable twice UnusedAutoPropertyAccessor.Local
             public string Name { get; set; }
             public string Value { get; set; }
         }
