@@ -18,7 +18,8 @@ namespace SecurePipelineScan.VstsService.Tests
         public void TestUserEntitlement()
         {
             var result = _client
-                .Get(MemberEntitlementManagement.UserEntitlements());
+                .Get(MemberEntitlementManagement.UserEntitlements())
+                .ToList();
 
             var first = result.First(x => x.LastAccessedDate != default);
             first.DateCreated.ShouldNotBe(default);
