@@ -26,9 +26,10 @@ namespace SecurePipelineScan.VstsService.Policies
             {
                 return Policy
                     .HandleResult<HttpResponseMessage>(r => HttpStatusCodesWorthRetrying.Contains(r.StatusCode))
-                    .Or<SocketException>(ex =>
+                    .Or<SocketException>(ex =>         // Sometimes occurs when AzDo is temporarily unreachable
                         ex.Message.Contains(
-                            "No connection could be made because the target machine actively refused it")) // Sometimes occurs when AzDo is temporarily unreachable
+                            "No connection could be made because the target machine actively refused it") || // Message on Windows-based machine
+                        ex.Message.Contains("Connection refused")) // Message on MacOs-based machine
                     .Or<TaskCanceledException>() // Occurs when a HTTP call times out
                     .WaitAndRetryAsync(9,
                         retryAttempt =>
