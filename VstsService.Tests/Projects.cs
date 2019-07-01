@@ -10,9 +10,12 @@ namespace SecurePipelineScan.VstsService.Tests
     {
         private readonly IVstsRestClient _client;
 
+        private TestConfig _config;
+
         public Projects(TestConfig config)
         {
             _client = new VstsRestClient(config.Organization, config.Token);
+            _config = config;
         }
 
         /// <summary>
@@ -33,6 +36,13 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var id = _client.GetAsync(Requests.Project.Properties(firstProjectName));
             id.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void QuerySingleProjectWithNameShouldReturnAProject()
+        {
+            var project = _client.GetAsync(Requests.Project.ProjectByName(_config.Project));
+            project.ShouldNotBeNull();
         }
     }
 }

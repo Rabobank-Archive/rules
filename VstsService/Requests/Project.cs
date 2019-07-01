@@ -23,5 +23,14 @@ namespace SecurePipelineScan.VstsService.Requests
                     {"api-version", "5.1-preview.2"}
                 });
         }
+
+        public static IVstsRequest<Response.Project> ProjectByName(string projectName)
+        {
+            return new VstsRequest<Response.Project>(
+                $"_apis/{projectName}", new Dictionary<string, object>
+                {
+                    {"api-version", "5.0"}
+                });
+        }
     }
 }
