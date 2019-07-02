@@ -44,6 +44,7 @@ namespace SecurePipelineScan.VstsService.Tests
             
             var project = await _client.GetAsync(Requests.Project.ProjectByName("TAS"));
             project.ShouldNotBeNull();
+            project.Name.ShouldBe("TAS");
         }
     }
 }
