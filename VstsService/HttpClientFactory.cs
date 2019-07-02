@@ -1,5 +1,6 @@
 using System.Net.Http;
 using Flurl.Http.Configuration;
+using HttpHelpers.Handlers;
 using SecurePipelineScan.VstsService.Handlers;
 
 namespace SecurePipelineScan.VstsService

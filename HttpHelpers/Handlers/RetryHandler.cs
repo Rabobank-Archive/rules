@@ -1,10 +1,9 @@
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SecurePipelineScan.VstsService.Policies;
+using HttpHelpers.Policies;
 
-namespace SecurePipelineScan.VstsService.Handlers
+namespace HttpHelpers.Handlers
 {
     public class RetryHandler : DelegatingHandler
     {
