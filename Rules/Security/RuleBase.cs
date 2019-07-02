@@ -17,9 +17,9 @@ namespace SecurePipelineScan.Rules.Security
         protected abstract Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
             ApplicationGroup group);
         protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id);
-        protected abstract Task UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
+        protected abstract Task UpdatePermission(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
-        public async Task<bool> Evaluate(string projectId, string id)
+        public virtual async Task<bool> Evaluate(string projectId, string id)
         {
             var groups = (await LoadGroups(projectId, id))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Security
             return permissions.All(p => !PermissionBits.Contains(p.PermissionBit) || AllowedPermissions.Contains(p.PermissionId));
         }
 
-        public async Task Reconcile(string projectId, string id)
+        public virtual async Task Reconcile(string projectId, string id)
         {
             var groups = (await LoadGroups(projectId, id))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
@@ -44,7 +44,7 @@ namespace SecurePipelineScan.Rules.Security
                 foreach (var permission in permissions)
                 {
                     permission.PermissionId = PermissionId.Deny;
-                    await UpdatePermissionToDeny(projectId, group, permissionSetId, permission);
+                    await UpdatePermission(projectId, group, permissionSetId, permission);
                 }
             }
         }
