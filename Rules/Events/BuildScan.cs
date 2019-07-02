@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Events
 
             var project = build.Project.Name;
             var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson());
-            var usedTaskIds = timeline.SelectTokens("records[*].task.id").Values<string>();
+            var usedTaskIds = timeline?.SelectTokens("records[*].task.id").Values<string>().ToList();
 
             var artifacts = _client.Get(VstsService.Requests.Builds.Artifacts(project, id));
 
@@ -39,8 +39,8 @@ namespace SecurePipelineScan.Rules.Events
                 Project = project,
                 CreatedDate = (DateTime)input["createdDate"],
                 ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container"),
-                UsesFortify = usedTaskIds.Contains(FortifyScaTaskId),
-                UsesSonarQube = usedTaskIds.Contains(SonarQubePublishTaskId),
+                UsesFortify = usedTaskIds?.Contains(FortifyScaTaskId),
+                UsesSonarQube = usedTaskIds?.Contains(SonarQubePublishTaskId),
             };
         }
     }
