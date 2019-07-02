@@ -23,6 +23,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
             
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
@@ -52,6 +53,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
 
             var input = ReadInput("Completed.json");
             var timeline = ReadInput("DesignerBuildTimeline.json");
@@ -81,6 +83,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
 
             var input = ReadInput("Completed.json");
             var timeline = ReadInput("YamlBuildTimeline.json");
@@ -111,6 +114,7 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture.Customize<ArtifactResource>(x =>
                 x.With(a => a.Type, "Container"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
             
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
@@ -138,6 +142,8 @@ namespace SecurePipelineScan.Rules.Tests
         [Fact]
         public async Task NotAllArtifactsInContainer_ArtifactsStoredSecure_ShouldBeFalse()
         {
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
+            
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
