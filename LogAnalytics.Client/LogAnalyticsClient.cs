@@ -21,6 +21,10 @@ namespace LogAnalytics.Client
         {
             _workspace = workspace;
             _key = key;
+            
+            FlurlHttp.Configure(settings => {
+                settings.HttpClientFactory = new HttpClientFactory();
+            });
         }
 
         public async Task AddCustomLogJsonAsync(string logName, object input, string timefield)
@@ -38,7 +42,7 @@ namespace LogAnalytics.Client
         }
 
         // Build the API signature
-        private string BuildSignature(string message, string secret)
+        private static string BuildSignature(string message, string secret)
         {
             var encoding = new ASCIIEncoding();
             byte[] keyByte = Convert.FromBase64String(secret);
