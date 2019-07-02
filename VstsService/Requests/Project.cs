@@ -27,7 +27,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.Project> ProjectByName(string projectName)
         {
             return new VstsRequest<Response.Project>(
-                $"_apis/{projectName}", new Dictionary<string, object>
+                $"_apis/projects/{projectName}", new Dictionary<string, object>
                 {
                     {"api-version", "5.0"}
                 });

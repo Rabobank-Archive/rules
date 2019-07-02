@@ -29,19 +29,20 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void QueryProjectProperties()
+        public async Task QueryProjectProperties()
         {
             var projects = _client.Get(Requests.Project.Projects());
             var firstProjectName = projects.First().Name;
 
-            var id = _client.GetAsync(Requests.Project.Properties(firstProjectName));
+            var id = await _client.GetAsync(Requests.Project.Properties(firstProjectName));
             id.ShouldNotBeNull();
         }
 
         [Fact]
-        public void QuerySingleProjectWithNameShouldReturnAProject()
+        public async Task QuerySingleProjectWithNameShouldReturnAProject()
         {
-            var project = _client.GetAsync(Requests.Project.ProjectByName(_config.Project));
+            
+            var project = await _client.GetAsync(Requests.Project.ProjectByName("TAS"));
             project.ShouldNotBeNull();
         }
     }
