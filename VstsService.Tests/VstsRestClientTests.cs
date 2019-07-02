@@ -32,7 +32,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 var client = new VstsRestClient("dummy", "pat");
                 await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
             }
-         }
+        }
 
         [Fact]
         public async Task PostThrowsOnError()
