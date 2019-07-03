@@ -14,11 +14,14 @@ namespace SecurePipelineScan.Rules.Security
             //nothing
         }
 
+        const int ManageApprovalsPermissionBit = 8;
+        const int CreateReleasesPermissionBit = 64;
+
         protected override string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; //release management
         protected override IEnumerable<int> PermissionBits => new[]
         {
-            8,      //Manage release approvers
-            64      //Create releases
+            ManageApprovalsPermissionBit,      
+            CreateReleasesPermissionBit 
         };
         protected override IEnumerable<int> AllowedPermissions => new[]
         {
@@ -44,14 +47,14 @@ namespace SecurePipelineScan.Rules.Security
             "the 'Manage Release Approvers' permission is set to Deny",
         };
 
-        public override async Task<bool> Evaluate(string projectId, string id)
+        public override async Task<bool> Evaluate(string projectId, string releasePipelineId)
         {
-            var groups = (await LoadGroups(projectId, id))
+            var groups = (await LoadGroups(projectId, releasePipelineId))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, group);
+                var permissionSetId = await LoadPermissionsSetForGroup(projectId, releasePipelineId, group);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
 
@@ -61,38 +64,39 @@ namespace SecurePipelineScan.Rules.Security
             return true;
         }
 
-        public override async Task Reconcile(string projectId, string id)
+        public override async Task Reconcile(string projectId, string releasePipelineId)
         {
-            if (!(await LoadGroups(projectId)).Any(g => g.FriendlyDisplayName == "Production Environment Owners"))
+            if ((await LoadGroups(projectId)).All(g => g.FriendlyDisplayName != "Production Environment Owners"))
             {
                 var group = await CreateProductionEnvironmentOwnersGroup(projectId);
                 var permissionSetId = await LoadPermissionsSetForGroup(projectId, group);
 
-                var createReleasesPermission = permissionSetId.Permissions.SingleOrDefault(p => p.PermissionBit == 64);
+                var createReleasesPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
                 createReleasesPermission.PermissionId = PermissionId.Deny;
                 await UpdatePermission(projectId, group, permissionSetId, createReleasesPermission);
 
-                var manageApprovalsPermission = permissionSetId.Permissions.SingleOrDefault(p => p.PermissionBit == 8);
+                var manageApprovalsPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
                 manageApprovalsPermission.PermissionId = PermissionId.Allow;
                 await UpdatePermission(projectId, group, permissionSetId, manageApprovalsPermission);
             }
 
-            var groups = (await LoadGroups(projectId, id))
+            var groups = (await LoadGroups(projectId, releasePipelineId))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, group);
+                var permissionSetId = await LoadPermissionsSetForGroup(projectId, releasePipelineId, group);
                 var permissions = permissionSetId.Permissions
-                    .Where(p => PermissionBits.Contains(p.PermissionBit));
+                    .Where(p => PermissionBits.Contains(p.PermissionBit))
+                    .ToList();
 
                 if (!permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                 {
                     var permissionToUpdate = new Permission();
                     if (group.FriendlyDisplayName == "Production Environment Owners")
-                        permissionToUpdate = permissions.SingleOrDefault(p => p.PermissionBit == 64);//Create Releases
+                        permissionToUpdate = permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
                     else
-                        permissionToUpdate = permissions.SingleOrDefault(p => p.PermissionBit == 8);//Manage Approvers
+                        permissionToUpdate = permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
                     permissionToUpdate.PermissionId = PermissionId.Deny;
                     await UpdatePermission(projectId, group, permissionSetId, permissionToUpdate);
                 }
