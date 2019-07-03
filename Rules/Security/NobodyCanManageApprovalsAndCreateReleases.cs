@@ -90,16 +90,16 @@ namespace SecurePipelineScan.Rules.Security
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
                     .ToList();
 
-                if (!permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
-                {
-                    var permissionToUpdate = new Permission();
-                    if (group.FriendlyDisplayName == "Production Environment Owners")
-                        permissionToUpdate = permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
-                    else
-                        permissionToUpdate = permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
-                    permissionToUpdate.PermissionId = PermissionId.Deny;
-                    await UpdatePermission(projectId, group, permissionSetId, permissionToUpdate);
-                }
+                if (permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
+                    continue;
+
+                Permission permissionToUpdate;
+                if (group.FriendlyDisplayName == "Production Environment Owners")
+                    permissionToUpdate = permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
+                else
+                    permissionToUpdate = permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
+                permissionToUpdate.PermissionId = PermissionId.Deny;
+                await UpdatePermission(projectId, group, permissionSetId, permissionToUpdate);
             }
         }
     }
