@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -29,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval(client);
-            await rule.Evaluate(_config.Project, "1");
+            (await rule.Evaluate(_config.Project, "1")).ShouldBeTrue();
         }
 
         [Theory]
@@ -65,6 +63,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 ApprovalOptions = new ApprovalOptions
                                 {
                                     ReleaseCreatorCanBeApprover = true
+                                },
+                                Approvals = new Approval[]
+                                {
+                                    new Approval
+                                    {
+                                        Approver = new Identity
+                                        {
+                                            DisplayName = "Henk",
+                                            Id = new System.Guid()
+                                        },
+                                        IsAutomated = false
+                                    }
                                 }
                             }
                         },
@@ -76,6 +86,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 ApprovalOptions = new ApprovalOptions
                                 {
                                     ReleaseCreatorCanBeApprover = releaseCreatorCanBeApprover
+                                },
+                                Approvals = new Approval[]
+                                {
+                                    new Approval
+                                    {
+                                        Approver = new Identity
+                                        {
+                                            DisplayName = "Henk",
+                                            Id = new System.Guid()
+                                        },
+                                        IsAutomated = false
+                                    }
                                 }
                             }
                         }

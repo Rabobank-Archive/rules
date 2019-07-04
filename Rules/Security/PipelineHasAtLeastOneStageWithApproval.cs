@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Security
 
         //TODO: Once we can get information from SM9 regarding the production pipeline/stage,
         //      we only have to check the approval of this stage.
-        string IRule.Description => "Production release pipeline has at least one stage with 4-eyes approval";
+        string IRule.Description => "Release pipeline contains 4-eyes approval";
 
         string IRule.Why =>
             "To make sure production releases are approved by at least one other person";
@@ -35,8 +35,8 @@ namespace SecurePipelineScan.Rules.Security
         {
             return releasePipeline
                 .Environments
-                .Select(p => p.PreDeployApprovals.ApprovalOptions.ReleaseCreatorCanBeApprover)
-                .Contains(false);
+                .Select(p => p.PreDeployApprovals)
+                .Any(p => !p.ApprovalOptions.ReleaseCreatorCanBeApprover && p.Approvals.First().Approver != null);
         }
 
     }
