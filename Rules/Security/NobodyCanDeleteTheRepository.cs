@@ -51,7 +51,7 @@ namespace SecurePipelineScan.Rules.Security
             ApplicationGroup group) =>
             (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id)));
 
-        protected override async Task UpdatePermissionToDeny(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission) =>
+        protected override async Task UpdatePermission(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission) =>
             await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
     }
 }

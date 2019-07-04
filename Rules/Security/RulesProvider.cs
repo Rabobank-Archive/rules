@@ -32,6 +32,7 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteReleases(client);
+            yield return new NobodyCanManageApprovalsAndCreateReleases(client);
             yield return new PipelineHasRequiredRetentionPolicy(client);
         }
     }

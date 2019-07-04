@@ -45,5 +45,16 @@ namespace SecurePipelineScan.VstsService.Requests
                     {"permissionSetToken", $"{projectId}/{pipelineId}"}
                 });
         }
+
+        public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesPipelines(string projectId, string namespaceId)
+        {
+            return new VstsRequest<Response.ApplicationGroups>(
+                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, object>
+                {
+                    {"__v", "5"},
+                    {"permissionSetId", namespaceId},
+                    {"permissionSetToken", $"{projectId}"}
+                });
+        }
     }
 }
