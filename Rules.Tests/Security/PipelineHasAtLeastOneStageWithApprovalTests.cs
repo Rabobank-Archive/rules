@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Theory]
         [InlineData(false,true)]
         [InlineData(true,false)]
-        public async Task GivenStageAndApproval_WhenEvaluate_ThenTrue(bool releaseCreatorCanBeApprover, bool compliant)
+        public async Task GivenStageAndApproval_Evaluate(bool releaseCreatorCanBeApprover, bool compliant)
         {
             //Arrange
             SetupClient(_client, releaseCreatorCanBeApprover);
@@ -68,19 +68,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 }
                             }
                         },
+                        new ReleaseDefinitionEnvironment() 
                         {
-                            new ReleaseDefinitionEnvironment() 
+                            Name = "Stage 2",
+                            PreDeployApprovals = new PreDeployApprovals
                             {
-                                Name = "Stage 2",
-                                PreDeployApprovals = new PreDeployApprovals
+                                ApprovalOptions = new ApprovalOptions
                                 {
-                                    ApprovalOptions = new ApprovalOptions
-                                    {
-                                        ReleaseCreatorCanBeApprover = releaseCreatorCanBeApprover
-                                    }
-                                 }
+                                    ReleaseCreatorCanBeApprover = releaseCreatorCanBeApprover
+                                }
                             }
-                        }                
+                        }
                     }
                 });
         }
