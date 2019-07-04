@@ -3,7 +3,6 @@ using SecurePipelineScan.VstsService;
 using System.Linq;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
-using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -14,8 +13,8 @@ namespace SecurePipelineScan.Rules.Security
             //nothing
         }
 
-        const int ManageApprovalsPermissionBit = 8;
-        const int CreateReleasesPermissionBit = 64;
+        private const int ManageApprovalsPermissionBit = 8;
+        private const int CreateReleasesPermissionBit = 64;
 
         protected override string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; //release management
         protected override IEnumerable<int> PermissionBits => new[]
@@ -93,11 +92,9 @@ namespace SecurePipelineScan.Rules.Security
                 if (permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                     continue;
 
-                Permission permissionToUpdate;
-                if (group.FriendlyDisplayName == "Production Environment Owners")
-                    permissionToUpdate = permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
-                else
-                    permissionToUpdate = permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
+                var permissionToUpdate = group.FriendlyDisplayName == "Production Environment Owners"
+                    ? permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit)
+                    : permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
                 permissionToUpdate.PermissionId = PermissionId.Deny;
                 await UpdatePermission(projectId, group, permissionSetId, permissionToUpdate);
             }
