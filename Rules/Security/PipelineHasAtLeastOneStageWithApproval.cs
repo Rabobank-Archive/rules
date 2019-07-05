@@ -33,7 +33,10 @@ namespace SecurePipelineScan.Rules.Security
             return releasePipeline
                 .Environments
                 .Select(p => p.PreDeployApprovals)
-                .Any(p => !p.ApprovalOptions.ReleaseCreatorCanBeApprover && p.Approvals.Any(a => a.Approver != null));
+                .Any(p => 
+                    p.ApprovalOptions != null
+                    && !p.ApprovalOptions.ReleaseCreatorCanBeApprover 
+                    && p.Approvals.Any(a => a.Approver != null));
         }
 
     }

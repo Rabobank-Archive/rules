@@ -74,5 +74,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Assert
             result.ShouldBe(false);
         }
+
+        [Fact]
+        public async Task GivenNoApprovalOptions_ShouldBeNonCompliant()
+        {
+            //Arrange
+            var fixture = new Fixture();
+            fixture.Customize<PreDeployApprovals>(ctx =>
+                ctx.With(a => a.ApprovalOptions, null));
+            var def = fixture.Create<ReleaseDefinition>();
+
+            _client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
+                .Returns(def);
+            
+            //Act
+            var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
+            var result = await rule.Evaluate(_config.Project, "1");
+            
+            //Assert
+            result.ShouldBe(false);
+        }
     }
 }
