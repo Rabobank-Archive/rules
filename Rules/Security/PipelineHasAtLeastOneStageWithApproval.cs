@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
-using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -20,7 +17,7 @@ namespace SecurePipelineScan.Rules.Security
 
         //TODO: Once we can get information from SM9 regarding the production pipeline/stage,
         //      we only have to check the approval of this stage.
-        string IRule.Description => "Production release pipeline has at least one stage with 4-eyes approval";
+        string IRule.Description => "Release pipeline contains 4-eyes approval";
 
         string IRule.Why =>
             "To make sure production releases are approved by at least one other person";
@@ -31,12 +28,12 @@ namespace SecurePipelineScan.Rules.Security
             return HasAtLeastOneStageWithApproval(releasePipeline);
         }
 
-        private bool HasAtLeastOneStageWithApproval(ReleaseDefinition releasePipeline)
+        private static bool HasAtLeastOneStageWithApproval(ReleaseDefinition releasePipeline)
         {
             return releasePipeline
                 .Environments
-                .Select(p => p.PreDeployApprovals.ApprovalOptions.ReleaseCreatorCanBeApprover)
-                .Contains(false);
+                .Select(p => p.PreDeployApprovals)
+                .Any(p => !p.ApprovalOptions.ReleaseCreatorCanBeApprover && p.Approvals.Any(a => a.Approver != null));
         }
 
     }
