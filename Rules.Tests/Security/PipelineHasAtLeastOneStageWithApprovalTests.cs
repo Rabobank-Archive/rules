@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using AutoFixture;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
@@ -33,11 +33,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Theory]
         [InlineData(false,true)]
         [InlineData(true,false)]
-        public async Task GivenStageAndApproval_Evaluate(bool releaseCreatorCanBeApprover, bool compliant)
+        public async Task GivenReleaseCreatorCanBeApprover_ShouldEvaluate(bool releaseCreatorCanBeApprover, bool compliant)
         {
             //Arrange
-            SetupClient(_client, releaseCreatorCanBeApprover);
+            var fixture = new Fixture();
+            fixture.Customize<ApprovalOptions>(ctx =>
+                ctx.With(a => a.ReleaseCreatorCanBeApprover, releaseCreatorCanBeApprover));
+            var def = fixture.Create<ReleaseDefinition>();
 
+            _client
+                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
+                .Returns(def);
+            
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
             var result = await rule.Evaluate(_config.Project, "1");
@@ -46,63 +53,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
             result.ShouldBe(compliant);
 
         }
-        
-        private static void SetupClient(IVstsRestClient client, bool releaseCreatorCanBeApprover)
+
+        [Fact]
+        public async Task GivenNoApprovers_ShouldBeNonCompliant()
         {
-            client
+            //Arrange
+            var fixture = new Fixture();
+            fixture.Customize<Approval>(ctx =>
+                ctx.With(a => a.Approver, null));
+            var def = fixture.Create<ReleaseDefinition>();
+
+            _client
                 .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
-                .Returns(new ReleaseDefinition
-                {
-                    Environments = new List<ReleaseDefinitionEnvironment>
-                    {
-                        new ReleaseDefinitionEnvironment
-                        {
-                            Name = "Stage 1",
-                            PreDeployApprovals = new PreDeployApprovals
-                            {
-                                ApprovalOptions = new ApprovalOptions
-                                {
-                                    ReleaseCreatorCanBeApprover = true
-                                },
-                                Approvals = new[]
-                                {
-                                    new Approval
-                                    {
-                                        Approver = new Identity
-                                        {
-                                            DisplayName = "Henk",
-                                            Id = new System.Guid()
-                                        },
-                                        IsAutomated = false
-                                    }
-                                }
-                            }
-                        },
-                        new ReleaseDefinitionEnvironment() 
-                        {
-                            Name = "Stage 2",
-                            PreDeployApprovals = new PreDeployApprovals
-                            {
-                                ApprovalOptions = new ApprovalOptions
-                                {
-                                    ReleaseCreatorCanBeApprover = releaseCreatorCanBeApprover
-                                },
-                                Approvals = new[]
-                                {
-                                    new Approval
-                                    {
-                                        Approver = new Identity
-                                        {
-                                            DisplayName = "Henk",
-                                            Id = new System.Guid()
-                                        },
-                                        IsAutomated = false
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+                .Returns(def);
+            
+            //Act
+            var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
+            var result = await rule.Evaluate(_config.Project, "1");
+            
+            //Assert
+            result.ShouldBe(false);
         }
     }
 }
