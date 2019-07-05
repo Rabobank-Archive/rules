@@ -30,6 +30,8 @@ namespace HttpHelpers.Policies
                         ex.Message.Contains(
                             "No connection could be made because the target machine actively refused it") || // Message on Windows-based machine
                         ex.Message.Contains(
+                            "An existing connection was forcibly closed by the remote host") || // Message in Azure Functions runtime
+                        ex.Message.Contains(
                             "Kan geen verbinding maken omdat de doelcomputer de verbinding actief heeft geweigerd") || // Message on Windows-based machine NL
                        ex.Message.Contains("Connection refused")) // Message on MacOs-based machine
                     .Or<TaskCanceledException>() // Occurs when a HTTP call times out
