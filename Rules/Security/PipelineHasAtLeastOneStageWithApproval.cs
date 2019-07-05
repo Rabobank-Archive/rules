@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
-using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -31,7 +28,7 @@ namespace SecurePipelineScan.Rules.Security
             return HasAtLeastOneStageWithApproval(releasePipeline);
         }
 
-        private bool HasAtLeastOneStageWithApproval(ReleaseDefinition releasePipeline)
+        private static bool HasAtLeastOneStageWithApproval(ReleaseDefinition releasePipeline)
         {
             return releasePipeline
                 .Environments

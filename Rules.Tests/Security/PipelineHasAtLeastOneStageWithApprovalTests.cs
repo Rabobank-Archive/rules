@@ -64,7 +64,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 {
                                     ReleaseCreatorCanBeApprover = true
                                 },
-                                Approvals = new Approval[]
+                                Approvals = new[]
                                 {
                                     new Approval
                                     {
@@ -87,7 +87,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 {
                                     ReleaseCreatorCanBeApprover = releaseCreatorCanBeApprover
                                 },
-                                Approvals = new Approval[]
+                                Approvals = new[]
                                 {
                                     new Approval
                                     {
