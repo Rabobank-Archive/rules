@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
+using SecurePipelineScan.VstsService.Response;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -13,7 +15,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Plain text credentials should be blocked";
+        public string Description => "Plain text credentials are blocked in pipelines.";
 
         public string Why =>
             "To ensure that credentials are not leaked, it should not be allowed to store them in plain text.";
@@ -33,7 +35,11 @@ namespace SecurePipelineScan.Rules.Security
         public async Task Reconcile(string project)
         {
             var settings = await _client.GetAsync(ReleaseManagement.Settings(project));
+            if (settings.ComplianceSettings == null)
+                settings.ComplianceSettings = new ComplianceSettings();
+            
             settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets = true;
+            
             await _client.PutAsync(ReleaseManagement.Settings(project), settings);
         }
     }
