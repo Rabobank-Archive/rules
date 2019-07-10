@@ -16,6 +16,7 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheTeamProject(client);
+            yield return new ShouldBlockPlainTextCredentialsInPipelines(client);
         }
 
         public IEnumerable<IRule> RepositoryRules(IVstsRestClient client)
