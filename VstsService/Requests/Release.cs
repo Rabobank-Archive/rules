@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 
 namespace SecurePipelineScan.VstsService.Requests
@@ -36,7 +34,7 @@ namespace SecurePipelineScan.VstsService.Requests
             return new VsrmRequest<Response.Multiple<Response.ReleaseDefinition>>($"{project}/_apis/release/definitions/");
         }
 
-        public static IVstsRequest<Response.Environment> Environment(string project, string release, string id)
+        public static IVstsRequest<Environment> Environment(string project, string release, string id)
         {
             return new VsrmRequest<Environment>($"{project}/_apis/release/releases/{release}/environments/{id}");
         }
