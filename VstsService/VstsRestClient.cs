@@ -42,7 +42,8 @@ namespace SecurePipelineScan.VstsService
                 .AppendPathSegment(request.Resource)
                 .SetQueryParams(request.QueryParams)
                 .WithBasicAuth(string.Empty, _token)
-                .GetJsonAsync<TResponse>();
+                .GetJsonAsync<TResponse>()
+                .ConfigureAwait(false);
         }
 
         public async Task<TResponse> GetAsync<TResponse>(string url) where TResponse : new()
@@ -50,7 +51,8 @@ namespace SecurePipelineScan.VstsService
             return await new Url(url)
                 .AllowHttpStatus(HttpStatusCode.NotFound)
                 .WithBasicAuth(string.Empty, _token)
-                .GetJsonAsync<TResponse>();
+                .GetJsonAsync<TResponse>()
+                .ConfigureAwait(false);
         }
 
         
@@ -66,7 +68,8 @@ namespace SecurePipelineScan.VstsService
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .PostJsonAsync(body)
-                .ReceiveJson<TResponse>();
+                .ReceiveJson<TResponse>()
+                .ConfigureAwait(false);
         }
 
         public async Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
@@ -76,7 +79,8 @@ namespace SecurePipelineScan.VstsService
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .PutJsonAsync(body)
-                .ReceiveJson<TResponse>();
+                .ReceiveJson<TResponse>()
+                .ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(IVstsRequest request)
@@ -85,7 +89,8 @@ namespace SecurePipelineScan.VstsService
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
-                .DeleteAsync();
+                .DeleteAsync()
+                .ConfigureAwait(false);
         }
     }
 }

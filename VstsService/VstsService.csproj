@@ -17,8 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HttpHelpers\HttpHelpers.csproj" />
   </ItemGroup>
-
-
+  
   <PropertyGroup>
     <Authors>TAS</Authors>
     <Company>Rabobank</Company>
