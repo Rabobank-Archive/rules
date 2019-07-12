@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public async void EvaluateIntegrationTest()
+        public async Task EvaluateIntegrationTest()
         {
             var rule = new NobodyCanDeleteTheTeamProject(new VstsRestClient(_config.Organization, _config.Token));
             (await rule.Evaluate(_config.Project)).ShouldBeTrue();
@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
         
         [Fact]
-        public async void GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
+        public async Task GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializePermissions(client);           
