@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using ExpectedObjects;
 using SecurePipelineScan.VstsService.Requests;
@@ -31,7 +32,8 @@ namespace SecurePipelineScan.VstsService.Tests
                 Area = Expect.NotDefault<string>(),
                 Category = Expect.NotDefault<string>(),
                 ProjectName = Expect.NotDefault<string>(),
-                ProjectId = Expect.NotDefault<string>()
+                ProjectId = Expect.NotDefault<string>(),
+                Timestamp = Expect.NotDefault<DateTime>()
             }.ToExpectedObject();
             
             var result = _client.Get(AuditLog.Query()).Take(300);
