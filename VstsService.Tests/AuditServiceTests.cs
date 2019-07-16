@@ -39,5 +39,15 @@ namespace SecurePipelineScan.VstsService.Tests
             var result = _client.Get(AuditLog.Query()).Take(300);
             result.ShouldContain(e => expected.Matches(e));
         }
+        
+        [Fact]
+        public void TestAuditLogEntryUsingStartAndEndDate()
+        {
+            var yesterday = DateTime.UtcNow.Date.AddDays(-1);
+            var today = DateTime.UtcNow.Date;
+            
+            var result = _client.Get(AuditLog.Query(yesterday, today));
+            result.ToList().ForEach(e => e.Timestamp.ShouldBeInRange(yesterday, today));
+        }
     }
 }
