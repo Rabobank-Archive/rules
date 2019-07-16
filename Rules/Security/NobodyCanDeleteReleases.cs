@@ -10,12 +10,16 @@ namespace SecurePipelineScan.Rules.Security
             //nothing
         }
 
+        const int PermissionBitDeleteReleasePipelines = 4;
+        const int PermissionBitAdministerReleasePermissions = 512;
+        const int PermissionBitDeleteReleases = 1024;
+
         protected override string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; //release management
         protected override IEnumerable<int> PermissionBits => new[]
         {
-            4,      //Delete release pipelines
-            512,    //Administer release permissions
-            1024    //Delete releases
+            PermissionBitDeleteReleasePipelines,
+            PermissionBitAdministerReleasePermissions,
+            PermissionBitDeleteReleases
         };
         protected override IEnumerable<int> AllowedPermissions => new[]
         {

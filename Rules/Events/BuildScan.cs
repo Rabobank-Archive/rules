@@ -18,16 +18,26 @@ namespace SecurePipelineScan.Rules.Events
             _client = client;
         }
 
-        public async Task<BuildScanReport> Completed(JObject input)
+        public Task<BuildScanReport> GetCompletedReportAsync(JObject input)
+        {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+
+            return GetCompletedReportInternalAsync(input);
+        }
+
+        private async Task<BuildScanReport> GetCompletedReportInternalAsync(JObject input)
         {
             var id = (string)input.SelectToken("resource.id");
-            var build = await _client.GetAsync<VstsService.Response.Build>((string)input.SelectToken("resource.url"));
+            var build = await _client.GetAsync<VstsService.Response.Build>((Uri)input.SelectToken("resource.url"))
+                .ConfigureAwait(false);
 
             if (!build.Result.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
                 return null;
 
             var project = build.Project.Name;
-            var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson());
+            var timeline = await _client.GetAsync(VstsService.Requests.Builds.Timeline(project, id).AsJson())
+                .ConfigureAwait(false);
             var usedTaskIds = timeline?.SelectTokens("records[*].task.id").Values<string>().ToList();
 
             var artifacts = _client.Get(VstsService.Requests.Builds.Artifacts(project, id));

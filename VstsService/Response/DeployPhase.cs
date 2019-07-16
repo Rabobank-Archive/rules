@@ -4,6 +4,6 @@ namespace SecurePipelineScan.VstsService.Response
 {
     public class DeployPhase
     {
-        public List<WorkflowTask> WorkflowTasks { get; set; }
+        public IList<WorkflowTask> WorkflowTasks { get; set; }
     }
 }

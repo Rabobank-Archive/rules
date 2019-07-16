@@ -11,6 +11,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class ReleaseBranchesProtectedByPolicies : IRule, IReconcile
     {
+        private const int MinimumApproverCount = 2;
         private readonly IVstsRestClient _client;
 
         public ReleaseBranchesProtectedByPolicies(IVstsRestClient client)
@@ -21,7 +22,8 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Release branches are protected by policies";
 
         string IRule.Why =>
-            "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
+            "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
+            "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
 
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
@@ -30,24 +32,26 @@ namespace SecurePipelineScan.Rules.Security
             "Policy is blocking the PR."
         };
 
-        public Task<bool> Evaluate(string project, string repositoryId)
+        public Task<bool> EvaluateAsync(string project, string repositoryId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
-        public async Task Reconcile(string projectId, string id)
+        public async Task ReconcileAsync(string projectId, string id)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, id).SingleOrDefault();
 
             if (policy != null)
             {
-                await _client.PutAsync(Requests.Policies.Policy(projectId, policy.Id), UpdatePolicy(policy));
+                await _client.PutAsync(Requests.Policies.Policy(projectId, policy.Id), UpdatePolicy(policy))
+                    .ConfigureAwait(false);
             }
             else
             {
-                await _client.PostAsync(Requests.Policies.Policy(projectId), InitializeMinimumNumberOfReviewersPolicy(id));
+                await _client.PostAsync(Requests.Policies.Policy(projectId), InitializeMinimumNumberOfReviewersPolicy(id))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -55,7 +59,7 @@ namespace SecurePipelineScan.Rules.Security
             Find(policies, repositoryId).Any(p => p.IsEnabled &&
                                                   p.IsBlocking &&
                                                   p.Settings.ResetOnSourcePush &&
-                                                  p.Settings.MinimumApproverCount >= 2);
+                                                  p.Settings.MinimumApproverCount >= MinimumApproverCount);
 
         private static IEnumerable<MinimumNumberOfReviewersPolicy> Find(IEnumerable<MinimumNumberOfReviewersPolicy> policies, string repositoryId) =>
             policies.Where(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repositoryId &&
@@ -72,9 +76,9 @@ namespace SecurePipelineScan.Rules.Security
 
         private static void UpdateSettings(MinimumNumberOfReviewersPolicySettings settings)
         {
-            if (settings.MinimumApproverCount < 2)
+            if (settings.MinimumApproverCount < MinimumApproverCount)
             {
-                settings.MinimumApproverCount = 2;
+                settings.MinimumApproverCount = MinimumApproverCount;
                 settings.CreatorVoteCounts = true;
             }
 

@@ -7,7 +7,7 @@ namespace SecurePipelineScan.VstsService.Tests
     public class Timeline : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private IVstsRestClient _client;
+        private readonly IVstsRestClient _client;
 
         public Timeline(TestConfig config)
         {

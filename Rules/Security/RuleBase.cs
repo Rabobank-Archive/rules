@@ -14,37 +14,39 @@ namespace SecurePipelineScan.Rules.Security
         protected abstract IEnumerable<string> IgnoredIdentitiesDisplayNames { get; }
         protected abstract IEnumerable<int> AllowedPermissions { get; }
 
-        protected abstract Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
+        protected abstract Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
             ApplicationGroup group);
-        protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id);
-        protected abstract Task UpdatePermission(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
+        protected abstract Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string id);
+        protected abstract Task UpdatePermissionAsync(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Permission permission);
 
-        public virtual async Task<bool> Evaluate(string projectId, string id)
+        public virtual async Task<bool> EvaluateAsync(string projectId, string id)
         {
-            var groups = (await LoadGroups(projectId, id))
+            var groups = (await LoadGroupsAsync(projectId, id).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             var permissions =
-                (await Task.WhenAll(groups.Select(g => LoadPermissionsSetForGroup(projectId, id, g)))).SelectMany(p =>
-                    p.Permissions);
+                (await Task.WhenAll(groups.Select(g => LoadPermissionsSetForGroupAsync(projectId, id, g))).ConfigureAwait(false))
+                    .SelectMany(p => p.Permissions);
             return permissions.All(p => !PermissionBits.Contains(p.PermissionBit) || AllowedPermissions.Contains(p.PermissionId));
         }
 
-        public virtual async Task Reconcile(string projectId, string id)
+        public virtual async Task ReconcileAsync(string projectId, string id)
         {
-            var groups = (await LoadGroups(projectId, id))
+            var groups = (await LoadGroupsAsync(projectId, id).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, id, group);
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, id, group)
+                    .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit) && !AllowedPermissions.Contains(p.PermissionId));
 
                 foreach (var permission in permissions)
                 {
                     permission.PermissionId = PermissionId.Deny;
-                    await UpdatePermission(projectId, group, permissionSetId, permission);
+                    await UpdatePermissionAsync(projectId, group, permissionSetId, permission)
+                        .ConfigureAwait(false);
                 }
             }
         }

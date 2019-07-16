@@ -17,7 +17,6 @@ namespace SecurePipelineScan.VstsService.Requests
                     {"tfid", applicationGroupId},
                     {"permissionSetId", permissionSetId},
                     {"permissionSetToken", $"repoV2/{projectId}"}
-                    
                 });
         }
         
@@ -109,8 +108,8 @@ namespace SecurePipelineScan.VstsService.Requests
             public string PermissionSetToken { get; }
             public string DescriptorIdentityType { get; }
             public string DescriptorIdentifier { get; }
-            public bool RefreshIdentities { get; } = false;
-            public string TokenDisplayName { get; } = null;
+            public bool RefreshIdentities { get; }
+            public string TokenDisplayName { get; }
             
             public UpdateWrapper Wrap() =>
                 new UpdateWrapper(JsonConvert.SerializeObject(this));

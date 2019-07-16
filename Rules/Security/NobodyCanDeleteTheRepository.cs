@@ -12,11 +12,14 @@ namespace SecurePipelineScan.Rules.Security
     {
         private readonly IVstsRestClient _client;
 
+        const int PermissionBitDeletRepository = 512;
+        const int PermissionBitManagePermissions = 8192;
+
         protected override string NamespaceId => "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; //Git Repositories
         protected override IEnumerable<int> PermissionBits => new[]
 {
-            512,    //Delete repository
-            8192    //Manage permissions
+            PermissionBitDeletRepository,
+            PermissionBitManagePermissions
         };
         protected override IEnumerable<int> AllowedPermissions => new[]
         {
@@ -44,14 +47,21 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id) =>
-            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))).Identities;
+        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string id) =>
+            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))
+                .ConfigureAwait(false))
+                .Identities;
 
-        protected override async Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
+        protected override async Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
             ApplicationGroup group) =>
-            (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id)));
+            (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group?.TeamFoundationId, id))
+            .ConfigureAwait(false));
 
-        protected override async Task UpdatePermission(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission) =>
-            await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
+        protected override async Task UpdatePermissionAsync(string projectId, ApplicationGroup group, 
+            PermissionsSetId permissionSetId, Response.Permission permission) =>
+            await _client.PostAsync(Permissions.ManagePermissions(projectId), 
+                new Permissions.ManagePermissionsData(group?.TeamFoundationId, permissionSetId?.DescriptorIdentifier, 
+                    permissionSetId?.DescriptorIdentityType, permission).Wrap())
+            .ConfigureAwait(false);
     }
 }

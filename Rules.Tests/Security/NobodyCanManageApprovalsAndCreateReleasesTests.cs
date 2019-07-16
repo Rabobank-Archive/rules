@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.Evaluate(_config.Project, "1")).ShouldBe(result);
+            (await rule.EvaluateAsync(_config.Project, "1")).ShouldBe(result);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.Evaluate(projectId, "1")).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, "1")).ShouldBeTrue();
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
-            await rule.Reconcile(projectId, "1");
+            await rule.ReconcileAsync(projectId, "1");
         }
 
         private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId, int manageApproversPermissionId)

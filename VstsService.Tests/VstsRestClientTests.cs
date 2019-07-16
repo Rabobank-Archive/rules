@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
@@ -63,14 +64,14 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task GetRawUrl()
         {
-            var url = "http://www.bla.nl";
+            var url = new Uri("http://www.bla.nl");
 
             using (var httpTest = new HttpTest())
             {
                 httpTest.RespondWith(status: 200, body: "{}");
                 var client = new VstsRestClient("dummy", "token");
                 await client.GetAsync<Response.Build>(url);
-                httpTest.ShouldHaveCalled(url);
+                httpTest.ShouldHaveCalled(url.ToString());
             }
         }
         

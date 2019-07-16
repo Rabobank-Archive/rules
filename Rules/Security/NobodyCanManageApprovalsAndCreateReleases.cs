@@ -46,14 +46,15 @@ namespace SecurePipelineScan.Rules.Security
             "the 'Manage Release Approvers' permission is set to Deny",
         };
 
-        public override async Task<bool> Evaluate(string projectId, string releasePipelineId)
+        public override async Task<bool> EvaluateAsync(string projectId, string releasePipelineId)
         {
-            var groups = (await LoadGroups(projectId, releasePipelineId))
+            var groups = (await LoadGroupsAsync(projectId, releasePipelineId).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, releasePipelineId, group);
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group)
+                    .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
 
@@ -63,28 +64,31 @@ namespace SecurePipelineScan.Rules.Security
             return true;
         }
 
-        public override async Task Reconcile(string projectId, string releasePipelineId)
+        public override async Task ReconcileAsync(string projectId, string releasePipelineId)
         {
-            if ((await LoadGroups(projectId)).All(g => g.FriendlyDisplayName != "Production Environment Owners"))
+            if ((await LoadGroupsAsync(projectId).ConfigureAwait(false)).All(g => g.FriendlyDisplayName != "Production Environment Owners"))
             {
-                var group = await CreateProductionEnvironmentOwnersGroup(projectId);
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, group);
+                var group = await CreateProductionEnvironmentOwnersGroupAsync(projectId).ConfigureAwait(false);
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, group).ConfigureAwait(false);
 
                 var createReleasesPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
                 createReleasesPermission.PermissionId = PermissionId.Deny;
-                await UpdatePermission(projectId, group, permissionSetId, createReleasesPermission);
+                await UpdatePermissionAsync(projectId, group, permissionSetId, createReleasesPermission)
+                    .ConfigureAwait(false);
 
                 var manageApprovalsPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
                 manageApprovalsPermission.PermissionId = PermissionId.Allow;
-                await UpdatePermission(projectId, group, permissionSetId, manageApprovalsPermission);
+                await UpdatePermissionAsync(projectId, group, permissionSetId, manageApprovalsPermission)
+                    .ConfigureAwait(false);
             }
 
-            var groups = (await LoadGroups(projectId, releasePipelineId))
+            var groups = (await LoadGroupsAsync(projectId, releasePipelineId).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroup(projectId, releasePipelineId, group);
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group)
+                    .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
                     .ToList();
@@ -96,7 +100,8 @@ namespace SecurePipelineScan.Rules.Security
                     ? permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit)
                     : permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
                 permissionToUpdate.PermissionId = PermissionId.Deny;
-                await UpdatePermission(projectId, group, permissionSetId, permissionToUpdate);
+                await UpdatePermissionAsync(projectId, group, permissionSetId, permissionToUpdate)
+                    .ConfigureAwait(false);
             }
         }
     }

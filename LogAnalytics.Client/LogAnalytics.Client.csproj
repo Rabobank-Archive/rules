@@ -6,6 +6,11 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0</DefineConstants>
+    <CodeAnalysisRuleSet>LogAnalytics.Client.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>LogAnalytics.Client.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

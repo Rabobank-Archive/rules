@@ -15,16 +15,15 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        //TODO: Once we can get information from SM9 regarding the production pipeline/stage,
-        //      we only have to check the approval of this stage.
         string IRule.Description => "Release pipeline contains 4-eyes approval";
 
         string IRule.Why =>
             "To make sure production releases are approved by at least one other person";
 
-        public async Task<bool> Evaluate(string project, string pipelineId)
+        public async Task<bool> EvaluateAsync(string project, string releasePipelineId) //NOSONAR
         {
-            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, pipelineId));
+            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, releasePipelineId))
+                .ConfigureAwait(false);
             return HasAtLeastOneStageWithApproval(releasePipeline);
         }
 

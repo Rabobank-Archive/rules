@@ -126,12 +126,6 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task ConditionResultOnReleaseEnvironmentMustBeNullable()
         {
-            /*
-             * First test to use json file for test deserialization.
-             *   Source: https://vsrm.dev.azure.com/somecompany/Investments/_apis/release/releases/7604/environments/57594
-             *   _client.Get(Requests.Release.Environment("Investments", "7604", "57594"));
-             */
-
             var response = File.ReadAllText(Path.Join(EnvironmentAssets, "ConditionResultNull.json"));
 
             var request = new VstsRequest<Environment>("/keeas");

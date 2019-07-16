@@ -10,14 +10,15 @@ namespace SecurePipelineScan.VstsService
             var more = true;
             while (more)
             {
-                var result = client.GetAsync(request).ConfigureAwait(false).GetAwaiter().GetResult();
-                foreach (var entry in result.DecoratedAuditLogEntries)
+                var result = client?.GetAsync(request).ConfigureAwait(false).GetAwaiter().GetResult();
+                foreach (var entry in result?.DecoratedAuditLogEntries)
                 {
                     yield return entry;
                 }
 
-                request.QueryParams["continuationToken"] = result.ContinuationToken;
-                more = result.ContinuationToken != null;
+                if (request != null)
+                    request.QueryParams["continuationToken"] = result?.ContinuationToken;
+                more = result?.ContinuationToken != null;
             }
         }
     }

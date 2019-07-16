@@ -7,7 +7,7 @@ namespace LogAnalytics.Client.Tests
     public class LogAnalyticsClientTests
     {
         [Fact]
-        public void HeadersNotSetMultipleTimesWhenClientIsUsesInParallel()
+        public void HeadersNotSetMultipleTimesWhenClientIsUsedInParallel()
         {
             var sut = new LogAnalyticsClient("adsf", "");
             using (new HttpTest())

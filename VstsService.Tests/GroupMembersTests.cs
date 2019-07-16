@@ -42,7 +42,7 @@ namespace SecurePipelineScan.VstsService.Tests
         
 
         [Fact]
-        public async Task AddAndRemoveGroupMember()
+        public async Task AddAndRemoveGroupMemberAsync()
         {
             var projectId = _client
                 .Get(Requests.Project.Projects())
