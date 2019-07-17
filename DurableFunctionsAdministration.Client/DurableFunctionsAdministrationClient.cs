@@ -34,5 +34,10 @@ namespace DurableFunctionsAdministration.Client
                 .GetJsonAsync<TResponse>()
                 .ConfigureAwait(false);
         }
+
+        public IEnumerable<TResponse> Get<TResponse>(IRestRequest<IEnumerable<TResponse>> request) where TResponse : new()
+        {
+            return new MultipleEnumerator<TResponse>(request, BaseUri, TaskHub, Code);
+        }
     }
 }
