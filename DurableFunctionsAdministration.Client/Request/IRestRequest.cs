@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace DurableFunctionsAdministration.Client.Request
 {
         public interface IRestRequest<TInput, TResponse> : IRestRequest
-            where TResponse: new()
         {
         }
 
@@ -15,7 +14,6 @@ namespace DurableFunctionsAdministration.Client.Request
         }
 
         public interface IRestRequest<TResponse> : IRestRequest<TResponse, TResponse>
-            where TResponse : new()
         {
         }
 }

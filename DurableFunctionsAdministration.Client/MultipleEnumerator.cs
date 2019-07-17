@@ -1,22 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DurableFunctionsAdministration.Client.Request;
+using DurableFunctionsAdministration.Client.Response;
 using Flurl;
 using Flurl.Http;
-using SecurePipelineScan.VstsService.Response;
 
-namespace SecurePipelineScan.VstsService
+namespace DurableFunctionsAdministration.Client
 {
     internal class MultipleEnumerator<TResponse> : IEnumerable<TResponse>
     {
         private readonly IFlurlRequest _request;
 
-        public MultipleEnumerator(IVstsRequest request, string organization, string token)
+        public MultipleEnumerator(IRestRequest request, Uri baseUri, string taskHub, string code)
         {
-            _request = new Url(request.BaseUri(organization))
-                .WithBasicAuth(string.Empty, token)
+            _request = new FlurlRequest(new Url(baseUri)
                 .AppendPathSegment(request.Resource)
-                .SetQueryParams(request.QueryParams);
+                .SetQueryParams(request.QueryParams)
+                .SetQueryParam("taskHub", taskHub)
+                .SetQueryParam("code", code));
         }
 
         public IEnumerator<TResponse> GetEnumerator()
@@ -28,15 +31,15 @@ namespace SecurePipelineScan.VstsService
                 var task = _request.GetAsync();
 
                 var response = task.ConfigureAwait(false).GetAwaiter().GetResult();
-                var data = task.ReceiveJson<Multiple<TResponse>>().ConfigureAwait(false).GetAwaiter().GetResult();
+                var data = task.ReceiveJson<TResponse[]>().ConfigureAwait(false).GetAwaiter().GetResult();
                 
-                foreach (var item in data.Value)
+                foreach (var item in data)
                 {
                     yield return item;
                 }
 
-                more = response.Headers.TryGetValues("x-ms-continuation-token", out var tokens);
-                _request.WithHeader("x-ms-continuation-token", tokens?.First());
+                more = response.Headers.TryGetValues("x-ms-continuationtoken", out var tokens);                
+                _request.SetQueryParam("continuationToken", tokens?.First());
             } 
         }
 
