@@ -5,6 +5,7 @@ using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
 using PermissionsSetId = SecurePipelineScan.VstsService.Response.PermissionsSetId;
+using System;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -52,16 +53,38 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false))
                 .Identities;
 
-        protected override async Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
-            ApplicationGroup group) =>
-            (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group?.TeamFoundationId, id))
-            .ConfigureAwait(false));
+        protected override Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
+            ApplicationGroup group)
+        {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
 
-        protected override async Task UpdatePermissionAsync(string projectId, ApplicationGroup group, 
-            PermissionsSetId permissionSetId, Response.Permission permission) =>
-            await _client.PostAsync(Permissions.ManagePermissions(projectId), 
-                new Permissions.ManagePermissionsData(group?.TeamFoundationId, permissionSetId?.DescriptorIdentifier, 
-                    permissionSetId?.DescriptorIdentityType, permission).Wrap())
-            .ConfigureAwait(false);
+            return LoadPermissionsSetForGroupInternalAsync(projectId, id, group);
+        }
+
+        private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string id, ApplicationGroup group)
+        {
+            return (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id))
+                        .ConfigureAwait(false));
+        }
+
+        protected override Task UpdatePermissionAsync(string projectId, ApplicationGroup group,
+            PermissionsSetId permissionSetId, Response.Permission permission)
+        {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+            if (permissionSetId == null)
+                throw new ArgumentNullException(nameof(permissionSetId));
+
+            return UpdatePermissionInternalAsync(projectId, group, permissionSetId, permission);
+        }
+
+        private async Task UpdatePermissionInternalAsync(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission)
+        {
+            await _client.PostAsync(Permissions.ManagePermissions(projectId),
+                new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier,
+                    permissionSetId.DescriptorIdentityType, permission).Wrap())
+                .ConfigureAwait(false);
+        }
     }
 }
