@@ -17,15 +17,20 @@ namespace DurableFunctionsAdministration.Client.CustomStatus
         {
             var jo = JObject.Load(reader);
 
-            switch (jo["typeId"].Value<string>())
+            if (jo.TryGetValue("TypeId", out var typeId))
             {
-                case TypeIds.ScanOrchestrationStatusId:
-                    return jo.ToObject<ScanOrchestrationStatus>();
-                case TypeIds.SupervisorOrchestrationStatusId:
-                    return jo.ToObject<SupervisorOrchestrationStatus>();
-                default:
-                    return jo.ToObject<AzDoCompliancy.CustomStatus.CustomStatus>();
+                switch (typeId.Value<string>())
+                {
+                    case TypeIds.ScanOrchestrationStatusId:
+                        return jo.ToObject<ScanOrchestrationStatus>();
+                    case TypeIds.SupervisorOrchestrationStatusId:
+                        return jo.ToObject<SupervisorOrchestrationStatus>();
+                    default:
+                        return jo.ToObject<AzDoCompliancy.CustomStatus.CustomStatus>();
+                }
             }
+
+            return null;
         }
     }
 }
