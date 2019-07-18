@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpHelpers", "HttpHelpers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpHelpers.Tests", "HttpHelpers.Tests\HttpHelpers.Tests.csproj", "{3E5F7A09-7069-4072-97AC-99B0686C205A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDoCompliancy.CustomStatus", "AzDoCompliancy.CustomStatus\AzDoCompliancy.CustomStatus.csproj", "{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableFunctionsAdministration.Client", "DurableFunctionsAdministration.Client\DurableFunctionsAdministration.Client.csproj", "{DFA61BF7-68E3-453B-8411-F854DD2257F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableFunctionsAdministration.Client.Tests", "DurableFunctionsAdministration.Client.Tests\DurableFunctionsAdministration.Client.Tests.csproj", "{C686CAD9-02F1-44B1-BA0E-FA0F4EEA2827}"
@@ -80,6 +82,10 @@ Global
 		{3E5F7A09-7069-4072-97AC-99B0686C205A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E5F7A09-7069-4072-97AC-99B0686C205A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E5F7A09-7069-4072-97AC-99B0686C205A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFA61BF7-68E3-453B-8411-F854DD2257F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFA61BF7-68E3-453B-8411-F854DD2257F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFA61BF7-68E3-453B-8411-F854DD2257F2}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            await rule.Evaluate(_config.Project, PipelineId);
+            await rule.EvaluateAsync(_config.Project, PipelineId);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
 
             //Assert
             result.ShouldBeTrue();
@@ -61,7 +61,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
 
             //Assert
             result.ShouldBeFalse();
@@ -76,7 +76,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.Evaluate(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
 
             //Assert
             result.ShouldBeFalse();
@@ -90,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
-            await rule.Reconcile(_config.Project, PipelineId);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
-            await rule.Reconcile(_config.Project, PipelineId);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
 
             // Assert
             await _client
@@ -119,7 +119,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
-            await rule.Reconcile(_config.Project, PipelineId);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
 
             // Assert
             await _client

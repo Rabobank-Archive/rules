@@ -35,8 +35,8 @@ namespace SecurePipelineScan.VstsService
                     yield return item;
                 }
 
-                more = response.Headers.TryGetValues("x-ms-continuation-token", out var tokens);
-                _request.WithHeader("x-ms-continuation-token", tokens?.First());
+                more = response.Headers.TryGetValues("x-ms-continuationtoken", out var tokens);                
+                _request.SetQueryParam("continuationToken", tokens?.First());
             } 
         }
 

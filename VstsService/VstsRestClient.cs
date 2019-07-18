@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -35,7 +36,15 @@ namespace SecurePipelineScan.VstsService
             });
         }
 
-        public async Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
+        public Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return GetInternalAsync(request);
+        }
+
+        private async Task<TResponse> GetInternalAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse : new()
         {
             return await new Url(request.BaseUri(_organization))
                 .AllowHttpStatus(HttpStatusCode.NotFound)
@@ -46,7 +55,7 @@ namespace SecurePipelineScan.VstsService
                 .ConfigureAwait(false);
         }
 
-        public async Task<TResponse> GetAsync<TResponse>(string url) where TResponse : new()
+        public async Task<TResponse> GetAsync<TResponse>(Uri url) where TResponse : new()
         {
             return await new Url(url)
                 .AllowHttpStatus(HttpStatusCode.NotFound)
@@ -61,7 +70,15 @@ namespace SecurePipelineScan.VstsService
             return new MultipleEnumerator<TResponse>(request, _organization, _token);
         }
 
-        public async Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        public Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return PostInternalAsync(request, body);
+        }
+
+        private async Task<TResponse> PostInternalAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             return await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
@@ -72,7 +89,15 @@ namespace SecurePipelineScan.VstsService
                 .ConfigureAwait(false);
         }
 
-        public async Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        public Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return PutInternalAsync(request, body);
+        }
+
+        private async Task<TResponse> PutInternalAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
             return await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
@@ -81,9 +106,17 @@ namespace SecurePipelineScan.VstsService
                 .PutJsonAsync(body)
                 .ReceiveJson<TResponse>()
                 .ConfigureAwait(false);
+}
+
+        public Task DeleteAsync(IVstsRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return DeleteInternalAsync(request);
         }
 
-        public async Task DeleteAsync(IVstsRequest request)
+        private async Task DeleteInternalAsync(IVstsRequest request)
         {
             await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)

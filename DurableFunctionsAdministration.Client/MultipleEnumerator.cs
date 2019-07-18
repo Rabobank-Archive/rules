@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DurableFunctionsAdministration.Client.Request;
-using DurableFunctionsAdministration.Client.Response;
 using Flurl;
 using Flurl.Http;
 
@@ -38,8 +37,19 @@ namespace DurableFunctionsAdministration.Client
                     yield return item;
                 }
 
-                more = response.Headers.TryGetValues("x-ms-continuationtoken", out var tokens);                
-                _request.SetQueryParam("continuationToken", tokens?.First());
+                var hasToken = response.Headers.TryGetValues("x-ms-continuation-token", out var tokens);
+                if (hasToken)
+                {
+                    var foundToken = tokens?.First();
+
+                    more = foundToken != null
+                           && System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(foundToken)) != "null";
+                    _request.WithHeader("x-ms-continuation-token", foundToken);
+                }
+                else
+                {
+                    more = false;
+                }
             } 
         }
 

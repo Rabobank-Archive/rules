@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ShouldBlockPlainTextCredentialsInPipelines(client);
-            (await rule.Evaluate(projectId)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId)).ShouldBeTrue();
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ShouldBlockPlainTextCredentialsInPipelines(client) as IProjectReconcile;
-            await rule.Reconcile(projectId);
+            await rule.ReconcileAsync(projectId);
         }
     }
 }

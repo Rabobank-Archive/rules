@@ -21,6 +21,6 @@ namespace SecurePipelineScan.Rules.Tests
         public string Token { get; }
         public string Project { get; }
         public string Organization { get; }
-        public string ExtensionName { get; } = "tastest";
+        public string ExtensionName { get; }
     }
 }

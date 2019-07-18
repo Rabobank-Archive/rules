@@ -11,7 +11,7 @@ namespace SecurePipelineScan.VstsService.Tests
     {
         private readonly IVstsRestClient _client;
 
-        private TestConfig _config;
+        private readonly TestConfig _config;
 
         public Projects(TestConfig config)
         {

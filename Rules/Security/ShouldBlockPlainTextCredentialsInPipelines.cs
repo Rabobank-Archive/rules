@@ -25,22 +25,25 @@ namespace SecurePipelineScan.Rules.Security
             "In project settings, 'Block release definition edits that contain plaintext credentials or other secrets.' will be activated."
         };
 
-        public async Task<bool> Evaluate(string project)
+        public async Task<bool> EvaluateAsync(string project)
         {
-            var settings = await _client.GetAsync(ReleaseManagement.Settings(project));
+            var settings = await _client.GetAsync(ReleaseManagement.Settings(project))
+                .ConfigureAwait(false);
             return settings.ComplianceSettings != null &&
                    settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets;
         }
 
-        public async Task Reconcile(string project)
+        public async Task ReconcileAsync(string project)
         {
-            var settings = await _client.GetAsync(ReleaseManagement.Settings(project));
+            var settings = await _client.GetAsync(ReleaseManagement.Settings(project))
+                .ConfigureAwait(false);
             if (settings.ComplianceSettings == null)
                 settings.ComplianceSettings = new ComplianceSettings();
             
             settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets = true;
             
-            await _client.PutAsync(ReleaseManagement.Settings(project), settings);
+            await _client.PutAsync(ReleaseManagement.Settings(project), settings)
+                .ConfigureAwait(false);
         }
     }
 

@@ -4,7 +4,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public interface IReconcile
     {
-        Task Reconcile(string projectId, string id);
+        Task ReconcileAsync(string projectId, string id);
         
         string[] Impact { get; }
     }

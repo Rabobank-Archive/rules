@@ -26,7 +26,7 @@ namespace SecurePipelineScan.VstsService.Requests
                 });
         }
 
-        public static IVstsRequest<AddMemberData, object> AddMember(string project) => 
+        public static IVstsRequest<AddMemberData, object> AddMember(string project) =>
             new VstsRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities",
                 new Dictionary<string, object>
                 {
@@ -44,8 +44,10 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public class EditMembersData
         {
-            protected EditMembersData(string groupId) => GroupId = groupId;
-
+            protected EditMembersData(string groupId)
+            {
+                GroupId = groupId;
+            }
             public bool EditMembers { get; } = true;
             public string GroupId { get; }
         }
@@ -59,7 +61,7 @@ namespace SecurePipelineScan.VstsService.Requests
 
             public string RemoveItemsJson { get; }
         }
-        
+
         public class AddMemberData
         {
             public string ExistingUsersJson { get; }

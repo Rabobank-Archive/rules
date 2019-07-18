@@ -5,6 +5,7 @@ using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
 using PermissionsSetId = SecurePipelineScan.VstsService.Response.PermissionsSetId;
+using System;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -12,11 +13,14 @@ namespace SecurePipelineScan.Rules.Security
     {
         private readonly IVstsRestClient _client;
 
+        const int PermissionBitDeletRepository = 512;
+        const int PermissionBitManagePermissions = 8192;
+
         protected override string NamespaceId => "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; //Git Repositories
         protected override IEnumerable<int> PermissionBits => new[]
 {
-            512,    //Delete repository
-            8192    //Manage permissions
+            PermissionBitDeletRepository,
+            PermissionBitManagePermissions
         };
         protected override IEnumerable<int> AllowedPermissions => new[]
         {
@@ -44,14 +48,43 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroups(string projectId, string id) =>
-            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))).Identities;
+        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string id) =>
+            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))
+                .ConfigureAwait(false))
+                .Identities;
 
-        protected override async Task<PermissionsSetId> LoadPermissionsSetForGroup(string projectId, string id,
-            ApplicationGroup group) =>
-            (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id)));
+        protected override Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
+            ApplicationGroup group)
+        {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
 
-        protected override async Task UpdatePermission(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission) =>
-            await _client.PostAsync(Permissions.ManagePermissions(projectId), new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap());
+            return LoadPermissionsSetForGroupInternalAsync(projectId, id, group);
+        }
+
+        private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string id, ApplicationGroup group)
+        {
+            return (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id))
+                        .ConfigureAwait(false));
+        }
+
+        protected override Task UpdatePermissionAsync(string projectId, ApplicationGroup group,
+            PermissionsSetId permissionSetId, Response.Permission permission)
+        {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+            if (permissionSetId == null)
+                throw new ArgumentNullException(nameof(permissionSetId));
+
+            return UpdatePermissionInternalAsync(projectId, group, permissionSetId, permission);
+        }
+
+        private async Task UpdatePermissionInternalAsync(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission)
+        {
+            await _client.PostAsync(Permissions.ManagePermissions(projectId),
+                new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier,
+                    permissionSetId.DescriptorIdentityType, permission).Wrap())
+                .ConfigureAwait(false);
+        }
     }
 }

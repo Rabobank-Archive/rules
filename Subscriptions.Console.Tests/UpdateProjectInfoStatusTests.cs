@@ -81,7 +81,7 @@ namespace Subscriptions.Console.Tests
             };
 
             // Act
-            await Program.AddHooksToProjects("asdf", "asdf", client, items);
+            await Program.AddHooksToProjectsAsync("asdf", "asdf", client, items);
 
             // Assert
             await client.Received(calls).PostAsync(Arg.Any<IVstsRequest<Requests.Hooks.Add.Body, Response.Hook>>(), Arg.Any<Requests.Hooks.Add.Body>());

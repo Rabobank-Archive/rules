@@ -6,6 +6,6 @@ namespace SecurePipelineScan.Rules.Events
 {
     public interface IServiceHookScan<TReport>
     {
-        Task<TReport> Completed(JObject input);
+        Task<TReport> GetCompletedReportAsync(JObject input);
     }
 }

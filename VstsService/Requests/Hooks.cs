@@ -5,123 +5,65 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Hooks
     {
-        public static IVstsRequest<Multiple<Hook>> Subscriptions()
-        {
-            return new VstsRequest<Multiple<Hook>>(
-                $"_apis/hooks/subscriptions", new Dictionary<string, object>
-                {
-                    {"api-version", "5.0-preview.1"}
-                });
-        }
+        private static readonly IDictionary<string, object> CommonApiVersion = new Dictionary<string, object>
+            {
+                {"api-version", "5.0-preview.1"}
+            };
+
+        public static IVstsRequest<Multiple<Hook>> Subscriptions() =>
+            new VstsRequest<Multiple<Hook>>($"_apis/hooks/subscriptions", CommonApiVersion);
 
         public static class Add
         {
             public static Body BuildCompleted(string accountName, string accountKey,
                 string queueName, string projectId)
             {
-                return new Body
+                var publisherInputs = new BuildCompletePublisherInputs
                 {
-                    ConsumerActionId = "enqueue",
-                    ConsumerId = "azureStorageQueue",
-                    ConsumerInputs = new ConsumerInputs
-                    {
-                        AccountName = accountName,
-                        AccountKey = accountKey,
-                        QueueName = queueName,
-                        VisiTimeout = "0",
-                        Ttl = "604800",
-                    },
-                    EventType = "build.complete",
-                    PublisherId = "tfs",
-                    PublisherInputs = new BuildCompletePublisherInputs
-                    {
-                        DefinitionName = "",
-                        ProjectId = projectId,
-                        BuildStatus = "",
-                    },
-                    ResourceVersion = "1.0",
-                    Scope = 1,
+                    DefinitionName = "",
+                    ProjectId = projectId,
+                    BuildStatus = "",
                 };
+                return NewBody(accountName, accountKey, queueName, "build.complete", "tfs", publisherInputs, "1.0");
             }
 
-            public static Body GitPullRequestCreated(string accountName, string accountKey, string queueName, string projectId) =>
-                new Body
+            public static Body GitPullRequestCreated(string accountName, string accountKey, string queueName, string projectId)
+            {
+                var publisherInputs = new PullRequestCreatedPublisherInputs
                 {
-                    ConsumerActionId = "enqueue",
-                    ConsumerId = "azureStorageQueue",
-                    ConsumerInputs = new ConsumerInputs
-                    {
-                        AccountName = accountName,
-                        AccountKey = accountKey,
-                        QueueName = queueName,
-                        VisiTimeout = "0",
-                        Ttl = "604800",
-                    },
-                    EventType = "git.pullrequest.created",
-                    PublisherId = "tfs",
-                    PublisherInputs = new PullRequestCreatedPublisherInputs
-                    {
-                        ProjectId = projectId,
-                        Repository = "",
-                        Branch = "",
-                        PullrequestCreatedBy = "",
-                        PullrequestReviewersContains = ""
-                    },
-                    ResourceVersion = "1.0",
-                    Scope = 1,
+                    ProjectId = projectId,
+                    Repository = "",
+                    Branch = "",
+                    PullrequestCreatedBy = "",
+                    PullrequestReviewersContains = ""
                 };
+                return NewBody(accountName, accountKey, queueName, "git.pullrequest.created", "tfs", publisherInputs, "1.0");
+            }
 
-            public static Body GitPushed(string accountName, string accountKey, string queueName, string projectId) =>
-                new Body
+            public static Body GitPushed(string accountName, string accountKey, string queueName, string projectId)
+            {
+                var publisherInputs = new GitPushPublisherInputs
                 {
-                    ConsumerActionId = "enqueue",
-                    ConsumerId = "azureStorageQueue",
-                    ConsumerInputs = new ConsumerInputs
-                    {
-                        AccountName = accountName,
-                        AccountKey = accountKey,
-                        QueueName = queueName,
-                        VisiTimeout = "0",
-                        Ttl = "604800",
-                    },
-                    EventType = "git.push",
-                    PublisherId = "tfs",
-                    PublisherInputs = new GitPushPublisherInputs
-                    {
-                        ProjectId = projectId,
-                        Repository = "",
-                        Branch = "",
-                        PushedBy = "",
-                    },
-                    ResourceVersion = "1.0",
-                    Scope = 1,
+                    ProjectId = projectId,
+                    Repository = "",
+                    Branch = "",
+                    PushedBy = "",
                 };
+                return NewBody(accountName, accountKey, queueName, "git.push", "tfs", publisherInputs, "1.0");
+            }
 
-            public static Body ReleaseDeploymentCompleted(string accountName, string accountKey, string queueName, string projectId) =>
-                new Body
+            public static Body ReleaseDeploymentCompleted(string accountName, string accountKey, string queueName, string projectId)
+            {
+                var publisherInputs = new ReleaseDeploymentCreatedPublisherInputs
                 {
-                    ConsumerActionId = "enqueue",
-                    ConsumerId = "azureStorageQueue",
-                    ConsumerInputs = new ConsumerInputs
-                    {
-                        AccountName = accountName,
-                        AccountKey = accountKey,
-                        QueueName = queueName,
-                        VisiTimeout = "0",
-                        Ttl = "604800",
-                    },
-                    EventType = "ms.vss-release.deployment-completed-event",
-                    PublisherId = "rm",
-                    PublisherInputs = new ReleaseDeploymentCreatedPublisherInputs
-                    {
-                        ProjectId = projectId,
-                        ReleaseDefinitionId = "",
-                        ReleaseEnvironmentId = "",
-                        ReleaseEnvironmentStatus = "",
-                    },
-                    ResourceVersion = "3.0-preview.1",
-                    Scope = 1,
+                    ProjectId = projectId,
+                    ReleaseDefinitionId = "",
+                    ReleaseEnvironmentId = "",
+                    ReleaseEnvironmentStatus = "",
                 };
+                return NewBody(accountName, accountKey, queueName, "ms.vss-release.deployment-completed-event", 
+                    "rm", publisherInputs, "3.0-preview.1");
+            }                    
 
             public class ConsumerInputs
             {
@@ -132,8 +74,11 @@ namespace SecurePipelineScan.VstsService.Requests
                 public string Ttl { get; set; }
             }
 
-            public abstract class PublisherInputs
+            public class PublisherInputs
             {
+                protected PublisherInputs()
+                {
+                }
                 public string ProjectId { get; set; }
             }
 
@@ -176,19 +121,36 @@ namespace SecurePipelineScan.VstsService.Requests
                 public string DefinitionName { get; set; }
                 public string BuildStatus { get; set; }
             }
+
+            public static Body NewBody(string accountName, string accountKey, string queueName, string eventType, 
+                string publisherId, PublisherInputs publisherInputs, string resourceVersion)
+            {
+                return new Body
+                {
+                    ConsumerActionId = "enqueue",
+                    ConsumerId = "azureStorageQueue",
+                    ConsumerInputs = new ConsumerInputs
+                    {
+                        AccountName = accountName,
+                        AccountKey = accountKey,
+                        QueueName = queueName,
+                        VisiTimeout = "0",
+                        Ttl = "604800",
+                    },
+                    EventType = eventType,
+                    PublisherId = publisherId,
+                    PublisherInputs = publisherInputs,
+                    ResourceVersion = resourceVersion,
+                    Scope = 1,
+                };
+            }
         }
         
-        public static IVstsRequest<Hook> Subscription(string id) => new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}", new Dictionary<string, object>
-        {
-            {"api-version","5.0-preview.1"}
-        });
-        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, object>
-        {
-            {"api-version","5.0-preview.1"}
-        });
-        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", new Dictionary<string, object>
-        {
-            {"api-version","5.0-preview.1"}
-        });
+        public static IVstsRequest<Hook> Subscription(string id) => 
+            new VstsRequest<Hook>($"_apis/hooks/subscriptions/{id}", CommonApiVersion);
+        public static IVstsRequest<Add.Body, Hook> AddHookSubscription() => 
+            new VstsRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", CommonApiVersion);
+        public static IVstsRequest<Add.Body, Hook> AddReleaseManagementSubscription() => 
+            new VsrmRequest<Add.Body, Hook>($"_apis/hooks/subscriptions", CommonApiVersion);
     }
 }

@@ -5,13 +5,22 @@ namespace DurableFunctionsAdministration.Client.Request
 {
     public class OrchestrationInstances
     {
-        public static IRestRequest<List<OrchestrationInstance>> List()
+        public static IRestRequest<IEnumerable<OrchestrationInstance>> List()
         {
-            return new RestRequest<List<OrchestrationInstance>>(
+            return new RestRequest<IEnumerable<OrchestrationInstance>>(
                 $"runtime/webhooks/durableTask/instances", new Dictionary<string, object>
                 {
                     {"showHistory", "true"},
-                    { "createdTimeFrom", "2019-07-15T00:00:00Z"}
+                    { "top", "1000" }
+                });
+        }
+
+        public static IRestRequest<OrchestrationInstance> Get(string instanceId)
+        {
+            return new RestRequest<OrchestrationInstance>(
+                $"runtime/webhooks/durableTask/instances/{instanceId}", new Dictionary<string, object>
+                {
+                    {"showHistory", "true"}
                 });
         }
     }

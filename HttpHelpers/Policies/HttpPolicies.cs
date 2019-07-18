@@ -11,6 +11,9 @@ namespace HttpHelpers.Policies
 {
     public static class HttpPolicies
     {
+        const int RetryCount = 9;
+        const int NumberToRaisePower = 2;
+
         private static readonly HttpStatusCode[] HttpStatusCodesWorthRetrying =
         {
             HttpStatusCode.RequestTimeout, // 408
@@ -35,9 +38,9 @@ namespace HttpHelpers.Policies
                             "Kan geen verbinding maken omdat de doelcomputer de verbinding actief heeft geweigerd") || // Message on Windows-based machine NL
                        ex.Message.Contains("Connection refused")) // Message on MacOs-based machine
                     .Or<TaskCanceledException>() // Occurs when a HTTP call times out
-                    .WaitAndRetryAsync(9,
+                    .WaitAndRetryAsync(RetryCount,
                         retryAttempt =>
-                            TimeSpan.FromSeconds(Math.Pow(2,
+                            TimeSpan.FromSeconds(Math.Pow(NumberToRaisePower,
                                 retryAttempt)));
             }
         }

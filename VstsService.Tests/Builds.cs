@@ -8,7 +8,7 @@ namespace SecurePipelineScan.VstsService.Tests
     public class Builds : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private IVstsRestClient _client;
+        private readonly IVstsRestClient _client;
 
         public Builds(TestConfig config)
         {

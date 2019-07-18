@@ -1,4 +1,6 @@
-﻿namespace SecurePipelineScan.VstsService.Response
+﻿using System;
+
+namespace SecurePipelineScan.VstsService.Response
 {
     public class Project
     {
@@ -8,6 +10,6 @@
 
         public string Description { get; set; }
 
-        public string Url { get; set; }
+        public Uri Url { get; set; }
     }
 }
