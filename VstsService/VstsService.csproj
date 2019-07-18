@@ -31,4 +31,12 @@
     <Version>0.0.1</Version>
     <RootNamespace>SecurePipelineScan.VstsService</RootNamespace>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>VstsService.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>VstsService.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
 </Project>

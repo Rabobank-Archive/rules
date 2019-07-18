@@ -40,7 +40,7 @@ namespace Subscriptions.Console
 
                 if (deleteOption.Values.Any())
                 {
-                    await RemoveStorageHook(accountNameOption.Value(), client, subscriptions);
+                    await RemoveStorageHookAsync(accountNameOption.Value(), client, subscriptions);
                 }
                 else
                 {
@@ -52,7 +52,7 @@ namespace Subscriptions.Console
                     var projects = client.Get(Requests.Project.Projects());
 
                     var items = SubscriptionsPerProject(subscriptions, projects);
-                    await AddHooksToProjects(accountNameOption.Value(), accountKeyOption.Value(), client, items);
+                    await AddHooksToProjectsAsync(accountNameOption.Value(), accountKeyOption.Value(), client, items);
                 }
                 return 0;
             });
@@ -60,11 +60,11 @@ namespace Subscriptions.Console
             app.Execute(args);
         }
 
-        private static async Task RemoveStorageHook(string storageAccountName, VstsRestClient client, IEnumerable<Response.Hook> subscriptions)
+        private static async Task RemoveStorageHookAsync(string storageAccountName, IVstsRestClient client, IEnumerable<Response.Hook> subscriptions)
         {
             foreach (var subscription in subscriptions)
             {
-                if (subscription.ActionDescription.Contains(storageAccountName))
+                if (subscription.ActionDescription.Contains(storageAccountName, StringComparison.CurrentCulture))
                 {
                     await client.DeleteAsync(Requests.Hooks.Subscription(subscription.Id));
                 }
@@ -72,14 +72,14 @@ namespace Subscriptions.Console
             }
         }
 
-        internal static async Task AddHooksToProjects(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
+        internal static async Task AddHooksToProjectsAsync(string accountName, string accountKey, IVstsRestClient client, IEnumerable<ProjectInfo> items)
         {
             var aggregateExceptions = new List<Exception>();
             foreach (var item in items)
             {
                 try
                 {
-                    await AddHooksToProject(accountName, accountKey, client, item);
+                    await AddHooksToProjectAsync(accountName, accountKey, client, item);
                 }
                 catch (Exception e)
                 {
@@ -92,7 +92,7 @@ namespace Subscriptions.Console
             }
         }
 
-        private static async Task AddHooksToProject(string accountName, string accountKey, IVstsRestClient client, ProjectInfo item)
+        private static async Task AddHooksToProjectAsync(string accountName, string accountKey, IVstsRestClient client, ProjectInfo item)
         {
             if (!item.BuildComplete)
             {

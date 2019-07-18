@@ -19,8 +19,6 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        //TODO: Once we can get information from SM9 regarding the production pipeline/stage,
-        //      we only have to check/reconcile the retention of this stage.
         string IRule.Description => "Production releases are retained for at least 15 months";
 
         string IRule.Why =>
@@ -32,25 +30,30 @@ namespace SecurePipelineScan.Rules.Security
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
-        public async Task<bool> Evaluate(string project, string pipelineId)
+        public async Task<bool> EvaluateAsync(string project, string releasePipelineId) //NOSONAR
         {
-            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, pipelineId));
+            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, releasePipelineId))
+                .ConfigureAwait(false);
             return HasRequiredRetentionPolicy(releasePipeline);
         }
 
-        public async Task Reconcile(string project, string pipelineId)
+        public async Task ReconcileAsync(string projectId, string releasePipelineId) //NOSONAR
         {
-            var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(project));
+            var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(projectId))
+                .ConfigureAwait(false);
             if (!HasRequiredReleaseSettings(releaseSettings))
             {
-                await _client.PutAsync(Requests.ReleaseManagement.Settings(project),
-                    UpdateReleaseSettings(releaseSettings));
+                await _client.PutAsync(Requests.ReleaseManagement.Settings(projectId),
+                    UpdateReleaseSettings(releaseSettings))
+                    .ConfigureAwait(false);
             }
 
-            var releasePipeline = await _client.GetAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}")
-                .AsJson());
-            await _client.PutAsync(new VsrmRequest<object>($"{project}/_apis/release/definitions/{pipelineId}", new Dictionary<string, object> { {"api-version", "5.0" }}), 
-                UpdateReleaseDefinition(releasePipeline));
+            var releasePipeline = await _client.GetAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{releasePipelineId}")
+                .AsJson())
+                .ConfigureAwait(false);
+            await _client.PutAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{releasePipelineId}", new Dictionary<string, object> { {"api-version", "5.0" }}), 
+                UpdateReleaseDefinition(releasePipeline))
+                .ConfigureAwait(false);
         }
 
         private bool HasRequiredRetentionPolicy(ReleaseDefinition releasePipeline) =>
@@ -70,7 +73,7 @@ namespace SecurePipelineScan.Rules.Security
             return settings;
         }
 
-        private JObject UpdateReleaseDefinition(JObject pipeline)
+        private JToken UpdateReleaseDefinition(JToken pipeline)
         {
             pipeline
                 .SelectTokens("environments[*].retentionPolicy.daysToKeep")

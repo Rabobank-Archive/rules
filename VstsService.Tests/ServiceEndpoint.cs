@@ -27,7 +27,7 @@ namespace SecurePipelineScan.VstsService.Tests
             endpoint.Name.ShouldNotBeNullOrEmpty();
             endpoint.Id.ShouldNotBe(Guid.Empty);
             endpoint.Type.ShouldNotBeNullOrEmpty();
-            endpoint.Url.ShouldNotBeNullOrEmpty();
+            endpoint.Url.ToString().ShouldNotBeNullOrEmpty();
         }
     }
 }

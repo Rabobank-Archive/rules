@@ -21,7 +21,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteBuilds(client);
-            (await rule.Evaluate(projectId, "2")).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, "2")).ShouldBeTrue();
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteBuilds(client) as IReconcile;
-            await rule.Reconcile(projectId, "2");
+            await rule.ReconcileAsync(projectId, "2");
         }
     }
 }

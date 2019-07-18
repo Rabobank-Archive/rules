@@ -7,7 +7,7 @@ namespace SecurePipelineScan.VstsService.Response
     {
         public string Name { get; set; }
         public string Id { get; set; }
-        public List<ReleaseDefinitionEnvironment> Environments { get; set; }
+        public IList<ReleaseDefinitionEnvironment> Environments { get; set; }
 
         [JsonProperty("_links")]
         public Links Links { get; set; }

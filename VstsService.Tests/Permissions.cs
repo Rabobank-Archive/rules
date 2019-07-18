@@ -21,7 +21,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryPermissionsGroupRepositorySetReturnsPermissions()
         {
-            var namespaceId = _client.Get(SecurityNamespace.SecurityNamespaces()).ToList()
+            var namespaceId = _client.Get(SecurityNamespace.SecurityNamespaces())
                 .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
 
             var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
@@ -101,7 +101,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task SetPermissions()
+        public async Task SetPermissionsAsync()
         {
             await _client.PostAsync(Requests.Permissions.ManagePermissions(_config.Project),
                 new Requests.Permissions.ManagePermissionsData(

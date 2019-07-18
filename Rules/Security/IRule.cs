@@ -6,6 +6,6 @@ namespace SecurePipelineScan.Rules.Security
     {
         string Description { get; }
         string Why { get; }
-        Task<bool> Evaluate(string project, string id);
+        Task<bool> EvaluateAsync(string project, string id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Flurl.Http;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -32,13 +33,13 @@ namespace LogAnalytics.Client
             var json = JsonConvert.SerializeObject(input);
 
             // Create a hash for the API signature
-            var datestring = DateTime.UtcNow.ToString("r");
+            var datestring = DateTime.UtcNow.ToString("r", CultureInfo.CurrentCulture);
             var jsonBytes = Encoding.UTF8.GetBytes(json);
             var stringToHash = "POST\n" + jsonBytes.Length + "\napplication/json\n" + "x-ms-date:" + datestring + "\n/api/logs";
             var hashedString = BuildSignature(stringToHash, _key);
             var signature = "SharedKey " + _workspace + ":" + hashedString;
 
-            await PostData(logName, signature, datestring, json, timefield);
+            await PostDataAsync(logName, signature, datestring, json, timefield).ConfigureAwait(false);
         }
 
         // Build the API signature
@@ -55,7 +56,7 @@ namespace LogAnalytics.Client
         }
 
         // Send a request to the POST API endpoint
-        private async Task PostData(string logname, string signature, string date, string json, string timefield)
+        private async Task PostDataAsync(string logname, string signature, string date, string json, string timefield)
         {
             var url = "https://" + _workspace + ".ods.opinsights.azure.com/api/logs?api-version=2016-04-01";
 
@@ -67,7 +68,8 @@ namespace LogAnalytics.Client
                 .WithHeader("Log-Type", logname)
                 .WithHeader("x-ms-date", date)
                 .WithHeader("time-generated-field", timefield)
-                .PostAsync(content);
+                .PostAsync(content)
+                .ConfigureAwait(false);
         }
     }
 }

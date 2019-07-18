@@ -32,4 +32,12 @@
     <RepositoryUrl>https://dev.azure.com/somecompany/TAS/_git/ProjectScanner</RepositoryUrl>
     <Version>0.0.1</Version>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>Rules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>Rules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
 </Project>

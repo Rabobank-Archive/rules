@@ -26,10 +26,18 @@ namespace SecurePipelineScan.Rules.Events
             _client = client;
         }
 
-        public async Task<ReleaseDeploymentCompletedReport> Completed(JObject input)
+        public Task<ReleaseDeploymentCompletedReport> GetCompletedReportAsync(JObject input)
         {
-            var release = await ResolveRelease(input);
-            var environment = await ResolveEnvironment(input);
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+
+            return GetCompletedReportInternalAsync(input);
+        }
+
+        private async Task<ReleaseDeploymentCompletedReport> GetCompletedReportInternalAsync(JObject input)
+        {
+            var release = await ResolveReleaseAsync(input).ConfigureAwait(false);
+            var environment = await ResolveEnvironmentAsync(input).ConfigureAwait(false);
             var project = (string)input.SelectToken("resource.project.name");
             return new ReleaseDeploymentCompletedReport
             {
@@ -39,11 +47,11 @@ namespace SecurePipelineScan.Rules.Events
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),
                 CreatedDate = (DateTime)input["createdDate"],
-                UsesProductionEndpoints = await UsesProductionEndpoints(project, environment),
+                UsesProductionEndpoints = await UsesProductionEndpointsAsync(project, environment).ConfigureAwait(false),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
-                UsesManagedAgentsOnly = await CheckAgents(project, environment),
-                AllArtifactsAreFromBuild = CheckArtifacts(release), 
+                UsesManagedAgentsOnly = await CheckAgentsAsync(project, environment).ConfigureAwait(false),
+                AllArtifactsAreFromBuild = CheckArtifacts(release),
                 RelatedToSm9Change = IsRelatedToSm9Change(release)
             };
         }
@@ -63,7 +71,7 @@ namespace SecurePipelineScan.Rules.Events
             return release.Artifacts.Any() && release.Artifacts.All(a => a.Type == "Build");
         }
 
-        private async Task<bool?> CheckAgents(string project, Response.Environment environment)
+        private async Task<bool?> CheckAgentsAsync(string project, Response.Environment environment)
         {
             if (environment == null)
             {
@@ -79,7 +87,9 @@ namespace SecurePipelineScan.Rules.Events
             }
 
             var poolIds = await Task.WhenAll(phasesWithAgentBasedDeployment.Select(async p =>
-                (await _client.GetAsync(VstsService.Requests.DistributedTask.AgentQueue(project, p.DeploymentInput.QueueId))).Pool.Id));
+                (await _client.GetAsync(VstsService.Requests.DistributedTask.AgentQueue(project, 
+                    p.DeploymentInput.QueueId)).ConfigureAwait(false)).Pool.Id))
+                .ConfigureAwait(false);
             
             int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
             return !poolIds.Except(managedPoolIds).Any();
@@ -96,15 +106,16 @@ namespace SecurePipelineScan.Rules.Events
                 environment.Conditions.Any(c => c.ConditionType == "artifact" && c.Name == a.Alias));
         }
 
-        private async Task<Response.Release> ResolveRelease(JObject input)
+        private async Task<Response.Release> ResolveReleaseAsync(JToken input)
         {
             var project = (string) input.SelectToken("resource.project.name");
             var releaseId = (string) input.SelectToken("resource.environment.releaseId");
 
-            return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Release(project, releaseId));
+            return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Release(project, releaseId))
+                .ConfigureAwait(false);
         }
 
-        private async Task<bool?> UsesProductionEndpoints(string project, Response.Environment environment)
+        private async Task<bool?> UsesProductionEndpointsAsync(string project, Response.Environment environment)
         {
             if (environment == null)
             {
@@ -116,7 +127,9 @@ namespace SecurePipelineScan.Rules.Events
                     .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
                     .SelectMany(w => w.Inputs)
                     .Select(i => i.Value)
-                    .Select(async x => Guid.TryParse(x, out var id) && await _endpoints.IsProduction(project, id))))
+                    .Select(async x => Guid.TryParse(x, out var id) && 
+                        await _endpoints.ScanForProductionEndpointsAsync(project, id).ConfigureAwait(false)))
+                    .ConfigureAwait(false))
                 .Any(x => x);
         }
 
@@ -132,13 +145,14 @@ namespace SecurePipelineScan.Rules.Events
                    environment.PreApprovalsSnapshot.Approvals.Any(approval => !approval.IsAutomated);
         }
 
-        private async Task<Response.Environment> ResolveEnvironment(JToken input)
+        private async Task<Response.Environment> ResolveEnvironmentAsync(JToken input)
         {
             var project = (string) input.SelectToken("resource.project.name");
             var releaseId = (string) input.SelectToken("resource.environment.releaseId");
             var environmentId = (string) input.SelectToken("resource.environment.id");
 
-            return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Environment(project, releaseId, environmentId));
+            return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Environment(project, releaseId, environmentId))
+                .ConfigureAwait(false);
         }
     }
 }

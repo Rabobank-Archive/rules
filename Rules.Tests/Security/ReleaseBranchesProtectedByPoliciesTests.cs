@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
-            await rule.Evaluate(projectId, RepositoryId);
+            await rule.EvaluateAsync(projectId, RepositoryId);
         }
         
         [Fact]
@@ -46,7 +46,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeTrue();
@@ -60,7 +60,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -80,7 +80,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -98,7 +98,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -116,7 +116,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -134,7 +134,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.Evaluate(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
-            rule.Reconcile(_config.Project, RepositoryId);
+            rule.ReconcileAsync(_config.Project, RepositoryId);
         }
 
         [Fact]
@@ -157,7 +157,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.Reconcile(_config.Project, RepositoryId);
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -174,7 +174,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.Reconcile(_config.Project, RepositoryId);
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -191,7 +191,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.Reconcile(_config.Project, RepositoryId);
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
             await _client
@@ -209,7 +209,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.Reconcile(_config.Project, RepositoryId);
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
             await _client

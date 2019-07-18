@@ -111,6 +111,12 @@ namespace SecurePipelineScan.VstsService.Tests
 
             public void Dispose()
             {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
                 // Make sure all hooks from this test run are properly deleted.
                 Client
                     .Get(Requests.Hooks.Subscriptions())

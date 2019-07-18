@@ -10,13 +10,18 @@ namespace SecurePipelineScan.Rules.Security
             //nothing
         }
 
+        const int PermissionBitDeleteBuilds = 8;
+        const int PermissionBitDestroyBuilds = 32;
+        const int PermissionBitDeleteBuildDefinition = 4096;
+        const int PermissionBitAdministerBuildPermissions = 16384;
+        
         protected override string NamespaceId => "33344d9c-fc72-4d6f-aba5-fa317101a7e9"; //build
         protected override IEnumerable<int> PermissionBits => new[]
         {
-            8,      //Delete builds
-            32,     //Destroy builds
-            4096,   //Delete build definition
-            16384   //Administer build permissions
+            PermissionBitDeleteBuilds,
+            PermissionBitDestroyBuilds,
+            PermissionBitDeleteBuildDefinition,
+            PermissionBitAdministerBuildPermissions
         };
         protected override IEnumerable<int> AllowedPermissions => new[] 
         {
