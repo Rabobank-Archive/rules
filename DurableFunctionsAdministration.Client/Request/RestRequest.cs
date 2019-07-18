@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace DurableFunctionsAdministration.Client.Request
 {
     public class RestRequest<TInput, TResponse> : IRestRequest<TInput, TResponse>
-        where TResponse: new()
+        
     {
         public string Resource { get; }
         public IDictionary<string, object> QueryParams { get; }
@@ -20,7 +20,6 @@ namespace DurableFunctionsAdministration.Client.Request
     }
 
     public class RestRequest<TResponse> : RestRequest<TResponse, TResponse>, IRestRequest<TResponse>
-        where TResponse: new()
     {
         public RestRequest(string resource) : base(resource)
         {
