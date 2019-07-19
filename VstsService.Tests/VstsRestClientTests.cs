@@ -100,14 +100,14 @@ namespace SecurePipelineScan.VstsService.Tests
                 await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
             }
         }
-
+        
         [Fact]
-        [Trait("category", "integration")]
-        public void HtmlInsteadOfXmlShouldThrow()
-        {
-            var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            Assert.Throws<FlurlHttpException>(() => sut.Get(Project.Projects()).ToList());
-        }
+        public void EmptyPatShouldNotFailEarlyAndNotThrowWithInvalidHtml() => 
+            Assert.Throws<ArgumentNullException>(() => new VstsRestClient("somecompany-test", null));
+        
+        [Fact]
+        public void EmptyOrganizationShouldFailEarlyAndNotWithNotFound() => 
+            Assert.Throws<ArgumentNullException>(() => new VstsRestClient(null, "pat"));
 
         [Fact]
         [Trait("category", "integration")]
