@@ -1,5 +1,3 @@
-using System;
-
 namespace AzDoCompliancy.CustomStatus
 {
     public class SupervisorOrchestrationStatus : CustomStatus
@@ -8,7 +6,6 @@ namespace AzDoCompliancy.CustomStatus
         public override string TypeId
         {
             get => TypeIds.SupervisorOrchestrationStatusId;
-            set { }
         }
     }
 }
