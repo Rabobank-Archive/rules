@@ -40,8 +40,9 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             string projectId = "53410703-e2e5-4238-9025-233bd7c811b3";
             string nameSpaceId = "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87";
+            string repositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
-            var explicitIdentities = await Vsts.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, nameSpaceId));
+            var explicitIdentities = await Vsts.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, nameSpaceId, repositoryId));
             explicitIdentities.ShouldNotBeNull();
         }
 

@@ -24,14 +24,14 @@ namespace SecurePipelineScan.VstsService.Requests
             });
         }
         
-        public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesRepos(string projectId, string namespaceId)
+        public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesRepos(string projectId, string namespaceId, string repositoryId)
         {
             return new VstsRequest<Response.ApplicationGroups>(
                 $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, object>
                 {
                     {"__v", "5"},
                     {"permissionSetId", namespaceId},
-                    {"permissionSetToken", $"repoV2/{projectId}/"}
+                    {"permissionSetToken", $"repoV2/{projectId}/{repositoryId}"}
                 });
         }
 
