@@ -1,15 +1,25 @@
+using System.Net.Http;
 using Flurl.Http.Testing;
 using System.Threading.Tasks;
+using NSubstitute;
+using Shouldly;
 using Xunit;
 
 namespace LogAnalytics.Client.Tests
 {
-    public class LogAnalyticsClientTests
+    public class LogAnalyticsClientTests : IClassFixture<TestConfig>
     {
+        private TestConfig _config;
+
+        public LogAnalyticsClientTests(TestConfig config)
+        {
+            _config = config;
+        }
+        
         [Fact]
         public void HeadersNotSetMultipleTimesWhenClientIsUsesInParallel()
         {
-            var sut = new LogAnalyticsClient("adsf", "");
+            var sut = new LogAnalyticsClient("adsf", "", Substitute.For<IAzureTokenProvider>());
             using (new HttpTest())
             {
                 Parallel.For(0, 100, async
@@ -20,7 +30,7 @@ namespace LogAnalytics.Client.Tests
         [Fact]
         public async Task TestRequiredHeadersForPostToLogAnalytics()
         {
-            var client = new LogAnalyticsClient("sdpfj", "");
+            var client = new LogAnalyticsClient("sdpfj", "", Substitute.For<IAzureTokenProvider>());
             using (var test = new HttpTest())
             {
                 await client.AddCustomLogJsonAsync("bla", "", "asdf");
@@ -32,6 +42,45 @@ namespace LogAnalytics.Client.Tests
                     .WithHeader("time-generated-field", "asdf")
                     .WithContentType("application/json");
             }
+        }
+
+        [Fact]
+        public async Task QueryRequestShouldIncludeBearerToken()
+        {
+            var tokenProvider = Substitute.For<IAzureTokenProvider>();
+            tokenProvider.GetAccessToken().Returns("dummyToken");
+            var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
+
+            using (var httpTest = new HttpTest())
+            {
+                await client.QueryAsync("some query");
+                httpTest.ShouldHaveMadeACall().WithOAuthBearerToken("dummyToken");
+            }
+        }
+        
+        [Fact]
+        public async Task QueryRequestShouldIncludeQuery()
+        {
+            var tokenProvider = Substitute.For<IAzureTokenProvider>();
+            tokenProvider.GetAccessToken().Returns("dummyToken");
+            var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
+
+            using (var httpTest = new HttpTest())
+            {
+                await client.QueryAsync("some query");
+                httpTest.ShouldHaveMadeACall()
+                    .WithVerb(HttpMethod.Post)
+                    .WithRequestJson(new LogAnalyticsQuery {Query = "some query"});
+            }
+        }
+
+        [Fact]
+        public async Task QueryShouldReturnResults()
+        {
+            var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
+            var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
+            var result = await client.QueryAsync("preventive_analysis_log_CL | limit 50");
+            result.ShouldNotBeNull();
         }
     }
 }
