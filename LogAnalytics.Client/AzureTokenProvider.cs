@@ -17,6 +17,10 @@ namespace LogAnalytics.Client
             _tenantId = tenantId;
             _clientId = clientId;
             _clientSecret = clientSecret;
+
+            FlurlHttp.Configure(settings => {
+                settings.HttpClientFactory = new HttpClientFactory();
+            });
         }
         
         public async Task<string> GetAccessToken()
