@@ -1,9 +1,9 @@
 namespace AzDoCompliancy.CustomStatus
 {
-    public class SupervisorOrchestrationStatus : CustomStatus
+    public class SupervisorOrchestrationStatus : ICustomStatus
     {
         public int TotalProjectCount { get; set; }
-        public override string TypeId
+        public string TypeId
         {
             get => TypeIds.SupervisorOrchestrationStatusId;
         }

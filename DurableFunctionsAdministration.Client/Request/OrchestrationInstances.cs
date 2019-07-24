@@ -3,7 +3,7 @@ using DurableFunctionsAdministration.Client.Response;
 
 namespace DurableFunctionsAdministration.Client.Request
 {
-    public class OrchestrationInstances
+    public static class OrchestrationInstances
     {
         public static IRestRequest<IEnumerable<OrchestrationInstance>> List()
         {
