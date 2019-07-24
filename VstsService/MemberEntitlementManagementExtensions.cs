@@ -14,7 +14,7 @@ namespace SecurePipelineScan.VstsService
         internal static IEnumerable<T> Get<T>(this IVstsRestClient client, IVstsRequest<Entitlements<T>> request,
             int take)
         {
-            request.QueryParams["take"] = take;
+            request.QueryParams["top"] = take;
             var skip = 0;
             
             var more = true;

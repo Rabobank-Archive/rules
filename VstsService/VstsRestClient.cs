@@ -67,7 +67,11 @@ namespace SecurePipelineScan.VstsService
         
         public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
         {
-            return new MultipleEnumerator<TResponse>(request, _organization, _token);
+            return new MultipleEnumerator<TResponse>(new Url(request.BaseUri(_organization))
+                .AllowHttpStatus(HttpStatusCode.NotFound)
+                .AppendPathSegment(request.Resource)
+                .SetQueryParams(request.QueryParams)
+                .WithBasicAuth(string.Empty, _token));
         }
 
         public Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
