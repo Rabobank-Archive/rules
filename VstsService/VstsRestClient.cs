@@ -22,8 +22,8 @@ namespace SecurePipelineScan.VstsService
 
         public VstsRestClient(string organization, string token)
         {
-            _organization = organization;
-            _token = token;
+            _organization = organization ?? throw new ArgumentNullException(nameof(organization));
+            _token = token ?? throw new ArgumentNullException(nameof(token));
             
             FlurlHttp.Configure(settings => {
                 var jsonSettings = new JsonSerializerSettings
