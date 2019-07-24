@@ -9,7 +9,7 @@ namespace LogAnalytics.Client.Tests
 {
     public class LogAnalyticsClientTests : IClassFixture<TestConfig>
     {
-        private TestConfig _config;
+        private readonly TestConfig _config;
 
         public LogAnalyticsClientTests(TestConfig config)
         {
@@ -48,7 +48,7 @@ namespace LogAnalytics.Client.Tests
         public async Task QueryRequestShouldIncludeBearerToken()
         {
             var tokenProvider = Substitute.For<IAzureTokenProvider>();
-            tokenProvider.GetAccessToken().Returns("dummyToken");
+            tokenProvider.GetAccessTokenAsync().Returns("dummyToken");
             var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
 
             using (var httpTest = new HttpTest())
@@ -62,7 +62,7 @@ namespace LogAnalytics.Client.Tests
         public async Task QueryRequestShouldIncludeQuery()
         {
             var tokenProvider = Substitute.For<IAzureTokenProvider>();
-            tokenProvider.GetAccessToken().Returns("dummyToken");
+            tokenProvider.GetAccessTokenAsync().Returns("dummyToken");
             var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
 
             using (var httpTest = new HttpTest())
@@ -70,7 +70,7 @@ namespace LogAnalytics.Client.Tests
                 await client.QueryAsync("some query");
                 httpTest.ShouldHaveMadeACall()
                     .WithVerb(HttpMethod.Post)
-                    .WithRequestJson(new LogAnalyticsQuery {Query = "some query"});
+                    .WithRequestJson(new LogAnalyticsQuery {query = "some query"});
             }
         }
 
@@ -81,6 +81,9 @@ namespace LogAnalytics.Client.Tests
             var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
             var result = await client.QueryAsync("preventive_analysis_log_CL | limit 50");
             result.ShouldNotBeNull();
+            result.tables.ShouldNotBeEmpty();
+            result.tables[0].columns.ShouldNotBeEmpty();
+            result.tables[0].rows.ShouldNotBeEmpty();
         }
     }
 }

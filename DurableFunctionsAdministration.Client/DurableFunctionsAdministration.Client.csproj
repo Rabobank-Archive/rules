@@ -4,6 +4,14 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <CodeAnalysisRuleSet>DurableFunctionsAdministration.Client.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <CodeAnalysisRuleSet>DurableFunctionsAdministration.Client.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\AzDoCompliancy.CustomStatus\AzDoCompliancy.CustomStatus.csproj" />
       <ProjectReference Include="..\HttpHelpers\HttpHelpers.csproj" />

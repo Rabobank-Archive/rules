@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using LogAnalytics.Client.Response;
 
 namespace LogAnalytics.Client
 {
@@ -45,15 +46,16 @@ namespace LogAnalytics.Client
             await PostDataAsync(logName, signature, datestring, json, timefield).ConfigureAwait(false);
         }
 
-        public async Task<JObject> QueryAsync(string query)
+        public async Task<LogAnalyticsQueryResponse> QueryAsync(string query)
         {
-            var token = await _tokenprovider.GetAccessToken();
+            var token = await _tokenprovider.GetAccessTokenAsync()
+                .ConfigureAwait(false);
             var url = $"https://api.loganalytics.io/v1/workspaces/{_workspace}/query";
             
             var result = await url
                 .WithOAuthBearerToken(token)
-                .PostJsonAsync(new LogAnalyticsQuery { Query = query })
-                .ReceiveJson<JObject>()
+                .PostJsonAsync(new LogAnalyticsQuery { query = query })
+                .ReceiveJson<LogAnalyticsQueryResponse>()
                 .ConfigureAwait(false);
 
             return result;

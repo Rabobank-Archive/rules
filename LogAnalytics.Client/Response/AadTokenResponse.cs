@@ -1,4 +1,4 @@
-namespace LogAnalytics.Client
+namespace LogAnalytics.Client.Response
 {
     public class AadTokenResponse
     {

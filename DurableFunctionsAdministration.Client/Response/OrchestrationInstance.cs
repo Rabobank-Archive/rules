@@ -11,6 +11,6 @@ namespace DurableFunctionsAdministration.Client.Response
         public AzDoCompliancy.CustomStatus.ICustomStatus CustomStatus { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdatedTime { get; set; }
-        public List<HistoryEvent> HistoryEvents { get; set; }
+        public IList<HistoryEvent> HistoryEvents { get; }
     }
 }

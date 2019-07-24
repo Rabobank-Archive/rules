@@ -4,6 +4,6 @@ namespace LogAnalytics.Client
 {
     public interface IAzureTokenProvider
     {
-        Task<string> GetAccessToken();
+        Task<string> GetAccessTokenAsync();
     }
 }

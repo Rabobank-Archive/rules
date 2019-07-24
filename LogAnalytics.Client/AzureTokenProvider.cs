@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Flurl.Http;
+using LogAnalytics.Client.Response;
 
 namespace LogAnalytics.Client
 {
@@ -23,7 +24,7 @@ namespace LogAnalytics.Client
             });
         }
         
-        public async Task<string> GetAccessToken()
+        public async Task<string> GetAccessTokenAsync()
         {
             var response = await $"https://login.microsoftonline.com/{_tenantId}/oauth2/token"
                 .PostAsync(new FormUrlEncodedContent(GetFormContent()))

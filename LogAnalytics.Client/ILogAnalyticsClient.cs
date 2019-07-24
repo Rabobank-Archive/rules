@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using LogAnalytics.Client.Response;
 
 namespace LogAnalytics.Client
 {
     public interface ILogAnalyticsClient
     {
         Task AddCustomLogJsonAsync(string logName, object input, string timefield);
-        Task<JObject> QueryAsync(string query);
+        Task<LogAnalyticsQueryResponse> QueryAsync(string query);
     }
 }

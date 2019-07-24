@@ -17,7 +17,7 @@ namespace LogAnalytics.Client.Tests
         public async Task GetAccessTokenReturnsToken()
         {
             var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
-            var token = await tokenprovider.GetAccessToken();
+            var token = await tokenprovider.GetAccessTokenAsync();
             token.ShouldNotBeNull();
         }
     }

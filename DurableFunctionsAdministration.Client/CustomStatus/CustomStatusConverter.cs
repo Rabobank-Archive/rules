@@ -17,7 +17,7 @@ namespace DurableFunctionsAdministration.Client.CustomStatus
         {
             var jo = JObject.Load(reader);
 
-            if (jo.TryGetValue("TypeId", out var typeId))
+            if (jo.TryGetValue("TypeId", StringComparison.CurrentCulture, out var typeId))
             {
                 switch (typeId.Value<string>())
                 {
