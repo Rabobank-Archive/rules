@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
-using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 
@@ -12,7 +10,6 @@ namespace SecurePipelineScan.VstsService.Tests
 {
     public class VstsRestClientTests : IClassFixture<TestConfig>
     {
-        private const string InvalidToken = "77p7fc7hpclqst4irzpwz452gkze75za7xkpbamkdy6lgtngjvcq";
         private readonly TestConfig _config;
         private readonly IVstsRestClient _vsts;
 

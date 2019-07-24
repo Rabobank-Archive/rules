@@ -31,7 +31,6 @@ namespace SecurePipelineScan.VstsService.Tests
                 Details = Expect.NotDefault<string>(),
                 Area = Expect.NotDefault<string>(),
                 Category = Expect.NotDefault<string>(),
-                ProjectName = Expect.NotDefault<string>(),
                 ProjectId = Expect.NotDefault<string>(),
                 Timestamp = Expect.NotDefault<DateTime>()
             }.ToExpectedObject();
