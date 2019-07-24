@@ -10,8 +10,8 @@ namespace SecurePipelineScan.VstsService.Requests
                 {"api-version", "5.0-preview.1"}
             };
 
-        public static IVstsRequest<Multiple<Hook>> Subscriptions() =>
-            new VstsRequest<Multiple<Hook>>($"_apis/hooks/subscriptions", CommonApiVersion);
+        public static IEnumerableRequest<Hook> Subscriptions() =>
+            new VstsRequest<Hook>($"_apis/hooks/subscriptions", CommonApiVersion).AsEnumerable();
 
         public static class Add
         {

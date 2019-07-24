@@ -63,13 +63,12 @@ namespace SecurePipelineScan.VstsService
                 .GetJsonAsync<TResponse>()
                 .ConfigureAwait(false);
         }
-
         
-        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Response.Multiple<TResponse>> request) where TResponse : new()
+        public IEnumerable<TResponse> Get<TResponse>(IEnumerableRequest<TResponse> request)
         {
-            return new MultipleEnumerator<TResponse>(new Url(request.BaseUri(_organization))
-                .AppendPathSegment(request.Resource)
-                .SetQueryParams(request.QueryParams)
+            return request.Enumerate(new Url(request.Request.BaseUri(_organization))
+                .AppendPathSegment(request.Request.Resource)
+                .SetQueryParams(request.Request.QueryParams)
                 .WithBasicAuth(string.Empty, _token));
         }
 

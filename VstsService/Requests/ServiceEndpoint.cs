@@ -3,14 +3,10 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class ServiceEndpoint
     {
-        public static IVstsRequest<Response.Multiple<Response.ServiceEndpointHistory>> History(string project, string id)
-        {
-            return new VstsRequest<Response.Multiple<Response.ServiceEndpointHistory>>($"{project}/_apis/serviceendpoint/{id}/executionhistory");
-        }
+        public static IEnumerableRequest<Response.ServiceEndpointHistory> History(string project, string id) => 
+            new VstsRequest<Response.ServiceEndpointHistory>($"{project}/_apis/serviceendpoint/{id}/executionhistory").AsEnumerable();
 
-        public static IVstsRequest<Response.Multiple<Response.ServiceEndpoint>> Endpoints(string project)
-        {
-            return new VstsRequest<Response.Multiple<Response.ServiceEndpoint>>($"{project}/_apis/serviceendpoint/endpoints/");
-        }
+        public static IEnumerableRequest<Response.ServiceEndpoint> Endpoints(string project) => 
+            new VstsRequest<Response.ServiceEndpoint>($"{project}/_apis/serviceendpoint/endpoints/").AsEnumerable();
     }
 }

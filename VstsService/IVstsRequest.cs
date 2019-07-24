@@ -11,12 +11,10 @@ namespace SecurePipelineScan.VstsService
     }
 
     public interface IVstsRequest<TInput, TResponse> : IVstsRequest
-        where TResponse : new()
     {
     }
 
     public interface IVstsRequest<TResponse> : IVstsRequest<TResponse, TResponse>
-        where TResponse : new()
     {
     }
 }

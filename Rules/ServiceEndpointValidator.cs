@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules
             return async entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
-                return await _client.GetAsync(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson())
+                return await _client.GetAsync(VstsService.Requests.ServiceEndpoint.Endpoints(project).Request.AsJson())
                     .ConfigureAwait(false);
             };
         }

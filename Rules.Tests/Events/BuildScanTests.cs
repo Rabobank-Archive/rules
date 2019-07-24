@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
@@ -64,7 +64,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
@@ -95,7 +95,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
@@ -124,7 +124,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
 
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
@@ -153,7 +153,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
             
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client
@@ -181,7 +181,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .Returns(_fixture.Create<Build>());
             
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
                 .Returns(_fixture.CreateMany<BuildArtifact>());
 
             client

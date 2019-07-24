@@ -4,9 +4,7 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class MemberEntitlementManagement
     {
-        public static MemberEntitlementManagementRequest<Entitlements<UserEntitlement>> UserEntitlements()
-        {
-            return new MemberEntitlementManagementRequest<Entitlements<UserEntitlement>>("_apis/UserEntitlements");
-        }
+        public static IEnumerableRequest<UserEntitlement> UserEntitlements() => 
+            new MemberEntitlementManagementRequest<UserEntitlement>("_apis/UserEntitlements").AsEnumerable();
     }
 }

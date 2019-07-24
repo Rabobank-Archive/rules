@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using SecurePipelineScan.VstsService.Enumerators;
 
 namespace SecurePipelineScan.VstsService
 {
     public class VstsRequest<TInput, TResponse> : IVstsRequest<TInput, TResponse>
-        where TResponse: new()
     {
         public string Resource { get; }
         public IDictionary<string, object> QueryParams { get; }
@@ -23,7 +23,6 @@ namespace SecurePipelineScan.VstsService
     }
 
     public class VstsRequest<TResponse> : VstsRequest<TResponse, TResponse>, IVstsRequest<TResponse>
-        where TResponse: new()
     {
         public VstsRequest(string resource) : base(resource)
         {
@@ -32,5 +31,8 @@ namespace SecurePipelineScan.VstsService
         public VstsRequest(string resource, IDictionary<string, object> queryParams) : base(resource, queryParams)
         {
         }
+        
+        public IEnumerableRequest<TResponse> AsEnumerable() => 
+            new EnumerableRequest<TResponse, MultipleEnumerator<TResponse>>(this);
     }
 }

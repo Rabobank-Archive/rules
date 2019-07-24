@@ -27,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests
             throw new NotImplementedException();
         }
 
-        public IEnumerable<TResponse> Get<TResponse>(IVstsRequest<Multiple<TResponse>> request) where TResponse : new()
+        public IEnumerable<TResponse> Get<TResponse>(IEnumerableRequest<TResponse> request)
         {
             return _fixture.CreateMany<TResponse>();
         }

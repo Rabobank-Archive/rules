@@ -252,7 +252,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private static void SetupClient(IVstsRestClient client, IFixture fixture)
         {
             client
-                .Get(Arg.Any<IVstsRequest<Multiple<MinimumNumberOfReviewersPolicy>>>())
+                .Get(Arg.Any<IEnumerableRequest<MinimumNumberOfReviewersPolicy>>())
                 .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
         }
     }

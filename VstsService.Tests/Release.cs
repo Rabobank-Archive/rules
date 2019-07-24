@@ -115,11 +115,11 @@ namespace SecurePipelineScan.VstsService.Tests
         public void RequestForMultipleContinuesUsingContinuationToken()
         {
             var releases = _client.Get(
-                    new VsrmRequest<Multiple<Response.Release>>($"{_config.Project}/_apis/release/releases/",
+                    new VsrmRequest<Response.Release>($"{_config.Project}/_apis/release/releases/",
                         new Dictionary<string, object>
                         {
                             {"$top", "2"}
-                        }));
+                        }).AsEnumerable());
             releases.Count().ShouldBeGreaterThan(2);
         }
 

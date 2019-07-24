@@ -46,7 +46,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void TestMultipleEntitlements_WhenResultIsMoreThanTake_ThenRemainderShouldFetchedInSubsequentRequest()
         {
-            var result = _client.Get(MemberEntitlementManagement.UserEntitlements(), 20);
+            var result = _client.Get(MemberEntitlementManagement.UserEntitlements());
             result.Count().ShouldBeGreaterThan(20);
         }
     }

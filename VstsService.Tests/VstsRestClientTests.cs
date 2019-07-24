@@ -110,7 +110,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Trait("category", "integration")]
         public async Task RestRequestResultAsJsonObject()
         {
-            var endpoints = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
+            var endpoints = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project).Request.AsJson());
             endpoints.SelectToken("value[?(@.data.subscriptionId == '45cfa52a-a2aa-4a18-8d3d-29896327b51d')]").ShouldNotBeNull();
         }
         

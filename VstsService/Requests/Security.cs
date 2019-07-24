@@ -5,26 +5,22 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Security
     {
-        public static IVstsRequest<Response.Security.IdentityGroup> GroupMembers(string projectId, string groupId)
-        {
-            return new VstsRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadGroupMembers",
+        public static IVstsRequest<Response.Security.IdentityGroup> GroupMembers(string projectId, string groupId) =>
+            new VstsRequest<Response.Security.IdentityGroup>($"/{projectId}/_api/_identity/ReadGroupMembers",
                 new Dictionary<string, object>
                 {
                     {"__v", "5"},
                     {"scope", groupId},
                     {"readMembers", "true" }
                 });
-        }
 
-        public static IVstsRequest<Response.Security.IdentityGroup> Groups(string projectId)
-        {
-            return new VstsRequest<Response.Security.IdentityGroup>(
+        public static IVstsRequest<Response.Security.IdentityGroup> Groups(string projectId) =>
+            new VstsRequest<Response.Security.IdentityGroup>(
                 $"/{projectId}/_api/_identity/ReadScopedApplicationGroupsJson",
                 new Dictionary<string, object>
                 {
                     {"__v", "5"}
                 });
-        }
 
         public static IVstsRequest<AddMemberData, object> AddMember(string project) =>
             new VstsRequest<AddMemberData, object>($"/{project}/_api/_identity/AddIdentities",

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SecurePipelineScan.VstsService.Enumerators;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -27,5 +28,8 @@ namespace SecurePipelineScan.VstsService
         public VsrmRequest(string resource, IDictionary<string, object> queryParams) : base(resource, queryParams)
         {
         }
+        
+        public IEnumerableRequest<TResponse> AsEnumerable() => 
+            new EnumerableRequest<TResponse, MultipleEnumerator<TResponse>>(this);
     }
 }

@@ -58,7 +58,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
 
-            var buildDefinitions = await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId, true).AsJson());
+            var buildDefinitions = await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId, true).Request.AsJson());
 
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.SelectTokens("value[*].process").Count().ShouldBeGreaterThan(0);

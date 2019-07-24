@@ -5,14 +5,10 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Repository
     {
-        public static IVstsRequest<Multiple<Response.Repository>> Repositories(string project)
-        {
-            return new VstsRequest<Multiple<Response.Repository>>($"{project}/_apis/git/repositories");
-        }
+        public static IEnumerableRequest<Response.Repository> Repositories(string project) => 
+            new VstsRequest<Response.Repository>($"{project}/_apis/git/repositories").AsEnumerable();
 
-        public static VstsRequest<Multiple<Push>> Pushes(string project, string repositoryId)
-        {
-            return new VstsRequest<Multiple<Push>>($"/{project}/_apis/git/repositories/{repositoryId}/pushes");
-        }
+        public static IEnumerableRequest<Push> Pushes(string project, string repositoryId) => 
+            new VstsRequest<Push>($"/{project}/_apis/git/repositories/{repositoryId}/pushes").AsEnumerable();
     }
 }
