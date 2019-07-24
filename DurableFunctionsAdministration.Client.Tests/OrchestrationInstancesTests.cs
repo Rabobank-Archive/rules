@@ -8,11 +8,11 @@ using Xunit;
 namespace DurableFunctionsAdministration.Client.Tests
 {
     [Trait("category", "integration")]
-    public class OrchestrationInstances : IClassFixture<TestConfig>
+    public class OrchestrationInstancesTests : IClassFixture<TestConfig>
     {
         private readonly IDurableFunctionsAdministrationClient _client;
 
-        public OrchestrationInstances(TestConfig config)
+        public OrchestrationInstancesTests(TestConfig config)
         {
             _client = new DurableFunctionsAdministrationClient(new Uri(config.BaseUri), config.TaskHub, config.Code);
         }
@@ -39,8 +39,6 @@ namespace DurableFunctionsAdministration.Client.Tests
   
             var instance = await _client.GetAsync(Request.OrchestrationInstances.Get(instanceId));
 
-//            var instance = await _client.GetAsync(Request.OrchestrationInstances.Get("00ae37f0d17c46afbbcf9098661d7371:0"));
-            
             instance.ShouldNotBeNull();
             instance.CreatedTime.ShouldNotBeNull();
             instance.InstanceId.ShouldNotBeNull();

@@ -1,10 +1,10 @@
 namespace AzDoCompliancy.CustomStatus
 {
-    public class ScanOrchestrationStatus : CustomStatus
+    public class ScanOrchestrationStatus : ICustomStatus
     {
         public string Project { get; set; }
         public string Scope { get; set; }
-        public override string TypeId
+        public string TypeId
         {
             get => TypeIds.ScanOrchestrationStatusId;
         }
