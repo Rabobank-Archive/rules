@@ -48,23 +48,23 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string id) =>
-            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId))
+        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string repositoryId) =>
+            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId, repositoryId))
                 .ConfigureAwait(false))
                 .Identities;
 
-        protected override Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string id,
+        protected override Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string repositoryId,
             ApplicationGroup group)
         {
             if (group == null)
                 throw new ArgumentNullException(nameof(group));
 
-            return LoadPermissionsSetForGroupInternalAsync(projectId, id, group);
+            return LoadPermissionsSetForGroupInternalAsync(projectId, repositoryId, group);
         }
 
-        private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string id, ApplicationGroup group)
+        private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string repositoryId, ApplicationGroup group)
         {
-            return (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, id))
+            return (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, repositoryId))
                         .ConfigureAwait(false));
         }
 
