@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Flurl;
 using Flurl.Http;
 using SecurePipelineScan.VstsService.Response;
 
@@ -11,12 +10,9 @@ namespace SecurePipelineScan.VstsService
     {
         private readonly IFlurlRequest _request;
 
-        public MultipleEnumerator(IVstsRequest request, string organization, string token)
+        public MultipleEnumerator(IFlurlRequest request)
         {
-            _request = new Url(request.BaseUri(organization))
-                .WithBasicAuth(string.Empty, token)
-                .AppendPathSegment(request.Resource)
-                .SetQueryParams(request.QueryParams);
+            _request = request;
         }
 
         public IEnumerator<TResponse> GetEnumerator()
