@@ -1,9 +1,8 @@
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
-using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 
@@ -11,7 +10,6 @@ namespace SecurePipelineScan.VstsService.Tests
 {
     public class VstsRestClientTests : IClassFixture<TestConfig>
     {
-        private const string InvalidToken = "77p7fc7hpclqst4irzpwz452gkze75za7xkpbamkdy6lgtngjvcq";
         private readonly TestConfig _config;
         private readonly IVstsRestClient _vsts;
 
@@ -63,14 +61,14 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task GetRawUrl()
         {
-            var url = "http://www.bla.nl";
+            var url = new Uri("http://www.bla.nl");
 
             using (var httpTest = new HttpTest())
             {
                 httpTest.RespondWith(status: 200, body: "{}");
                 var client = new VstsRestClient("dummy", "token");
                 await client.GetAsync<Response.Build>(url);
-                httpTest.ShouldHaveCalled(url);
+                httpTest.ShouldHaveCalled(url.ToString());
             }
         }
         
@@ -99,14 +97,14 @@ namespace SecurePipelineScan.VstsService.Tests
                 await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
             }
         }
-
+        
         [Fact]
-        [Trait("category", "integration")]
-        public void HtmlInsteadOfXmlShouldThrow()
-        {
-            var sut = new VstsRestClient("somecompany-test", InvalidToken);
-            Assert.Throws<FlurlHttpException>(() => sut.Get(Project.Projects()).ToList());
-        }
+        public void EmptyPatShouldNotFailEarlyAndNotThrowWithInvalidHtml() => 
+            Assert.Throws<ArgumentNullException>(() => new VstsRestClient("somecompany-test", null));
+        
+        [Fact]
+        public void EmptyOrganizationShouldFailEarlyAndNotWithNotFound() => 
+            Assert.Throws<ArgumentNullException>(() => new VstsRestClient(null, "pat"));
 
         [Fact]
         [Trait("category", "integration")]
@@ -115,7 +113,6 @@ namespace SecurePipelineScan.VstsService.Tests
             var endpoints = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoints(_config.Project).AsJson());
             endpoints.SelectToken("value[?(@.data.subscriptionId == '45cfa52a-a2aa-4a18-8d3d-29896327b51d')]").ShouldNotBeNull();
         }
-
         
         [Fact]
         public async Task NotFoundIsNull()

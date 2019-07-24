@@ -10,14 +10,21 @@ namespace SecurePipelineScan.VstsService.Converters
     {
         public override void WriteJson(JsonWriter writer, Policy value, JsonSerializer serializer)
         {
-            switch (value)
+            if (value != null)
             {
-                case MinimumNumberOfReviewersPolicy _:
-                    value.Type = new PolicyType { Id = new Guid("fa4e907d-c16b-4a4c-9dfa-4906e5d171dd") };
-                    break;
+                switch (value)
+                {
+                    case MinimumNumberOfReviewersPolicy _:
+                        value.Type = new PolicyType { Id = new Guid("fa4e907d-c16b-4a4c-9dfa-4906e5d171dd") };
+                        break;
+                    case RequiredReviewersPolicy _:
+                        value.Type = new PolicyType { Id = new Guid("fd2167ab-b0be-447a-8ec8-39368250530e") };
+                        break;
+                    default:
+                        throw new ArgumentException("Unknown policy type");
+                }
             }
-            
-           JToken.FromObject(value,new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver()}).WriteTo(writer);
+            JToken.FromObject(value,new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver()}).WriteTo(writer);
         }
 
         public override Policy ReadJson(JsonReader reader, Type objectType, Policy existingValue, bool hasExistingValue,

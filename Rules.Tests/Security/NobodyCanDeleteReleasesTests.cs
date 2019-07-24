@@ -22,17 +22,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteReleases(client);
-            (await rule.Evaluate(projectId, "1")).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, "1")).ShouldBeTrue();
         }
 
         [Fact]
+        [Trait("type", "integration")]
         public async Task ReconcileReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteReleases(client) as IReconcile;
-            await rule.Reconcile(projectId, "1");
+            await rule.ReconcileAsync(projectId, "1");
         }
     }
 }

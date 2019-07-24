@@ -1,9 +1,11 @@
-﻿namespace SecurePipelineScan.VstsService.Response
+﻿using System;
+
+namespace SecurePipelineScan.VstsService.Response
 {
     public class Hook
     {
         public string Id { get; set; }
-        public string Url { get; set; }
+        public Uri Url { get; set; }
         public string Status { get; set; }
         public string PublisherId { get; set; }
         public string EventType { get; set; }

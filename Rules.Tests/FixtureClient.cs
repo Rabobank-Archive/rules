@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests
             return Task.FromResult(_fixture.Create<TResponse>());
         }
 
-        public Task<TResponse> GetAsync<TResponse>(string url) where TResponse : new()
+        public Task<TResponse> GetAsync<TResponse>(Uri url) where TResponse : new()
         {
             throw new NotImplementedException();
         }

@@ -18,10 +18,10 @@ namespace SecurePipelineScan.Rules
             _cache = cache;
         }
 
-        public async Task<bool> IsProduction(string project, Guid id)
+        public async Task<bool> ScanForProductionEndpointsAsync(string project, Guid id)
         {
             // Cache the results per project to avoid stressing the REST API.
-            return (await _cache.GetOrCreate(project, ResolveEndpoints(project)))
+            return (await _cache.GetOrCreate(project, ResolveEndpoints(project)).ConfigureAwait(false))
                 .ProductionEndpoints()
                 .Any(e => (Guid)e["id"] == id);
         }
@@ -31,7 +31,8 @@ namespace SecurePipelineScan.Rules
             return async entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
-                return await _client.GetAsync(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson());
+                return await _client.GetAsync(VstsService.Requests.ServiceEndpoint.Endpoints(project).AsJson())
+                    .ConfigureAwait(false);
             };
         }
     }

@@ -27,7 +27,7 @@ namespace SecurePipelineScan.VstsService.Response
 
         public string JobId { get; set; }
 
-        public List<string> Demands { get; set; }
+        public IList<string> Demands { get; set; }
 
         public int PoolId { get; set; }
 

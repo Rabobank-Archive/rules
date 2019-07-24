@@ -2,6 +2,6 @@
 {
     public class ComplianceSettings
     {
-        public bool BlockReleaseDefinitionSaveIfSecretPresent { get; set; }
+        public bool CheckForCredentialsAndOtherSecrets { get; set; }
     }
 }

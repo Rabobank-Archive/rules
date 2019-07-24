@@ -4,26 +4,17 @@ using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
-    public class ExtmgmtRequest<TResponse> : IVstsRequest<TResponse>
+    public class ExtmgmtRequest<TResponse> : VstsRequest<TResponse>
         where TResponse: new()
     {
-        public string Resource { get; }
-        public IDictionary<string, object> QueryParams { get; }
-
-        public ExtmgmtRequest(string resource)
+        public ExtmgmtRequest(string resource) : base(resource)
         {
-            Resource = resource;
         }
 
-        public ExtmgmtRequest(string resource, IDictionary<string, object> queryParams)
+        public ExtmgmtRequest(string resource, IDictionary<string, object> queryParams) : base(resource, queryParams)
         {
-            Resource = resource;
-            QueryParams = queryParams;
         }
 
-        public Uri BaseUri(string organization)
-        {
-            return new System.Uri($"https://{organization}.extmgmt.visualstudio.com/");
-        }
+        public override Uri BaseUri(string organization) => new Uri($"https://{organization}.extmgmt.visualstudio.com/");
     }
 }

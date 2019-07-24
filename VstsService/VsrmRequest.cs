@@ -3,27 +3,18 @@ using System.Collections.Generic;
 
 namespace SecurePipelineScan.VstsService
 {
-    public class VsrmRequest<TInput, TResponse> : IVstsRequest<TInput, TResponse>
+    public class VsrmRequest<TInput, TResponse> : VstsRequest<TInput, TResponse>
         where TResponse: new()
     {
-        public string Resource { get; }
-        public IDictionary<string, object> QueryParams { get; }
-
-        public VsrmRequest(string resource)
+        public VsrmRequest(string resource) : base(resource)
         {
-            Resource = resource;
         }
         
-        public VsrmRequest(string resource, IDictionary<string, object> queryParams)
+        public VsrmRequest(string resource, IDictionary<string, object> queryParams) : base(resource, queryParams)
         {
-            Resource = resource;
-            QueryParams = queryParams;
         }
 
-        public Uri BaseUri(string organization)
-        {
-            return new System.Uri($"https://vsrm.dev.azure.com/{organization}/");
-        }
+        public override Uri BaseUri(string organization) => new Uri($"https://vsrm.dev.azure.com/{organization}/");
     }
 
     public class VsrmRequest<TResponse> : VsrmRequest<TResponse, TResponse>, IVstsRequest<TResponse>

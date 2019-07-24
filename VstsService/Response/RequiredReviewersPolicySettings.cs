@@ -5,11 +5,11 @@ namespace SecurePipelineScan.VstsService.Response
 {
     public class RequiredReviewersPolicySettings
     {
-        public List<Guid> RequiredReviewerIds { get; set; }
+        public IList<Guid> RequiredReviewerIds { get; set; }
 
-        public List<Scope> Scope { get; set; }
+        public IList<Scope> Scope { get; set; }
 
-        public List<string> FileNamePatterns { get; set; }
+        public IList<string> FileNamePatterns { get; set; }
 
     }
 }

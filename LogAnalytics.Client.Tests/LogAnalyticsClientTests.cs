@@ -17,7 +17,7 @@ namespace LogAnalytics.Client.Tests
         }
         
         [Fact]
-        public void HeadersNotSetMultipleTimesWhenClientIsUsesInParallel()
+        public void HeadersNotSetMultipleTimesWhenClientIsUsedInParallel()
         {
             var sut = new LogAnalyticsClient("adsf", "", Substitute.For<IAzureTokenProvider>());
             using (new HttpTest())

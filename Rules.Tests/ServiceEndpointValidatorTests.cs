@@ -11,7 +11,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests
 {
-    public class ServiceEndpointValidatorTests : IDisposable
+    public sealed class ServiceEndpointValidatorTests : IDisposable
     {
         private readonly MemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
@@ -26,7 +26,7 @@ namespace SecurePipelineScan.Rules.Tests
 
             var validator = new ServiceEndpointValidator(client, _cache);
             await validator
-                .IsProduction(fixture.Create<string>(), fixture.Create<Guid>());
+                .ScanForProductionEndpointsAsync(fixture.Create<string>(), fixture.Create<Guid>());
         
             await client
                 .Received()
@@ -45,8 +45,8 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(JObject.FromObject(new { }));
 
             var validator = new ServiceEndpointValidator(client, _cache);
-            await validator.IsProduction(project, fixture.Create<Guid>());
-            await validator.IsProduction(project, fixture.Create<Guid>());
+            await validator.ScanForProductionEndpointsAsync(project, fixture.Create<Guid>());
+            await validator.ScanForProductionEndpointsAsync(project, fixture.Create<Guid>());
 
             await client
                 .Received(1)
@@ -69,11 +69,11 @@ namespace SecurePipelineScan.Rules.Tests
 
             var validator = new ServiceEndpointValidator(client, _cache);
             (await validator
-                .IsProduction(fixture.Create<string>(), id))
+                .ScanForProductionEndpointsAsync(fixture.Create<string>(), id))
                 .ShouldBeTrue();
             
             (await validator
-                .IsProduction(fixture.Create<string>(), fixture.Create<Guid>()))
+                .ScanForProductionEndpointsAsync(fixture.Create<string>(), fixture.Create<Guid>()))
                 .ShouldBeFalse();
         }
 

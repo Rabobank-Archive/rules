@@ -12,7 +12,7 @@ using Xunit;
 using Project = SecurePipelineScan.VstsService.Response.Project;
 using Task = System.Threading.Tasks.Task;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace SecurePipelineScan.Rules.Tests.Events
 {
     public class BuildScanTests : IClassFixture<TestConfig>
     {
@@ -23,11 +23,12 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
             
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -39,7 +40,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(_fixture.Create<JObject>());
 
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report.Id.ShouldBe("70609");
             report.Project.ShouldBe("LQA");   
@@ -52,13 +53,14 @@ namespace SecurePipelineScan.Rules.Tests
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
 
             var input = ReadInput("Completed.json");
             var timeline = ReadInput("DesignerBuildTimeline.json");
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -70,24 +72,26 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(timeline);
 
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report.UsesFortify.ShouldBe(false);
             report.UsesSonarQube.ShouldBe(false);
 
         }
+        
         [Fact]
         public async Task CompletedIncludesTasksShouldAllBeTrue()
         {
             _fixture
                 .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
 
             var input = ReadInput("Completed.json");
             var timeline = ReadInput("YamlBuildTimeline.json");
 
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
 
             client
@@ -99,23 +103,53 @@ namespace SecurePipelineScan.Rules.Tests
                 .Returns(timeline);
 
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report.UsesFortify.ShouldBe(true);
             report.UsesSonarQube.ShouldBe(true);
         }
 
+        [Fact]
+        public async Task CompletedWithNoTimelineShouldBeNull()
+        {
+            _fixture
+                .Customize<Project>(x => x.With(p => p.Name, "LQA"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
+
+            var input = ReadInput("Completed.json");
+
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .GetAsync<Build>(Arg.Any<Uri>())
+                .Returns(_fixture.Create<Build>());
+
+            client
+                .Get(Arg.Any<IVstsRequest<Multiple<BuildArtifact>>>())
+                .Returns(_fixture.CreateMany<BuildArtifact>());
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
+                .Returns((JObject)null);
+
+            var scan = new BuildScan(client);
+            var report = await scan.GetCompletedReportAsync(input);
+
+            report.UsesFortify.ShouldBeNull();
+            report.UsesSonarQube.ShouldBeNull();
+        }
+        
 
         [Fact]
         public async Task AllArtifactsInContainer_ArtifactsStoredSecure_ShouldBeTrue()
         {
             _fixture.Customize<ArtifactResource>(x =>
                 x.With(a => a.Type, "Container"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
             
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
             
             client
@@ -128,7 +162,7 @@ namespace SecurePipelineScan.Rules.Tests
 
 
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report
                 .ArtifactsStoredSecure
@@ -138,10 +172,12 @@ namespace SecurePipelineScan.Rules.Tests
         [Fact]
         public async Task NotAllArtifactsInContainer_ArtifactsStoredSecure_ShouldBeFalse()
         {
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
+            
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
             
             client
@@ -154,7 +190,7 @@ namespace SecurePipelineScan.Rules.Tests
 
 
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report
                 .ArtifactsStoredSecure
@@ -171,11 +207,11 @@ namespace SecurePipelineScan.Rules.Tests
             var input = ReadInput("Completed.json");
             var client = Substitute.For<IVstsRestClient>();
             client
-                .GetAsync<Build>(Arg.Any<string>())
+                .GetAsync<Build>(Arg.Any<Uri>())
                 .Returns(_fixture.Create<Build>());
             
             var scan = new BuildScan(client);
-            var report = await scan.Completed(input);
+            var report = await scan.GetCompletedReportAsync(input);
 
             report.ShouldBeNull();
         }

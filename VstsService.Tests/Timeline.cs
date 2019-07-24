@@ -1,4 +1,5 @@
 using Shouldly;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -6,7 +7,7 @@ namespace SecurePipelineScan.VstsService.Tests
     public class Timeline : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private IVstsRestClient _client;
+        private readonly IVstsRestClient _client;
 
         public Timeline(TestConfig config)
         {
@@ -16,7 +17,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public async void QueryTimeline()
+        public async Task QueryTimeline()
         {
             var timeline = await _client.GetAsync(Requests.Builds.Timeline(_config.Project, _config.BuildId));
             timeline.ShouldNotBeNull();
