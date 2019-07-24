@@ -7,6 +7,8 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using LogAnalytics.Client.Response;
 
 namespace LogAnalytics.Client
 {
@@ -17,11 +19,13 @@ namespace LogAnalytics.Client
     {
         private readonly string _workspace;
         private readonly string _key;
+        private readonly IAzureTokenProvider _tokenprovider;
 
-        public LogAnalyticsClient(string workspace, string key)
+        public LogAnalyticsClient(string workspace, string key, IAzureTokenProvider tokenProvider)
         {
-            _workspace = workspace;
-            _key = key;
+            _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
+            _key = key ?? throw new ArgumentNullException(nameof(key));
+            _tokenprovider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
             
             FlurlHttp.Configure(settings => {
                 settings.HttpClientFactory = new HttpClientFactory();
@@ -40,6 +44,21 @@ namespace LogAnalytics.Client
             var signature = "SharedKey " + _workspace + ":" + hashedString;
 
             await PostDataAsync(logName, signature, datestring, json, timefield).ConfigureAwait(false);
+        }
+
+        public async Task<LogAnalyticsQueryResponse> QueryAsync(string query)
+        {
+            var token = await _tokenprovider.GetAccessTokenAsync()
+                .ConfigureAwait(false);
+            var url = $"https://api.loganalytics.io/v1/workspaces/{_workspace}/query";
+            
+            var result = await url
+                .WithOAuthBearerToken(token)
+                .PostJsonAsync(new LogAnalyticsQuery { query = query })
+                .ReceiveJson<LogAnalyticsQueryResponse>()
+                .ConfigureAwait(false);
+
+            return result;
         }
 
         // Build the API signature
