@@ -1,9 +1,5 @@
 using System.Linq;
-using AutoFixture;
-using NSubstitute;
 using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 

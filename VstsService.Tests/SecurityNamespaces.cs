@@ -1,14 +1,6 @@
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Tests;
 using Shouldly;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using SecurePipelineScan.VstsService.Response;
 using Xunit;
-using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService.Tests
 {

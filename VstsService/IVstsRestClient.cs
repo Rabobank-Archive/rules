@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.VstsService

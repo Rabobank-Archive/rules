@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Flurl.Http;
 using SecurePipelineScan.VstsService.Response;

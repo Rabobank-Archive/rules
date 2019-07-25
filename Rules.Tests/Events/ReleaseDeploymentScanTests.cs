@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoFixture;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Events;
 using SecurePipelineScan.Rules.Reports;
-using Response = SecurePipelineScan.VstsService.Response;
+using SecurePipelineScan.VstsService;
 using Shouldly;
 using Xunit;
-using SecurePipelineScan.VstsService;
+using Response = SecurePipelineScan.VstsService.Response;
+using Task = System.Threading.Tasks.Task;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace SecurePipelineScan.Rules.Tests.Events
 {
     public static class ReleaseDeploymentScanTests
     {

@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using SecurePipelineScan.Rules.Reports;
 
 namespace SecurePipelineScan.Rules.Events
 {

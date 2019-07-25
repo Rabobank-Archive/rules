@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Transactions;
 
 namespace SecurePipelineScan.VstsService.Response
 {

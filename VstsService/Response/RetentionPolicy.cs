@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SecurePipelineScan.VstsService.Response
+﻿namespace SecurePipelineScan.VstsService.Response
 {
     public class RetentionPolicy
     {

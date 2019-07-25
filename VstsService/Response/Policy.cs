@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using SecurePipelineScan.VstsService.Converters;
-
-namespace SecurePipelineScan.VstsService.Response
+﻿namespace SecurePipelineScan.VstsService.Response
 {
     /* cannot use the [JsonConverter(typeof(PolicyConverter))] here because it
         it results in a stackoverflow when trying to deserialize the derived types

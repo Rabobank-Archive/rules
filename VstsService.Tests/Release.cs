@@ -5,7 +5,6 @@ using Xunit;
 using Shouldly;
 using System.Linq;
 using Flurl.Http.Testing;
-using SecurePipelineScan.VstsService.Response;
 using Environment = SecurePipelineScan.VstsService.Response.Environment;
 using Task = System.Threading.Tasks.Task;
 

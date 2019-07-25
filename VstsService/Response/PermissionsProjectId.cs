@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SecurePipelineScan.VstsService.Response
 {
     public class PermissionsProjectId

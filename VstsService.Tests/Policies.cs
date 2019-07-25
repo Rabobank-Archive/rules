@@ -1,9 +1,6 @@
 ﻿using System;
-using Newtonsoft.Json;
-using SecurePipelineScan.VstsService.Converters;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Task = System.Threading.Tasks.Task;

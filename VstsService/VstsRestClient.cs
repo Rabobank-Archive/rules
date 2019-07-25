@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using SecurePipelineScan.VstsService.Converters;
-using SecurePipelineScan.VstsService.Requests;
-using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService
 {
