@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DurableFunctionsAdministration.Client.Model;
 using DurableFunctionsAdministration.Client.Response;
 using Xunit;
 
@@ -46,6 +47,30 @@ namespace DurableFunctionsAdministration.Client.Tests
             instance.InstanceId.ShouldNotBeNull();
             instance.RuntimeStatus.ShouldNotBeNull();
             instance.LastUpdatedTime.ShouldNotBeNull();
+        }
+
+        [Theory]
+        [InlineData(RunTimeStatusses.Completed)]
+        [InlineData(RunTimeStatusses.Failed)]
+        [InlineData(RunTimeStatusses.Pending)]
+        [InlineData(RunTimeStatusses.Running)]
+        [InlineData(RunTimeStatusses.Terminated)]
+        [InlineData(RunTimeStatusses.ContinuedAsNew)]
+        public void GetInstancesByRunTimeStatusShouldIncludeOnlyThatStatus(string status)
+        {
+            var instances = _client.Get(Request.OrchestrationInstances.ListByStatus(new[] { status }));
+
+            var orchestrationInstances = instances as OrchestrationInstance[] ?? instances.ToArray();
+            orchestrationInstances.All(i => i.RuntimeStatus == status).ShouldBeTrue();
+        }
+        
+        [Fact]
+        public void GetInstancesByRunTimeStatusesShouldIncludeOnlyThoseStatuses()
+        {
+            var instances = _client.Get(Request.OrchestrationInstances.ListByStatus(new[] { RunTimeStatusses.Running, RunTimeStatusses.Failed }));
+
+            var orchestrationInstances = instances as OrchestrationInstance[] ?? instances.ToArray();
+            orchestrationInstances.All(i => i.RuntimeStatus == RunTimeStatusses.Running || i.RuntimeStatus == RunTimeStatusses.Failed).ShouldBeTrue();
         }
     }
 }

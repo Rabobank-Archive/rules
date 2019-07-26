@@ -14,6 +14,17 @@ namespace DurableFunctionsAdministration.Client.Request
                     { "top", "1000" }
                 });
         }
+        
+        public static IRestRequest<IEnumerable<OrchestrationInstance>> ListByStatus(string[] runTimeStatusses)
+        {
+            return new RestRequest<IEnumerable<OrchestrationInstance>>(
+                $"runtime/webhooks/durableTask/instances", new Dictionary<string, object>
+                {
+                    {"showHistory", "true"},
+                    { "top", "1000" },
+                    { "runTimeStatus", string.Join(",", runTimeStatusses)}
+                });
+        }
 
         public static IRestRequest<OrchestrationInstance> Get(string instanceId)
         {
