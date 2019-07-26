@@ -25,6 +25,7 @@ namespace DurableFunctionsAdministration.Client.Tests
             
             orchestrationInstances.ShouldNotBeNull();
             var first = orchestrationInstances.First();
+            first.Name.ShouldNotBeNull();
             first.CreatedTime.ShouldNotBeNull();
             first.InstanceId.ShouldNotBeNull();
             first.RuntimeStatus.ShouldNotBeNull();
@@ -40,6 +41,7 @@ namespace DurableFunctionsAdministration.Client.Tests
             var instance = await _client.GetAsync(Request.OrchestrationInstances.Get(instanceId));
 
             instance.ShouldNotBeNull();
+            instance.Name.ShouldNotBeNull();
             instance.CreatedTime.ShouldNotBeNull();
             instance.InstanceId.ShouldNotBeNull();
             instance.RuntimeStatus.ShouldNotBeNull();
