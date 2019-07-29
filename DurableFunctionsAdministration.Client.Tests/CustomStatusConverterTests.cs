@@ -15,7 +15,7 @@ namespace DurableFunctionsAdministration.Client.Tests
             var input = File.ReadAllText(Path.Combine("CustomStatus", "ScanOrchestrationCustomStatus.json"));
             var result = JsonConvert.DeserializeObject<CustomStatusBase>(input, new CustomStatusConverter());
 
-            result.ShouldBeOfType<ScanOrchestrationStatusBase>();
+            result.ShouldBeOfType<ScanOrchestrationStatus>();
         }
         
         [Fact]
@@ -24,7 +24,7 @@ namespace DurableFunctionsAdministration.Client.Tests
             var input = File.ReadAllText(Path.Combine("CustomStatus", "SupervisorOrchestrationCustomStatus.json"));
             var result = JsonConvert.DeserializeObject<CustomStatusBase>(input, new CustomStatusConverter());
 
-            result.ShouldBeOfType<SupervisorOrchestrationStatusBase>();
+            result.ShouldBeOfType<SupervisorOrchestrationStatus>();
         }
         
         [Fact]

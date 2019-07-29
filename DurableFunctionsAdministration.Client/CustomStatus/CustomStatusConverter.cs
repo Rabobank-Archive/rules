@@ -22,9 +22,9 @@ namespace DurableFunctionsAdministration.Client.CustomStatus
                 switch (typeId.Value<string>())
                 {
                     case TypeIds.ScanOrchestrationStatusId:
-                        return jo.ToObject<ScanOrchestrationStatusBase>();
+                        return jo.ToObject<ScanOrchestrationStatus>();
                     case TypeIds.SupervisorOrchestrationStatusId:
-                        return jo.ToObject<SupervisorOrchestrationStatusBase>();
+                        return jo.ToObject<SupervisorOrchestrationStatus>();
                     default:
                         return jo.ToObject<CustomStatusBase>();
                 }
