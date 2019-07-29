@@ -1,11 +1,10 @@
 using System.IO;
-using AzDoCompliancy.CustomStatus;
-using DurableFunctionsAdministration.Client.CustomStatus;
+using AzDoCompliancy.CustomStatus.Converter;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
 
-namespace DurableFunctionsAdministration.Client.Tests
+namespace AzDoCompliancy.CustomStatus.Tests
 {
     public class CustomStatusConverterTests
     {

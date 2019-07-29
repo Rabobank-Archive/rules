@@ -1,9 +1,8 @@
 using System;
-using AzDoCompliancy.CustomStatus;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DurableFunctionsAdministration.Client.CustomStatus
+namespace AzDoCompliancy.CustomStatus.Converter
 {
     public class CustomStatusConverter : JsonConverter<CustomStatusBase>
     {

@@ -37,15 +37,6 @@
       <None Update="appsettings.user.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="CustomStatus\ScanOrchestrationCustomStatus.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="CustomStatus\SupervisorOrchestrationCustomStatus.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="CustomStatus\OtherCustomStatus.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

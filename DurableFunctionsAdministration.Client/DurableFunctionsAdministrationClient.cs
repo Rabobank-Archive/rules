@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DurableFunctionsAdministration.Client.CustomStatus;
 using DurableFunctionsAdministration.Client.Request;
 using Flurl;
 using Flurl.Http;
@@ -26,8 +25,7 @@ namespace DurableFunctionsAdministration.Client
                 settings.HttpClientFactory = new HttpClientFactory();
                 var jsonSettings = new JsonSerializerSettings
                 {
-                    NullValueHandling =  NullValueHandling.Ignore,
-                    Converters = { new CustomStatusConverter() }
+                    NullValueHandling =  NullValueHandling.Ignore
                 };
                 settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
             });
