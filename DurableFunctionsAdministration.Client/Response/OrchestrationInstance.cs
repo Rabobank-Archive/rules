@@ -9,7 +9,7 @@ namespace DurableFunctionsAdministration.Client.Response
         public string InstanceId { get; set; }
         public string Name { get; set; }
         public string RuntimeStatus { get; set; }
-        public AzDoCompliancy.CustomStatus.ICustomStatus CustomStatus { get; set; }
+        public AzDoCompliancy.CustomStatus.CustomStatusBase CustomStatus { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdatedTime { get; set; }
         public IList<HistoryEvent> HistoryEvents { get; }
