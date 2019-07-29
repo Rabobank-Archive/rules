@@ -4,9 +4,6 @@ using System.Threading.Tasks;
 using DurableFunctionsAdministration.Client.Request;
 using Flurl;
 using Flurl.Http;
-using Flurl.Http.Configuration;
-using Newtonsoft.Json;
-using NullValueHandling = Newtonsoft.Json.NullValueHandling;
 
 namespace DurableFunctionsAdministration.Client
 {
@@ -23,11 +20,6 @@ namespace DurableFunctionsAdministration.Client
             
             FlurlHttp.Configure(settings => {
                 settings.HttpClientFactory = new HttpClientFactory();
-                var jsonSettings = new JsonSerializerSettings
-                {
-                    NullValueHandling =  NullValueHandling.Ignore
-                };
-                settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
             });
         }
         
