@@ -47,10 +47,11 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public void PushThrows404()
+        public void PushThrowsFor404()
         {
-            var ex = Should.Throw<FlurlHttpException>(() => _client.Get(Requests.Repository.Pushes(_config.Project, Guid.NewGuid().ToString())).ToList());
-            ex.Message.ShouldContain("404");
+            var repositoryId = Guid.NewGuid().ToString();
+            var ex = Should.Throw<NotFoundException>(() => _client.Get(Requests.Repository.Pushes(_config.Project, repositoryId)).ToList());
+            ex.Message.ShouldContain(repositoryId);
         }
     }
 }
