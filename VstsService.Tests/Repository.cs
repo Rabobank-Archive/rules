@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Threading.Tasks;
-using SecurePipelineScan.VstsService.Response;
+﻿using System;
+using System.Linq;
+using Flurl.Http;
 using Shouldly;
 using Xunit;
 
@@ -45,6 +44,13 @@ namespace SecurePipelineScan.VstsService.Tests
             var push = pushes.First();
             push.PushId.ShouldNotBe(0);
             push.Date.ShouldNotBe(default);
+        }
+
+        [Fact]
+        public void PushThrows404()
+        {
+            var ex = Should.Throw<FlurlHttpException>(() => _client.Get(Requests.Repository.Pushes(_config.Project, Guid.NewGuid().ToString())).ToList());
+            ex.Message.ShouldContain("404");
         }
     }
 }
