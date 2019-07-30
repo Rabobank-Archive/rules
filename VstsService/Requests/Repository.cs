@@ -1,11 +1,18 @@
 
+using SecurePipelineScan.VstsService.Response;
+
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Repository
     {
-        public static IVstsRequest<Response.Multiple<Response.Repository>> Repositories(string project)
+        public static IVstsRequest<Multiple<Response.Repository>> Repositories(string project)
         {
-            return new VstsRequest<Response.Multiple<Response.Repository>>($"{project}/_apis/git/repositories");
+            return new VstsRequest<Multiple<Response.Repository>>($"{project}/_apis/git/repositories");
+        }
+
+        public static VstsRequest<Multiple<Push>> Pushes(string project, string repositoryId)
+        {
+            return new VstsRequest<Multiple<Push>>($"/{project}/_apis/git/repositories/{repositoryId}/pushes");
         }
     }
 }
