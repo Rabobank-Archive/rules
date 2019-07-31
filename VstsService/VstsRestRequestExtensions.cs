@@ -26,6 +26,8 @@ namespace SecurePipelineScan.VstsService
 
             public string Resource => _request.Resource;
             public IDictionary<string, object> QueryParams => _request.QueryParams;
+
+            public IDictionary<string, object> Headers => _request.Headers;
         }
     }
 }

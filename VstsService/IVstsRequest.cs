@@ -8,6 +8,7 @@ namespace SecurePipelineScan.VstsService
         Uri BaseUri(string organization);
         string Resource { get; }
         IDictionary<string, object> QueryParams { get; }
+        IDictionary<string, object> Headers { get; }
     }
 
     public interface IVstsRequest<TInput, TResponse> : IVstsRequest

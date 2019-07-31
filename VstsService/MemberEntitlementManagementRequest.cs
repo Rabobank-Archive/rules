@@ -19,4 +19,18 @@ namespace SecurePipelineScan.VstsService
         public IEnumerableRequest<TResponse> AsEnumerable() => 
             new EnumerableRequest<TResponse, MemberEntitlementsEnumerator<TResponse>>(this);
     }
+
+    public class MemberEntitlementManagementRequest<TInput, TResponse> : VstsRequest<TInput, TResponse>
+        where TResponse : new()
+    {
+        public MemberEntitlementManagementRequest(string resource, Dictionary<string, object> queryParams, IDictionary<string, object> headers) : base(resource, queryParams, headers)
+        {
+        }
+
+        public MemberEntitlementManagementRequest(string resource) : base(resource)
+        {
+        }
+
+        public override Uri BaseUri(string organization) => new Uri($"https://vsaex.dev.azure.com/{organization}/");
+    }
 }

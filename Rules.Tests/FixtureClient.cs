@@ -28,6 +28,9 @@ namespace SecurePipelineScan.Rules.Tests
         public Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new() => 
             throw new NotImplementedException();
 
+        public Task<TResponse> PatchAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new() => 
+            throw new NotImplementedException();
+
         public Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new() => 
             throw new NotImplementedException();
 

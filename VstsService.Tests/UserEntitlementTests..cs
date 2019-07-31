@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
@@ -48,6 +50,29 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var result = _client.Get(MemberEntitlementManagement.UserEntitlements());
             result.Count().ShouldBeGreaterThan(20);
+        }
+
+        [Theory]
+        [InlineData("stakeholder")]
+        [InlineData("express")]
+        public async Task TestUpdateLicense(string license)
+        {
+            const string user = "FU.Tasportal_vsts@somecompany.nl";
+            
+            var entitlement = _client
+                .Get(MemberEntitlementManagement.UserEntitlements())
+                .FirstOrDefault(e => e.User.MailAddress.Equals(user));
+
+            entitlement.AccessLevel.AccountLicenseType = license;
+            
+            var patchDocument = new JsonPatchDocument().Replace("/accessLevel", entitlement.AccessLevel);
+            _ = await _client.PatchAsync(MemberEntitlementManagement.PatchUserEntitlements(entitlement.Id), patchDocument);
+
+            var result = _client
+                .Get(MemberEntitlementManagement.UserEntitlements())
+                .FirstOrDefault(e => e.User.MailAddress.Equals(user));
+
+            Assert.Equal(license, result.AccessLevel.AccountLicenseType);
         }
     }
 }

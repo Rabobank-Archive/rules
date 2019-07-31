@@ -9,14 +9,21 @@ namespace SecurePipelineScan.VstsService
         public string Resource { get; }
         public IDictionary<string, object> QueryParams { get; }
 
+        public IDictionary<string, object> Headers { get; }
+
         public VstsRequest(string resource) : this(resource, new Dictionary<string, object>())
         {
         }
 
-        public VstsRequest(string resource, IDictionary<string, object> queryParams)
+        public VstsRequest(string resource, IDictionary<string, object> queryParams) : this(resource, queryParams, new Dictionary<string, object>())
+        {
+        }
+
+        public VstsRequest(string resource, IDictionary<string, object> queryParams, IDictionary<string, object> headers)
         {
             Resource = resource;
             QueryParams = queryParams;
+            Headers = headers;
         }
 
         public virtual Uri BaseUri(string organization) => new Uri($"https://dev.azure.com/{organization}/");

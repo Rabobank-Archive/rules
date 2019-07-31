@@ -1,13 +1,17 @@
+using Flurl;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Flurl;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SecurePipelineScan.VstsService.Converters;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SecurePipelineScan.VstsService
 {
@@ -82,7 +86,28 @@ namespace SecurePipelineScan.VstsService
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
+                .WithHeaders(request.Headers)
                 .PostJsonAsync(body)
+                .ReceiveJson<TResponse>()
+                .ConfigureAwait(false);
+        }
+
+        public Task<TResponse> PatchAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return PatchInternalAsync(request, body);
+        }
+
+        private async Task<TResponse> PatchInternalAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
+        {
+            return await new Url(request.BaseUri(_organization))
+                .AppendPathSegment(request.Resource)
+                .WithBasicAuth(string.Empty, _token)
+                .SetQueryParams(request.QueryParams)
+                .WithHeaders(request.Headers)
+                .PatchJsonAsync(body)
                 .ReceiveJson<TResponse>()
                 .ConfigureAwait(false);
         }

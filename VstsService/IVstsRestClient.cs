@@ -11,6 +11,8 @@ namespace SecurePipelineScan.VstsService
         Task<TResponse> GetAsync<TResponse>(Uri url) where TResponse : new();
         IEnumerable<TResponse> Get<TResponse>(IEnumerableRequest<TResponse> request);
         Task<TResponse> PostAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse: new();
+
+        Task<TResponse> PatchAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new();
         Task<TResponse> PutAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new();
         Task DeleteAsync(IVstsRequest request);
     }
