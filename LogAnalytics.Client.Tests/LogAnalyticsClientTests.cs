@@ -85,5 +85,17 @@ namespace LogAnalytics.Client.Tests
             result.tables[0].columns.ShouldNotBeEmpty();
             result.tables[0].rows.ShouldNotBeEmpty();
         }
+
+        [Fact]
+        public async Task CompletenessQueryShouldReturnResults()
+        {
+            var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
+            var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
+            var result = await client.QueryAsync("completeness_log_CL | where TimeGenerated > ago(365d) | project SupervisorOrchestratorId_g ");
+            result.ShouldNotBeNull();
+            result.tables.ShouldNotBeEmpty();
+            result.tables[0].columns.ShouldNotBeEmpty();
+            result.tables[0].rows.ShouldNotBeEmpty();
+        }
     }
 }

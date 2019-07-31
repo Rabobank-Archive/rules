@@ -64,9 +64,23 @@ namespace DurableFunctionsAdministration.Client.Tests
             using (var httpTest = new HttpTest())
             {
                 httpTest.RespondWith(status: 500);
-                var client = new DurableFunctionsAdministrationClient(new Uri("https://some-dummy-uri"), "dummyTaskHub",
-                    "dummyCode");
+                var client = new DurableFunctionsAdministrationClient(
+                    new Uri("https://some-dummy-uri"), "dummyTaskHub", "dummyCode");
                 await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
+            }
+        }
+
+        [Fact]
+        public async Task DeleteThrowsOnError()
+        {
+            var request = new RestRequest<int>("/delete/some/data");
+
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(status: 500);
+                var client = new DurableFunctionsAdministrationClient(
+                    new Uri("https://some-dummy-uri"), "dummyTaskHub", "dummyCode");
+                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
             }
         }
     }

@@ -14,15 +14,15 @@ namespace DurableFunctionsAdministration.Client.Request
                     { "top", "1000" }
                 });
         }
-        
+
         public static IRestRequest<IEnumerable<OrchestrationInstance>> ListByStatus(string[] runTimeStatusses)
         {
             return new RestRequest<IEnumerable<OrchestrationInstance>>(
                 $"runtime/webhooks/durableTask/instances", new Dictionary<string, object>
                 {
-                    {"showHistory", "true"},
+                    { "showHistory", "true" },
                     { "top", "1000" },
-                    { "runTimeStatus", string.Join(",", runTimeStatusses)}
+                    { "runTimeStatus", string.Join(",", runTimeStatusses) }
                 });
         }
 
@@ -31,7 +31,25 @@ namespace DurableFunctionsAdministration.Client.Request
             return new RestRequest<OrchestrationInstance>(
                 $"runtime/webhooks/durableTask/instances/{instanceId}", new Dictionary<string, object>
                 {
-                    {"showHistory", "true"}
+                    { "showHistory", "true" }
+                });
+        }
+
+        public static IRestRequest<OrchestrationInstance> Delete(string instanceId)
+        {
+            return new RestRequest<OrchestrationInstance>(
+                $"runtime/webhooks/durableTask/instances/{instanceId}");
+        }
+
+        public static IRestRequest<IEnumerable<OrchestrationInstance>> DeleteMultiple(string[] runTimeStatusses, 
+            string start, string end)
+        {
+            return new RestRequest<IEnumerable<OrchestrationInstance>>(
+                $"runtime/webhooks/durableTask/instances", new Dictionary<string, object>
+                {
+                    { "runTimeStatus", string.Join(",", runTimeStatusses) },
+                    { "createdTimeFrom", start },
+                    { "createdTimeTo", end }
                 });
         }
     }

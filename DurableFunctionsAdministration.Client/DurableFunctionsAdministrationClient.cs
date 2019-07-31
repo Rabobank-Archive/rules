@@ -17,12 +17,18 @@ namespace DurableFunctionsAdministration.Client
             BaseUri = baseUri;
             TaskHub = taskHub;
             Code = code;
-            
-            FlurlHttp.Configure(settings => {
+
+            FlurlHttp.Configure(settings =>
+            {
                 settings.HttpClientFactory = new HttpClientFactory();
             });
         }
-        
+
+        public IEnumerable<TResponse> Get<TResponse>(IRestRequest<IEnumerable<TResponse>> request) where TResponse : new()
+        {
+            return new MultipleEnumerator<TResponse>(request, BaseUri, TaskHub, Code);
+        }
+
         public Task<TResponse> GetAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new()
         {
             if (request == null)
@@ -34,17 +40,31 @@ namespace DurableFunctionsAdministration.Client
         private async Task<TResponse> GetInternalAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new()
         {
             return await new Url(BaseUri)
-                            .AppendPathSegment(request.Resource)
-                            .SetQueryParams(request.QueryParams)
-                            .SetQueryParam("taskHub", TaskHub)
-                            .SetQueryParam("code", Code)
-                            .GetJsonAsync<TResponse>()
-                            .ConfigureAwait(false);
+                .AppendPathSegment(request.Resource)
+                .SetQueryParams(request.QueryParams)
+                .SetQueryParam("taskHub", TaskHub)
+                .SetQueryParam("code", Code)
+                .GetJsonAsync<TResponse>()
+                .ConfigureAwait(false);
         }
 
-        public IEnumerable<TResponse> Get<TResponse>(IRestRequest<IEnumerable<TResponse>> request) where TResponse : new()
+        public Task DeleteAsync(IRestRequest request)
         {
-            return new MultipleEnumerator<TResponse>(request, BaseUri, TaskHub, Code);
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            return DeleteInternalAsync(request);
+        }
+
+        private async Task DeleteInternalAsync(IRestRequest request)
+        {
+            await new Url(BaseUri)
+                .AppendPathSegment(request.Resource)
+                .SetQueryParams(request.QueryParams)
+                .SetQueryParam("taskHub", TaskHub)
+                .SetQueryParam("code", Code)
+                .DeleteAsync()
+                .ConfigureAwait(false);
         }
     }
 }

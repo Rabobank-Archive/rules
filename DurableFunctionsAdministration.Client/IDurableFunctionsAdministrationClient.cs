@@ -6,8 +6,8 @@ namespace DurableFunctionsAdministration.Client
 {
     public interface IDurableFunctionsAdministrationClient
     {
-        Task<TResponse> GetAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new();
         IEnumerable<TResponse> Get<TResponse>(IRestRequest<IEnumerable<TResponse>> request) where TResponse: new();
-
+        Task<TResponse> GetAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new();
+        Task DeleteAsync(IRestRequest request);
     }
 }
