@@ -51,14 +51,22 @@ namespace LogAnalytics.Client
             var token = await _tokenprovider.GetAccessTokenAsync()
                 .ConfigureAwait(false);
             var url = $"https://api.loganalytics.io/v1/workspaces/{_workspace}/query";
-            
-            var result = await url
-                .WithOAuthBearerToken(token)
-                .PostJsonAsync(new LogAnalyticsQuery { query = query })
-                .ReceiveJson<LogAnalyticsQueryResponse>()
-                .ConfigureAwait(false);
 
-            return result;
+            try
+            {
+                return await url
+                    .WithOAuthBearerToken(token)
+                    .PostJsonAsync(new LogAnalyticsQuery { query = query })
+                    .ReceiveJson<LogAnalyticsQueryResponse>()
+                    .ConfigureAwait(false);
+            }
+            catch (FlurlHttpException ex)
+            {
+                if (ex.Call.HttpStatus == System.Net.HttpStatusCode.BadRequest)
+                    return null;
+                else
+                    throw;
+            }
         }
 
         // Build the API signature
