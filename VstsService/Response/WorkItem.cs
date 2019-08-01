@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace SecurePipelineScan.VstsService.Response
 {
-    public class WorkItem
+    public class WorkItem : WorkItemReference
     {
-        public int Id { get; set; }
+        public IDictionary<string, object> Fields { get; set; }
     }
 }
