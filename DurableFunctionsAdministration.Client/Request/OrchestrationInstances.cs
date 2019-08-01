@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DurableFunctionsAdministration.Client.Response;
 
@@ -35,21 +36,19 @@ namespace DurableFunctionsAdministration.Client.Request
                 });
         }
 
-        public static IRestRequest<OrchestrationInstance> Delete(string instanceId)
+        public static IRestRequest<DeleteInstancesResponse> Delete(string instanceId)
         {
-            return new RestRequest<OrchestrationInstance>(
-                $"runtime/webhooks/durableTask/instances/{instanceId}");
+            return new RestRequest<DeleteInstancesResponse>($"runtime/webhooks/durableTask/instances/{instanceId}");
         }
 
-        public static IRestRequest<IEnumerable<OrchestrationInstance>> DeleteMultiple(string[] runTimeStatusses, 
-            string start, string end)
+        public static IRestRequest<DeleteInstancesResponse> DeleteMultiple(string[] runTimeStatusses, DateTime end)
         {
-            return new RestRequest<IEnumerable<OrchestrationInstance>>(
+            return new RestRequest<DeleteInstancesResponse>(
                 $"runtime/webhooks/durableTask/instances", new Dictionary<string, object>
                 {
-                    { "runTimeStatus", string.Join(",", runTimeStatusses) },
-                    { "createdTimeFrom", start },
-                    { "createdTimeTo", end }
+                    [ "runtimeStatus" ] = string.Join(",", runTimeStatusses),
+                    [ "createdTimeFrom"] = DateTime.Now.Date.AddYears(-1),
+                    [ "createdTimeTo" ] = end
                 });
         }
     }

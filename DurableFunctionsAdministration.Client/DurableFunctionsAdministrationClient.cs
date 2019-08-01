@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DurableFunctionsAdministration.Client.Request;
 using Flurl;
@@ -48,7 +49,7 @@ namespace DurableFunctionsAdministration.Client
                 .ConfigureAwait(false);
         }
 
-        public Task DeleteAsync(IRestRequest request)
+        public Task<TResponse> DeleteAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new()
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -56,14 +57,15 @@ namespace DurableFunctionsAdministration.Client
             return DeleteInternalAsync(request);
         }
 
-        private async Task DeleteInternalAsync(IRestRequest request)
+        private async Task<TResponse> DeleteInternalAsync<TResponse>(IRestRequest<TResponse> request) where TResponse : new()
         {
-            await new Url(BaseUri)
+            return await new Url(BaseUri)
                 .AppendPathSegment(request.Resource)
                 .SetQueryParams(request.QueryParams)
                 .SetQueryParam("taskHub", TaskHub)
                 .SetQueryParam("code", Code)
                 .DeleteAsync()
+                .ReceiveJson<TResponse>()
                 .ConfigureAwait(false);
         }
     }

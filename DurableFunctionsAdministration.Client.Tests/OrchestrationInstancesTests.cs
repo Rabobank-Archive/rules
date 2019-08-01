@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DurableFunctionsAdministration.Client.Model;
 using DurableFunctionsAdministration.Client.Response;
 using Xunit;
+using Flurl.Http;
 
 namespace DurableFunctionsAdministration.Client.Tests
 {
@@ -23,7 +24,7 @@ namespace DurableFunctionsAdministration.Client.Tests
         {
             var instances = _client.Get(Request.OrchestrationInstances.List());
             var orchestrationInstances = instances as OrchestrationInstance[] ?? instances.ToArray();
-            
+
             orchestrationInstances.ShouldNotBeNull();
             var first = orchestrationInstances.First();
             first.Name.ShouldNotBeNull();
@@ -32,13 +33,13 @@ namespace DurableFunctionsAdministration.Client.Tests
             first.RuntimeStatus.ShouldNotBeNull();
             first.LastUpdatedTime.ShouldNotBeNull();
         }
-        
+
         [Fact]
         public async Task GetInstanceReturnsInstance()
         {
             var instances = _client.Get(Request.OrchestrationInstances.List());
             var instanceId = instances.First().InstanceId;
-  
+
             var instance = await _client.GetAsync(Request.OrchestrationInstances.Get(instanceId));
 
             instance.ShouldNotBeNull();
@@ -63,7 +64,7 @@ namespace DurableFunctionsAdministration.Client.Tests
             var orchestrationInstances = instances as OrchestrationInstance[] ?? instances.ToArray();
             orchestrationInstances.All(i => i.RuntimeStatus == status).ShouldBeTrue();
         }
-        
+
         [Fact]
         public void GetInstancesByRunTimeStatusesShouldIncludeOnlyThoseStatuses()
         {
@@ -71,6 +72,30 @@ namespace DurableFunctionsAdministration.Client.Tests
 
             var orchestrationInstances = instances as OrchestrationInstance[] ?? instances.ToArray();
             orchestrationInstances.All(i => i.RuntimeStatus == RunTimeStatusses.Running || i.RuntimeStatus == RunTimeStatusses.Failed).ShouldBeTrue();
+        }
+
+        [Fact(Skip = "actually deletes a random orchestrator")]
+        public async void DeleteInstanceRemovesSingleInstance()
+        {
+            //Act
+            var instances = _client.Get(Request.OrchestrationInstances.List());
+            var instance = await _client.GetAsync(Request.OrchestrationInstances.Get(instances.First().InstanceId));
+            var deleted = await _client.DeleteAsync(Request.OrchestrationInstances.Delete(instance.InstanceId));
+
+            //Assert
+            deleted.instancesDeleted.ShouldBe(1);
+            Should.Throw<FlurlHttpException>(() => _client.GetAsync(Request.OrchestrationInstances.Get(instance.InstanceId)));
+        }
+
+        [Fact(Skip = "actually deletes a random orchestrator")]
+        public async void DeleteInstanceRemovesMultipleInstances()
+        {
+            //Act
+            var timestamp = DateTime.Now.Date.AddDays(-14);
+            var deleted = await _client.DeleteAsync(Request.OrchestrationInstances.DeleteMultiple(new[] { RunTimeStatusses.Completed }, timestamp));
+
+            //Assert
+            deleted.instancesDeleted.ShouldBeGreaterThan(1);
         }
     }
 }
