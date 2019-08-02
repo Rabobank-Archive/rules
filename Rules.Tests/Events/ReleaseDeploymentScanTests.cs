@@ -74,7 +74,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
             {
                 var input = ReadInput("Completed", "NotApproved.json");
                 _fixture
-                    .Customize<Response.PreApprovalSnapshot>(x => x.With(a => a.ApprovalOptions, null));
+                    .Customize<Response.PreApprovalSnapshot>(x => x.With(a => a.ApprovalOptions, (Response.ApprovalOptions)null));
 
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);

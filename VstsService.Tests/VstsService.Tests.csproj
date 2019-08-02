@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="autofixture" Version="4.5.0" />
+    <PackageReference Include="autofixture" Version="4.11.0" />
     <PackageReference Include="autofixture.autonsubstitute" Version="4.5.0" />
     <PackageReference Include="AutoFixture.SeedExtensions" Version="4.5.0" />
     <PackageReference Include="ExpectedObjects" Version="2.3.4" />

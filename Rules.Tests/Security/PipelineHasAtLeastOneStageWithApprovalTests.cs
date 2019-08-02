@@ -60,7 +60,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var fixture = new Fixture();
             fixture.Customize<Approval>(ctx =>
-                ctx.With(a => a.Approver, null));
+                ctx.With(a => a.Approver, (Identity)null));
             var def = fixture.Create<ReleaseDefinition>();
 
             _client
@@ -81,7 +81,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var fixture = new Fixture();
             fixture.Customize<PreDeployApprovals>(ctx =>
-                ctx.With(a => a.ApprovalOptions, null));
+                ctx.With(a => a.ApprovalOptions, (ApprovalOptions)null));
             var def = fixture.Create<ReleaseDefinition>();
 
             _client
