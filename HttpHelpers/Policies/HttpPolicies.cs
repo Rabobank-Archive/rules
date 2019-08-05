@@ -11,7 +11,7 @@ namespace HttpHelpers.Policies
 {
     public static class HttpPolicies
     {
-        const int RetryCount = 9;
+        const int RetryCount = 7; // Waiting time is calculated by 2^retryAttempt seconds. Total waiting time with retryCount 7 is 254 seconds.
         const int NumberToRaisePower = 2;
 
         private static readonly HttpStatusCode[] HttpStatusCodesWorthRetrying =
