@@ -23,7 +23,7 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Why =>
             "To make sure production releases are auditable for at least 15 months";
-        bool IRule.isSox => false;
+        bool IRule.IsSox => true;
         string[] IReconcile.Impact => new[] {
             "In project settings the maximum retention policy is set to 450 days.",
             "On the pipeline the days to retain a release is set to 450 days for every stage.",

@@ -25,7 +25,7 @@ namespace SecurePipelineScan.Rules.Security
         string IProjectRule.Description => "Nobody can delete the Team Project";
 
         string IProjectRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
-        bool IProjectRule.isSox => true;
+        bool IProjectRule.IsSox => true;
 
         public async Task<bool> EvaluateAsync(string project)
         {

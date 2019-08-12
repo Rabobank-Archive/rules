@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can delete builds";
         string IRule.Why => "To ensure auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete build runs.";
-        bool IRule.isSox => true;
+        bool IRule.IsSox => true;
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Builds' permission is set to Deny",

@@ -24,7 +24,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Why =>
             "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
             "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
-        bool IRule.isSox => false;
+        bool IRule.IsSox => true;
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",

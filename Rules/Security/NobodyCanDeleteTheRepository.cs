@@ -37,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can delete the repository";
         string IRule.Why => "To enforce auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete the repository.";
-        bool IRule.isSox => true;
+        bool IRule.IsSox => true;
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Repository' permission is set to Deny",

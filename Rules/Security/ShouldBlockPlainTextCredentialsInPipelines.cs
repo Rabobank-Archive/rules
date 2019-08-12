@@ -24,7 +24,7 @@ namespace SecurePipelineScan.Rules.Security
         {
             "In project settings, 'Block release definition edits that contain plaintext credentials or other secrets.' will be activated."
         };
-        bool IProjectRule.isSox => false;
+        bool IProjectRule.IsSox => false;
 
         public async Task<bool> EvaluateAsync(string project)
         {
