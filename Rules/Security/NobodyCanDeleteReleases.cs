@@ -35,6 +35,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can delete releases";
         string IRule.Why => "To ensure auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete releases.";
+        bool IRule.isSox => true;
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Releases' permission is set to Deny",

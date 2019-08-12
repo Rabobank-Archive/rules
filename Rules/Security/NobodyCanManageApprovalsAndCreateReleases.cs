@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can both manage approvals and create releases";
         string IRule.Why => "To ensure the four eyes principle, users should not be able to " +
             "remove approvals and thereafter start an unapproved release.";
-
+        bool IRule.isSox => false;
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +

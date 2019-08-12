@@ -7,5 +7,6 @@ namespace SecurePipelineScan.Rules.Security
         string Description { get; }
         string Why { get; }
         Task<bool> EvaluateAsync(string project);
+        bool isSox { get; }
     }
 }
