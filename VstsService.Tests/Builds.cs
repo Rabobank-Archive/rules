@@ -1,7 +1,7 @@
-using Shouldly;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using SecurePipelineScan.VstsService.Requests;
+using Shouldly;
 using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
@@ -46,7 +46,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryBuildDefinitionsReturnsBuildDefinitionsWithTeamProjectReference()
         {
-            var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId)).ToList();
 
@@ -58,7 +58,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task QueryBuildDefinitionsReturnsBuildDefinitionsWithExtendedProperties()
         {
-            var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var buildDefinitions = await _client.GetAsync(Requests.Builds.BuildDefinitions(projectId, true).Request.AsJson());
 
