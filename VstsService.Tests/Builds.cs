@@ -1,5 +1,6 @@
 using Shouldly;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -43,7 +44,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryBuildDefinitionsReturnsBuildDefinitions()
+        public async Task QueryBuildDefinitionsReturnsBuildDefinitionsWithTeamProjectReference()
         {
             var projectId = (await _client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
 
@@ -51,6 +52,7 @@ namespace SecurePipelineScan.VstsService.Tests
 
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.First().Id.ShouldNotBeNull();
+            buildDefinitions.First().Project.Id.ShouldNotBeNull();
         }
 
         [Fact]
