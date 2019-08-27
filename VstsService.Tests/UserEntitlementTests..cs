@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
@@ -73,6 +74,17 @@ namespace SecurePipelineScan.VstsService.Tests
                 .FirstOrDefault(e => e.User.MailAddress.Equals(user));
 
             Assert.Equal(license, result.AccessLevel.AccountLicenseType);
+        }
+
+        [Fact]
+        public async Task TestUserEntitlementSummary()
+        {
+            var result = await _client.GetAsync(MemberEntitlementManagement.UserEntitlementSummary());
+            result.Licenses.ShouldNotBeEmpty();
+
+            var license = result.Licenses.First();
+            license.LicenseName.ShouldNotBeEmpty();
+            license.Assigned.ShouldNotBe(default);
         }
     }
 }
