@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AutoFixture;
@@ -30,7 +29,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .With(a => a.ReleaseCreatorCanBeApprover, false));
 
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasApprovalOptions.ShouldBe(true);
@@ -47,7 +46,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .With(a => a.IsAutomated, true));
                     
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasApprovalOptions.ShouldBe(false);
@@ -61,7 +60,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Customize<Response.ApprovalOptions>(x => x.With(a => a.ReleaseCreatorCanBeApprover, true));
 
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
 
                 var report = await scan.GetCompletedReportAsync(input);
                 report
@@ -77,7 +76,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Customize<Response.PreApprovalSnapshot>(x => x.With(a => a.ApprovalOptions, (Response.ApprovalOptions)null));
 
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
 
                 var report = await scan.GetCompletedReportAsync(input);
                 report
@@ -91,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var input = ReadInput("Completed", "Approved.json");
                     
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasBranchFilterForAllArtifacts.ShouldBe(false);
@@ -115,7 +114,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     }));
                     
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasBranchFilterForAllArtifacts.ShouldBe(true);
@@ -136,7 +135,6 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 }.ToExpectedObject(ctx =>
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
-                    ctx.Ignore(x => x.UsesProductionEndpoints);
                     ctx.Ignore(x => x.UsesManagedAgentsOnly);
                     ctx.Ignore(x => x.RelatedToSm9Change);
                     ctx.Ignore(x => x.AllArtifactsAreFromBuild);
@@ -145,59 +143,10 @@ namespace SecurePipelineScan.Rules.Tests.Events
 
                 var input = ReadInput("Completed", "Approved.json");
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
 
                 var report = await scan.GetCompletedReportAsync(input);
                 expected.ShouldEqual(report);
-            }
-
-            [Fact]
-            public async Task UsesServiceEndpointValidatorToScan()
-            {
-                var input = ReadInput("Completed", "NotApproved.json");
-                _fixture.Customize<Response.WorkflowTask>(x => x.With(a => a.Inputs, new Dictionary<string, string>
-                {
-                    ["some-input"] = Guid.NewGuid().ToString()
-                }));
-                
-                var endpoints = Substitute.For<IServiceEndpointValidator>();
-                endpoints
-                    .ScanForProductionEndpointsAsync(Arg.Any<string>(), Arg.Any<Guid>())
-                    .Returns(true);
-                
-                var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(endpoints, client);
-                await scan.GetCompletedReportAsync(input);
-                
-                await endpoints
-                    .Received()
-                    .ScanForProductionEndpointsAsync("TAS", Arg.Any<Guid>());
-            }
-
-            [Fact]
-            public async Task IgnoresTasks()
-            {
-                _fixture
-                    .Customize<Response.WorkflowTask>(
-                        x => x
-                            .With(y => y.Inputs, new Dictionary<string, string> {["connection"] = Guid.NewGuid().ToString()})
-                            .With(y => y.TaskId, new Guid("dd84dea2-33b4-4745-a2e2-d88803403c1b")));
-                
-                var input = JObject.FromObject(new
-                {
-                    createdDate = "2019-01-11T13:34:58.0366887Z"
-                });
-                
-                var endpoints = Substitute.For<IServiceEndpointValidator>();
-                endpoints
-                    .ScanForProductionEndpointsAsync(Arg.Any<string>(), Arg.Any<Guid>())
-                    .Returns(true);
-                
-                var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(endpoints, client);
-                var report = await scan.GetCompletedReportAsync(input);
-                
-                report.UsesProductionEndpoints.ShouldBe(false);
             }
 
             [Fact]
@@ -221,7 +170,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 });
 
                 var client = Substitute.For<IVstsRestClient>();
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
 
                 var report = await scan.GetCompletedReportAsync(input);
                 expected.ShouldEqual(report);
@@ -266,7 +215,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(environment);
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
@@ -304,7 +253,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 await scan.GetCompletedReportAsync(input);
 
                 await rest.Received(_fixture.Create<Response.Environment>().DeployPhasesSnapshot.Count())
@@ -333,7 +282,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     
     
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
     
                 // Assert
@@ -366,7 +315,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
@@ -401,7 +350,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
@@ -436,7 +385,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
@@ -463,7 +412,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Returns(_fixture.Create<Response.Environment>());
 
                 // Act
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), rest);
+                var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
@@ -489,7 +438,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var client = Substitute.For<IVstsRestClient>();
                 client.GetAsync(Arg.Any<IVstsRequest<Response.AgentQueue>>()).Returns(_fixture.Create<Response.AgentQueue>());
                 
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
                 
                 expected.ShouldEqual(report);
@@ -544,7 +493,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 
                 // Act
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
                 
                 // Assert
@@ -562,20 +511,18 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 
                 // Act
                 var client = new FixtureClient(_fixture);
-                var scan = new ReleaseDeploymentScan(Substitute.For<IServiceEndpointValidator>(), client);
+                var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
                 
                 // Assert
                 Assert.False(report.RelatedToSm9Change);
             }
         }
-
                 
         private static JObject ReadInput(string eventType, string file)
         {
             var dir = Path.Join("Assets", "ReleaseDeployment", eventType);
             return JObject.Parse(File.ReadAllText(Path.Join(dir, file)));
         }
-
     }
 }

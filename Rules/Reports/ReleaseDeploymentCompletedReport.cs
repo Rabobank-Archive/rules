@@ -10,7 +10,6 @@ namespace SecurePipelineScan.Rules.Reports
         public string Environment { get; set; }
         public string ReleaseId { get; set; }
         public DateTime CreatedDate { get; set; }
-        public bool? UsesProductionEndpoints { get; set; }
         public bool? HasApprovalOptions { get; set; }
         public bool? HasBranchFilterForAllArtifacts { get; set; }
         public bool? AllArtifactsAreFromBuild { get; set; }

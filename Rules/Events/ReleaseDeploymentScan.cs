@@ -10,19 +10,10 @@ namespace SecurePipelineScan.Rules.Events
 {
     public class ReleaseDeploymentScan : IServiceHookScan<ReleaseDeploymentCompletedReport>
     {
-        private static readonly Guid[] IgnoredTaskIds =
-        {
-            new Guid("dd84dea2-33b4-4745-a2e2-d88803403c1b"), // auto-lst
-            new Guid("291ed61f-1ee4-45d3-b1b0-bf822d9095ef"), // SonarQubePublish
-            new Guid("d0c045b6-d01d-4d69-882a-c21b18a35472"), // SM9 - Create
-            new Guid("f0d043e2-e42f-4d11-113c-d34c99d63896"), // SM9 - Close 
-        };
-        private readonly IServiceEndpointValidator _endpoints;
         private readonly IVstsRestClient _client;
 
-        public ReleaseDeploymentScan(IServiceEndpointValidator endpoints, IVstsRestClient client)
+        public ReleaseDeploymentScan(IVstsRestClient client)
         {
-            _endpoints = endpoints;
             _client = client;
         }
 
@@ -47,7 +38,6 @@ namespace SecurePipelineScan.Rules.Events
                 ReleaseId = (string)input.SelectToken("resource.environment.release.id"),
                 Environment = (string)input.SelectToken("resource.environment.name"),
                 CreatedDate = (DateTime)input["createdDate"],
-                UsesProductionEndpoints = await UsesProductionEndpointsAsync(project, environment).ConfigureAwait(false),
                 HasApprovalOptions = CheckApprovalOptions(environment),
                 HasBranchFilterForAllArtifacts = CheckBranchFilters(release, environment),
                 UsesManagedAgentsOnly = await CheckAgentsAsync(project, environment).ConfigureAwait(false),
@@ -113,24 +103,6 @@ namespace SecurePipelineScan.Rules.Events
 
             return await _client.GetAsync(VstsService.Requests.ReleaseManagement.Release(project, releaseId))
                 .ConfigureAwait(false);
-        }
-
-        private async Task<bool?> UsesProductionEndpointsAsync(string project, Response.Environment environment)
-        {
-            if (environment == null)
-            {
-                return null;
-            }
-
-            return (await Task.WhenAll(environment.DeployPhasesSnapshot
-                    .SelectMany(s => s.WorkflowTasks)
-                    .Where(w => !IgnoredTaskIds.Contains(w.TaskId))
-                    .SelectMany(w => w.Inputs)
-                    .Select(i => i.Value)
-                    .Select(async x => Guid.TryParse(x, out var id) && 
-                        await _endpoints.ScanForProductionEndpointsAsync(project, id).ConfigureAwait(false)))
-                    .ConfigureAwait(false))
-                .Any(x => x);
         }
 
         private static bool? CheckApprovalOptions(Response.Environment environment)
