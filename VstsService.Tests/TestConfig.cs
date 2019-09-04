@@ -19,6 +19,7 @@ namespace SecurePipelineScan.VstsService.Tests
             ServiceEndpointId = configuration["serviceEndpointId"] ?? "975b3603-9939-4f22-a5a9-baebb39b5dad";
             ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "1";
             ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "New release pipeline";
+            BuildDefinitionId = configuration["buildDefinitionId"] ?? "2";
             BuildId = configuration["buildId"] ?? "4";
 
             if (int.TryParse(configuration["AgentPoolId"], out int poolId))
@@ -36,5 +37,6 @@ namespace SecurePipelineScan.VstsService.Tests
         public string ReleaseDefinitionName { get; }
         public int AgentPoolId { get; } = 1;
         public string BuildId { get; }
+        public string BuildDefinitionId { get; }
     }
 }

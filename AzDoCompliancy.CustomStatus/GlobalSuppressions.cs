@@ -6,3 +6,4 @@
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S2339:Public constant members should not be used", Justification = "<Pending>", Scope = "member", Target = "~F:AzDoCompliancy.CustomStatus.TypeIds.ScanOrchestrationStatusId")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S2339:Public constant members should not be used", Justification = "<Pending>", Scope = "member", Target = "~F:AzDoCompliancy.CustomStatus.TypeIds.SupervisorOrchestrationStatusId")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S103:Lines should not be too long", Justification = "<Pending>")]

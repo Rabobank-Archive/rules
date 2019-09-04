@@ -24,10 +24,10 @@ namespace SecurePipelineScan.Rules.Security
             var groups = (await LoadGroupsAsync(projectId, id).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
-            var permissions =
+            return 
                 (await Task.WhenAll(groups.Select(g => LoadPermissionsSetForGroupAsync(projectId, id, g))).ConfigureAwait(false))
-                    .SelectMany(p => p.Permissions);
-            return permissions.All(p => !PermissionBits.Contains(p.PermissionBit) || AllowedPermissions.Contains(p.PermissionId));
+                    .SelectMany(p => p.Permissions)
+                    .All(p => !PermissionBits.Contains(p.PermissionBit) || AllowedPermissions.Contains(p.PermissionId));
         }
 
         public virtual async Task ReconcileAsync(string projectId, string id)

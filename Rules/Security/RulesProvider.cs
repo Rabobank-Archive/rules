@@ -28,6 +28,9 @@ namespace SecurePipelineScan.Rules.Security
         public IEnumerable<IRule> BuildRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteBuilds(client);
+            yield return new ArtifactIsStoredSecure(client);
+            yield return new BuildPipelineHasSonarqubeTask(client);
+            yield return new BuildPipelineHasFortifyTask(client);
         }
 
         public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)

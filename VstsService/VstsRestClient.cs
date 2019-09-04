@@ -8,10 +8,6 @@ using Flurl.Http.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SecurePipelineScan.VstsService.Converters;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SecurePipelineScan.VstsService
 {

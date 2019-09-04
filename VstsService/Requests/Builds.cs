@@ -16,6 +16,9 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IEnumerableRequest<BuildDefinition> BuildDefinitions(string projectId) => 
             BuildDefinitions(projectId, false);
 
+        public static IVstsRequest<BuildDefinition> BuildDefinition(string projectId, string id) =>
+            new VstsRequest<BuildDefinition>($"{projectId}/_apis/build/definitions/{id}");
+
         public static IEnumerableRequest<BuildArtifact> Artifacts(string project, string id) => 
             new VstsRequest<BuildArtifact>($"{project}/_apis/build/builds/{id}/artifacts").AsEnumerable();
 

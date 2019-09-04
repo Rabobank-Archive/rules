@@ -8,11 +8,11 @@ using System;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public abstract class PipelineRuleBase : RuleBase
+    public abstract class PipelineHasPermissionRuleBase : RuleBase
     {
         readonly IVstsRestClient _client;
 
-        protected PipelineRuleBase(IVstsRestClient client)
+        protected PipelineHasPermissionRuleBase(IVstsRestClient client)
         {
             _client = client;
         }

@@ -3,7 +3,7 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteReleases : PipelineRuleBase, IRule, IReconcile
+    public class NobodyCanDeleteReleases : PipelineHasPermissionRuleBase, IRule, IReconcile
     {
         public NobodyCanDeleteReleases(IVstsRestClient client) : base(client)
         {

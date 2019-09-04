@@ -6,7 +6,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanManageApprovalsAndCreateReleases : PipelineRuleBase, IRule, IReconcile
+    public class NobodyCanManageApprovalsAndCreateReleases : PipelineHasPermissionRuleBase, IRule, IReconcile
     {
         public NobodyCanManageApprovalsAndCreateReleases(IVstsRestClient client) : base(client)
         {

@@ -44,6 +44,20 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
+        [Trait("category", "integration")]
+        public async Task QueryBuildDefinition()
+        {
+            var buildDefinition = 
+                await _client.GetAsync(Requests.Builds.BuildDefinition(_config.Project, _config.BuildDefinitionId));
+
+            buildDefinition.ShouldNotBeNull();
+            buildDefinition.Id.ShouldNotBeNull();
+            buildDefinition.Name.ShouldNotBeNull();
+            buildDefinition.Project.ShouldNotBeNull();
+            buildDefinition.Process.Phases.First().Steps.First().Task.Id.ShouldNotBeNull();
+        }
+
+        [Fact]
         public async Task QueryBuildDefinitionsReturnsBuildDefinitionsWithTeamProjectReference()
         {
             var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;

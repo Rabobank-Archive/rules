@@ -14,7 +14,8 @@ namespace AzDoCompliancy.CustomStatus.Converter
         public override CustomStatusBase ReadJson(JsonReader reader, Type objectType, CustomStatusBase existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
-            if (reader.TokenType == JsonToken.Null) return null;
+            if (reader.TokenType == JsonToken.Null)
+                return null;
             
             var jo = JObject.Load(reader);
 

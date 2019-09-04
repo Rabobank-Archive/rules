@@ -65,8 +65,9 @@ namespace SecurePipelineScan.Rules.Security
 
         private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string repositoryId, ApplicationGroup group)
         {
-            return (await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, repositoryId))
-                        .ConfigureAwait(false));
+            return 
+                await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, repositoryId))
+                    .ConfigureAwait(false);
         }
 
         protected override Task UpdatePermissionAsync(string projectId, ApplicationGroup group,
