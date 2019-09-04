@@ -36,6 +36,7 @@ namespace SecurePipelineScan.Rules.Security
         private static bool PipelineHasTask(BuildDefinition buildPipeline, string taskId)
         {
             return buildPipeline.Process.Phases
+                .Where(p => p.Steps != null)
                 .SelectMany(p => p.Steps)
                 .Any(s => s.Enabled && s.Task.Id == taskId);
         }
