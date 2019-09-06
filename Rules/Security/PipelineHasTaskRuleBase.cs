@@ -35,6 +35,9 @@ namespace SecurePipelineScan.Rules.Security
 
         private static bool PipelineHasTask(BuildDefinition buildPipeline, string taskId)
         {
+            if (buildPipeline.Process.Phases == null) //Yaml pipeline
+                return false;
+
             return buildPipeline.Process.Phases
                 .Where(p => p.Steps != null)
                 .SelectMany(p => p.Steps)

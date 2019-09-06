@@ -1,5 +1,5 @@
 name: $(Build.BuildId)
-pool: 'Rabo-Build-Azure-Windows-Preview'
+pool: 'Rabo-Build-Azure-Windows'
 trigger:
   - master
 variables:
@@ -14,6 +14,7 @@ steps:
   inputs:
     SonarQube: 'SonarQube Production On Prem - with token'
     projectKey: TAS.SecurePipelineScanner
+    extraProperties: sonar.buildbreaker.skip=true
 
 # inspired by: https://stackoverflow.com/a/46813196/129269
 - script: |
