@@ -31,6 +31,7 @@ namespace SecurePipelineScan.VstsService.Tests
             definition.Name.ShouldBe(_config.ReleaseDefinitionName);
             definition.Links.ShouldNotBeNull();
             definition.Environments.ShouldNotBeEmpty();
+            definition.Artifacts.ShouldNotBeEmpty();
 
             var environment = definition.Environments.First();
             environment.Name.ShouldNotBeEmpty();
@@ -41,6 +42,10 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var task = phase.WorkflowTasks.First();
             task.Name.ShouldNotBeEmpty();
+
+            var artifact = definition.Artifacts.First();
+            artifact.Type.ShouldNotBeEmpty();
+            artifact.DefinitionReference.Definition.Id.ShouldNotBeEmpty();
         }
     }
 }
