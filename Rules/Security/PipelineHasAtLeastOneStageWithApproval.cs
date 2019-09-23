@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Why =>
             "To make sure production releases are approved by at least one other person";
-        bool IRule.IsSox => false;
+        bool IRule.IsSox => true;
         public async Task<bool> EvaluateAsync(string project, string releasePipelineId) //NOSONAR
         {
             var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, releasePipelineId))
