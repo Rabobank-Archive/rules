@@ -76,13 +76,15 @@ namespace SecurePipelineScan.Rules.Events
                 return null;
             }
 
-            var poolIds = await Task.WhenAll(phasesWithAgentBasedDeployment.Select(async p =>
-                (await _client.GetAsync(VstsService.Requests.DistributedTask.AgentQueue(project, 
-                    p.DeploymentInput.QueueId)).ConfigureAwait(false)).Pool.Id))
-                .ConfigureAwait(false);
-            
+            var queues = await Task.WhenAll(phasesWithAgentBasedDeployment.Select(async p =>
+                (await _client.GetAsync(VstsService.Requests.DistributedTask.AgentQueue(project,
+                    p.DeploymentInput.QueueId)).ConfigureAwait(false)))).ConfigureAwait(false);
+
+            if (queues.Any(x => x == null))
+                return false;
+                
             int[] managedPoolIds = { 114, 115, 116, 119, 120, 122, 117, 121 };
-            return !poolIds.Except(managedPoolIds).Any();
+            return !queues.Select(x => x.Pool.Id).Except(managedPoolIds).Any();
         }
 
         private static bool? CheckBranchFilters(Response.Release release, Response.Environment environment)

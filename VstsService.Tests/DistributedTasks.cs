@@ -55,5 +55,12 @@ namespace SecurePipelineScan.VstsService.Tests
             response.Pool.ShouldNotBeNull();
             response.Pool.Id.ShouldBe(9);
         }
+
+        [Fact]
+        public async Task QueryAgentQueueThatDoesNotExistTest()
+        {
+            var response = await _client.GetAsync(Requests.DistributedTask.AgentQueue(_config.Project, 123));
+            response.ShouldBeNull();
+        }
     }
 }

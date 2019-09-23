@@ -185,7 +185,6 @@ namespace SecurePipelineScan.Rules.Tests.Events
             [InlineData(120)]
             [InlineData(121)]
             [InlineData(122)]
-            
             public async Task AgentIsTasManagedAgent(int poolId)
             {
                 // Arrange
@@ -220,6 +219,46 @@ namespace SecurePipelineScan.Rules.Tests.Events
 
                 // Assert
                 Assert.True(report.UsesManagedAgentsOnly);
+                await rest.Received()
+                    .GetAsync(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
+                        r.Resource.Contains(deployPhaseSnapshot.DeploymentInput.QueueId.ToString())));
+            }
+
+            [Fact]
+            public async Task ReturnFalseWhenAgentQueueDoesNotExist()
+            {
+                // Arrange
+                _fixture
+                    .Customize<Response.AgentPool>(context => context.With(x => x.Id, 114));
+                _fixture
+                    .Customize<Response.DeployPhaseSnapshot>(context =>
+                        context.With(x => x.PhaseType, "agentBasedDeployment"));
+
+                var input = ReadInput("Completed", "Approved.json");
+
+                var rest = Substitute.For<IVstsRestClient>();
+                rest
+                    .GetAsync(Arg.Any<IVstsRequest<Response.AgentQueue>>())
+                    .Returns((Response.AgentQueue) null);
+
+                rest
+                    .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
+                    .Returns(_fixture.Create<Response.Release>());
+
+                var deployPhaseSnapshot = _fixture.Create<Response.DeployPhaseSnapshot>();
+                deployPhaseSnapshot.PhaseType = "agentBasedDeployment";
+                var environment = _fixture.Create<Response.Environment>();
+                environment.DeployPhasesSnapshot = new[] { deployPhaseSnapshot };
+                rest
+                    .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
+                    .Returns(environment);
+
+                // Act
+                var scan = new ReleaseDeploymentScan(rest);
+                var report = await scan.GetCompletedReportAsync(input);
+
+                // Assert
+                Assert.False(report.UsesManagedAgentsOnly);
                 await rest.Received()
                     .GetAsync(Arg.Is<IVstsRequest<Response.AgentQueue>>(r =>
                         r.Resource.Contains(deployPhaseSnapshot.DeploymentInput.QueueId.ToString())));
