@@ -6,7 +6,7 @@ namespace SecurePipelineScan.Rules.Security
     public interface IRulesProvider
     {
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
-        IEnumerable<IRule> RepositoryRules(IVstsRestClient client);
+        IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client);
         IEnumerable<IRule> BuildRules(IVstsRestClient client);
         IEnumerable<IRule> ReleaseRules(IVstsRestClient client);
     }
@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new ShouldBlockPlainTextCredentialsInPipelines(client);
         }
 
-        public IEnumerable<IRule> RepositoryRules(IVstsRestClient client)
+        public IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteTheRepository(client);
             yield return new ReleaseBranchesProtectedByPolicies(client);

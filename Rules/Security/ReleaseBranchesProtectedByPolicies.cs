@@ -9,7 +9,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleaseBranchesProtectedByPolicies : IRule, IReconcile
+    public class ReleaseBranchesProtectedByPolicies : IRepositoryRule, IReconcile
     {
         private const int MinimumApproverCount = 2;
         private readonly IVstsRestClient _client;
@@ -19,12 +19,12 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        string IRule.Description => "Release branches are protected by policies";
+        string IRepositoryRule.Description => "Release branches are protected by policies";
 
-        string IRule.Why =>
+        string IRepositoryRule.Why =>
             "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
             "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
-        bool IRule.IsSox => true;
+        bool IRepositoryRule.IsSox => true;
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",
@@ -32,9 +32,9 @@ namespace SecurePipelineScan.Rules.Security
             "Policy is blocking the PR."
         };
 
-        public Task<bool> EvaluateAsync(string project, string repositoryId)
+        public Task<bool> EvaluateAsync(
+            string projectId, string repositoryId, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
         {
-            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(project));
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 

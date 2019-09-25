@@ -31,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, RepositoryId, null)).ShouldBeTrue();
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeFalse();
         }
         
         [Fact]
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.AllowInherited);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeFalse();
         }
         
         [Fact]
@@ -64,7 +64,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeTrue();
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
             
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeTrue();
             
             
             await client

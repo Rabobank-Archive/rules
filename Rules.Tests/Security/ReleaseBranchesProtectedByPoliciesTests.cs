@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using Requests = SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -28,10 +30,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
+            var policies = client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
-            await rule.EvaluateAsync(projectId, RepositoryId);
+            var result = await rule.EvaluateAsync(projectId, RepositoryId, policies);
         }
         
         [Fact]
@@ -43,10 +46,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizePolicySettings(_fixture);
 
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeTrue();
@@ -57,10 +62,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -77,10 +84,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
 
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -95,10 +104,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizePolicySettings(_fixture);
 
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() }; 
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -113,10 +124,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizePolicySettings(_fixture);
 
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
@@ -131,10 +144,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizePolicySettings(_fixture);
 
             SetupClient(_client, _fixture);
+            var policies = new List<MinimumNumberOfReviewersPolicy>
+                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client);
-            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
+            var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId, policies);
 
             //Assert
             evaluatedRule.ShouldBeFalse();
