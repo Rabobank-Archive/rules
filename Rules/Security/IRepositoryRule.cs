@@ -4,11 +4,8 @@ using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public interface IRepositoryRule
+    public interface IRepositoryRule : IRule
     {
-        string Description { get; }
-        string Why { get; }
-        bool IsSox { get; }
         Task<bool> EvaluateAsync(string projectId, string repositoryId,
             IEnumerable<MinimumNumberOfReviewersPolicy> policies);
     }

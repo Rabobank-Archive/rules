@@ -52,32 +52,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             types.ShouldNotBeEmpty();
             
             var provider = new RulesProvider();
-            var rules = provider.BuildRules(null).Concat(
-                provider.ReleaseRules(null));
-            
-            types.ShouldAllBe(t => rules.Select(r => r.GetType()).Contains(t));
-        }
-
-        [Fact]
-        public void AllRepositoryRulesShouldBeInProvider()
-        {
-            var types = typeof(RulesProvider).Assembly.GetTypes().Where(t => typeof(IRepositoryRule).IsAssignableFrom(t) && !t.IsInterface);
-            types.ShouldNotBeEmpty();
-
-            var provider = new RulesProvider();
-            var rules = provider.RepositoryRules(null);
-
-            types.ShouldAllBe(t => rules.Select(r => r.GetType()).Contains(t));
-        }
-
-        [Fact]
-        public void AllProjectRulesShouldBeInProvider()
-        {
-            var types = typeof(RulesProvider).Assembly.GetTypes().Where(t => typeof(IProjectRule).IsAssignableFrom(t) && !t.IsInterface);
-            types.ShouldNotBeEmpty();
-            
-            var provider = new RulesProvider();
-            var rules = provider.GlobalPermissions(null);
+            var rules =
+                provider.GlobalPermissions(null).Concat(
+                provider.BuildRules(null).Concat(
+                provider.ReleaseRules(null).Concat(
+                provider.RepositoryRules(null))));
             
             types.ShouldAllBe(t => rules.Select(r => r.GetType()).Contains(t));
         }

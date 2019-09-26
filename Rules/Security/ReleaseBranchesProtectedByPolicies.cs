@@ -19,12 +19,12 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        string IRepositoryRule.Description => "Release branches are protected by policies";
+        public string Description => "Release branches are protected by policies";
 
-        string IRepositoryRule.Why =>
+        public string Why =>
             "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
             "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
-        bool IRepositoryRule.IsSox => true;
+        public bool IsSox => true;
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",
@@ -103,6 +103,11 @@ namespace SecurePipelineScan.Rules.Security
                             
                 }
             });
+        }
+
+        public Task<bool> EvaluateAsync(string project, string id)
+        {
+            throw new NotSupportedException();
         }
     }
 }

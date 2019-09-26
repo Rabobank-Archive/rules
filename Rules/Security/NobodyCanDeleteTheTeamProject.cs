@@ -22,10 +22,10 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        string IProjectRule.Description => "Nobody can delete the Team Project";
+        public string Description => "Nobody can delete the Team Project";
 
-        string IProjectRule.Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
-        bool IProjectRule.IsSox => true;
+        public string Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
+        public bool IsSox => true;
 
         public async Task<bool> EvaluateAsync(string project)
         {
@@ -159,6 +159,11 @@ namespace SecurePipelineScan.Rules.Security
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}))
                 .ConfigureAwait(false);
+        }
+
+        public Task<bool> EvaluateAsync(string project, string id)
+        {
+            throw new System.NotSupportedException();
         }
     }
 }

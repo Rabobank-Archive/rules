@@ -2,11 +2,8 @@ using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public interface IProjectRule
+    public interface IProjectRule : IRule
     {
-        string Description { get; }
-        string Why { get; }
         Task<bool> EvaluateAsync(string project);
-        bool IsSox { get; }
     }
 }
