@@ -1,18 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
-using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
-using PermissionsSetId = SecurePipelineScan.VstsService.Response.PermissionsSetId;
-using System;
-using System.Linq;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheRepository : RuleBase, IRepositoryRule, IReconcile
+    public class NobodyCanDeleteTheRepository : ItemHasPermissionRuleBase, IRepositoryRule, IReconcile
     {
-        private readonly IVstsRestClient _client;
+        public NobodyCanDeleteTheRepository(IVstsRestClient client) : base(client)
+        {
+            //nothing
+        }
 
         const int PermissionBitDeletRepository = 512;
         const int PermissionBitManagePermissions = 8192;
@@ -39,60 +38,33 @@ namespace SecurePipelineScan.Rules.Security
         public string Why => "To enforce auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete the repository.";
         public bool IsSox => true;
+
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Repository' permission is set to Deny",
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public NobodyCanDeleteTheRepository(IVstsRestClient client)
-        {
-            _client = client;
-        }
-
         public async Task<bool> EvaluateAsync(string projectId, string repositoryId,
             IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
         {
-            return await base.EvaluateAsync(projectId, repositoryId);
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (repositoryId == null)
+                throw new ArgumentNullException(nameof(repositoryId));
+
+            return await base.EvaluateAsync(projectId, repositoryId, RuleScopes.Repositories)
+                .ConfigureAwait(false);
         }
 
-        protected override async Task<IEnumerable<ApplicationGroup>> LoadGroupsAsync(string projectId, string repositoryId) =>
-            (await _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId, repositoryId))
-                .ConfigureAwait(false))
-                .Identities;
-
-        protected override Task<PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId, string repositoryId,
-            ApplicationGroup group)
+        public async Task ReconcileAsync(string projectId, string repositoryId)
         {
-            if (group == null)
-                throw new ArgumentNullException(nameof(group));
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (repositoryId == null)
+                throw new ArgumentNullException(nameof(repositoryId));
 
-            return LoadPermissionsSetForGroupInternalAsync(projectId, repositoryId, group);
-        }
-
-        private async Task<PermissionsSetId> LoadPermissionsSetForGroupInternalAsync(string projectId, string repositoryId, ApplicationGroup group)
-        {
-            return 
-                await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, repositoryId))
-                    .ConfigureAwait(false);
-        }
-
-        protected override Task UpdatePermissionAsync(string projectId, ApplicationGroup group,
-            PermissionsSetId permissionSetId, Response.Permission permission)
-        {
-            if (group == null)
-                throw new ArgumentNullException(nameof(group));
-            if (permissionSetId == null)
-                throw new ArgumentNullException(nameof(permissionSetId));
-
-            return UpdatePermissionInternalAsync(projectId, group, permissionSetId, permission);
-        }
-
-        private async Task UpdatePermissionInternalAsync(string projectId, ApplicationGroup group, PermissionsSetId permissionSetId, Response.Permission permission)
-        {
-            await _client.PostAsync(Permissions.ManagePermissions(projectId),
-                new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier,
-                    permissionSetId.DescriptorIdentityType, permission).Wrap())
+            await ReconcileAsync(projectId, repositoryId, RuleScopes.Repositories)
                 .ConfigureAwait(false);
         }
     }

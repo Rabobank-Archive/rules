@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 
@@ -19,10 +20,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
+                .ConfigureAwait(false);
 
             var rule = new NobodyCanDeleteReleases(client);
-            (await rule.EvaluateAsync(projectId, "1")).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBeTrue();
         }
 
         [Fact]
@@ -30,7 +33,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task ReconcileReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteReleases(client) as IReconcile;
             await rule.ReconcileAsync(projectId, "1");

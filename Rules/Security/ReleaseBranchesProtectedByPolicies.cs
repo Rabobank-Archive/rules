@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Response;
+using Response = SecurePipelineScan.VstsService.Response;
 using Requests = SecurePipelineScan.VstsService.Requests;
-using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
     public class ReleaseBranchesProtectedByPolicies : IRepositoryRule, IReconcile
     {
-        private const int MinimumApproverCount = 2;
         private readonly IVstsRestClient _client;
 
         public ReleaseBranchesProtectedByPolicies(IVstsRestClient client)
@@ -19,12 +17,14 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Release branches are protected by policies";
+        private const int MinimumApproverCount = 2;
 
+        public string Description => "Release branches are protected by policies";
         public string Why =>
             "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
             "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
         public bool IsSox => true;
+
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",
@@ -33,7 +33,7 @@ namespace SecurePipelineScan.Rules.Security
         };
 
         public Task<bool> EvaluateAsync(
-            string projectId, string repositoryId, IEnumerable<MinimumNumberOfReviewersPolicy> policies)
+            string projectId, string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
         {
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
@@ -55,17 +55,17 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private static bool HasRequiredReviewerPolicy(string repositoryId, IEnumerable<MinimumNumberOfReviewersPolicy> policies) =>
+        private static bool HasRequiredReviewerPolicy(string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies) =>
             Find(policies, repositoryId).Any(p => p.IsEnabled &&
                                                   p.IsBlocking &&
                                                   p.Settings.ResetOnSourcePush &&
                                                   p.Settings.MinimumApproverCount >= MinimumApproverCount);
 
-        private static IEnumerable<MinimumNumberOfReviewersPolicy> Find(IEnumerable<MinimumNumberOfReviewersPolicy> policies, string repositoryId) =>
+        private static IEnumerable<Response.MinimumNumberOfReviewersPolicy> Find(IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies, string repositoryId) =>
             policies.Where(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repositoryId &&
                                                               scope.RefName == "refs/heads/master"));
 
-        private static MinimumNumberOfReviewersPolicy UpdatePolicy(MinimumNumberOfReviewersPolicy policy)
+        private static Response.MinimumNumberOfReviewersPolicy UpdatePolicy(Response.MinimumNumberOfReviewersPolicy policy)
         {
             UpdateSettings(policy.Settings);
             policy.IsEnabled = true;
@@ -74,7 +74,7 @@ namespace SecurePipelineScan.Rules.Security
             return policy;
         }
 
-        private static void UpdateSettings(MinimumNumberOfReviewersPolicySettings settings)
+        private static void UpdateSettings(Response.MinimumNumberOfReviewersPolicySettings settings)
         {
             if (settings.MinimumApproverCount < MinimumApproverCount)
             {
@@ -85,15 +85,15 @@ namespace SecurePipelineScan.Rules.Security
             settings.ResetOnSourcePush = true;
         }
 
-        private static MinimumNumberOfReviewersPolicy InitializeMinimumNumberOfReviewersPolicy(string repositoryId)
+        private static Response.MinimumNumberOfReviewersPolicy InitializeMinimumNumberOfReviewersPolicy(string repositoryId)
         {
-            return UpdatePolicy(new MinimumNumberOfReviewersPolicy
+            return UpdatePolicy(new Response.MinimumNumberOfReviewersPolicy
             {
-                Settings =  new MinimumNumberOfReviewersPolicySettings
+                Settings =  new Response.MinimumNumberOfReviewersPolicySettings
                 {
                     Scope = new[]
                     {
-                        new Scope
+                        new Response.Scope
                         {
                             RefName = "refs/heads/master",
                             MatchKind = "exact",
@@ -103,11 +103,6 @@ namespace SecurePipelineScan.Rules.Security
                             
                 }
             });
-        }
-
-        public Task<bool> EvaluateAsync(string project, string id)
-        {
-            throw new NotSupportedException();
         }
     }
 }

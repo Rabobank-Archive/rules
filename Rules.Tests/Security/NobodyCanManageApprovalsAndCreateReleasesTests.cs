@@ -7,6 +7,7 @@ using SecurePipelineScan.VstsService;
 using response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -28,28 +29,31 @@ namespace SecurePipelineScan.Rules.Tests.Security
             int createReleasesPermissionId, int manageReleasesPermissionId, bool result)
         {
             var client = Substitute.For<IVstsRestClient>();
+            var releasePipeline = Substitute.For<response.ReleaseDefinition>();
 
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(_config.Project, "1")).ShouldBe(result);
+            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(result);
         }
 
         [Fact]
         public async Task EvaluateReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
+                .ConfigureAwait(false);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, "1")).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBeTrue();
         }
 
         [Fact]
         public async Task ReconcileReleaseIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
             await rule.ReconcileAsync(projectId, "1");

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -29,10 +30,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             var client = new VstsRestClient(_config.Organization, _config.Token);
-
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, PipelineId))
+                .ConfigureAwait(false); 
+            
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            await rule.EvaluateAsync(_config.Project, PipelineId);
+            await rule.EvaluateAsync(_config.Project, releasePipeline);
         }
 
         [Fact]
@@ -42,10 +45,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // ReSharper disable twice RedundantArgumentDefaultValue
             CustomizePolicySettings(_fixture, 450, true);
             SetupClient(_client, _fixture);
+            var releasePipeline = _fixture.Create<ReleaseDefinition>();
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBeTrue();
@@ -58,10 +62,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // ReSharper disable once RedundantArgumentDefaultValue
             CustomizePolicySettings(_fixture, 5, true);
             SetupClient(_client, _fixture);
+            var releasePipeline = _fixture.Create<ReleaseDefinition>();
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBeFalse();
@@ -73,10 +78,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             CustomizePolicySettings(_fixture, 500, false);
             SetupClient(_client, _fixture);
+            var releasePipeline = _fixture.Create<ReleaseDefinition>();
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, PipelineId);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBeFalse();

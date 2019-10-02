@@ -2,6 +2,7 @@ using AutoFixture;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -24,10 +25,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             var client = new VstsRestClient(_config.Organization, _config.Token);
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
+                .ConfigureAwait(false);
 
             //Act
-            var rule = new PipelineHasAtLeastOneStageWithApproval(client);
-            (await rule.EvaluateAsync(_config.Project, "1")).ShouldBeTrue();
+            var rule = new PipelineHasAtLeastOneStageWithApproval();
+            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBeTrue();
         }
 
         [Theory]
@@ -39,15 +42,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize<ApprovalOptions>(ctx =>
                 ctx.With(a => a.ReleaseCreatorCanBeApprover, releaseCreatorCanBeApprover));
-            var def = fixture.Create<ReleaseDefinition>();
-
-            _client
-                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
-                .Returns(def);
+            var releasePipeline = fixture.Create<ReleaseDefinition>();
             
             //Act
-            var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
-            var result = await rule.EvaluateAsync(_config.Project, "1");
+            var rule = new PipelineHasAtLeastOneStageWithApproval();
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(compliant);
@@ -61,15 +60,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize<Approval>(ctx =>
                 ctx.With(a => a.Approver, (Identity)null));
-            var def = fixture.Create<ReleaseDefinition>();
-
-            _client
-                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
-                .Returns(def);
+            var releasePipeline = fixture.Create<ReleaseDefinition>();
             
             //Act
-            var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
-            var result = await rule.EvaluateAsync(_config.Project, "1");
+            var rule = new PipelineHasAtLeastOneStageWithApproval();
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(false);
@@ -82,15 +77,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize<PreDeployApprovals>(ctx =>
                 ctx.With(a => a.ApprovalOptions, (ApprovalOptions)null));
-            var def = fixture.Create<ReleaseDefinition>();
+            var releasePipeline = fixture.Create<ReleaseDefinition>();
 
-            _client
-                .GetAsync(Arg.Any<IVstsRequest<ReleaseDefinition>>())
-                .Returns(def);
-            
             //Act
-            var rule = new PipelineHasAtLeastOneStageWithApproval(_client);
-            var result = await rule.EvaluateAsync(_config.Project, "1");
+            var rule = new PipelineHasAtLeastOneStageWithApproval();
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(false);

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 
@@ -19,10 +20,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateBuildIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(projectId, "2"))
+                .ConfigureAwait(false);
 
-            var rule = new ArtifactIsStoredSecure(client);
-            (await rule.EvaluateAsync(projectId, "2")).ShouldBeTrue();
+            var rule = new ArtifactIsStoredSecure();
+            (await rule.EvaluateAsync(projectId, buildPipeline)).ShouldBeTrue();
         }
     }
 }

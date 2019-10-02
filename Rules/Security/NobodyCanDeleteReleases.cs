@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteReleases : PipelineHasPermissionRuleBase, IRule, IReconcile
+    public class NobodyCanDeleteReleases : ItemHasPermissionRuleBase, IReleasePipelineRule, IReconcile
     {
         public NobodyCanDeleteReleases(IVstsRestClient client) : base(client)
         {
@@ -36,11 +39,34 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Why => "To ensure auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete releases.";
         bool IRule.IsSox => true;
+
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Releases' permission is set to Deny",
             "For all security groups the 'Delete Release Pipeline' permission is set to Deny",
             "For all security groups the 'Administer Release Permissions' permission is set to Deny"
         };
+
+        public async Task<bool> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
+        {
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (releasePipeline == null)
+                throw new ArgumentNullException(nameof(releasePipeline));
+
+            return await base.EvaluateAsync(projectId, releasePipeline.Id, RuleScopes.ReleasePipelines)
+                .ConfigureAwait(false);
+        }
+
+        public async Task ReconcileAsync(string projectId, string releasePipelineId)
+        {
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (releasePipelineId == null)
+                throw new ArgumentNullException(nameof(releasePipelineId));
+
+            await ReconcileAsync(projectId, releasePipelineId, RuleScopes.ReleasePipelines)
+                .ConfigureAwait(false);
+        }
     }
 }

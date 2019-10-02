@@ -3,14 +3,19 @@ using SecurePipelineScan.VstsService;
 using System.Linq;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
+using SecurePipelineScan.VstsService.Response;
+using Request = SecurePipelineScan.VstsService.Requests;
+using System;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanManageApprovalsAndCreateReleases : PipelineHasPermissionRuleBase, IRule, IReconcile
+    public class NobodyCanManageApprovalsAndCreateReleases : ItemHasPermissionRuleBase, IReleasePipelineRule, IReconcile
     {
+        readonly IVstsRestClient _client;
+
         public NobodyCanManageApprovalsAndCreateReleases(IVstsRestClient client) : base(client)
         {
-            //nothing
+            _client = client;
         }
 
         private const int ManageApprovalsPermissionBit = 8;
@@ -37,6 +42,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Why => "To ensure the four eyes principle, users should not be able to " +
             "remove approvals and thereafter start an unapproved release.";
         bool IRule.IsSox => true;
+
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +
@@ -45,15 +51,25 @@ namespace SecurePipelineScan.Rules.Security
             "For all other security groups where the 'Create Releases' permission is set to Allow, " +
             "the 'Manage Release Approvers' permission is set to Deny",
         };
-
-        public override async Task<bool> EvaluateAsync(string projectId, string releasePipelineId)
+        public async Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
         {
-            var groups = (await LoadGroupsAsync(projectId, releasePipelineId).ConfigureAwait(false))
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (releasePipeline == null)
+                throw new ArgumentNullException(nameof(releasePipeline));
+
+            return await EvaluateAsync(projectId, releasePipeline.Id, RuleScopes.ReleasePipelines)
+                .ConfigureAwait(false);
+        }
+
+        public override async Task<bool> EvaluateAsync(string projectId, string releasePipelineId, string scope)
+        {
+            var groups = (await LoadGroupsAsync(projectId, releasePipelineId, scope).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group)
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group, scope)
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
@@ -64,30 +80,35 @@ namespace SecurePipelineScan.Rules.Security
             return true;
         }
 
-        public override async Task ReconcileAsync(string projectId, string releasePipelineId)
+        public async Task ReconcileAsync(string projectId, string releasePipelineId)
         {
-            if ((await LoadGroupsAsync(projectId).ConfigureAwait(false)).All(g => g.FriendlyDisplayName != "Production Environment Owners"))
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (releasePipelineId == null)
+                throw new ArgumentNullException(nameof(releasePipelineId));
+
+            await ReconcileAsync(projectId, releasePipelineId, RuleScopes.ReleasePipelines)
+                .ConfigureAwait(false);
+        }
+
+        public override async Task ReconcileAsync(string projectId, string releasePipelineId, string scope)
+        {
+            var projectGroups = await LoadGroupsAsync(projectId)
+                .ConfigureAwait(false);
+
+            if (projectGroups.All(g => g.FriendlyDisplayName != "Production Environment Owners"))
             {
-                var group = await CreateProductionEnvironmentOwnersGroupAsync(projectId).ConfigureAwait(false);
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, group).ConfigureAwait(false);
-
-                var createReleasesPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
-                createReleasesPermission.PermissionId = PermissionId.Deny;
-                await UpdatePermissionAsync(projectId, group, permissionSetId, createReleasesPermission)
-                    .ConfigureAwait(false);
-
-                var manageApprovalsPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
-                manageApprovalsPermission.PermissionId = PermissionId.Allow;
-                await UpdatePermissionAsync(projectId, group, permissionSetId, manageApprovalsPermission)
+                await CreateProductionEnvironmentOwnerGroupAsync(projectId, scope)
                     .ConfigureAwait(false);
             }
 
-            var groups = (await LoadGroupsAsync(projectId, releasePipelineId).ConfigureAwait(false))
+            var groups = (await LoadGroupsAsync(projectId, releasePipelineId, scope)
+                .ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group)
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group, scope)
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
@@ -103,6 +124,29 @@ namespace SecurePipelineScan.Rules.Security
                 await UpdatePermissionAsync(projectId, group, permissionSetId, permissionToUpdate)
                     .ConfigureAwait(false);
             }
+        }
+
+        private async Task CreateProductionEnvironmentOwnerGroupAsync(string projectId, string scope)
+        {
+            var peoGroup = await _client.PostAsync(Request.Security.ManageGroup(projectId),
+                    new Request.Security.ManageGroupData
+                    {
+                        Name = "Production Environment Owners"
+                    })
+                .ConfigureAwait(false);
+
+            var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, peoGroup, scope)
+                .ConfigureAwait(false);
+
+            var createReleasesPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == CreateReleasesPermissionBit);
+            createReleasesPermission.PermissionId = PermissionId.Deny;
+            await UpdatePermissionAsync(projectId, peoGroup, permissionSetId, createReleasesPermission)
+                .ConfigureAwait(false);
+
+            var manageApprovalsPermission = permissionSetId.Permissions.Single(p => p.PermissionBit == ManageApprovalsPermissionBit);
+            manageApprovalsPermission.PermissionId = PermissionId.Allow;
+            await UpdatePermissionAsync(projectId, peoGroup, permissionSetId, manageApprovalsPermission)
+                .ConfigureAwait(false);
         }
     }
 }

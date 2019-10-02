@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class PipelineHasRequiredRetentionPolicy : IRule, IReconcile
+    public class PipelineHasRequiredRetentionPolicy : IReleasePipelineRule, IReconcile
     {
         private readonly IVstsRestClient _client;
         private readonly int RequiredRetentionDays = 450;
@@ -20,24 +21,28 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         string IRule.Description => "Production releases are retained for at least 15 months";
-
         string IRule.Why =>
             "To make sure production releases are auditable for at least 15 months";
         bool IRule.IsSox => true;
+
         string[] IReconcile.Impact => new[] {
             "In project settings the maximum retention policy is set to 450 days.",
             "On the pipeline the days to retain a release is set to 450 days for every stage.",
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
-        public async Task<bool> EvaluateAsync(string project, string releasePipelineId) //NOSONAR
+        public async Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
         {
-            var releasePipeline = await _client.GetAsync(Requests.ReleaseManagement.Definition(project, releasePipelineId))
-                .ConfigureAwait(false);
-            return HasRequiredRetentionPolicy(releasePipeline);
+            if (releasePipeline == null)
+                throw new ArgumentNullException(nameof(releasePipeline));
+
+            return releasePipeline
+                .Environments
+                .Select(e => e.RetentionPolicy)
+                .Any(r => r.DaysToKeep >= RequiredRetentionDays && r.RetainBuild);
         }
 
-        public async Task ReconcileAsync(string projectId, string releasePipelineId) //NOSONAR
+        public async Task ReconcileAsync(string projectId, string releasePipelineId)
         {
             var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);
@@ -55,12 +60,6 @@ namespace SecurePipelineScan.Rules.Security
                 UpdateReleaseDefinition(releasePipeline))
                 .ConfigureAwait(false);
         }
-
-        private bool HasRequiredRetentionPolicy(ReleaseDefinition releasePipeline) =>
-            releasePipeline
-                .Environments
-                .Select(e => e.RetentionPolicy)
-                .Any(r => r.DaysToKeep >= RequiredRetentionDays && r.RetainBuild);
 
         private bool HasRequiredReleaseSettings(ReleaseSettings settings) =>
             settings.RetentionSettings.MaximumEnvironmentRetentionPolicy.DaysToKeep >= RequiredRetentionDays;

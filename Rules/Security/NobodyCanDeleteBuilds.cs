@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteBuilds : PipelineHasPermissionRuleBase, IRule, IReconcile
+    public class NobodyCanDeleteBuilds : ItemHasPermissionRuleBase, IBuildPipelineRule, IReconcile
     {
         public NobodyCanDeleteBuilds(IVstsRestClient client) : base(client)
         {
             //nothing
         }
 
-        const int PermissionBitDeleteBuilds = 8;
-        const int PermissionBitDestroyBuilds = 32;
-        const int PermissionBitDeleteBuildDefinition = 4096;
-        const int PermissionBitAdministerBuildPermissions = 16384;
-        
+        private const int PermissionBitDeleteBuilds = 8;
+        private const int PermissionBitDestroyBuilds = 32;
+        private const int PermissionBitDeleteBuildDefinition = 4096;
+        private const int PermissionBitAdministerBuildPermissions = 16384;
+
         protected override string NamespaceId => "33344d9c-fc72-4d6f-aba5-fa317101a7e9"; //build
         protected override IEnumerable<int> PermissionBits => new[]
         {
@@ -39,6 +42,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Why => "To ensure auditability, no data should be deleted. " +
             "Therefore, nobody should be able to delete build runs.";
         bool IRule.IsSox => true;
+
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Builds' permission is set to Deny",
@@ -46,5 +50,27 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Delete Build Definitions' permission is set to Deny",
             "For all security groups the 'Administer Build Permissions' permission is set to Deny"
         };
+
+        public async Task<bool> EvaluateAsync(string projectId, Response.BuildDefinition buildPipeline)
+        {
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (buildPipeline == null)
+                throw new ArgumentNullException(nameof(buildPipeline));
+
+            return await base.EvaluateAsync(projectId, buildPipeline.Id, RuleScopes.BuildPipelines)
+                .ConfigureAwait(false);
+        }
+
+        public async Task ReconcileAsync(string projectId, string buildPipelineId)
+        {
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            if (buildPipelineId == null)
+                throw new ArgumentNullException(nameof(buildPipelineId));
+
+            await ReconcileAsync(projectId, buildPipelineId, RuleScopes.BuildPipelines)
+                .ConfigureAwait(false);
+        }
     }
 }
