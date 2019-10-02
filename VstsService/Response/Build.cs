@@ -1,3 +1,5 @@
+using System;
+
 namespace SecurePipelineScan.VstsService.Response
 {
     public class Build
@@ -6,5 +8,9 @@ namespace SecurePipelineScan.VstsService.Response
         public int Id { get; set; }
         public Definition Definition { get; set; }
         public string Result { get; set; }
+        public string BuildNumber { get; set; }
+        public DateTime QueueTime { get; set; }
+        public DateTime StartTime { get; set; }
+        public AgentQueue Queue { get; set; }
     }
 }
