@@ -62,6 +62,9 @@ namespace SecurePipelineScan.VstsService
         
         public IEnumerable<TResponse> Get<TResponse>(IEnumerableRequest<TResponse> request)
         {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
             return request.Enumerate(new Url(request.Request.BaseUri(_organization))
                 .AppendPathSegment(request.Request.Resource)
                 .SetQueryParams(request.Request.QueryParams)
@@ -137,12 +140,13 @@ namespace SecurePipelineScan.VstsService
 
         private async Task DeleteInternalAsync(IVstsRequest request)
         {
-            await new Url(request.BaseUri(_organization))
+            (await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
                 .DeleteAsync()
-                .ConfigureAwait(false);
+                .ConfigureAwait(false))
+                .Dispose();
         }
     }
 }

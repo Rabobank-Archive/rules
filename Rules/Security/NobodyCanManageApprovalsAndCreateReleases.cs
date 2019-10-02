@@ -62,14 +62,14 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public override async Task<bool> EvaluateAsync(string projectId, string releasePipelineId, string scope)
+        public override async Task<bool> EvaluateAsync(string projectId, string itemId, string scope)
         {
-            var groups = (await LoadGroupsAsync(projectId, releasePipelineId, scope).ConfigureAwait(false))
+            var groups = (await LoadGroupsAsync(projectId, itemId, scope).ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group, scope)
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, itemId, group, scope)
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
@@ -91,7 +91,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public override async Task ReconcileAsync(string projectId, string releasePipelineId, string scope)
+        public override async Task ReconcileAsync(string projectId, string itemId, string scope)
         {
             var projectGroups = await LoadGroupsAsync(projectId)
                 .ConfigureAwait(false);
@@ -102,13 +102,13 @@ namespace SecurePipelineScan.Rules.Security
                     .ConfigureAwait(false);
             }
 
-            var groups = (await LoadGroupsAsync(projectId, releasePipelineId, scope)
+            var groups = (await LoadGroupsAsync(projectId, itemId, scope)
                 .ConfigureAwait(false))
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, releasePipelineId, group, scope)
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, itemId, group, scope)
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))

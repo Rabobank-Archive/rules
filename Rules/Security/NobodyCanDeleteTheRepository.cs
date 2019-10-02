@@ -57,14 +57,14 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public async Task ReconcileAsync(string projectId, string repositoryId)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
-            if (repositoryId == null)
-                throw new ArgumentNullException(nameof(repositoryId));
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
 
-            await ReconcileAsync(projectId, repositoryId, RuleScopes.Repositories)
+            await ReconcileAsync(projectId, itemId, RuleScopes.Repositories)
                 .ConfigureAwait(false);
         }
     }

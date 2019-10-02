@@ -27,12 +27,12 @@ namespace SecurePipelineScan.Rules.Security
         public string Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
         public bool IsSox => true;
 
-        public async Task<bool> EvaluateAsync(string project)
+        public async Task<bool> EvaluateAsync(string projectId)
         {
-            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project))
+            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(projectId))
                 .ConfigureAwait(false);
-            return await CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProjectAsync(project, groups).ConfigureAwait(false) &&
-                   await CheckProjectAdministratorsGroupOnlyContainsRabobankAdministratorsAsync(project, groups).ConfigureAwait(false);
+            return await CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProjectAsync(projectId, groups).ConfigureAwait(false) &&
+                   await CheckProjectAdministratorsGroupOnlyContainsRabobankAdministratorsAsync(projectId, groups).ConfigureAwait(false);
         }
 
         private async Task<bool> CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProjectAsync(string project, Response.ApplicationGroups groups)
@@ -67,24 +67,24 @@ namespace SecurePipelineScan.Rules.Security
             "Delete team project permission is set to 'not set' for all other groups"
         };
 
-        public async Task ReconcileAsync(string project)
+        public async Task ReconcileAsync(string projectId)
         {
-            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(project)).ConfigureAwait(false);
+            var groups = await _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(projectId)).ConfigureAwait(false);
             var paId = groups.Identities.Single(p => p.FriendlyDisplayName == ProjectAdministrators).TeamFoundationId;
-            var raboId = (await CreateRabobankProjectAdministratorsGroupsIfNotExistsAsync(project, groups).ConfigureAwait(false))
+            var raboId = (await CreateRabobankProjectAdministratorsGroupsIfNotExistsAsync(projectId, groups).ConfigureAwait(false))
                 .TeamFoundationId;
             
-            var members = (await _client.GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(project, paId)).ConfigureAwait(false))
+            var members = (await _client.GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(projectId, paId)).ConfigureAwait(false))
                 .Identities
                 .Where(x => x.TeamFoundationId != raboId)
                 .ToList();
                             
-            await RemoveAllOtherMembersFromProjectAdministratorsAsync(project, members, paId).ConfigureAwait(false);
-            await AddAllMembersToRabobankProjectAdministratorsGroupAsync(project, members, raboId).ConfigureAwait(false);
-            await AddRabobankProjectAdministratorsToProjectAdministratorsGroupAsync(project, raboId, paId).ConfigureAwait(false);
+            await RemoveAllOtherMembersFromProjectAdministratorsAsync(projectId, members, paId).ConfigureAwait(false);
+            await AddAllMembersToRabobankProjectAdministratorsGroupAsync(projectId, members, raboId).ConfigureAwait(false);
+            await AddRabobankProjectAdministratorsToProjectAdministratorsGroupAsync(projectId, raboId, paId).ConfigureAwait(false);
 
-            await UpdatePermissionToDeleteTeamProjectToNotSetAsync(project, groups).ConfigureAwait(false);
-            await UpdatePermissionToDeleteTeamProjectToDenyAsync(project, raboId).ConfigureAwait(false);
+            await UpdatePermissionToDeleteTeamProjectToNotSetAsync(projectId, groups).ConfigureAwait(false);
+            await UpdatePermissionToDeleteTeamProjectToDenyAsync(projectId, raboId).ConfigureAwait(false);
         }
 
         private async Task UpdatePermissionToDeleteTeamProjectToNotSetAsync(string project, Response.ApplicationGroups groups)
@@ -159,11 +159,6 @@ namespace SecurePipelineScan.Rules.Security
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}))
                 .ConfigureAwait(false);
-        }
-
-        public Task<bool> EvaluateAsync(string project, string id)
-        {
-            throw new System.NotSupportedException();
         }
     }
 }

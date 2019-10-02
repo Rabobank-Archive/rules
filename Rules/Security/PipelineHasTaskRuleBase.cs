@@ -9,7 +9,9 @@ namespace SecurePipelineScan.Rules.Security
     {
         protected abstract string TaskId { get; }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public virtual async Task<bool> EvaluateAsync(BuildDefinition buildPipeline)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));

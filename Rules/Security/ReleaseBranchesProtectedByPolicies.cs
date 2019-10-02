@@ -38,10 +38,10 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
-        public async Task ReconcileAsync(string projectId, string id)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
-            var policy = Find(policies, id).SingleOrDefault();
+            var policy = Find(policies, itemId).SingleOrDefault();
 
             if (policy != null)
             {
@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Security
             }
             else
             {
-                await _client.PostAsync(Requests.Policies.Policy(projectId), InitializeMinimumNumberOfReviewersPolicy(id))
+                await _client.PostAsync(Requests.Policies.Policy(projectId), InitializeMinimumNumberOfReviewersPolicy(itemId))
                     .ConfigureAwait(false);
             }
         }

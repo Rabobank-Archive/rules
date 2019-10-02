@@ -25,10 +25,11 @@ namespace HttpHelpers.Tests.Handlers
                 .Respond(statusCode);
             mockHttp.Expect(HttpMethod.Get, url)
                 .Respond(HttpStatusCode.OK);
-            
-            var client = new HttpClient(new RetryHandler(mockHttp));
-            await client.GetAsync(url);
-            
+
+            using (var client = new HttpClient(new RetryHandler(mockHttp)))
+            {
+                (await client.GetAsync(url)).Dispose();
+            }
             mockHttp.VerifyNoOutstandingExpectation();
         }
 
@@ -39,10 +40,11 @@ namespace HttpHelpers.Tests.Handlers
             var mockHttp = new MockHttpMessageHandler();
             var request = mockHttp.When(HttpMethod.Get, url)
                 .Respond(HttpStatusCode.OK);
-            
-            var client = new HttpClient(new RetryHandler(mockHttp));
-            await client.GetAsync(url);
-            
+
+            using (var client = new HttpClient(new RetryHandler(mockHttp)))
+            {
+                (await client.GetAsync(url)).Dispose();
+            }
             mockHttp.GetMatchCount(request).ShouldBe(1);
         }
 
@@ -58,9 +60,10 @@ namespace HttpHelpers.Tests.Handlers
             mockHttp.Expect(HttpMethod.Get, url)
                 .Respond(HttpStatusCode.OK);
 
-            var client = new HttpClient(new RetryHandler(mockHttp));
-            await client.GetAsync(url);
-
+            using (var client = new HttpClient(new RetryHandler(mockHttp)))
+            {
+                (await client.GetAsync(url)).Dispose();
+            }
             mockHttp.VerifyNoOutstandingExpectation();
         }
         
@@ -76,9 +79,10 @@ namespace HttpHelpers.Tests.Handlers
             mockHttp.Expect(HttpMethod.Get, url)
                 .Respond(HttpStatusCode.OK);
 
-            var client = new HttpClient(new RetryHandler(mockHttp));
-            await client.GetAsync(url);
-
+            using (var client = new HttpClient(new RetryHandler(mockHttp)))
+            {
+                (await client.GetAsync(url)).Dispose();
+            }
             mockHttp.VerifyNoOutstandingExpectation();
         }
     }

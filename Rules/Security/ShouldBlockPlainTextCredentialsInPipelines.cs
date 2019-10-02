@@ -26,29 +26,24 @@ namespace SecurePipelineScan.Rules.Security
         };
         public bool IsSox => false;
 
-        public async Task<bool> EvaluateAsync(string project)
+        public async Task<bool> EvaluateAsync(string projectId)
         {
-            var settings = await _client.GetAsync(ReleaseManagement.Settings(project))
+            var settings = await _client.GetAsync(ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);
             return settings.ComplianceSettings != null &&
                    settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets;
         }
 
-        public Task<bool> EvaluateAsync(string project, string id)
+        public async Task ReconcileAsync(string projectId)
         {
-            throw new System.NotSupportedException();
-        }
-
-        public async Task ReconcileAsync(string project)
-        {
-            var settings = await _client.GetAsync(ReleaseManagement.Settings(project))
+            var settings = await _client.GetAsync(ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);
             if (settings.ComplianceSettings == null)
                 settings.ComplianceSettings = new ComplianceSettings();
             
             settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets = true;
             
-            await _client.PutAsync(ReleaseManagement.Settings(project), settings)
+            await _client.PutAsync(ReleaseManagement.Settings(projectId), settings)
                 .ConfigureAwait(false);
         }
     }

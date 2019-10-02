@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var policies = client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
 
             var rule = new ReleaseBranchesProtectedByPolicies(client);
-            var result = await rule.EvaluateAsync(projectId, RepositoryId, policies);
+            await rule.EvaluateAsync(projectId, RepositoryId, policies);
         }
         
         [Fact]

@@ -90,13 +90,14 @@ namespace LogAnalytics.Client
             var content = new StringContent(json, Encoding.UTF8);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            await url
+            (await url
                 .WithHeader("Authorization", signature)
                 .WithHeader("Log-Type", logname)
                 .WithHeader("x-ms-date", date)
                 .WithHeader("time-generated-field", timefield)
                 .PostAsync(content)
-                .ConfigureAwait(false);
+                .ConfigureAwait(false))
+                .Dispose();
         }
     }
 }

@@ -85,6 +85,9 @@ namespace SecurePipelineScan.Rules.Security
         protected async Task<Response.PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId,
             Response.ApplicationGroup group, string scope)
         {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+
             if (scope == RuleScopes.GlobalPermissions)
                 return (await _client.GetAsync(Permissions.PermissionsGroupProjectId(projectId,
                     group.TeamFoundationId))
@@ -99,6 +102,9 @@ namespace SecurePipelineScan.Rules.Security
         protected async Task<Response.PermissionsSetId> LoadPermissionsSetForGroupAsync(string projectId,
             string itemId, Response.ApplicationGroup group, string scope)
         {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+
             if (scope == RuleScopes.Repositories)
                 return await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId,
                     group.TeamFoundationId, itemId))
@@ -112,6 +118,11 @@ namespace SecurePipelineScan.Rules.Security
         protected async Task UpdatePermissionAsync(string projectId, Response.ApplicationGroup group,
             Response.PermissionsSetId permissionSetId, Response.Permission permission)
         {
+            if (group == null)
+                throw new ArgumentNullException(nameof(group));
+            if (permissionSetId == null)
+                throw new ArgumentNullException(nameof(permissionSetId));
+
             await _client.PostAsync(Permissions.ManagePermissions(projectId), 
                     new Permissions.ManagePermissionsData(group.TeamFoundationId, 
                     permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)

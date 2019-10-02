@@ -13,7 +13,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class PipelineHasAtLeastOneStageWithApprovalTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
 
         public PipelineHasAtLeastOneStageWithApprovalTests(TestConfig config)
         {

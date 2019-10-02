@@ -22,8 +22,8 @@ namespace SecurePipelineScan.VstsService.Enumerators
                 {
                     yield return item;
                 }
-
-                request.SetQueryParam("skip", skip += Top);
+                skip += Top;
+                request.SetQueryParam("skip", skip);
                 more = result.Items.Any();
             }
         }

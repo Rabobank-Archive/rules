@@ -42,23 +42,22 @@ namespace SecurePipelineScan.VstsService.Processors
             public IEnumerator<WorkItemReference> GetEnumerator()
             {
                 var id = 0;
-
-                while (true)
+                WorkItemQueryResult result;
+                do
                 {
-                    var result = QuerySingleBatchAsync(id)
+                    result = QuerySingleBatchAsync(id)
                         .ConfigureAwait(false)
                         .GetAwaiter().GetResult();
 
-                    if (!result.WorkItems.Any())
-                        break;
-                    
-                    foreach (var workItem in result.WorkItems)
+                    if (result.WorkItems.Any())
                     {
-                        yield return workItem;
+                        foreach (var workItem in result.WorkItems)
+                        {
+                            yield return workItem;
+                        }
+                        id = result.WorkItems.Last().Id;
                     }
-
-                    id = result.WorkItems.Last().Id;
-                }
+                } while (result.WorkItems.Any());
             }
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

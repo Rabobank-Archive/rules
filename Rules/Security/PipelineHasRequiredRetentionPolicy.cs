@@ -31,7 +31,9 @@ namespace SecurePipelineScan.Rules.Security
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));

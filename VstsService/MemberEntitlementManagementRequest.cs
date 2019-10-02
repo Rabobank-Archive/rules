@@ -16,7 +16,7 @@ namespace SecurePipelineScan.VstsService
 
         public override Uri BaseUri(string organization) => new Uri($"https://vsaex.dev.azure.com/{organization}/");
         
-        public IEnumerableRequest<TResponse> AsEnumerable() => 
+        public new IEnumerableRequest<TResponse> AsEnumerable() => 
             new EnumerableRequest<TResponse, MemberEntitlementsEnumerator<TResponse>>(this);
     }
 
