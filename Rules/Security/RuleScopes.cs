@@ -2,9 +2,9 @@
 {
     public static class RuleScopes
     {
-        public static readonly string GlobalPermissions = "globalpermissions";
-        public static readonly string BuildPipelines = "buildpipelines";
-        public static readonly string ReleasePipelines = "releasepipelines";
-        public static readonly string Repositories = "repository";
+        public const string GlobalPermissions = "globalpermissions";
+        public const string BuildPipelines = "buildpipelines";
+        public const string ReleasePipelines = "releasepipelines";
+        public const string Repositories = "repository";
     }
 }

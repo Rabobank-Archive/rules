@@ -7,8 +7,8 @@ namespace SecurePipelineScan.Rules.Security
     {
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
         IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client);
-        IEnumerable<IRule> BuildRules(IVstsRestClient client);
-        IEnumerable<IRule> ReleaseRules(IVstsRestClient client);
+        IEnumerable<IBuildPipelineRule> BuildRules(IVstsRestClient client);
+        IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient client);
     }
 
     public class RulesProvider : IRulesProvider
@@ -25,7 +25,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new ReleaseBranchesProtectedByPolicies(client);
         }
 
-        public IEnumerable<IRule> BuildRules(IVstsRestClient client)
+        public IEnumerable<IBuildPipelineRule> BuildRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteBuilds(client);
             yield return new ArtifactIsStoredSecure();
@@ -33,7 +33,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new BuildPipelineHasFortifyTask();
         }
 
-        public IEnumerable<IRule> ReleaseRules(IVstsRestClient client)
+        public IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient client)
         {
             yield return new NobodyCanDeleteReleases(client);
             yield return new NobodyCanManageApprovalsAndCreateReleases(client);
