@@ -55,6 +55,7 @@ namespace SecurePipelineScan.VstsService.Tests
             buildDefinition.Name.ShouldNotBeNull();
             buildDefinition.Project.ShouldNotBeNull();
             buildDefinition.Process.Phases.First().Steps.First().Task.Id.ShouldNotBeNull();
+            buildDefinition.Repository.ShouldNotBeNull();
         }
 
         [Fact]
