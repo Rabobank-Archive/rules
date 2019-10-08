@@ -48,7 +48,7 @@ namespace SecurePipelineScan.Rules.Events
                 Pipeline = build.Definition.Name,
                 Project = project,
                 CreatedDate = (DateTime)input["createdDate"],
-                ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container"),
+                ArtifactsStoredSecure = artifacts.All(a => a.Resource.Type == "Container" || a.Resource.Type == "GitRef"),
                 UsesFortify = usedTaskIds?.Contains(FortifyScaTaskId),
                 UsesSonarQube = usedTaskIds?.Contains(SonarQubePublishTaskId),
             };

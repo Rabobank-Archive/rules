@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using AutoFixture;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
@@ -168,9 +169,41 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 .ArtifactsStoredSecure
                 .ShouldBeTrue();
         }
-        
+
         [Fact]
-        public async Task NotAllArtifactsInContainer_ArtifactsStoredSecure_ShouldBeFalse()
+        public async Task AllArtifactsInContainerOrGitRef_ArtifactsStoredSecure_ShouldBeTrue()
+        {
+            _fixture.Customize<ArtifactResource>(x =>
+                x.With(a => a.Type, "Container"));
+            _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
+
+            var input = ReadInput("Completed.json");
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .GetAsync<Build>(Arg.Any<Uri>())
+                .Returns(_fixture.Create<Build>());
+
+            var buildArtifacts = _fixture.CreateMany<BuildArtifact>().ToList();
+            buildArtifacts.First().Resource.Type = "GitRef";
+
+            client
+                .Get(Arg.Any<IEnumerableRequest<BuildArtifact>>())
+                .Returns(buildArtifacts);
+
+            client
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
+                .Returns(_fixture.Create<JObject>());
+
+            var scan = new BuildScan(client);
+            var report = await scan.GetCompletedReportAsync(input);
+
+            report
+                .ArtifactsStoredSecure
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task NotAllArtifactsInContainerOrGitRef_ArtifactsStoredSecure_ShouldBeFalse()
         {
             _fixture.Customize<Build>(x => x.With(b => b.Result, "succeeded"));
             
