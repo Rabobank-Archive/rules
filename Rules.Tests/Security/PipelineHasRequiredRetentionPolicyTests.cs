@@ -35,7 +35,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+
+            //Assert
+            result.ShouldBe(true);
         }
 
         [Fact]
