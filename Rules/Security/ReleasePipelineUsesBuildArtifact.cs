@@ -7,8 +7,8 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class ReleasePipelineUsesBuildArtifact : IReleasePipelineRule
     {
-        public string Description => "The release pipeline should solely use build artifacts";
-        public string Why => "To make sure artifacts can't be modified when a build is completed";
+        public string Description => "Release pipeline uses solely build artifacts";
+        public string Why => "To make sure artifacts can't be modified after a build is completed";
         public bool IsSox => true;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -18,9 +18,10 @@ namespace SecurePipelineScan.Rules.Security
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            return releasePipeline.Artifacts
-                .Select(a => a.Type)
-                .All(t => t == "Build");
+            return releasePipeline.Artifacts.Count > 0 && 
+                releasePipeline.Artifacts
+                    .Select(a => a.Type)
+                    .All(t => t == "Build");
         }
     }
 }

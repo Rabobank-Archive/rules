@@ -4,6 +4,10 @@ using Shouldly;
 using System.Threading.Tasks;
 using Xunit;
 using SecurePipelineScan.Rules.Security;
+using AutoFixture;
+using NSubstitute;
+using Response = SecurePipelineScan.VstsService.Response;
+using System.Collections.Generic;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -25,9 +29,25 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Act
             var rule = new ReleasePipelineUsesBuildArtifact();
             var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
-            
+
             //Assert
             result.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task ReturnFalseForReleasePipelineWithoutArtifacts()
+        {
+            //Arrange
+            var fixture = new Fixture();
+            var releasePipeline = fixture.Create<Response.ReleaseDefinition>();
+            releasePipeline.Artifacts = new List<Response.Artifact>();
+
+            //Act
+            var rule = new ReleasePipelineUsesBuildArtifact();
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+
+            //Assert
+            result.ShouldBeFalse();
         }
     }
 }
