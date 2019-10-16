@@ -36,8 +36,7 @@ namespace SecurePipelineScan.Rules.Security
         };
 
         string IRule.Description => "Nobody can delete releases";
-        string IRule.Why => "To ensure auditability, no data should be deleted. " +
-            "Therefore, nobody should be able to delete releases.";
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
         bool IRule.IsSox => true;
 
         string[] IReconcile.Impact => new[]

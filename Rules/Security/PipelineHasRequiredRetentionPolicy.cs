@@ -21,8 +21,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         string IRule.Description => "Production releases are retained for at least 15 months";
-        string IRule.Why =>
-            "To make sure production releases are auditable for at least 15 months";
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
         bool IRule.IsSox => true;
 
         string[] IReconcile.Impact => new[] {

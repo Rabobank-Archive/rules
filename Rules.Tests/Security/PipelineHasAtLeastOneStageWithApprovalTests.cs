@@ -1,5 +1,4 @@
 using AutoFixture;
-using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;

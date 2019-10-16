@@ -39,8 +39,7 @@ namespace SecurePipelineScan.Rules.Security
         };
 
         string IRule.Description => "Nobody can delete builds";
-        string IRule.Why => "To ensure auditability, no data should be deleted. " +
-            "Therefore, nobody should be able to delete build runs.";
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
         bool IRule.IsSox => true;
 
         string[] IReconcile.Impact => new[]

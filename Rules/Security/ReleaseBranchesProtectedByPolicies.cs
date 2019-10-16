@@ -20,9 +20,7 @@ namespace SecurePipelineScan.Rules.Security
         private const int MinimumApproverCount = 2;
 
         public string Description => "Release branches are protected by policies";
-        public string Why =>
-            "To prevent from hijacking a PR, the minimum number of reviewers must be (at least) 2 " +
-            "and reset code reviewer votes for new changes must be enabled. Self approving changes is then allowed.";
+        public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
         public bool IsSox => true;
 
         string[] IReconcile.Impact => new[] {

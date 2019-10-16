@@ -16,7 +16,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             _client = new VstsRestClient(config.Organization, config.Token);
         }
-        
+
         [Fact]
         public void TestUserEntitlement()
         {

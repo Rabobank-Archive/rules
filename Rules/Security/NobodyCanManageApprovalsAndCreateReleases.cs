@@ -39,8 +39,7 @@ namespace SecurePipelineScan.Rules.Security
         };
 
         string IRule.Description => "Nobody can both manage approvals and create releases";
-        string IRule.Why => "To ensure the four eyes principle, users should not be able to " +
-            "remove approvals and thereafter start an unapproved release.";
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
         bool IRule.IsSox => true;
 
         string[] IReconcile.Impact => new[]

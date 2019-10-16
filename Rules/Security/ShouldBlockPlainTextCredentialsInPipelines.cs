@@ -16,10 +16,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         public string Description => "Plain text credentials are blocked in pipelines.";
-
-        public string Why =>
-            "To ensure that credentials are not leaked, it should not be allowed to store them in plain text.";
-
+        public string Link => null;
         public string[] Impact => new[]
         {
             "In project settings, 'Block release definition edits that contain plaintext credentials or other secrets.' will be activated."

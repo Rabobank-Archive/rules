@@ -23,8 +23,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         public string Description => "Nobody can delete the Team Project";
-
-        public string Why => "To enforce auditability, no data should be deleted. Therefore, nobody should be able to delete the Team Project.";
+        public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
         public bool IsSox => true;
 
         public async Task<bool> EvaluateAsync(string projectId)

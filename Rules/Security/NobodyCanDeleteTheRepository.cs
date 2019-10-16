@@ -35,8 +35,7 @@ namespace SecurePipelineScan.Rules.Security
         };
 
         public string Description => "Nobody can delete the repository";
-        public string Why => "To enforce auditability, no data should be deleted. " +
-            "Therefore, nobody should be able to delete the repository.";
+        public string Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
         public bool IsSox => true;
 
         string[] IReconcile.Impact => new[]

@@ -9,7 +9,7 @@ namespace SecurePipelineScan.Rules.Security
         protected override string TaskId => "6d01813a-9589-4b15-8491-8164aeb38055";
 
         string IRule.Description => "Build pipeline contains an enabled SonarQube task";
-        string IRule.Why => "To make sure a static code analysis is executed for each build";
+        string IRule.Link => null;
         bool IRule.IsSox => false;
 
         public Task<bool> EvaluateAsync(string projectId, BuildDefinition buildPipeline)

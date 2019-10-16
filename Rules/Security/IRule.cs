@@ -3,7 +3,7 @@ namespace SecurePipelineScan.Rules.Security
     public interface IRule
     {
         string Description { get; }
-        string Why { get; }
+        string Link { get; }
         bool IsSox { get; }
     }
 }
