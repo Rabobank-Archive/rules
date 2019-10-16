@@ -19,7 +19,10 @@ namespace SecurePipelineScan.VstsService.Requests
                 });
 
         public static IEnumerableRequest<UserEntitlement> UserEntitlements() => 
-            new MemberEntitlementManagementRequest<UserEntitlement>("_apis/UserEntitlements").AsEnumerable();
+            new MemberEntitlementManagementRequest<UserEntitlement>("_apis/UserEntitlements", new Dictionary<string, object>
+            {
+                ["api-version"] = "5.1-preview.2"
+            }).AsEnumerable();
 
         public static MemberEntitlementManagementRequest<UserEntitlementSummary> UserEntitlementSummary() => 
             new MemberEntitlementManagementRequest<UserEntitlementSummary>("_apis/userentitlementsummary", new Dictionary<string, object>
