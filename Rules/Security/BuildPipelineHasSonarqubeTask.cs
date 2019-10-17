@@ -6,7 +6,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class BuildPipelineHasSonarqubeTask : PipelineHasTaskRuleBase, IBuildPipelineRule
     {
-        protected override string TaskId => "6d01813a-9589-4b15-8491-8164aeb38055";
+        protected override string TaskId => "15b84ca1-b62f-4a2a-a403-89b77a063157";
 
         string IRule.Description => "Build pipeline contains an enabled SonarQube task";
         string IRule.Link => null;
