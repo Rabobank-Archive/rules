@@ -7,6 +7,7 @@ using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using System.Linq;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
 
@@ -56,6 +57,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Assert
             result.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EvaluateShouldReturnFalseWhenAnyStageWithinPipelineDoesNotHaveRequiredRetentionPolicy()
+        {
+            //Arrange
+            // ReSharper disable twice RedundantArgumentDefaultValue
+            CustomizePolicySettings(_fixture, 450, true);
+            SetupClient(_client, _fixture);
+            var releasePipeline = _fixture.Create<ReleaseDefinition>();
+
+            if (releasePipeline.Environments.Any())
+                releasePipeline.Environments.First().RetentionPolicy.DaysToKeep = 0;
+
+            //Act
+            var rule = new PipelineHasRequiredRetentionPolicy(_client);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+
+            //Assert 
+            Assert.False(result);
         }
 
         [Fact]

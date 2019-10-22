@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        string IRule.Description => "Production releases are retained for at least 15 months";
+        string IRule.Description => "All releases are retained for at least 15 months";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
         bool IRule.IsSox => true;
 
@@ -40,7 +40,7 @@ namespace SecurePipelineScan.Rules.Security
             return releasePipeline
                 .Environments
                 .Select(e => e.RetentionPolicy)
-                .Any(r => r.DaysToKeep >= RequiredRetentionDays && r.RetainBuild);
+                .All(r => r.DaysToKeep >= RequiredRetentionDays && r.RetainBuild);
         }
 
         public async Task ReconcileAsync(string projectId, string releasePipelineId)
