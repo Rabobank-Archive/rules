@@ -30,7 +30,6 @@ steps:
     dotnet build --configuration $(buildConfiguration) || goto :error
     tools\dotnet-sonarscanner end || goto :error
 
-    dotnet publish ./Subscriptions.Console --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/ConsoleApps || goto :error
     dotnet pack --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error
 
     :; exit 0
@@ -59,12 +58,6 @@ steps:
     fortifyServerName: 'Fortify SSC TAS'
     fortifyApplicationName: TAS.SecurePipelineScanner
     fortifyApplicationVersion: 1.0
-
-- task: PublishBuildArtifacts@1
-  displayName: publish console apps
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/ConsoleApps' 
-    artifactName: 'ConsoleApps'
 
 - task: PublishTestResults@2
   inputs:
