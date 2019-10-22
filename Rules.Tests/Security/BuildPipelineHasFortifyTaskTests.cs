@@ -25,7 +25,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             var rule = new BuildPipelineHasFortifyTask();
-            (await rule.EvaluateAsync(projectId, buildPipeline)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
         }
     }
 }

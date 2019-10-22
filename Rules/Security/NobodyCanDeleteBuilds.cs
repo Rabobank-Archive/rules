@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Administer Build Permissions' permission is set to Deny"
         };
 
-        public async Task<bool> EvaluateAsync(string projectId, Response.BuildDefinition buildPipeline)
+        public async Task<bool?> EvaluateAsync(string projectId, Response.BuildDefinition buildPipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

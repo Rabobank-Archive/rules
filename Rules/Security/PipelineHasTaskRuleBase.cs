@@ -1,6 +1,7 @@
 ﻿using SecurePipelineScan.VstsService.Response;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 using System;
 
 namespace SecurePipelineScan.Rules.Security
@@ -8,21 +9,33 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class PipelineHasTaskRuleBase
     {
         protected abstract string TaskId { get; }
+        private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public virtual async Task<bool> EvaluateAsync(BuildDefinition buildPipeline)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public virtual Task<bool?> EvaluateAsync(BuildDefinition buildPipeline)
         {
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
 
-            if (buildPipeline.Process.Phases == null) //Yaml pipeline
-                return false;
+            bool? result = null;
+            if (buildPipeline.Process.Type == 1)
+            {
+                // process.type 1 is a gui pipeline, 2 is a yaml pipeline
+                if (buildPipeline.Process.Phases == null)
+                    throw new ArgumentOutOfRangeException(nameof(buildPipeline));
 
-            return buildPipeline.Process.Phases
+                result = DoesPipelineContainTask(buildPipeline, TaskId);
+
+                if (!result.GetValueOrDefault() && DoesPipelineContainTask(buildPipeline, MavenTaskId))
+                    result = null;
+            }
+
+            return Task.FromResult(result);
+        }
+
+        private static bool DoesPipelineContainTask(BuildDefinition buildPipeline, string taskId) => 
+            buildPipeline.Process.Phases
                 .Where(p => p.Steps != null)
                 .SelectMany(p => p.Steps)
-                .Any(s => s.Enabled && s.Task.Id == TaskId);
-        }
+                .Any(s => s.Enabled && s.Task.Id == taskId);
     }
 }

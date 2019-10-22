@@ -12,7 +12,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Link => null;
         bool IRule.IsSox => false;
 
-        public Task<bool> EvaluateAsync(string projectId, BuildDefinition buildPipeline)
+        public Task<bool?> EvaluateAsync(string projectId, BuildDefinition buildPipeline)
         {
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));

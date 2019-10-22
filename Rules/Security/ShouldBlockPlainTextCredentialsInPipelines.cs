@@ -19,7 +19,8 @@ namespace SecurePipelineScan.Rules.Security
         public string Link => null;
         public string[] Impact => new[]
         {
-            "In project settings, 'Block release definition edits that contain plaintext credentials or other secrets.' will be activated."
+            "In project settings, 'Block release definition edits that contain plaintext " +
+            "credentials or other secrets.' will be activated."
         };
         public bool IsSox => false;
 
@@ -44,6 +45,4 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
     }
-
-
 }
