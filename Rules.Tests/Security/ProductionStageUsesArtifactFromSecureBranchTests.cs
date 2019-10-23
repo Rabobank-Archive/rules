@@ -65,9 +65,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public async Task NoReleasePipelineProved()
         {
-            //Arrange
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-
             //Act & Assert
             var rule = new ProductionStageUsesArtifactFromSecureBranch();
             await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(_config.Project, _config.stageId, null));
