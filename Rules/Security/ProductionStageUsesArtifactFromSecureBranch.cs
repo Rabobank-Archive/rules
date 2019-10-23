@@ -18,8 +18,8 @@ namespace SecurePipelineScan.Rules.Security
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            if (stageId == null)
-                throw new ArgumentNullException(nameof(stageId));
+            if (string.IsNullOrWhiteSpace(stageId))
+                return Task.FromResult(false);
 
             return Task.FromResult(releasePipeline.Environments
                 .Where(e => e.Id == stageId)

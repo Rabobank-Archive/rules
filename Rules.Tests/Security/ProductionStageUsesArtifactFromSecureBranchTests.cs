@@ -49,17 +49,23 @@ namespace SecurePipelineScan.Rules.Tests.Security
             result.ShouldBeFalse();
         }
 
-        [Fact]
-        public async Task NoStageIdProved()
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData(" ")]
+        public async Task NoStageIdProved(string stageId)
         {
             //Arrange
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, PipelineId))
                 .ConfigureAwait(false);
 
-            //Act & Assert
+            //Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch();
-            await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(_config.Project, null, releasePipeline));
+            var result = await rule.EvaluateAsync(_config.Project, stageId, releasePipeline);
+
+            //Assert
+            result.ShouldBeFalse();
         }
 
         [Fact]
