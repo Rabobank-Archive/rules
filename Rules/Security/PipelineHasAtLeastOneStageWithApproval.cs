@@ -12,7 +12,7 @@ namespace SecurePipelineScan.Rules.Security
         bool IRule.IsSox => true;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
+        public async Task<bool> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (releasePipeline == null)

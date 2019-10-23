@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using Flurl.Http.Testing;
 using System.Threading.Tasks;
@@ -79,19 +80,8 @@ namespace LogAnalytics.Client.Tests
         {
             var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
             var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
+            await client.AddCustomLogJsonAsync("preventive_analysis_log", new {Date = DateTime.UtcNow, Id=1}, "Date");
             var result = await client.QueryAsync("preventive_analysis_log_CL | limit 50");
-            result.ShouldNotBeNull();
-            result.tables.ShouldNotBeEmpty();
-            result.tables[0].columns.ShouldNotBeEmpty();
-            result.tables[0].rows.ShouldNotBeEmpty();
-        }
-
-        [Fact]
-        public async Task CompletenessQueryShouldReturnResults()
-        {
-            var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
-            var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
-            var result = await client.QueryAsync("completeness_log_CL | where TimeGenerated > ago(365d) | project SupervisorOrchestratorId_g");
             result.ShouldNotBeNull();
             result.tables.ShouldNotBeEmpty();
             result.tables[0].columns.ShouldNotBeEmpty();
@@ -103,6 +93,7 @@ namespace LogAnalytics.Client.Tests
         {
             var tokenprovider = new AzureTokenProvider(_config.TenantId, _config.ClientId, _config.ClientSecret);
             var client = new LogAnalyticsClient(_config.Workspace, _config.Key, tokenprovider);
+            await client.AddCustomLogJsonAsync("preventive_analysis_log", new { Date = DateTime.UtcNow, Id = 1 }, "Date");
             var result = await client.QueryAsync("some query");
             result.ShouldBeNull();
         }

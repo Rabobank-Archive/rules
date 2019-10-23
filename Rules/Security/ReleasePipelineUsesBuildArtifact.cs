@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService.Response;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -11,17 +12,17 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/aY8AD";
         bool IRule.IsSox => true;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public Task<bool> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
+            {
                 throw new ArgumentNullException(nameof(releasePipeline));
+            }
 
-            return releasePipeline.Artifacts.Count > 0 && 
-                releasePipeline.Artifacts
-                    .Select(a => a.Type)
-                    .All(t => t == "Build");
+            return Task.FromResult(releasePipeline.Artifacts.Count > 0 &&
+                                   releasePipeline.Artifacts
+                                       .Select(a => a.Type)
+                                       .All(t => t == "Build"));
         }
     }
 }

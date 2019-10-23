@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(result);
+            (await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline)).ShouldBe(result);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline)).ShouldBeTrue();
         }
 
         [Fact]
