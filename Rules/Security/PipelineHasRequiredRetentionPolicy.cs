@@ -15,10 +15,7 @@ namespace SecurePipelineScan.Rules.Security
         private readonly IVstsRestClient _client;
         private readonly int RequiredRetentionDays = 450;
 
-        public PipelineHasRequiredRetentionPolicy(IVstsRestClient client)
-        {
-            _client = client;
-        }
+        public PipelineHasRequiredRetentionPolicy(IVstsRestClient client) => _client = client;
 
         string IRule.Description => "All releases are retained for at least 15 months";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
@@ -30,7 +27,8 @@ namespace SecurePipelineScan.Rules.Security
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
-        public Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
+        public Task<bool> EvaluateAsync(string projectId, string stageId,
+            ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
