@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 using SecurePipelineScan.VstsService.Response;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -15,7 +16,9 @@ namespace SecurePipelineScan.Rules.Security
         public Task<bool> EvaluateAsync(string projectId, ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
+            {
                 throw new ArgumentNullException(nameof(releasePipeline));
+            }
 
             var result = releasePipeline.Artifacts.Any() && 
                 releasePipeline.Artifacts.All(a => a.Type == "Build");

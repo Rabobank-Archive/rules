@@ -46,7 +46,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Administer Release Permissions' permission is set to Deny"
         };
 
-        public async Task<bool> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
+        public async Task<bool> EvaluateAsync(string projectId, string stageId, Response.ReleaseDefinition releasePipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
             result.ShouldBeTrue();
@@ -73,7 +73,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert 
             Assert.False(result);
@@ -90,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
             result.ShouldBeFalse();
@@ -106,7 +106,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
             result.ShouldBeFalse();

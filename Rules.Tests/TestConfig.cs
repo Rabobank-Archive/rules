@@ -13,6 +13,7 @@ namespace SecurePipelineScan.Rules.Tests
                 .Build();
 
             Token = configuration["token"];
+            stageId = configuration["stageId"];
             Project = configuration["project"];
             Organization = configuration["organization"];
             ExtensionName = configuration["extensionname"];
@@ -20,6 +21,7 @@ namespace SecurePipelineScan.Rules.Tests
 
         public string Token { get; }
         public string Project { get; }
+        public string stageId { get; set; }
         public string Organization { get; }
         public string ExtensionName { get; }
     }
