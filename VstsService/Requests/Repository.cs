@@ -16,8 +16,8 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IEnumerableRequest<Push> Pushes(string project, string repositoryId) => 
             new VstsRequest<Push>($"/{project}/_apis/git/repositories/{repositoryId}/pushes").AsEnumerable();
 
-        public static IVstsRequest<GitItem> GitItem(string project, string repositoryId, string yamlFilename) =>
-            new VstsRequest<GitItem>($"/{project}/_apis/git/repositories/{repositoryId}/items",
+        public static IVstsRequest<JObject> GitItem(string project, string repositoryId, string yamlFilename) =>
+            new VstsRequest<JObject>($"/{project}/_apis/git/repositories/{repositoryId}/items",
                 new Dictionary<string, object>
                 {
                     { "path", $"{yamlFilename}" },

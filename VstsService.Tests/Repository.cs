@@ -1,8 +1,12 @@
 using System;
+using System.IO;
 using System.Linq;
-using Flurl.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
+using YamlDotNet.Serialization;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -44,6 +48,26 @@ namespace SecurePipelineScan.VstsService.Tests
             var push = pushes.First();
             push.PushId.ShouldNotBe(0);
             push.Date.ShouldNotBe(default);
+        }
+
+        [Fact]
+        public async Task GetGitItem()
+        {
+            var gitItem = await _client.GetAsync(Requests.Repository.GitItem("TAS",
+                "c6bd6cf0-b7f6-40c4-8869-cadaa8f8718c", "/azure-pipelines.yml")
+                .AsJson());
+
+            var yamlText = gitItem.SelectToken("content").ToString();
+            var yamlObject = new Deserializer().Deserialize(new StringReader(yamlText));
+
+            var jsonText = JsonConvert.SerializeObject(yamlObject);
+            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonText);
+
+            var containsTask = jsonObject.SelectTokens("steps[*]")
+                .Any(s => s.SelectToken("task", false)?.ToString() == "PublishBuildArtifacts@1"
+                    && s.SelectToken("enabled", false)?.ToString() != "false");
+
+            containsTask.ShouldBeTrue();
         }
 
         [Fact]
