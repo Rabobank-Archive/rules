@@ -12,13 +12,13 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/aY8AD";
         bool IRule.IsSox => true;
 
-        public Task<bool> EvaluateAsync(string projectId, string stageId,
+        public Task<bool?> EvaluateAsync(string projectId, string stageId,
             ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            var result = releasePipeline.Artifacts.Any() && 
+            bool? result = releasePipeline.Artifacts.Any() && 
                 releasePipeline.Artifacts.All(a => a.Type == "Build");
 
             return Task.FromResult(result);

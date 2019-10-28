@@ -13,19 +13,23 @@ namespace SecurePipelineScan.Rules.Security
         public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
         public bool IsSox => true;
 
-        public Task<bool> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
+        public Task<bool?> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
-                throw new ArgumentNullException(nameof(releasePipeline));
+                throw new ArgumentNullException(nameof(releasePipeline));            
 
             if (string.IsNullOrWhiteSpace(stageId))
-                return Task.FromResult(false);
+            {
+                return Task.FromResult((bool?)null);
+            }
 
-            return Task.FromResult(releasePipeline.Environments
+            bool? result = releasePipeline.Environments
                 .Where(e => e.Id == stageId)
                 .Any(e => e.Conditions
-                    .Any(c => c.ConditionType == "artifact" 
-                    && JsonConvert.DeserializeObject<ConditionArtifact>(c.Value).SourceBranch == "master")));
+                    .Any(c => c.ConditionType == "artifact"
+                    && JsonConvert.DeserializeObject<ConditionArtifact>(c.Value).SourceBranch == "master"));
+
+            return Task.FromResult(result);
             
         }
     }

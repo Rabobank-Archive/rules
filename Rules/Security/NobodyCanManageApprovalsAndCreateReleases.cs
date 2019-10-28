@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all other security groups where the 'Create Releases' permission is set to Allow, " +
             "the 'Manage Release Approvers' permission is set to Deny",
         };
-        public async Task<bool> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
+        public async Task<bool?> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

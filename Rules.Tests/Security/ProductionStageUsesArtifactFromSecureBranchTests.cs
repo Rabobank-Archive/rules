@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
-            result.ShouldBeTrue();
+            Assert.Equal(true, result);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync(_config.Project, stageId, releasePipeline);
 
             //Assert
-            result.ShouldBeFalse();
+            Assert.Equal(false, result);
         }
 
         [Theory]
@@ -65,7 +65,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync(_config.Project, stageId, releasePipeline);
 
             //Assert
-            result.ShouldBeFalse();
+            result.ShouldBeNull();
         }
 
         [Fact]

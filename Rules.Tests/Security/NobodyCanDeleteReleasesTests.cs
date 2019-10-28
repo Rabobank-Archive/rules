@@ -25,7 +25,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             var rule = new NobodyCanDeleteReleases(client);
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline)).ShouldBe(true);
         }
 
         [Fact]

@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            (await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline)).ShouldBeTrue();
+            (await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline)).ShouldBe(true);
         }
 
         [Theory]
