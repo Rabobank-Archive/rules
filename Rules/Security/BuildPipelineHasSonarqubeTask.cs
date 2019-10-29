@@ -12,18 +12,11 @@ namespace SecurePipelineScan.Rules.Security
             //nothing
         }
         protected override string TaskId => "15b84ca1-b62f-4a2a-a403-89b77a063157";
-        protected override string TaskName => "";
+        protected override string TaskName => "SonarQubeAnalyze@4";
+        protected override string StepName => null;
 
         string IRule.Description => "Build pipeline contains an enabled SonarQube task";
         string IRule.Link => null;
         bool IRule.IsSox => false;
-
-        public Task<bool?> EvaluateAsync(string projectId, BuildDefinition buildPipeline)
-        {
-            if (buildPipeline == null)
-                throw new ArgumentNullException(nameof(buildPipeline));
-
-            return base.EvaluateAsync(buildPipeline);
-        }
     }
 }

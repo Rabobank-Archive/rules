@@ -13,18 +13,11 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string TaskId => "818386e5-c8a5-46c3-822d-954b3c8fb130";
-        protected override string TaskName => "";
+        protected override string TaskName => "FortifySCA@5";
+        protected override string StepName => null;
 
         string IRule.Description => "Build pipeline contains an enabled Fortify task";
         string IRule.Link => null;
         bool IRule.IsSox => false;
-
-        public Task<bool?> EvaluateAsync(string projectId, BuildDefinition buildPipeline)
-        {
-            if (buildPipeline == null)
-                throw new ArgumentNullException(nameof(buildPipeline));
-
-            return base.EvaluateAsync(buildPipeline);
-        }
     }
 }

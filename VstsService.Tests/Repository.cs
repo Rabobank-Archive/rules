@@ -53,21 +53,11 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public async Task GetGitItem()
         {
-            var gitItem = await _client.GetAsync(Requests.Repository.GitItem("TAS",
-                "c6bd6cf0-b7f6-40c4-8869-cadaa8f8718c", "/azure-pipelines.yml")
-                .AsJson());
+            var gitItem = await _client.GetAsync(Requests.Repository.GitItem(_config.Project,
+                "6435e3f0-15b7-4302-814d-4ab586e61f8b", "/azure-pipelines.yml")
+                .AsJson()).ConfigureAwait(false);
 
-            var yamlText = gitItem.SelectToken("content").ToString();
-            var yamlObject = new Deserializer().Deserialize(new StringReader(yamlText));
-
-            var jsonText = JsonConvert.SerializeObject(yamlObject);
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonText);
-
-            var containsTask = jsonObject.SelectTokens("steps[*]")
-                .Any(s => s.SelectToken("task", false)?.ToString() == "PublishBuildArtifacts@1"
-                    && s.SelectToken("enabled", false)?.ToString() != "false");
-
-            containsTask.ShouldBeTrue();
+            gitItem.ShouldNotBeNull();
         }
 
         [Fact]

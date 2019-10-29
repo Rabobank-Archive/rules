@@ -5,6 +5,6 @@ namespace SecurePipelineScan.Rules.Security
 {
     public interface IBuildPipelineRule : IRule
     {
-        Task<bool?> EvaluateAsync(string projectId, BuildDefinition buildPipeline);
+        Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline);
     }
 }

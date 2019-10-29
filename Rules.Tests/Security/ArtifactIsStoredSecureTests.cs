@@ -8,6 +8,8 @@ using Xunit;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using System;
+using NSubstitute;
+using Newtonsoft.Json.Linq;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -27,27 +29,127 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public async Task EvaluateBuildIntegrationTest()
         {
-            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "2"))
+            var project = (await _client.GetAsync(Project.ProjectById(_config.Project)));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
                 .ConfigureAwait(false);
 
             var rule = new ArtifactIsStoredSecure(_client);
-            var result = await rule.EvaluateAsync(projectId, buildPipeline);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
 
             result.GetValueOrDefault().ShouldBeTrue();
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenYaml_ThenEvaluatesToNull()
+        public async Task EvaluateBuildIntegrationTest_Yaml()
+        {
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
+                .ConfigureAwait(false);
+
+            var rule = new ArtifactIsStoredSecure(_client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
+
+            result.ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task GivenPipeline_WhenYamlFileInOtherProject_ThenEvaluatesToFalse()
         {
             _fixture.Customize<Response.BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
+            _fixture.Customize<Response.Project>(ctx => ctx
+                .With(x => x.Name, "project A"));
+            _fixture.Customize<Response.Repository>(ctx => ctx
+                .With(r => r.Url, new Uri("https://urlwithotherproject.nl")));
+
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var projectId = _fixture.Create<string>();
+            var project = _fixture.Create<Response.Project>();
 
             var rule = new ArtifactIsStoredSecure(_client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
 
-            await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(projectId, buildPipeline));
+            result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task GivenPipeline_WhenYamlWithPublish_ThenEvaluatesToTrue()
+        {
+            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+                .With(p => p.Type, 2));
+            _fixture.Customize<Response.Project>(ctx => ctx
+                .With(x => x.Name, "projectA"));
+            _fixture.Customize<Response.Repository>(ctx => ctx
+                .With(r => r.Url, new Uri("https://projectA.nl")));
+
+            var gitItem = new JObject
+            {
+                { "content", "steps:\r- publish: drop" }
+            };
+
+            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
+            var project = _fixture.Create<Response.Project>();
+
+            var client = Substitute.For<IVstsRestClient>();
+            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+
+            var rule = new ArtifactIsStoredSecure(client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
+
+            result.ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task GivenPipeline_WhenYamlFileWithDisabledPublish_ThenEvaluatesToFalse()
+        {
+            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+                .With(p => p.Type, 2));
+            _fixture.Customize<Response.Project>(ctx => ctx
+                .With(x => x.Name, "project A"));
+            _fixture.Customize<Response.Repository>(ctx => ctx
+                .With(r => r.Url, new Uri("https://urlwithotherproject.nl")));
+
+            var gitItem = new JObject
+            {
+                { "content", "steps:\r- task: PublishBuildArtifacts@1\r enabled: false" }
+            };
+
+            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
+            var project = _fixture.Create<Response.Project>();
+
+            var client = Substitute.For<IVstsRestClient>();
+            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+
+            var rule = new ArtifactIsStoredSecure(client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
+
+            result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task GivenPipeline_WhenNestedYaml_ThenEvaluatesToNull()
+        {
+            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+                .With(p => p.Type, 2));
+            _fixture.Customize<Response.Project>(ctx => ctx
+                .With(x => x.Name, "projectA"));
+            _fixture.Customize<Response.Repository>(ctx => ctx
+                .With(r => r.Url, new Uri("https://projectA.nl")));
+
+            var gitItem = new JObject
+            {
+                { "content", "steps:\r- template: OtherYaml" }
+            };
+
+            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
+            var project = _fixture.Create<Response.Project>();
+
+            var client = Substitute.For<IVstsRestClient>();
+            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+
+            var rule = new ArtifactIsStoredSecure(client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
+
+            result.ShouldBeNull();
         }
 
         [Fact]
@@ -57,11 +159,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .With(p => p.Type, 1)
                 .Without(p => p.Phases));
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var projectId = _fixture.Create<string>();
+            var project = _fixture.Create<Response.Project>();
 
             var rule = new ArtifactIsStoredSecure(_client);
             var exception = await Record.ExceptionAsync(async () =>
-                await rule.EvaluateAsync(projectId, buildPipeline));
+                await rule.EvaluateAsync(project, buildPipeline));
 
             exception.ShouldNotBeNull();
         }
@@ -76,25 +178,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Response.BuildTask>(ctx => ctx
                 .With(t => t.Id, "ac4ee482-65da-4485-a532-7b085873e532"));
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var projectId = _fixture.Create<string>();
+            var project = _fixture.Create<Response.Project>();
 
             var rule = new ArtifactIsStoredSecure(_client);
-            var result = await rule.EvaluateAsync(projectId, buildPipeline);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
 
             result.ShouldBeNull();
-        }
-
-        [Fact]
-        public async Task GivenPipeline_WhenYamlAndTaskIsFound()
-        {
-            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "197"))
-                .ConfigureAwait(false);
-
-            var rule = new ArtifactIsStoredSecure(_client);
-            var result = await rule.EvaluateAsync(projectId, buildPipeline);
-
-            result.ShouldBe(true);
         }
     }
 }

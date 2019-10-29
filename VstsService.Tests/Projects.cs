@@ -10,15 +10,26 @@ namespace SecurePipelineScan.VstsService.Tests
     public class Projects : IClassFixture<TestConfig>
     {
         private readonly IVstsRestClient _client;
+        private readonly TestConfig _config;
 
         public Projects(TestConfig config)
         {
             _client = new VstsRestClient(config.Organization, config.Token);
+            _config = config;
         }
 
         /// <summary>
         /// Test if all projects have a Name
         /// </summary>
+        [Fact]
+        public async Task QueryProject()
+        {
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            project.ShouldNotBeNull();
+            project.Id.ShouldNotBeNull();
+            project.Name.ShouldNotBeNull();
+        }
+
         [Fact]
         public void QueryProjects()
         {

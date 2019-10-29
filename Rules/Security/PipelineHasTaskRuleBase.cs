@@ -14,74 +14,106 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class PipelineHasTaskRuleBase
     {
         readonly IVstsRestClient _client;
-
+        
         protected PipelineHasTaskRuleBase(IVstsRestClient client)
         {
             _client = client;
         }
 
+        private readonly int GuiPipelineProcessType = 1;
+        private readonly int YamlPipelineProcessType = 2;
+
         protected abstract string TaskId { get; }
         protected abstract string TaskName { get; }
+        protected abstract string StepName { get; }
+
         private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
 
-        public async Task<bool?> EvaluateAsync(BuildDefinition buildPipeline)
+        public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
 
-            bool? result = null;
-            if (buildPipeline.Process.Type == 1)
+            bool? result;
+            if (buildPipeline.Process.Type == GuiPipelineProcessType)
             {
-                // process.type 1 is a gui pipeline, 2 is a yaml pipeline
                 if (buildPipeline.Process.Phases == null)
                     throw new ArgumentOutOfRangeException(nameof(buildPipeline));
 
-                result = DoesPipelineContainTask(buildPipeline, TaskId);
+                result = DoesGuiPipelineContainTask(buildPipeline, TaskId);
 
-                if (!result.GetValueOrDefault() && DoesPipelineContainTask(buildPipeline, MavenTaskId))
+                if (!result.GetValueOrDefault() && DoesGuiPipelineContainTask(buildPipeline, MavenTaskId))
                     result = null;
             }
-            else if (buildPipeline.Process.Type == 2)
-            { 
-                if(buildPipeline.Process.YamlFilename == null)
+            else if (buildPipeline.Process.Type == YamlPipelineProcessType)
+            {
+                if (buildPipeline.Process.YamlFilename == null)
                     throw new ArgumentOutOfRangeException(nameof(buildPipeline));
 
-                result = await DoesPipelineContainTaskYml(buildPipeline, TaskName);
+                result = await DoesYamlPipelineContainTaskAsync(project, buildPipeline)
+                    .ConfigureAwait(false);
             }
+            else
+                result = null;
 
-            return await Task.FromResult(result);
+            return result;
         }
 
-        private static bool DoesPipelineContainTask(BuildDefinition buildPipeline, string taskId) => 
+        private static bool DoesGuiPipelineContainTask(BuildDefinition buildPipeline, string taskId) => 
             buildPipeline.Process.Phases
                 .Where(p => p.Steps != null)
                 .SelectMany(p => p.Steps)
                 .Any(s => s.Enabled && s.Task.Id == taskId);
 
-        private async Task<bool?> DoesPipelineContainTaskYml(BuildDefinition buildPipeline, string TaskName)
+        private async Task<bool?> DoesYamlPipelineContainTaskAsync(Project project,
+            BuildDefinition buildPipeline) 
         {
-            
-            var gitItem = await _client.GetAsync(VstsService.Requests.Repository.GitItem(buildPipeline.Project.Id,
-                buildPipeline.Repository.Id, buildPipeline.Process.YamlFilename)
-                .AsJson());
+            if (!buildPipeline.Repository.Url.ToString().ToUpperInvariant()
+                    .Contains(project.Name.ToUpperInvariant()))
+                return false;
 
-            if(gitItem == null)
+            var yamlPipeline = await GetYamlPipelineAsync(project.Id, buildPipeline.Repository.Id,
+                    buildPipeline.Process.YamlFilename)
+                .ConfigureAwait(false);
+
+            return EvaluateYamlPipeline(yamlPipeline);
+        }
+               
+        private async Task<JObject> GetYamlPipelineAsync(string projectId, string repositoryId, 
+            string yamlFileName)
+        {
+            var gitItem = await _client.GetAsync(VstsService.Requests.Repository.GitItem(
+                projectId, repositoryId, yamlFileName)
+                .AsJson()).ConfigureAwait(false);
+
+            if (gitItem == null)
                 throw new ArgumentNullException(nameof(gitItem));
 
-            var jsonObject = YamlToJson(gitItem);
-
-            return jsonObject.SelectTokens("steps[*]")
-                .Any(s => s.SelectToken("task", false)?.ToString() == TaskName
-                    && s.SelectToken("enabled", false)?.ToString() != "false") || s.SelectToken("publish", false)?.ToString() != null;
+            var yamlContent = gitItem.SelectToken("content", false)?.ToString();
+            return ConvertYamlToJson(yamlContent);
         }
 
-        private JObject YamlToJson(JObject gitItem)
+        private static JObject ConvertYamlToJson(string yamlText)
         {
-            var yamlText = gitItem.SelectToken("content").ToString();
             var yamlObject = new Deserializer().Deserialize(new StringReader(yamlText));
-
             var jsonText = JsonConvert.SerializeObject(yamlObject);
             return JsonConvert.DeserializeObject<JObject>(jsonText);
+        }
+
+        private bool? EvaluateYamlPipeline(JToken yamlPipeline)
+        {
+            var result = yamlPipeline.SelectTokens("steps[*]")
+                .Any(s => (s[StepName] != null
+                    || s.SelectToken("task", false)?.ToString() == TaskName)
+                    && s.SelectToken("enabled", false)?.ToString() != "false");
+
+            if (!result && yamlPipeline.SelectTokens("steps[*]")
+                    .Any(s => s["template"] != null))
+                return null;
+
+            return result;
         }
     }
 }

@@ -5,6 +5,9 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class Project
     {
+        public static IVstsRequest<Response.Project> ProjectById(string projectId) =>
+            new VstsRequest<Response.Project>($"_apis/projects/{projectId}");
+
         public static IEnumerableRequest<Response.Project> Projects() =>
             new VstsRequest<Response.Project>(
                 $"_apis/projects", new Dictionary<string, object>

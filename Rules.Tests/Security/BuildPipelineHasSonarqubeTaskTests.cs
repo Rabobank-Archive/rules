@@ -21,12 +21,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public async Task EvaluateBuildIntegrationTest()
         {
-            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "2"))
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
                 .ConfigureAwait(false);
 
             var rule = new BuildPipelineHasSonarqubeTask(_client);
-            (await rule.EvaluateAsync(projectId, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
+            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
         }
     }
 }
