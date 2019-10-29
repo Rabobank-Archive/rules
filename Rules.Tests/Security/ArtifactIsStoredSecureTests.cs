@@ -7,6 +7,7 @@ using Shouldly;
 using Xunit;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
+using System;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -14,22 +15,23 @@ namespace SecurePipelineScan.Rules.Tests.Security
     {
         private readonly TestConfig _config;
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
+        private readonly IVstsRestClient _client;
 
         public ArtifactIsStoredSecureTests(TestConfig config)
         {
             _config = config;
             _fixture.Customize(new AutoNSubstituteCustomization());
+            _client = new VstsRestClient(_config.Organization, _config.Token);
         }
 
         [Fact]
         public async Task EvaluateBuildIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(projectId, "2"))
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "2"))
                 .ConfigureAwait(false);
 
-            var rule = new ArtifactIsStoredSecure();
+            var rule = new ArtifactIsStoredSecure(_client);
             var result = await rule.EvaluateAsync(projectId, buildPipeline);
 
             result.GetValueOrDefault().ShouldBeTrue();
@@ -43,10 +45,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
             var projectId = _fixture.Create<string>();
 
-            var rule = new ArtifactIsStoredSecure();
-            var result = await rule.EvaluateAsync(projectId, buildPipeline);
+            var rule = new ArtifactIsStoredSecure(_client);
 
-            result.ShouldBeNull();
+            await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(projectId, buildPipeline));
         }
 
         [Fact]
@@ -58,7 +59,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
             var projectId = _fixture.Create<string>();
 
-            var rule = new ArtifactIsStoredSecure();
+            var rule = new ArtifactIsStoredSecure(_client);
             var exception = await Record.ExceptionAsync(async () =>
                 await rule.EvaluateAsync(projectId, buildPipeline));
 
@@ -77,10 +78,21 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
             var projectId = _fixture.Create<string>();
 
-            var rule = new ArtifactIsStoredSecure();
+            var rule = new ArtifactIsStoredSecure(_client);
             var result = await rule.EvaluateAsync(projectId, buildPipeline);
 
             result.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task GivenPipeline_WhenYamlAndTaskIsFound()
+        {
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "195"))
+                .ConfigureAwait(false);
+
+            var rule = new ArtifactIsStoredSecure(_client);
+            var result = await rule.EvaluateAsync(projectId, buildPipeline);
         }
     }
 }

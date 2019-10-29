@@ -10,21 +10,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class BuildPipelineHasSonarqubeTaskTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private readonly IVstsRestClient _client;
 
         public BuildPipelineHasSonarqubeTaskTests(TestConfig config)
         {
             _config = config;
+            _client = new VstsRestClient(_config.Organization, _config.Token);
         }
 
         [Fact]
         public async Task EvaluateBuildIntegrationTest()
         {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(projectId, "2"))
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "2"))
                 .ConfigureAwait(false);
 
-            var rule = new BuildPipelineHasSonarqubeTask();
+            var rule = new BuildPipelineHasSonarqubeTask(_client);
             (await rule.EvaluateAsync(projectId, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
         }
     }
