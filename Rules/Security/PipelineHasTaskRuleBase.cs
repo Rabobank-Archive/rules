@@ -72,7 +72,7 @@ namespace SecurePipelineScan.Rules.Security
 
             return jsonObject.SelectTokens("steps[*]")
                 .Any(s => s.SelectToken("task", false)?.ToString() == TaskName
-                    && s.SelectToken("enabled", false)?.ToString() != "false");
+                    && s.SelectToken("enabled", false)?.ToString() != "false") || s.SelectToken("publish", false)?.ToString() != null;
         }
 
         private JObject YamlToJson(JObject gitItem)

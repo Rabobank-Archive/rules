@@ -88,11 +88,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task GivenPipeline_WhenYamlAndTaskIsFound()
         {
             var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "195"))
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, "197"))
                 .ConfigureAwait(false);
 
             var rule = new ArtifactIsStoredSecure(_client);
             var result = await rule.EvaluateAsync(projectId, buildPipeline);
+
+            result.ShouldBe(true);
         }
     }
 }
