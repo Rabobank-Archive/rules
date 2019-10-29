@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task EvaluateBuildIntegrationTest()
+        public async Task EvaluateBuildIntegrationTest_Gui()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
             var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
@@ -27,6 +27,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var rule = new BuildPipelineHasSonarqubeTask(_client);
             (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task EvaluateBuildIntegrationTest_Yaml()
+        {
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
+                .ConfigureAwait(false);
+
+            var rule = new BuildPipelineHasSonarqubeTask(_client);
+            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeFalse();
         }
     }
 }

@@ -19,10 +19,21 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task EvaluateBuildIntegrationTest()
+        public async Task EvaluateBuildIntegrationTest_gui()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
             var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
+                .ConfigureAwait(false);
+
+            var rule = new BuildPipelineHasFortifyTask(_client);
+            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeFalse();
+        }
+
+        [Fact]
+        public async Task EvaluateBuildIntegrationTest_yaml()
+        {
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
                 .ConfigureAwait(false);
 
             var rule = new BuildPipelineHasFortifyTask(_client);
