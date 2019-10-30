@@ -13,7 +13,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string TaskId => "2ff763a7-ce83-4e1f-bc89-0ae63477cebe";
-        protected override string TaskName => "PublishBuildArtifacts@1";
+        protected override string TaskName => "PublishBuildArtifacts";
         protected override string StepName => "publish";
 
         string IRule.Description => "Artifact is stored in secure artifactory";

@@ -105,9 +105,9 @@ namespace SecurePipelineScan.Rules.Security
         private bool? EvaluateYamlPipeline(JToken yamlPipeline)
         {
             var result = yamlPipeline.SelectTokens("steps[*]")
-                .Any(s => (s[StepName] != null
-                    || s.SelectToken("task", false)?.ToString() == TaskName)
-                    && s.SelectToken("enabled", false)?.ToString() != "false");
+                .Any(s => (s[StepName] != null ||
+                    (s["task"] != null && s["task"].ToString().Contains(TaskName))
+                    && s.SelectToken("enabled", false)?.ToString() != "false"));
 
             if (!result && yamlPipeline.SelectTokens("steps[*]")
                     .Any(s => s["template"] != null))

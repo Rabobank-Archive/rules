@@ -13,7 +13,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         protected override string TaskId => "818386e5-c8a5-46c3-822d-954b3c8fb130";
-        protected override string TaskName => "FortifySCA@5";
+        protected override string TaskName => "FortifySCA";
         protected override string StepName => "";
 
         string IRule.Description => "Build pipeline contains an enabled Fortify task";

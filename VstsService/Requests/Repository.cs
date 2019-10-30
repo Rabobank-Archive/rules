@@ -22,7 +22,9 @@ namespace SecurePipelineScan.VstsService.Requests
                 {
                     { "path", $"{yamlFilename}" },
                     { "includeContent", true },
-                    { "$format", "json" }
+                    { "$format", "json" },
+                    { "versionDescriptor.versionType", "branch" },
+                    { "versionDescriptor.version", "master" }
                 });
     }
 }
