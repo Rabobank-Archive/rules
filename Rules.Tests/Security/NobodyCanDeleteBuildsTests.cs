@@ -17,7 +17,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _config = config;
             _client = new VstsRestClient(_config.Organization, _config.Token);
         }
+
         [Fact]
+        [Trait("category", "integration")]
         public async Task EvaluateBuildIntegrationTest()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
@@ -29,6 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public async Task ReconcileBuildIntegrationTest()
         {
             var projectId = (await _client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;

@@ -1,7 +1,6 @@
 ﻿using SecurePipelineScan.VstsService.Response;
 using System.Linq;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 using System;
 using SecurePipelineScan.VstsService;
 using Newtonsoft.Json.Linq;
@@ -20,13 +19,12 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        private readonly int GuiPipelineProcessType = 1;
-        private readonly int YamlPipelineProcessType = 2;
-
         protected abstract string TaskId { get; }
         protected abstract string TaskName { get; }
         protected abstract string StepName { get; }
 
+        private const int GuiPipelineProcessType = 1;
+        private const int YamlPipelineProcessType = 2;
         private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
@@ -36,26 +34,23 @@ namespace SecurePipelineScan.Rules.Security
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
 
-            bool? result;
             if (buildPipeline.Process.Type == GuiPipelineProcessType)
-            {
-                if (buildPipeline.Process.Phases == null)
-                    throw new ArgumentOutOfRangeException(nameof(buildPipeline));
-
-                result = DoesGuiPipelineContainTask(buildPipeline, TaskId);
-
-                if (!result.GetValueOrDefault() && DoesGuiPipelineContainTask(buildPipeline, MavenTaskId))
-                    result = null;
-            }
+                return EvaluateGuiPipeline(buildPipeline);
             else if (buildPipeline.Process.Type == YamlPipelineProcessType)
-            {
-                if (buildPipeline.Process.YamlFilename == null)
-                    throw new ArgumentOutOfRangeException(nameof(buildPipeline));
-
-                result = await DoesYamlPipelineContainTaskAsync(project, buildPipeline)
+                return await EvaluateYamlPipelineAsync(project, buildPipeline)
                     .ConfigureAwait(false);
-            }
             else
+                return null;
+        }
+
+        private bool? EvaluateGuiPipeline(BuildDefinition buildPipeline)
+        {
+            if (buildPipeline.Process.Phases == null)
+                throw new ArgumentOutOfRangeException(nameof(buildPipeline));
+
+            bool? result = DoesGuiPipelineContainTask(buildPipeline, TaskId);
+
+            if (!result.GetValueOrDefault() && DoesGuiPipelineContainTask(buildPipeline, MavenTaskId))
                 result = null;
 
             return result;
@@ -67,9 +62,12 @@ namespace SecurePipelineScan.Rules.Security
                 .SelectMany(p => p.Steps)
                 .Any(s => s.Enabled && s.Task.Id == taskId);
 
-        private async Task<bool?> DoesYamlPipelineContainTaskAsync(Project project,
+        private async Task<bool?> EvaluateYamlPipelineAsync(Project project,
             BuildDefinition buildPipeline) 
         {
+            if (buildPipeline.Process.YamlFilename == null)
+                throw new ArgumentOutOfRangeException(nameof(buildPipeline));
+
             if (!buildPipeline.Repository.Url.ToString().ToUpperInvariant()
                     .Contains(project.Name.ToUpperInvariant()))
                 return false;
@@ -78,7 +76,7 @@ namespace SecurePipelineScan.Rules.Security
                     buildPipeline.Process.YamlFilename)
                 .ConfigureAwait(false);
 
-            return EvaluateYamlPipeline(yamlPipeline);
+            return DoesYamlPipelineContainTask(yamlPipeline);
         }
                
         private async Task<JObject> GetYamlPipelineAsync(string projectId, string repositoryId, 
@@ -102,7 +100,7 @@ namespace SecurePipelineScan.Rules.Security
             return JsonConvert.DeserializeObject<JObject>(jsonText);
         }
 
-        private bool? EvaluateYamlPipeline(JToken yamlPipeline)
+        private bool? DoesYamlPipelineContainTask(JToken yamlPipeline)
         {
             var result = yamlPipeline.SelectTokens("steps[*]")
                 .Any(s => (s[StepName] != null ||

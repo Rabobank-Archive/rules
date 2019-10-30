@@ -19,6 +19,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client;
 
+        private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
+
         public ArtifactIsStoredSecureTests(TestConfig config)
         {
             _config = config;
@@ -27,6 +29,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public async Task EvaluateBuildIntegrationTest()
         {
             var project = (await _client.GetAsync(Project.ProjectById(_config.Project)));
@@ -40,6 +43,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public async Task EvaluateBuildIntegrationTest_Yaml()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
@@ -176,7 +180,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Response.BuildStep>(ctx => ctx
                 .With(s => s.Enabled, true));
             _fixture.Customize<Response.BuildTask>(ctx => ctx
-                .With(t => t.Id, "ac4ee482-65da-4485-a532-7b085873e532"));
+                .With(t => t.Id, MavenTaskId));
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
             var project = _fixture.Create<Response.Project>();
 

@@ -54,7 +54,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public async Task GetGitItem()
         {
             var gitItem = await _client.GetAsync(Requests.Repository.GitItem(_config.Project,
-                "6435e3f0-15b7-4302-814d-4ab586e61f8b", "/azure-pipelines.yml")
+                _config.RepositoryId, _config.GitItemFilePath)
                 .AsJson()).ConfigureAwait(false);
 
             gitItem.ShouldNotBeNull();

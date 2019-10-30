@@ -21,6 +21,8 @@ namespace SecurePipelineScan.VstsService.Tests
             ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "New release pipeline";
             BuildDefinitionId = configuration["buildDefinitionId"] ?? "2";
             BuildId = configuration["buildId"] ?? "4";
+            RepositoryId = configuration["repositoryId"] ?? "6435e3f0-15b7-4302-814d-4ab586e61f8b";
+            GitItemFilePath = configuration["gitItemFilePath"] ?? "/azure-pipelines.yml";
 
             if (int.TryParse(configuration["AgentPoolId"], out int poolId))
             {
@@ -38,5 +40,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public int AgentPoolId { get; } = 1;
         public string BuildId { get; }
         public string BuildDefinitionId { get; }
+        public string RepositoryId { get; }
+        public string GitItemFilePath { get; }
     }
 }
