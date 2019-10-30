@@ -40,7 +40,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new PipelineHasRequiredRetentionPolicy(client);
             yield return new PipelineHasAtLeastOneStageWithApproval();
             yield return new ReleasePipelineUsesBuildArtifact();
-            yield return new ProductionStageUsesArtifactFromSecureBranch();
+            yield return new ProductionStageUsesArtifactFromSecureBranch(client);
         }
     }
 }

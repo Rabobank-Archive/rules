@@ -1,22 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ProductionStageUsesArtifactFromSecureBranch : IReleasePipelineRule
+    public class ProductionStageUsesArtifactFromSecureBranch : IReleasePipelineRule, IReconcile
     {
+        private readonly IVstsRestClient _client;
+
+        public ProductionStageUsesArtifactFromSecureBranch(IVstsRestClient client)
+        {
+            _client = client;
+        }
+
         public string Description => "Production stage uses artifact from secure branch";
         public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
         public bool IsSox => true;
 
+        public string[] Impact => new[]
+        {
+            "For each production stage (as stored in ITSM) ...",
+            "-> Under 'Pre-deployment conditions/Triggers/After stage' or 'After release'",
+            "-> For each artifact of type 'Build' or 'Azure Repos Git'", 
+            "-> An artifact filter is added that includes the 'master' branch."
+        };
+
         public Task<bool?> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
-                throw new ArgumentNullException(nameof(releasePipeline));            
+            {
+                throw new ArgumentNullException(nameof(releasePipeline));
+            }
 
             if (string.IsNullOrWhiteSpace(stageId))
             {
@@ -43,7 +63,24 @@ namespace SecurePipelineScan.Rules.Security
                         JsonConvert.DeserializeObject<ConditionArtifact>(n.Value).SourceBranch == "master"));
 
             return Task.FromResult((bool?)result);
-            
+        }
+
+        public async Task ReconcileAsync(string projectId, string stageId, string itemId)
+        {
+            var definition = await _client.GetAsync(
+                    ReleaseManagement.Definition(projectId, itemId).AsJson())
+                .ConfigureAwait(false);
+
+
+            var aliases = ReleaseDefinitionHelper.GetArtifactAliases(definition);
+            foreach (var alias in aliases)
+            {
+                ReleaseDefinitionHelper.AddConditionToEnvironments(definition, alias, stageId);
+            }
+
+            await _client.PutAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{itemId}",
+                    new Dictionary<string, object> { { "api-version", "5.1" } }), definition)
+                .ConfigureAwait(false);
         }
     }
 }

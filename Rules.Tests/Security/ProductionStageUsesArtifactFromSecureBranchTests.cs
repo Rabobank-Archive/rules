@@ -1,10 +1,13 @@
-﻿using SecurePipelineScan.VstsService;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using NSubstitute;
+using SecurePipelineScan.Rules.Security;
+using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
-using System.Threading.Tasks;
 using Xunit;
-using SecurePipelineScan.Rules.Security;
-using System;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
@@ -14,7 +17,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private readonly TestConfig _config;
         private const string PipelineId = "1";
 
-        public ProductionStageUsesArtifactFromSecureBranchTests(TestConfig config) => _config = config;
+        public ProductionStageUsesArtifactFromSecureBranchTests(TestConfig config)
+        {
+            _config = config;
+        }
 
         [Fact]
         public async Task EvaluateIntegrationTest()
@@ -25,7 +31,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             //Act
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(client);
             var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
@@ -40,10 +46,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, PipelineId))
                 .ConfigureAwait(false);
 
-            var stageId = "1";
+            const string stageId = "1";
 
             //Act
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(client);
             var result = await rule.EvaluateAsync(_config.Project, stageId, releasePipeline);
 
             //Assert
@@ -62,7 +68,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             //Act
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(client);
             var result = await rule.EvaluateAsync(_config.Project, stageId, releasePipeline);
 
             //Assert
@@ -72,16 +78,63 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public async Task NoReleasePipelineProved()
         {
+            //Arrange
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+
             //Act & Assert
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
-            await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(_config.Project, _config.stageId, null));
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(client);
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                rule.EvaluateAsync(_config.Project, _config.stageId, null));
         }
 
         [Fact]
-        public async Task ReleasePipeline_ArtifactWithBranchFilter()
+        public async Task ReconcileAsync_WithBuildArtifactAndEmptyConditions_OneConditionShouldBeAdded()
+        {
+            // arrange
+            var definition = JObject.FromObject(new
+            {
+                environments = new[]
+                {
+                    new
+                    {
+                        id = 1,
+                        conditions = new object[0]
+                    }
+                },
+                artifacts = new[]
+                {
+                    new
+                    {
+                        type = "Build",
+                        alias = "artifactAlias1"
+                    }
+                }
+            });
+
+            var client = Substitute.For<IVstsRestClient>();
+            client
+                .GetAsync(Arg.Any<IVstsRequest<JObject>>())
+                .Returns(definition);
+
+            var rule = (IReconcile) new ProductionStageUsesArtifactFromSecureBranch(client);
+
+            // act
+            await rule.ReconcileAsync("projectId", "1", "1");
+
+            // assert
+            await client
+                .Received(1)
+                .PutAsync(Arg.Any<VsrmRequest<object>>(), Arg.Is<JObject>(
+                    d => d.SelectTokens("environments[*].conditions" +
+                                        "[?(@.name == 'artifactAlias1' && @.conditionType == 'artifact')]"
+                    ).Count() == 1));
+        }
+
+        [Fact]
+        public async Task EvaluateAsync_ArtifactWithBranchFilter()
         {
             // Arrange
-            var releasePipeline = new Response.ReleaseDefinition()
+            var releasePipeline = new Response.ReleaseDefinition
             {
                 Artifacts = new[] 
                 { 
@@ -117,7 +170,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "1", releasePipeline);
 
             // Assert
@@ -126,7 +179,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReleasePipeline_MultipleArtifactsNotAllBranchFilters()
+        public async Task EvaluateAsync_MultipleArtifactsNotAllBranchFilters()
         {
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition()
@@ -164,7 +217,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "1", releasePipeline);
 
             // Assert
@@ -173,7 +226,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReleasePipeline_ConditionNotSet()
+        public async Task EvaluateAsync_ConditionTypeNotArtifact()
         {
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition()
@@ -206,7 +259,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "1", releasePipeline);
 
             // Assert
@@ -215,7 +268,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReleasePipeline_StageIdAreNotEqual()
+        public async Task EvaluateAsync_StageIdAreNotEqual()
         {
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition()
@@ -239,7 +292,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "2", releasePipeline);
 
             // Assert
@@ -248,7 +301,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReleasePipeline_ConditionSetNotMaster()
+        public async Task EvaluateAsync_ConditionSourceBranchNotMaster()
         {
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition()
@@ -270,9 +323,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
                         {
                             new Response.Condition
                             {
-                                ConditionType = "asdfg",
+                                ConditionType = "artifact",
                                 Name = "function",
-                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+                                Value = "{\"sourceBranch\":\"test\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
                             }
                         }
                     }
@@ -281,7 +334,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "1", releasePipeline);
 
             // Assert
@@ -290,7 +343,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReleasePipeline_OtherArtifactType()
+        public async Task EvaluateAsync_OtherArtifactType()
         {
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition()
@@ -307,12 +360,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
 
-            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>());
             var result = await rule.EvaluateAsync("1", "1", releasePipeline);
 
             // Assert
 
             result.ShouldBe(null);
+        }
+
+        [Fact(Skip = "For manual execution only")]
+        public async Task Reconcile()
+        {
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
+            await rule.ReconcileAsync(_config.Project, "2", "1").ConfigureAwait(false);
         }
     }
 }

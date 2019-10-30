@@ -1,5 +1,4 @@
 using SecurePipelineScan.VstsService.Response;
-using System.Collections;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security

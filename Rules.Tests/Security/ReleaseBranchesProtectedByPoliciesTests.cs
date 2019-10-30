@@ -160,7 +160,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
-            rule.ReconcileAsync(_config.Project, RepositoryId);
+            rule.ReconcileAsync(_config.Project, null, RepositoryId);
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.ReconcileAsync(_config.Project, RepositoryId);
+            await rule.ReconcileAsync(_config.Project, null,RepositoryId);
 
             // Assert
             await _client
@@ -188,8 +188,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             SetupClient(_client, _fixture);
             
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.ReconcileAsync(_config.Project, RepositoryId);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, null, RepositoryId);
 
             // Assert
             await _client
@@ -205,8 +205,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             SetupClient(_client, _fixture);
             
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.ReconcileAsync(_config.Project, RepositoryId);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, null, RepositoryId);
 
             // Assert
             await _client
@@ -223,8 +223,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             SetupClient(_client, _fixture);
             
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;          
-            await rule.ReconcileAsync(_config.Project, RepositoryId);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, null, RepositoryId);
 
             // Assert
             await _client

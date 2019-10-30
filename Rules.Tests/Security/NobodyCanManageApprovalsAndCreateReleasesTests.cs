@@ -56,7 +56,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
-            await rule.ReconcileAsync(projectId, "1");
+            await rule.ReconcileAsync(projectId, null, "1");
         }
 
         private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId, int manageApproversPermissionId)
