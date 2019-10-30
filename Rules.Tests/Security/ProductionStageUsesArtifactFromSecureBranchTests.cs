@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using SecurePipelineScan.Rules.Security;
 using System;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -76,5 +77,242 @@ namespace SecurePipelineScan.Rules.Tests.Security
             await Assert.ThrowsAsync<ArgumentNullException>(() => rule.EvaluateAsync(_config.Project, _config.stageId, null));
         }
 
+        [Fact]
+        public async Task ReleasePipeline_ArtifactWithBranchFilter()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[] 
+                { 
+                    new Response.Artifact 
+                    { 
+                        Alias = "function",
+                        Type = "Build" 
+                    } 
+                },
+                Environments = new[]
+                {
+                    new Response.ReleaseDefinitionEnvironment 
+                    { 
+                        Id = "1", 
+                        Conditions = new[]
+                        { 
+                            new Response.Condition
+                            {
+                                ConditionType = "artifact", 
+                                Name = "function",
+                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}" 
+                            },
+                            new Response.Condition
+                            {
+                                ConditionType = "artifact",
+                                Name = "function",
+                                Value = "{\"sourceBranch\":\"-fghjk\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+                            }
+                        } 
+                    } 
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "1", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(true);
+        }
+
+        [Fact]
+        public async Task ReleasePipeline_MultipleArtifactsNotAllBranchFilters()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
+                        Alias = "function",
+                        Type = "Build"
+                    },
+                     new Response.Artifact
+                    {
+                        Alias = "infra",
+                        Type = "Build"
+                    }
+                },
+                Environments = new[]
+                {
+                    new Response.ReleaseDefinitionEnvironment
+                    {
+                        Id = "1",
+                        Conditions = new[]
+                        {
+                            new Response.Condition
+                            {
+                                ConditionType = "artifact",
+                                Name = "function",
+                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "1", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task ReleasePipeline_ConditionNotSet()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
+                        Alias = "function",
+                        Type = "Build"
+                    }
+                },
+                Environments = new[]
+                {
+                    new Response.ReleaseDefinitionEnvironment
+                    {
+                        Id = "1",
+                        Conditions = new[]
+                        {
+                            new Response.Condition
+                            {
+                                ConditionType = "asdfg",
+                                Name = "function",
+                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "1", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task ReleasePipeline_StageIdAreNotEqual()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
+                        Alias = "function",
+                        Type = "Build"
+                    }
+                },
+                Environments = new[]
+                {
+                    new Response.ReleaseDefinitionEnvironment
+                    {
+                        Id = "1"
+                    }
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "2", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(null);
+        }
+
+        [Fact]
+        public async Task ReleasePipeline_ConditionSetNotMaster()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
+                        Alias = "function",
+                        Type = "Build"
+                    }
+                },
+                Environments = new[]
+                {
+                    new Response.ReleaseDefinitionEnvironment
+                    {
+                        Id = "1",
+                        Conditions = new[]
+                        {
+                            new Response.Condition
+                            {
+                                ConditionType = "asdfg",
+                                Name = "function",
+                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "1", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task ReleasePipeline_OtherArtifactType()
+        {
+            // Arrange
+            var releasePipeline = new Response.ReleaseDefinition()
+            {
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
+                        Alias = "function",
+                        Type = "other"
+                    }
+                }
+            };
+
+            // Act
+
+            var rule = new ProductionStageUsesArtifactFromSecureBranch();
+            var result = await rule.EvaluateAsync("1", "1", releasePipeline);
+
+            // Assert
+
+            result.ShouldBe(null);
+        }
     }
 }

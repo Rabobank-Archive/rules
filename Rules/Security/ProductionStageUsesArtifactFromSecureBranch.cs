@@ -22,14 +22,27 @@ namespace SecurePipelineScan.Rules.Security
             {
                 return Task.FromResult((bool?)null);
             }
+            
+            var releaseArtifactNames = releasePipeline.Artifacts
+                .Where(a => a.Type == "Build")
+                .Select(a => a.Alias);
 
-            bool? result = releasePipeline.Environments
-                .Where(e => e.Id == stageId)
-                .Any(e => e.Conditions
-                    .Any(c => c.ConditionType == "artifact"
-                    && JsonConvert.DeserializeObject<ConditionArtifact>(c.Value).SourceBranch == "master"));
+            if (!releaseArtifactNames.Any())
+                return Task.FromResult((bool?)null);
 
-            return Task.FromResult(result);
+            var releaseProductionEnvironment = releasePipeline.Environments
+                .SingleOrDefault(e => e.Id == stageId);
+
+            if (releaseProductionEnvironment == null)
+                return Task.FromResult((bool?)null);
+
+            var result = releaseArtifactNames
+                .All(a => releaseProductionEnvironment.Conditions
+                    .Any(n=> n.ConditionType == "artifact" &&
+                        n.Name == a &&
+                        JsonConvert.DeserializeObject<ConditionArtifact>(n.Value).SourceBranch == "master"));
+
+            return Task.FromResult((bool?)result);
             
         }
     }
