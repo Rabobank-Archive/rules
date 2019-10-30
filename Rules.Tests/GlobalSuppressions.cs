@@ -44,3 +44,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "<Pending>", Scope = "member", Target = "~M:SecurePipelineScan.Rules.Tests.Events.BuildScanTests.CompletedIncludesBuildDetailsLikeProjectName~System.Threading.Tasks.Task")]
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "<Pending>", Scope = "member", Target = "~M:SecurePipelineScan.Rules.Tests.Events.ReleaseDeploymentScanTests.Completed.ForTheRestCallToTheAgentQueueOnlyQueueIdsFromTheInputAreUsed~System.Threading.Tasks.Task")]
+
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "<Pending>", Scope = "member", Target = "~M:SecurePipelineScan.Rules.Tests.Security.ProductionStageUsesArtifactFromSecureBranchTests.ReconcileAsync_WithBuildArtifactAndEmptyConditions_OneConditionShouldBeAdded~System.Threading.Tasks.Task")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "<Pending>", Scope = "member", Target = "~M:SecurePipelineScan.Rules.Tests.Security.ProductionStageUsesArtifactFromSecureBranchTests.Reconcile~System.Threading.Tasks.Task")]

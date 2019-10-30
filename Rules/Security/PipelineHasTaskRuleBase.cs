@@ -13,7 +13,7 @@ namespace SecurePipelineScan.Rules.Security
     public abstract class PipelineHasTaskRuleBase
     {
         readonly IVstsRestClient _client;
-        
+
         protected PipelineHasTaskRuleBase(IVstsRestClient client)
         {
             _client = client;
@@ -56,14 +56,14 @@ namespace SecurePipelineScan.Rules.Security
             return result;
         }
 
-        private static bool DoesGuiPipelineContainTask(BuildDefinition buildPipeline, string taskId) => 
+        private static bool DoesGuiPipelineContainTask(BuildDefinition buildPipeline, string taskId) =>
             buildPipeline.Process.Phases
                 .Where(p => p.Steps != null)
                 .SelectMany(p => p.Steps)
                 .Any(s => s.Enabled && s.Task.Id == taskId);
 
         private async Task<bool?> EvaluateYamlPipelineAsync(Project project,
-            BuildDefinition buildPipeline) 
+            BuildDefinition buildPipeline)
         {
             if (buildPipeline.Process.YamlFilename == null)
                 throw new ArgumentOutOfRangeException(nameof(buildPipeline));
@@ -76,10 +76,13 @@ namespace SecurePipelineScan.Rules.Security
                     buildPipeline.Process.YamlFilename)
                 .ConfigureAwait(false);
 
+            if (yamlPipeline == null)
+                return false;
+
             return DoesYamlPipelineContainTask(yamlPipeline);
         }
-               
-        private async Task<JObject> GetYamlPipelineAsync(string projectId, string repositoryId, 
+
+        private async Task<JObject> GetYamlPipelineAsync(string projectId, string repositoryId,
             string yamlFileName)
         {
             var gitItem = await _client.GetAsync(VstsService.Requests.Repository.GitItem(
@@ -87,7 +90,7 @@ namespace SecurePipelineScan.Rules.Security
                 .AsJson()).ConfigureAwait(false);
 
             if (gitItem == null)
-                throw new ArgumentNullException(nameof(gitItem));
+                return null;
 
             var yamlContent = gitItem.SelectToken("content", false)?.ToString();
             return ConvertYamlToJson(yamlContent);
