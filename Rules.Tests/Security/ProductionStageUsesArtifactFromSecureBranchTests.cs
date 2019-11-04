@@ -116,10 +116,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .GetAsync(Arg.Any<IVstsRequest<JObject>>())
                 .Returns(definition);
 
-            var rule = (IReconcile) new ProductionStageUsesArtifactFromSecureBranch(client);
+            var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
 
             // act
-            await rule.ReconcileAsync("projectId", "1", "1");
+            await rule.ReconcileAsync("projectId", "1", null, "1");
 
             // assert
             await client
@@ -136,26 +136,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Arrange
             var releasePipeline = new Response.ReleaseDefinition
             {
-                Artifacts = new[] 
-                { 
-                    new Response.Artifact 
-                    { 
+                Artifacts = new[]
+                {
+                    new Response.Artifact
+                    {
                         Alias = "function",
-                        Type = "Build" 
-                    } 
+                        Type = "Build"
+                    }
                 },
                 Environments = new[]
                 {
-                    new Response.ReleaseDefinitionEnvironment 
-                    { 
-                        Id = "1", 
+                    new Response.ReleaseDefinitionEnvironment
+                    {
+                        Id = "1",
                         Conditions = new[]
-                        { 
+                        {
                             new Response.Condition
                             {
-                                ConditionType = "artifact", 
+                                ConditionType = "artifact",
                                 Name = "function",
-                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}" 
+                                Value = "{\"sourceBranch\":\"master\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
                             },
                             new Response.Condition
                             {
@@ -163,8 +163,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                                 Name = "function",
                                 Value = "{\"sourceBranch\":\"-fghjk\",\"tags\":[],\"useBuildDefinitionBranch\":false,\"createReleaseOnBuildTagging\":false}"
                             }
-                        } 
-                    } 
+                        }
+                    }
                 }
             };
 
@@ -373,7 +373,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
-            await rule.ReconcileAsync(_config.Project, "2", "1").ConfigureAwait(false);
+            await rule.ReconcileAsync(_config.Project, "1", null, "2").ConfigureAwait(false);
         }
     }
 }

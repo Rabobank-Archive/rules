@@ -24,8 +24,8 @@ namespace SecurePipelineScan.Rules.Security
         protected override string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; //release management
         protected override IEnumerable<int> PermissionBits => new[]
         {
-            ManageApprovalsPermissionBit,      
-            CreateReleasesPermissionBit 
+            ManageApprovalsPermissionBit,
+            CreateReleasesPermissionBit
         };
         protected override IEnumerable<int> AllowedPermissions => new[]
         {
@@ -79,14 +79,14 @@ namespace SecurePipelineScan.Rules.Security
             return true;
         }
 
-        public async Task ReconcileAsync(string projectId, string releasePipelineId)
+        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
-            if (releasePipelineId == null)
-                throw new ArgumentNullException(nameof(releasePipelineId));
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
 
-            await ReconcileAsync(projectId, releasePipelineId, RuleScopes.ReleasePipelines)
+            await ReconcileAsync(projectId, itemId, scope)
                 .ConfigureAwait(false);
         }
 

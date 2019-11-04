@@ -38,24 +38,24 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllow_WhenEvaluating_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
-            
+
             InitializeLookupData(client, PermissionId.Allow);
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeFalse();
         }
-        
+
         [Fact]
         public async Task GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllowInHerited_WhenEvaluating_ThenFalse()
         {
             var client = Substitute.For<IVstsRestClient>();
-            
+
             InitializeLookupData(client, PermissionId.AllowInherited);
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeFalse();
         }
-        
+
         [Fact]
         public async Task GivenNoApplicationGroupHasPermissionToDeleteRepo_WhenEvaluating_ThenTrue()
         {
@@ -71,50 +71,50 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task IgnoreGroupsProjectCollectionAdminAndProjectCollectionServiceAccounts()
         {
             var client = Substitute.For<IVstsRestClient>();
-            
+
             var applicationGroup1 = new ApplicationGroup
             {
                 FriendlyDisplayName = "Project Collection Administrators",
                 DisplayName = "blblblablaaProject Collection Administrators",
-                TeamFoundationId= "11",
+                TeamFoundationId = "11",
             };
 
             var applicationGroup2 = new ApplicationGroup
             {
                 FriendlyDisplayName = "Project Collection Service Accounts",
                 DisplayName = "blblblablaaProject Collection Service Accounts",
-                TeamFoundationId= "22",
+                TeamFoundationId = "22",
             };
-            
+
             var applicationGroup3 = new ApplicationGroup
             {
                 FriendlyDisplayName = "Dit is een test",
                 DisplayName = "blblblablaaDit is een testy",
-                TeamFoundationId= "33",
+                TeamFoundationId = "33",
             };
 
             var applicationGroups = new ApplicationGroups
-                {Identities = new[] {applicationGroup1, applicationGroup2, applicationGroup3}};
-            
+            { Identities = new[] { applicationGroup1, applicationGroup2, applicationGroup3 } };
+
             InitializeLookupData(client, PermissionId.Deny);
-            
+
             client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeTrue();
-            
-            
+
+
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","11"))));
-            
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "11"))));
+
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","22"))));
-            
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "22"))));
+
             await client
                 .Received()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid","33"))));
+                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "33"))));
 
         }
 
@@ -123,9 +123,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync(projectId, RepositoryId);
+            await rule.ReconcileAsync(projectId, RepositoryId, RuleScopes.Repositories, null);
         }
 
         [Fact]
@@ -133,56 +133,56 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.Allow);
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123");
-            
+            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
+
             await client
                 .Received()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x => 
+                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("123") &&
                     x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
-        
+
         [Fact]
         public async Task GivenPermissionIsDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.Deny);
-            
+
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123");
+            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
 
             await client
                 .DidNotReceive()
                 .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
-        
+
         [Fact]
         public async Task GivenPermissionIsInheritedDeny_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.DenyInherited);
-            
+
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123");
+            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
 
             await client
                 .DidNotReceive()
                 .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
-        
+
         [Fact]
         public async Task GivenPermissionIsNotSet_WhenFixPermission_IsNotUpdated()
         {
             var client = Substitute.For<IVstsRestClient>();
             InitializeLookupData(client, PermissionId.NotSet);
-            
+
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123");
+            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
 
             await client
                 .DidNotReceive()
@@ -199,7 +199,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             client.GetAsync(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
             {
-                Permissions = new[] {new Permission {DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123"},}
+                Permissions = new[] { new Permission { DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123" }, }
             });
         }
     }

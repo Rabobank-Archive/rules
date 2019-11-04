@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(result);
         }
 
-        public async Task ReconcileAsync(string projectId, string stageId, string itemId)
+        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
         {
             var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);
@@ -55,7 +55,7 @@ namespace SecurePipelineScan.Rules.Security
             var releasePipeline = await _client.GetAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{itemId}")
                 .AsJson())
                 .ConfigureAwait(false);
-            await _client.PutAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{itemId}", new Dictionary<string, object> { {"api-version", "5.0" }}), 
+            await _client.PutAsync(new VsrmRequest<object>($"{projectId}/_apis/release/definitions/{itemId}", new Dictionary<string, object> { { "api-version", "5.0" } }),
                 UpdateReleaseDefinition(releasePipeline))
                 .ConfigureAwait(false);
         }

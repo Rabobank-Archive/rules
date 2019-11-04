@@ -26,7 +26,7 @@ namespace SecurePipelineScan.Rules.Security
             PermissionBitDeleteBuildDefinition,
             PermissionBitAdministerBuildPermissions
         };
-        protected override IEnumerable<int> AllowedPermissions => new[] 
+        protected override IEnumerable<int> AllowedPermissions => new[]
         {
             PermissionId.NotSet,
             PermissionId.Deny,
@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Administer Build Permissions' permission is set to Deny"
         };
 
-        public async Task<bool?> EvaluateAsync(Response.Project project, 
+        public async Task<bool?> EvaluateAsync(Response.Project project,
             Response.BuildDefinition buildPipeline)
         {
             if (project == null)
@@ -62,14 +62,14 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId)
+        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            await ReconcileAsync(projectId, itemId, RuleScopes.BuildPipelines)
+            await ReconcileAsync(projectId, itemId, scope)
                 .ConfigureAwait(false);
         }
     }

@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Security
                     projectId, itemId, g, scope)))
                 .ConfigureAwait(false))
                 .SelectMany(p => p.Permissions)
-                .All(p => !PermissionBits.Contains(p.PermissionBit) 
+                .All(p => !PermissionBits.Contains(p.PermissionBit)
                     || AllowedPermissions.Contains(p.PermissionId));
         }
 
@@ -44,11 +44,11 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups)
             {
-                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId, 
+                var permissionSetId = await LoadPermissionsSetForGroupAsync(projectId,
                         itemId, group, scope)
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
-                    .Where(p => PermissionBits.Contains(p.PermissionBit) 
+                    .Where(p => PermissionBits.Contains(p.PermissionBit)
                         && !AllowedPermissions.Contains(p.PermissionId));
 
                 foreach (var permission in permissions)
@@ -123,8 +123,8 @@ namespace SecurePipelineScan.Rules.Security
             if (permissionSetId == null)
                 throw new ArgumentNullException(nameof(permissionSetId));
 
-            await _client.PostAsync(Permissions.ManagePermissions(projectId), 
-                    new Permissions.ManagePermissionsData(group.TeamFoundationId, 
+            await _client.PostAsync(Permissions.ManagePermissions(projectId),
+                    new Permissions.ManagePermissionsData(group.TeamFoundationId,
                     permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission)
                 .Wrap())
                 .ConfigureAwait(false);

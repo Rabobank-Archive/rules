@@ -27,7 +27,7 @@ namespace SecurePipelineScan.Rules.Security
         {
             "For each production stage (as stored in ITSM) ...",
             "-> Under 'Pre-deployment conditions/Triggers/After stage' or 'After release'",
-            "-> For each artifact of type 'Build' or 'Azure Repos Git'", 
+            "-> For each artifact of type 'Build' or 'Azure Repos Git'",
             "-> An artifact filter is added that includes the 'master' branch."
         };
 
@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Security
             {
                 return Task.FromResult((bool?)null);
             }
-            
+
             var releaseArtifactNames = releasePipeline.Artifacts
                 .Where(a => a.Type == "Build")
                 .Select(a => a.Alias);
@@ -58,14 +58,14 @@ namespace SecurePipelineScan.Rules.Security
 
             var result = releaseArtifactNames
                 .All(a => releaseProductionEnvironment.Conditions
-                    .Any(n=> n.ConditionType == "artifact" &&
+                    .Any(n => n.ConditionType == "artifact" &&
                         n.Name == a &&
                         JsonConvert.DeserializeObject<ConditionArtifact>(n.Value).SourceBranch == "master"));
 
             return Task.FromResult((bool?)result);
         }
 
-        public async Task ReconcileAsync(string projectId, string stageId, string itemId)
+        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
         {
             var definition = await _client.GetAsync(
                     ReleaseManagement.Definition(projectId, itemId).AsJson())

@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
-        public async Task ReconcileAsync(string projectId, string stageId, string itemId)
+        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, itemId).SingleOrDefault();
@@ -87,7 +87,7 @@ namespace SecurePipelineScan.Rules.Security
         {
             return UpdatePolicy(new Response.MinimumNumberOfReviewersPolicy
             {
-                Settings =  new Response.MinimumNumberOfReviewersPolicySettings
+                Settings = new Response.MinimumNumberOfReviewersPolicySettings
                 {
                     Scope = new[]
                     {
@@ -98,7 +98,7 @@ namespace SecurePipelineScan.Rules.Security
                             RepositoryId = new Guid(repositoryId)
                         }
                     }
-                            
+
                 }
             });
         }

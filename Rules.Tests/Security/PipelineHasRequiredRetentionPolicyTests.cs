@@ -32,8 +32,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, PipelineId))
-                .ConfigureAwait(false); 
-            
+                .ConfigureAwait(false);
+
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
             var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
@@ -109,7 +109,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
 
             //Assert
-            result.ShouldBe(false) ;
+            result.ShouldBe(false);
         }
 
         [Fact]
@@ -119,8 +119,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
 
             //Act
-            var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile; 
-            await rule.ReconcileAsync(_config.Project, null, PipelineId);
+            var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
         }
 
         [Fact]
@@ -131,15 +131,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
             SetupClient(_client, _fixture);
 
             //Act
-            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
-            await rule.ReconcileAsync(_config.Project, null, PipelineId);
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
 
             // Assert
             await _client
                 .Received()
                 .PutAsync(Arg.Any<IVstsRequest<ReleaseSettings>>(), Arg.Any<ReleaseSettings>());
         }
-        
+
         [Fact]
         public async Task GivenPolicySettingsAreCorrect_WhenReconcile_ThenPipelineIsUpdatedAnyway()
         {
@@ -148,15 +148,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
             SetupClient(_client, _fixture);
 
             //Act
-            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile; 
-            await rule.ReconcileAsync(_config.Project, null, PipelineId);
+            var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
 
             // Assert
             await _client
                 .Received()
                 .PutAsync(Arg.Any<IVstsRequest<object>>(), Arg.Any<JObject>());
         }
-        
+
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,
             bool retainBuild = true)
         {
