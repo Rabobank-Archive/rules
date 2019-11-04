@@ -98,9 +98,24 @@ namespace SecurePipelineScan.Rules.Security
 
         private static JObject ConvertYamlToJson(string yamlText)
         {
-            var yamlObject = new Deserializer().Deserialize(new StringReader(yamlText));
-            var jsonText = JsonConvert.SerializeObject(yamlObject);
-            return JsonConvert.DeserializeObject<JObject>(jsonText);
+            try
+            {
+                var deserializer = new DeserializerBuilder().Build();
+                var yamlObject = deserializer.Deserialize(new StringReader(yamlText));
+
+                var serializer = new SerializerBuilder()
+                    .JsonCompatible()
+                    .Build();
+
+                var json = serializer.Serialize(yamlObject);
+
+                return JsonConvert.DeserializeObject<JObject>(json);
+            }
+            catch (JsonReaderException)
+            {
+                // parse exceptions are handled as unknown rule result
+                return null;
+            }
         }
 
         private bool? DoesYamlPipelineContainTask(JToken yamlPipeline)
