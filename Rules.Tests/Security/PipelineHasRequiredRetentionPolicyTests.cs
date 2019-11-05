@@ -157,6 +157,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .PutAsync(Arg.Any<IVstsRequest<object>>(), Arg.Any<JObject>());
         }
 
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(false);
+        }
+
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,
             bool retainBuild = true)
         {

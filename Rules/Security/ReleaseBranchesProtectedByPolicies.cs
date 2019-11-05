@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Security
         public string Description => "Release branches are protected by policies";
         public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
         public bool IsSox => true;
-
+        public bool RequiresStageId => false;
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",

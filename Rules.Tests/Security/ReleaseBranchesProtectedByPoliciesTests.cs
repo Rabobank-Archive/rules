@@ -232,6 +232,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .PutAsync(Arg.Any<IVstsRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
         }
 
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(false);
+        }
+
         private static void CustomizeScope(IFixture fixture,
             string id = null,
             string refName = "refs/heads/master")

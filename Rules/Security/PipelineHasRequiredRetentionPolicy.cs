@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "All releases are retained for at least 15 months";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
         bool IRule.IsSox => true;
-
+        bool IReconcile.RequiresStageId => false;
         string[] IReconcile.Impact => new[] {
             "In project settings the maximum retention policy is set to 450 days.",
             "On the pipeline the days to retain a release is set to 450 days for every stage.",

@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can both manage approvals and create releases";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
         bool IRule.IsSox => true;
-
+        bool IReconcile.RequiresStageId => false;
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +

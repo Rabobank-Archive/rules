@@ -189,6 +189,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
         }
 
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new NobodyCanDeleteTheRepository(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(false);
+        }
+
         private void InitializeLookupData(IVstsRestClient client, int permissionId)
         {
             var fixture = new Fixture();

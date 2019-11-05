@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Security
         public string Description => "Production stage uses artifact from secure branch";
         public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
         public bool IsSox => true;
-
+        public bool RequiresStageId => true;
         public string[] Impact => new[]
         {
             "For each production stage (as stored in ITSM) ...",

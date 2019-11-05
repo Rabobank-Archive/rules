@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can delete releases";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
         bool IRule.IsSox => true;
-
+        bool IReconcile.RequiresStageId => false;
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Releases' permission is set to Deny",

@@ -59,6 +59,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
             await rule.ReconcileAsync(projectId, "1", RuleScopes.ReleasePipelines, null);
         }
 
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(false);
+        }
+
         private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId, int manageApproversPermissionId)
         {
             var fixture = new Fixture();

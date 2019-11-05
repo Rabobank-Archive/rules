@@ -37,6 +37,7 @@ namespace SecurePipelineScan.Rules.Security
         public string Description => "Nobody can delete the repository";
         public string Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
         public bool IsSox => true;
+        public bool RequiresStageId => false;
 
         string[] IReconcile.Impact => new[]
         {

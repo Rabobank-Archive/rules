@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
@@ -38,6 +39,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var rule = new NobodyCanDeleteBuilds(_client) as IReconcile;
             await rule.ReconcileAsync(projectId, "2", RuleScopes.BuildPipelines, null);
+        }
+
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new NobodyCanDeleteBuilds(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(false);
         }
     }
 }

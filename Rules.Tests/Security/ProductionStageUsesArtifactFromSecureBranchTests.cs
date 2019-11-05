@@ -375,5 +375,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
             await rule.ReconcileAsync(_config.Project, "1", null, "2").ConfigureAwait(false);
         }
+
+        [Fact]
+        public void RequiresStageId_ShouldBeFalse()
+        {
+            var client = Substitute.For<IVstsRestClient>();
+            var rule = new ProductionStageUsesArtifactFromSecureBranch(client) as IReconcile;
+            rule.RequiresStageId.ShouldBe(true);
+        }
     }
 }

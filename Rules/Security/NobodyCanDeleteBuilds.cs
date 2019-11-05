@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Security
         string IRule.Description => "Nobody can delete builds";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
         bool IRule.IsSox => true;
-
+        bool IReconcile.RequiresStageId => false;
         string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Builds' permission is set to Deny",
