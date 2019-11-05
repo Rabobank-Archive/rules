@@ -88,44 +88,42 @@ namespace SecurePipelineScan.Rules.Security
             var gitItem = await _client.GetAsync(VstsService.Requests.Repository.GitItem(
                 projectId, repositoryId, yamlFileName)
                 .AsJson()).ConfigureAwait(false);
-
             if (gitItem == null)
                 return null;
 
             var yamlContent = gitItem.SelectToken("content", false)?.ToString();
+            if (yamlContent == null)
+                return null;
+
             return ConvertYamlToJson(yamlContent);
         }
 
         private static JObject ConvertYamlToJson(string yamlText)
         {
-            try
-            {
-                var deserializer = new DeserializerBuilder().Build();
-                var yamlObject = deserializer.Deserialize(new StringReader(yamlText));
+            var deserializer = new DeserializerBuilder().Build();
+            var yamlObject = deserializer.Deserialize(new StringReader(yamlText));
 
-                var serializer = new SerializerBuilder()
-                    .JsonCompatible()
-                    .Build();
+            var serializer = new SerializerBuilder()
+                .JsonCompatible()
+                .Build();
 
-                var json = serializer.Serialize(yamlObject);
+            var json = serializer.Serialize(yamlObject);
 
-                return JsonConvert.DeserializeObject<JObject>(json);
-            }
-            catch (JsonReaderException)
-            {
-                // parse exceptions are handled as unknown rule result
-                return null;
-            }
+            return JsonConvert.DeserializeObject<JObject>(json);
         }
 
         private bool? DoesYamlPipelineContainTask(JToken yamlPipeline)
         {
-            var result = yamlPipeline.SelectTokens("steps[*]")
+            var steps = yamlPipeline.SelectTokens("steps[*]");
+            if (yamlPipeline["jobs"] != null)
+                steps = yamlPipeline.SelectTokens("jobs[*].steps[*]");
+
+            var result = steps
                 .Any(s => (s[StepName] != null ||
                     (s["task"] != null && s["task"].ToString().Contains(TaskName))
                     && s.SelectToken("enabled", false)?.ToString() != "false"));
 
-            if (!result && yamlPipeline.SelectTokens("steps[*]")
+            if (!result && steps
                     .Any(s => s["template"] != null))
                 return null;
 
