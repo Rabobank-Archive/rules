@@ -16,7 +16,7 @@ namespace SecurePipelineScan.Rules.Security
         protected override string StepName => "";
 
         string IRule.Description => "Build pipeline contains an enabled SonarQube task";
-        string IRule.Link => null;
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/RShFD";
         bool IRule.IsSox => false;
     }
 }
