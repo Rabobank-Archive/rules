@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using YamlDotNet.Serialization;
 using Newtonsoft.Json;
+using YamlDotNet.Core;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -100,16 +101,25 @@ namespace SecurePipelineScan.Rules.Security
 
         private static JObject ConvertYamlToJson(string yamlText)
         {
-            var deserializer = new DeserializerBuilder().Build();
-            var yamlObject = deserializer.Deserialize(new StringReader(yamlText));
+            try
+            {
+                var deserializer = new DeserializerBuilder().Build();
+                var yamlObject = deserializer.Deserialize(new StringReader(yamlText));
 
-            var serializer = new SerializerBuilder()
-                .JsonCompatible()
-                .Build();
+                var serializer = new SerializerBuilder()
+                    .JsonCompatible()
+                    .Build();
 
-            var json = serializer.Serialize(yamlObject);
+                var json = serializer.Serialize(yamlObject);
 
-            return JsonConvert.DeserializeObject<JObject>(json);
+                return JsonConvert.DeserializeObject<JObject>(json);
+            }
+            catch (Exception ex)
+            {
+                if (ex is SyntaxErrorException || ex is InvalidCastException)
+                    return null;
+                throw;
+            }
         }
 
         private bool? DoesYamlPipelineContainTask(JToken yamlPipeline)

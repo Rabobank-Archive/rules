@@ -24,7 +24,7 @@ namespace SecurePipelineScan.VstsService.Tests
             // Arrange
 
             // Act
-            var result = await _client.PostAsync(WorkItemTracking.QueryByWiql(_config.Project),
+            var result = await _client.PostAsync(WorkItemTracking.QueryByWiql(_config.Project, 1),
                 new QueryByWiql("select [System.Id] from WorkItems"));
 
             // Assert
