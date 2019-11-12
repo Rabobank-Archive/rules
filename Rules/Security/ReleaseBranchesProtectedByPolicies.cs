@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private const int MinimumApproverCount = 2;
 
-        public string Description => "Release branches are protected by policies";
+        public string Description => "Release branches are protected by policies (SOx)";
         public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
         public bool IsSox => true;
         public bool RequiresStageId => false;

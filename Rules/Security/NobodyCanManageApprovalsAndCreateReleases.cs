@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Security
             "Project Collection Administrators"
         };
 
-        string IRule.Description => "Nobody can both manage approvals and create releases";
+        string IRule.Description => "Nobody can both manage approvals and create releases (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
         bool IRule.IsSox => true;
         bool IReconcile.RequiresStageId => false;

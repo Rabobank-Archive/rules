@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Security
             "Project Collection Service Accounts"
         };
 
-        public string Description => "Nobody can delete the repository";
+        public string Description => "Nobody can delete the repository (SOx)";
         public string Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
         public bool IsSox => true;
         public bool RequiresStageId => false;

@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Production stage uses artifact from secure branch";
+        public string Description => "Production stage uses artifact from secure branch (SOx)";
         public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
         public bool IsSox => true;
         public bool RequiresStageId => true;

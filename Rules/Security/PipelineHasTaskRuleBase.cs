@@ -114,11 +114,10 @@ namespace SecurePipelineScan.Rules.Security
 
                 return JsonConvert.DeserializeObject<JObject>(json);
             }
-            catch (Exception ex)
+
+            catch (Exception ex) when (ex is SyntaxErrorException || ex is InvalidCastException || ex is YamlException)
             {
-                if (ex is SyntaxErrorException || ex is InvalidCastException)
-                    return null;
-                throw;
+                return null;
             }
         }
 

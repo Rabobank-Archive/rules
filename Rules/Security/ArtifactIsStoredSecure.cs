@@ -16,7 +16,7 @@ namespace SecurePipelineScan.Rules.Security
         protected override string TaskName => "PublishBuildArtifacts";
         protected override string StepName => "publish";
 
-        string IRule.Description => "Artifact is stored in secure artifactory";
+        string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
         bool IRule.IsSox => true;
     }

@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Security
             "Project Collection Build Administrators"
         };
 
-        string IRule.Description => "Nobody can delete builds";
+        string IRule.Description => "Nobody can delete builds (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
         bool IRule.IsSox => true;
         bool IReconcile.RequiresStageId => false;

@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Rules.Security
 
         public PipelineHasRequiredRetentionPolicy(IVstsRestClient client) => _client = client;
 
-        string IRule.Description => "All releases are retained for at least 15 months";
+        string IRule.Description => "All releases are retained for at least 15 months (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
         bool IRule.IsSox => true;
         bool IReconcile.RequiresStageId => false;

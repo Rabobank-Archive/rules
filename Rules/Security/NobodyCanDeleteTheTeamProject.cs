@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Nobody can delete the Team Project";
+        public string Description => "Nobody can delete the Team Project (SOx)";
         public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
         public bool IsSox => true;
 
@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private async Task<bool> CheckOnlyProjectAdministratorsHasPermissionToDeleteTeamProjectAsync(string project, Response.ApplicationGroups groups)
         {
-            var permissions =  await Task.WhenAll(groups
+            var permissions = await Task.WhenAll(groups
                 .Identities
                 .Where(g => g.FriendlyDisplayName != ProjectAdministrators)
                 .Select(async g => await _client.GetAsync(Permissions.PermissionsGroupProjectId(project, g.TeamFoundationId)).ConfigureAwait(false)))
@@ -60,9 +60,9 @@ namespace SecurePipelineScan.Rules.Security
 
         string[] IProjectReconcile.Impact => new[]
         {
-            "Rabobank Project Administrators group is created and added to Project Administrators", 
-            "Delete team project permissions of the Rabobank Project Administrators group is set to deny", 
-            "Members of the Project Administrators are moved to Rabobank Project Administrators", 
+            "Rabobank Project Administrators group is created and added to Project Administrators",
+            "Delete team project permissions of the Rabobank Project Administrators group is set to deny",
+            "Members of the Project Administrators are moved to Rabobank Project Administrators",
             "Delete team project permission is set to 'not set' for all other groups"
         };
 
@@ -72,12 +72,12 @@ namespace SecurePipelineScan.Rules.Security
             var paId = groups.Identities.Single(p => p.FriendlyDisplayName == ProjectAdministrators).TeamFoundationId;
             var raboId = (await CreateRabobankProjectAdministratorsGroupsIfNotExistsAsync(projectId, groups).ConfigureAwait(false))
                 .TeamFoundationId;
-            
+
             var members = (await _client.GetAsync(VstsService.Requests.ApplicationGroup.GroupMembers(projectId, paId)).ConfigureAwait(false))
                 .Identities
                 .Where(x => x.TeamFoundationId != raboId)
                 .ToList();
-                            
+
             await RemoveAllOtherMembersFromProjectAdministratorsAsync(projectId, members, paId).ConfigureAwait(false);
             await AddAllMembersToRabobankProjectAdministratorsGroupAsync(projectId, members, raboId).ConfigureAwait(false);
             await AddRabobankProjectAdministratorsToProjectAdministratorsGroupAsync(projectId, raboId, paId).ConfigureAwait(false);
@@ -142,7 +142,7 @@ namespace SecurePipelineScan.Rules.Security
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
                 new VstsService.Requests.Security.AddMemberData(
                     members.Select(m => m.TeamFoundationId),
-                    new[] {rabo}))
+                    new[] { rabo }))
                 .ConfigureAwait(false);
         }
 
@@ -156,7 +156,7 @@ namespace SecurePipelineScan.Rules.Security
         private async Task AddRabobankProjectAdministratorsToProjectAdministratorsGroupAsync(string project, string rabo, string id)
         {
             await _client.PostAsync(VstsService.Requests.Security.AddMember(project),
-                new VstsService.Requests.Security.AddMemberData(new[] {rabo}, new[] {id}))
+                new VstsService.Requests.Security.AddMemberData(new[] { rabo }, new[] { id }))
                 .ConfigureAwait(false);
         }
     }
