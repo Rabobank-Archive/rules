@@ -16,7 +16,7 @@ namespace SecurePipelineScan.Rules.Security
         }
 
         public string Description => "Plain text credentials are blocked in pipelines.";
-        public string Link => null;
+        public string Link => "https://confluence.dev.somecompany.nl/x/OxV1D";
         public string[] Impact => new[]
         {
             "In project settings, 'Block release definition edits that contain plaintext " +

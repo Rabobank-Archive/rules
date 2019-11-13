@@ -17,7 +17,7 @@ namespace SecurePipelineScan.Rules.Security
         protected override string StepName => "";
 
         string IRule.Description => "Build pipeline contains an enabled Fortify task";
-        string IRule.Link => null;
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/9w1TD";
         bool IRule.IsSox => false;
     }
 }
