@@ -18,6 +18,29 @@ namespace SecurePipelineScan.VstsService.Requests
                 { "minCreatedTime", $"{asof}" }
             }).AsEnumerable();
 
+        public static IEnumerableRequest<Response.Release> Releases(string project, string pipelineId, 
+                IEnumerable<string> stageIds, string expand, string asof, string ct) =>
+            new VsrmRequest<Response.Release>($"{project}/_apis/release/releases", 
+                new Dictionary<string, object>
+                {
+                    { "definitionId", $"{pipelineId}" },
+                    { "definitionEnvironmentId", $"{string.Join("|", stageIds)}" },
+                    { "$expand", $"{expand}" },
+                    { "minCreatedTime", $"{asof}" },
+                    { "continuationToken", $"{ct}" }
+                }).AsEnumerable();
+
+        public static IEnumerableRequest<Response.Release> Releases(string project, string pipelineId,
+                IEnumerable<string> stageIds, string expand, string asof) =>
+            new VsrmRequest<Response.Release>($"{project}/_apis/release/releases",
+                new Dictionary<string, object>
+                {
+                    { "definitionId", $"{pipelineId}" },
+                    { "definitionEnvironmentId", $"{string.Join("|", stageIds)}" },
+                    { "$expand", $"{expand}" },
+                    { "minCreatedTime", $"{asof}" },
+                }).AsEnumerable();
+
         public static IVstsRequest<Response.ReleaseDefinition> Definition(string project, string id) => 
             new VsrmRequest<Response.ReleaseDefinition>($"{project}/_apis/release/definitions/{id}");
 

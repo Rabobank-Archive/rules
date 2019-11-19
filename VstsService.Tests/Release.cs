@@ -84,6 +84,29 @@ namespace SecurePipelineScan.VstsService.Tests
             }
         }
 
+        [Fact]
+        public async Task QueryReleasesByPipelineAndStages()
+        {
+            var releases = _client.Get(Requests.ReleaseManagement.Releases(
+                _project, "1", new string[] {"1","2"}.AsEnumerable(), "environments", "1-1-2019"));
+
+            releases.ShouldNotBeNull();
+            releases.ShouldNotBeEmpty();
+            releases.SelectMany(r => r.Environments).ShouldNotBeNull();
+            releases.SelectMany(r => r.Environments).ShouldNotBeEmpty();
+        }
+
+        [Fact]
+        public async Task QueryReleasesByPipelineAndStagesWithContinuationToken()
+        {
+            var releases = _client.Get(Requests.ReleaseManagement.Releases(
+                _project, "1", new string[] { "1", "2" }.AsEnumerable(), "environments", "1-1-2019", "0"));
+
+            releases.ShouldNotBeNull();
+            releases.ShouldNotBeEmpty();
+            releases.SelectMany(r => r.Environments).ShouldNotBeNull();
+            releases.SelectMany(r => r.Environments).ShouldNotBeEmpty();
+        }
 
         [Fact]
         public async Task QueryEnvironment()
