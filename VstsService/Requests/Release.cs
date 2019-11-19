@@ -14,7 +14,7 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IEnumerableRequest<Response.Release> Releases(string project, string expand, string asof) =>
             new VsrmRequest<Response.Release>($"{project}/_apis/release/releases", new Dictionary<string, object> 
             {
-                { "expand", $"{expand}" },
+                { "$expand", $"{expand}" },
                 { "minCreatedTime", $"{asof}" }
             }).AsEnumerable();
 
