@@ -1,23 +1,29 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
-using System;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ArtifactIsStoredSecure : PipelineHasTaskRuleBase, IBuildPipelineRule
+    public class ArtifactIsStoredSecure : IPipelineHasTaskRule, IBuildPipelineRule
     {
-        public ArtifactIsStoredSecure(IVstsRestClient client) : base(client)
+        private readonly PipelineEvaluatorFactory _pipelineEvaluatorFactory;
+
+        public ArtifactIsStoredSecure(IVstsRestClient client)
         {
-            //nothing
+            this._pipelineEvaluatorFactory = new PipelineEvaluatorFactory(client);
         }
 
-        protected override string TaskId => "2ff763a7-ce83-4e1f-bc89-0ae63477cebe";
-        protected override string TaskName => "PublishBuildArtifacts";
-        protected override string StepName => "publish";
+        public string TaskId => "2ff763a7-ce83-4e1f-bc89-0ae63477cebe";
+        public string TaskName => "PublishBuildArtifacts";
+        public string StepName => "publish";
 
         string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
         bool IRule.IsSox => true;
+
+        public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
+        {
+            return await this._pipelineEvaluatorFactory.Create(buildPipeline).EvaluateAsync(project, buildPipeline, this).ConfigureAwait(false);
+        }
     }
 }

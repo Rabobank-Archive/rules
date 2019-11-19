@@ -4,68 +4,31 @@ using System.Threading.Tasks;
 using System;
 using SecurePipelineScan.VstsService;
 using Newtonsoft.Json.Linq;
-using System.IO;
 using YamlDotNet.Serialization;
+using System.IO;
 using Newtonsoft.Json;
 using YamlDotNet.Core;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public abstract class PipelineHasTaskRuleBase
+
+    public class YamlPipelineEvaluator : IPipelineEvaluator
     {
         readonly IVstsRestClient _client;
 
-        protected PipelineHasTaskRuleBase(IVstsRestClient client)
+        public YamlPipelineEvaluator(IVstsRestClient client)
         {
             _client = client;
         }
 
-        protected abstract string TaskId { get; }
-        protected abstract string TaskName { get; }
-        protected abstract string StepName { get; }
-
-        private const int GuiPipelineProcessType = 1;
-        private const int YamlPipelineProcessType = 2;
-        private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
-
-        public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
+        public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline, IPipelineHasTaskRule rule)
         {
             if (project == null)
                 throw new ArgumentNullException(nameof(project));
+
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
 
-            if (buildPipeline.Process.Type == GuiPipelineProcessType)
-                return EvaluateGuiPipeline(buildPipeline);
-            else if (buildPipeline.Process.Type == YamlPipelineProcessType)
-                return await EvaluateYamlPipelineAsync(project, buildPipeline)
-                    .ConfigureAwait(false);
-            else
-                return null;
-        }
-
-        private bool? EvaluateGuiPipeline(BuildDefinition buildPipeline)
-        {
-            if (buildPipeline.Process.Phases == null)
-                throw new ArgumentOutOfRangeException(nameof(buildPipeline));
-
-            bool? result = DoesGuiPipelineContainTask(buildPipeline, TaskId);
-
-            if (!result.GetValueOrDefault() && DoesGuiPipelineContainTask(buildPipeline, MavenTaskId))
-                result = null;
-
-            return result;
-        }
-
-        private static bool DoesGuiPipelineContainTask(BuildDefinition buildPipeline, string taskId) =>
-            buildPipeline.Process.Phases
-                .Where(p => p.Steps != null)
-                .SelectMany(p => p.Steps)
-                .Any(s => s.Enabled && s.Task.Id == taskId);
-
-        private async Task<bool?> EvaluateYamlPipelineAsync(Project project,
-            BuildDefinition buildPipeline)
-        {
             if (buildPipeline.Process.YamlFilename == null)
                 throw new ArgumentOutOfRangeException(nameof(buildPipeline));
 
@@ -73,17 +36,20 @@ namespace SecurePipelineScan.Rules.Security
                     .Contains(project.Name.ToUpperInvariant()))
                 return false;
 
-            var yamlPipeline = await GetYamlPipelineAsync(project.Id, buildPipeline.Repository.Id,
+            if (rule == null)
+                throw new ArgumentNullException(nameof(rule));
+
+            var yamlPipeline = await GetPipelineAsync(project.Id, buildPipeline.Repository.Id,
                     buildPipeline.Process.YamlFilename)
                 .ConfigureAwait(false);
 
             if (yamlPipeline == null)
                 return false;
 
-            return DoesYamlPipelineContainTask(yamlPipeline);
+            return PipelineContainsTask(yamlPipeline, rule);
         }
 
-        private async Task<JObject> GetYamlPipelineAsync(string projectId, string repositoryId,
+        private async Task<JObject> GetPipelineAsync(string projectId, string repositoryId,
             string yamlFileName)
         {
             var gitItem = await _client.GetAsync(VstsService.Requests.Repository.GitItem(
@@ -114,22 +80,21 @@ namespace SecurePipelineScan.Rules.Security
 
                 return JsonConvert.DeserializeObject<JObject>(json);
             }
-
-            catch (Exception ex) when (ex is SyntaxErrorException || ex is InvalidCastException || ex is YamlException)
+            catch (Exception ex) when (ex is YamlDotNet.Core.SyntaxErrorException || ex is InvalidCastException || ex is YamlException)
             {
                 return null;
             }
         }
 
-        private bool? DoesYamlPipelineContainTask(JToken yamlPipeline)
+        private static bool? PipelineContainsTask(JToken yamlPipeline, IPipelineHasTaskRule rule)
         {
             var steps = yamlPipeline.SelectTokens("steps[*]");
             if (yamlPipeline["jobs"] != null)
                 steps = yamlPipeline.SelectTokens("jobs[*].steps[*]");
 
             var result = steps
-                .Any(s => (s[StepName] != null ||
-                    (s["task"] != null && s["task"].ToString().Contains(TaskName))
+                .Any(s => (s[rule.StepName] != null ||
+                    (s["task"] != null && s["task"].ToString().Contains(rule.TaskName))
                     && s.SelectToken("enabled", false)?.ToString() != "false"));
 
             if (!result && steps

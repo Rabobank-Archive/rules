@@ -20,8 +20,9 @@ namespace SecurePipelineScan.VstsService
         {
             _organization = organization ?? throw new ArgumentNullException(nameof(organization));
             _token = token ?? throw new ArgumentNullException(nameof(token));
-            
-            FlurlHttp.Configure(settings => {
+
+            FlurlHttp.Configure(settings =>
+            {
                 var jsonSettings = new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -32,7 +33,7 @@ namespace SecurePipelineScan.VstsService
             });
         }
 
-        public Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse: new()
+        public Task<TResponse> GetAsync<TResponse>(IVstsRequest<TResponse> request) where TResponse : new()
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -59,7 +60,7 @@ namespace SecurePipelineScan.VstsService
                 .GetJsonAsync<TResponse>()
                 .ConfigureAwait(false);
         }
-        
+
         public IEnumerable<TResponse> Get<TResponse>(IEnumerableRequest<TResponse> request)
         {
             if (request == null)
@@ -128,7 +129,7 @@ namespace SecurePipelineScan.VstsService
                 .PutJsonAsync(body)
                 .ReceiveJson<TResponse>()
                 .ConfigureAwait(false);
-}
+        }
 
         public Task DeleteAsync(IVstsRequest request)
         {
