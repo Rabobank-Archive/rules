@@ -85,7 +85,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryReleasesByPipelineAndStages()
+        public void QueryReleasesByPipelineAndStages()
         {
             var releases = _client.Get(Requests.ReleaseManagement.Releases(
                 _project, "1", new string[] {"1","2"}.AsEnumerable(), "environments", "1-1-2019"));
@@ -97,7 +97,7 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryReleasesByPipelineAndStagesWithContinuationToken()
+        public void QueryReleasesByPipelineAndStagesWithContinuationToken()
         {
             var releases = _client.Get(Requests.ReleaseManagement.Releases(
                 _project, "1", new string[] { "1", "2" }.AsEnumerable(), "environments", "1-1-2019", "0"));
