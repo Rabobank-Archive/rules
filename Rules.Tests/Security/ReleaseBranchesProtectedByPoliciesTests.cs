@@ -160,7 +160,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
-            rule.ReconcileAsync(_config.Project, RepositoryId, RuleScopes.Repositories, null);
+            rule.ReconcileAsync(_config.Project, RepositoryId, null);
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, RepositoryId, RuleScopes.Repositories, null);
+            await rule.ReconcileAsync(_config.Project, RepositoryId, null);
 
             // Assert
             await _client
@@ -189,7 +189,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, RepositoryId, RuleScopes.Repositories, null);
+            await rule.ReconcileAsync(_config.Project, RepositoryId, null);
 
             // Assert
             await _client
@@ -206,7 +206,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, RepositoryId, RuleScopes.Repositories, null);
+            await rule.ReconcileAsync(_config.Project, RepositoryId, null);
 
             // Assert
             await _client
@@ -224,7 +224,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, RepositoryId, RuleScopes.Repositories, null);
+            await rule.ReconcileAsync(_config.Project, RepositoryId, null);
 
             // Assert
             await _client

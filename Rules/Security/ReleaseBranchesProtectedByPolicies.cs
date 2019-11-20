@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, itemId).SingleOrDefault();

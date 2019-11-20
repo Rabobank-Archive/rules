@@ -120,7 +120,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId, null);
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId, null);
 
             // Assert
             await _client
@@ -149,7 +149,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, RuleScopes.ReleasePipelines, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId, null);
 
             // Assert
             await _client

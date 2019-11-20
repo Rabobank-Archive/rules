@@ -1,43 +1,50 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class NobodyCanDeleteTheRepository : ItemHasPermissionRuleBase, IRepositoryRule, IReconcile
+    public sealed class NobodyCanDeleteTheRepository : IRepositoryRule, IReconcile
     {
-        public NobodyCanDeleteTheRepository(IVstsRestClient client) : base(client)
+        private readonly IVstsRestClient _client;
+
+        public NobodyCanDeleteTheRepository(IVstsRestClient client)
         {
-            //nothing
+            _client = client;
         }
 
-        const int PermissionBitDeletRepository = 512;
-        const int PermissionBitManagePermissions = 8192;
+        private const int PermissionBitDeleteRepository = 512;
+        private const int PermissionBitManagePermissions = 8192;
 
-        protected override string NamespaceId => "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; //Git Repositories
-        protected override IEnumerable<int> PermissionBits => new[]
+        private static string NamespaceId => "2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"; //Git Repositories
+
+        private static IEnumerable<int> PermissionBits => new[]
         {
-            PermissionBitDeletRepository,
+            PermissionBitDeleteRepository,
             PermissionBitManagePermissions
         };
-        protected override IEnumerable<int> AllowedPermissions => new[]
+
+        private static IEnumerable<int> AllowedPermissions => new[]
         {
             PermissionId.NotSet,
             PermissionId.Deny,
             PermissionId.DenyInherited
         };
-        protected override IEnumerable<string> IgnoredIdentitiesDisplayNames => new[]
+
+        private static IEnumerable<string> IgnoredIdentitiesDisplayNames => new[]
         {
             "Project Collection Administrators",
             "Project Collection Service Accounts"
         };
 
-        public string Description => "Nobody can delete the repository (SOx)";
-        public string Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
-        public bool IsSox => true;
-        public bool RequiresStageId => false;
+        string IRule.Description => "Nobody can delete the repository (SOx)";
+        string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
+        bool IRule.IsSox => true;
+        bool IReconcile.RequiresStageId => false;
 
         string[] IReconcile.Impact => new[]
         {
@@ -45,27 +52,49 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public async Task<bool> EvaluateAsync(string projectId, string repositoryId,
-            IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
+        public async Task<bool> EvaluateAsync(string projectId, string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (repositoryId == null)
                 throw new ArgumentNullException(nameof(repositoryId));
 
-            return await base.EvaluateAsync(projectId, repositoryId, RuleScopes.Repositories)
-                .ConfigureAwait(false);
+            var groups = (await _client.GetAsync(ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId, repositoryId)).ConfigureAwait(false))
+                .Identities.Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
+
+            var permissionsSetIds = await Task.WhenAll(
+                groups.Select(g => _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, g.TeamFoundationId, repositoryId)))).ConfigureAwait(false);
+            
+            return permissionsSetIds
+                .SelectMany(p => p.Permissions)
+                .All(p => !PermissionBits.Contains(p.PermissionBit) || AllowedPermissions.Contains(p.PermissionId));
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            await ReconcileAsync(projectId, itemId, scope)
-                .ConfigureAwait(false);
+            var groups = (await _client.GetAsync(ApplicationGroup.ExplicitIdentitiesRepos(projectId, NamespaceId, itemId)).ConfigureAwait(false))
+                .Identities.Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
+
+            foreach (var group in groups)
+            {
+                var permissionSetId = await _client.GetAsync(Permissions.PermissionsGroupRepository(projectId, NamespaceId, group.TeamFoundationId, itemId)).ConfigureAwait(false);
+                var permissions = permissionSetId.Permissions.Where(p => PermissionBits.Contains(p.PermissionBit)
+                                                                         && !AllowedPermissions.Contains(p.PermissionId));
+
+                foreach (var permission in permissions)
+                {
+                    permission.PermissionId = PermissionId.Deny;
+                    await _client.PostAsync(
+                            Permissions.ManagePermissions(projectId),
+                            new Permissions.ManagePermissionsData(group.TeamFoundationId, permissionSetId.DescriptorIdentifier, permissionSetId.DescriptorIdentityType, permission).Wrap())
+                        .ConfigureAwait(false);
+                }
+            }
         }
     }
 }

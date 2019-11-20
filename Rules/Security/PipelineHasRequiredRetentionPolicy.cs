@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(result);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string scope, string stageId)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId)
         {
             var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);

@@ -125,7 +125,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync(projectId, RepositoryId, RuleScopes.Repositories, null);
+            await rule.ReconcileAsync(projectId, RepositoryId, null);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
+            await rule.ReconcileAsync("TAS", "123", null);
 
             await client
                 .Received()
@@ -152,7 +152,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
+            await rule.ReconcileAsync("TAS", "123", null);
 
             await client
                 .DidNotReceive()
@@ -167,7 +167,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
+            await rule.ReconcileAsync("TAS", "123", null);
 
             await client
                 .DidNotReceive()
@@ -182,7 +182,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", RuleScopes.Repositories, null);
+            await rule.ReconcileAsync("TAS", "123", null);
 
             await client
                 .DidNotReceive()
