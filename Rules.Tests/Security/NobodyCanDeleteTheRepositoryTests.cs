@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
 using SecurePipelineScan.VstsService;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
+using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Response;
+using Requests = SecurePipelineScan.VstsService.Requests;
+using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
-using Task = System.Threading.Tasks.Task;
+using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -93,12 +95,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 TeamFoundationId = "33",
             };
 
-            var applicationGroups = new ApplicationGroups
+            var applicationGroups = new Response.ApplicationGroups
             { Identities = new[] { applicationGroup1, applicationGroup2, applicationGroup3 } };
 
             InitializeLookupData(client, PermissionId.Deny);
 
-            client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
+            client.GetAsync(Arg.Any<IVstsRequest<Response.ApplicationGroups>>()).Returns(applicationGroups);
 
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(_config.Project, RepositoryId, null)).ShouldBeTrue();
@@ -106,15 +108,15 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "11"))));
+                .GetAsync(Arg.Is<IVstsRequest<Response.PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "11"))));
 
             await client
                 .DidNotReceive()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "22"))));
+                .GetAsync(Arg.Is<IVstsRequest<Response.PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "22"))));
 
             await client
                 .Received()
-                .GetAsync(Arg.Is<IVstsRequest<PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "33"))));
+                .GetAsync(Arg.Is<IVstsRequest<Response.PermissionsSetId>>(x => x.QueryParams.Contains(new KeyValuePair<string, object>("tfid", "33"))));
 
         }
 
@@ -124,8 +126,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
 
+            await ManagePermissions
+                .ForRepository(client, projectId, RepositoryId)
+                .Permissions(512)
+                .SetToAsync(PermissionId.Allow);
+            
             var rule = new NobodyCanDeleteTheRepository(client);
+            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+                .ShouldBe(false);
+            
             await rule.ReconcileAsync(projectId, RepositoryId, null);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            
+            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+                .ShouldBe(true);
         }
 
         [Fact]
@@ -139,7 +153,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             await client
                 .Received()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Is<Permissions.UpdateWrapper>(x =>
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(), Arg.Is<Requests.Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("123") &&
                     x.UpdatePackage.Contains(@"PermissionId"":2")));
         }
@@ -156,7 +170,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             await client
                 .DidNotReceive()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(), Arg.Any<Requests.Permissions.UpdateWrapper>());
         }
 
         [Fact]
@@ -171,7 +185,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             await client
                 .DidNotReceive()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(), Arg.Any<Requests.Permissions.UpdateWrapper>());
         }
 
         [Fact]
@@ -186,7 +200,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             await client
                 .DidNotReceive()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(), Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(), Arg.Any<Requests.Permissions.UpdateWrapper>());
         }
 
         [Fact]
@@ -202,12 +216,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            client.GetAsync(Arg.Any<IVstsRequest<ProjectProperties>>()).Returns(fixture.Create<ProjectProperties>());
-            client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(fixture.Create<ApplicationGroups>());
+            client.GetAsync(Arg.Any<IVstsRequest<Response.ProjectProperties>>()).Returns(fixture.Create<Response.ProjectProperties>());
+            client.GetAsync(Arg.Any<IVstsRequest<Response.ApplicationGroups>>()).Returns(fixture.Create<Response.ApplicationGroups>());
 
-            client.GetAsync(Arg.Any<IVstsRequest<PermissionsSetId>>()).Returns(new PermissionsSetId()
+            client.GetAsync(Arg.Any<IVstsRequest<Response.PermissionsSetId>>()).Returns(new Response.PermissionsSetId()
             {
-                Permissions = new[] { new Permission { DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123" }, }
+                Permissions = new[] { new Response.Permission { DisplayName = "Delete repository", PermissionBit = 512, PermissionId = permissionId, PermissionToken = "repoV2/53410703-e2e5-4238-9025-233bd7c811b3/123" }, }
             });
         }
     }

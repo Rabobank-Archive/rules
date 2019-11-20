@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using NSubstitute;
+using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
+using Requests = SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
@@ -14,7 +15,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private readonly TestConfig _config;
         private readonly Response.ApplicationGroup _pa = new Response.ApplicationGroup {FriendlyDisplayName = "Project Administrators", TeamFoundationId = "1234"};
         private readonly Response.ApplicationGroup _rpa = new Response.ApplicationGroup{FriendlyDisplayName = "Rabobank Project Administrators", TeamFoundationId = "adgasge"};
-        private readonly Response.Permission _deleteTeamProjectAllow = new Response.Permission{ DisplayName = "Delete team project", PermissionId = PermissionId.Allow, PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"};
+        private readonly Response.Permission _deleteTeamProjectAllow = new Response.Permission{ DisplayName = "Delete team project", PermissionBit = 4, PermissionId = PermissionId.Allow, NamespaceId = SecurityNamespaceIds.Project, PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"};
 
         public NobodyCanDeleteTheTeamProjectTests(TestConfig config)
         {
@@ -248,8 +249,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             await client
                 .Received()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
-                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Requests.Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId) &&
                         x.UpdatePackage.Contains(@"PermissionBit"":4") &&
                         x.UpdatePackage.Contains(@"PermissionId"":2")));
@@ -268,21 +269,21 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             await client
                 .Received()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
-                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Requests.Permissions.UpdateWrapper>(x =>
                     x.UpdatePackage.Contains("afewsf") &&
                     x.UpdatePackage.Contains(@"PermissionId"":0")));
             
             await client
                 .DidNotReceive()
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
-                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Requests.Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_pa.TeamFoundationId)));
             
             await client
                 .Received(1)
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),
-                    Arg.Is<Permissions.UpdateWrapper>(x =>
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(),
+                    Arg.Is<Requests.Permissions.UpdateWrapper>(x =>
                         x.UpdatePackage.Contains(_rpa.TeamFoundationId))); // Only the DENY update
 
         }

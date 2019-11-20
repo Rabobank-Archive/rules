@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Response = SecurePipelineScan.VstsService.Response;
 using Request = SecurePipelineScan.VstsService.Requests;
 using System;
+using SecurePipelineScan.Rules.Permissions;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -19,8 +20,6 @@ namespace SecurePipelineScan.Rules.Security
 
         private const int ManageApprovalsPermissionBit = 8;
         private const int CreateReleasesPermissionBit = 64;
-
-        private static string NamespaceId => "c788c23e-1b46-4162-8f5e-d7585343b5de"; //release management
 
         private static IEnumerable<int> PermissionBits => new[]
         {
@@ -60,14 +59,14 @@ namespace SecurePipelineScan.Rules.Security
                 throw new ArgumentNullException(nameof(releasePipeline));
 
             var groups = (await _client.GetAsync(
-                    Request.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, releasePipeline.Id)).ConfigureAwait(false))
+                    Request.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, SecurityNamespaceIds.Release, releasePipeline.Id)).ConfigureAwait(false))
                 .Identities
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
                 var permissionSetId = await _client.GetAsync(
-                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, releasePipeline.Id)).ConfigureAwait(false);
+                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, releasePipeline.Id)).ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
 
@@ -93,14 +92,14 @@ namespace SecurePipelineScan.Rules.Security
                 await CreateProductionEnvironmentOwnerGroupAsync(projectId).ConfigureAwait(false);
             }
 
-            var groups = (await _client.GetAsync(Request.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, NamespaceId, itemId)).ConfigureAwait(false))
+            var groups = (await _client.GetAsync(Request.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, SecurityNamespaceIds.Release, itemId)).ConfigureAwait(false))
                 .Identities
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
             foreach (var group in groups)
             {
                 var permissionSetId = await _client.GetAsync(
-                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, NamespaceId, group.TeamFoundationId, itemId)).ConfigureAwait(false);
+                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, itemId)).ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
                     .ToList();
@@ -124,7 +123,7 @@ namespace SecurePipelineScan.Rules.Security
                     new Request.Security.ManageGroupData { Name = "Production Environment Owners" })
                 .ConfigureAwait(false);
 
-            var permissions = await _client.GetAsync(Request.Permissions.PermissionsGroupSetId(projectId, NamespaceId, peoGroup.TeamFoundationId)).ConfigureAwait(false);
+            var permissions = await _client.GetAsync(Request.Permissions.PermissionsGroupSetId(projectId, SecurityNamespaceIds.Release, peoGroup.TeamFoundationId)).ConfigureAwait(false);
             await UpdatePermissionAsync(projectId, peoGroup, permissions, CreateReleasesPermissionBit, PermissionId.Deny).ConfigureAwait(false);
             await UpdatePermissionAsync(projectId, peoGroup, permissions, ManageApprovalsPermissionBit, PermissionId.Allow).ConfigureAwait(false);
         }
