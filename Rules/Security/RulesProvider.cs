@@ -41,6 +41,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new PipelineHasAtLeastOneStageWithApproval();
             yield return new ReleasePipelineUsesBuildArtifact();
             yield return new ProductionStageUsesArtifactFromSecureBranch(client);
+            yield return new ReleasePipelineHasDeploymentMethod();
         }
     }
 }
