@@ -12,5 +12,6 @@ namespace SecurePipelineScan.VstsService.Response
         public IEnumerable<DeployPhaseSnapshot> DeployPhasesSnapshot { get; set; }
         public PreApprovalSnapshot PreApprovalsSnapshot { get; set; }
         public string Status { get; set; }
+        public string DefinitionEnvironmentId { get; set; }
     }
 }
