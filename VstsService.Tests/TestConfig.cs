@@ -18,7 +18,7 @@ namespace SecurePipelineScan.VstsService.Tests
             ExpectedAgentPoolName = configuration["expectedAgentPoolName"] ?? "Default";
             ServiceEndpointId = configuration["serviceEndpointId"] ?? "975b3603-9939-4f22-a5a9-baebb39b5dad";
             ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "1";
-            ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "New release pipeline";
+            ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "AZDO-COMPLIANCY-FUNCTION (Green)";
             BuildDefinitionId = configuration["buildDefinitionId"] ?? "2";
             BuildId = configuration["buildId"] ?? "4";
             RepositoryId = configuration["repositoryId"] ?? "6435e3f0-15b7-4302-814d-4ab586e61f8b";
