@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
@@ -16,13 +17,11 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitDestroyBuilds = 32;
         private const int PermissionBitDeleteBuildDefinition = 4096;
         private const int PermissionBitAdministerBuildPermissions = 16384;
-
-        string IRule.Description => "Nobody can delete builds (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
-        bool IRule.IsSox => true;
-        bool IReconcile.RequiresStageId => false;
-        
-        string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can delete builds (SOx)";
+        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
+        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Builds' permission is set to Deny",
             "For all security groups the 'Destroy Builds' permission is set to Deny",

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
@@ -19,12 +20,11 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitAdministerReleasePermissions = 512;
         private const int PermissionBitDeleteReleases = 1024;
 
-        string IRule.Description => "Nobody can delete releases (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
-        bool IRule.IsSox => true;
-        bool IReconcile.RequiresStageId => false;
-        
-        string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can delete releases (SOx)";
+        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
+        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Releases' permission is set to Deny",
             "For all security groups the 'Delete Release Pipeline' permission is set to Deny",

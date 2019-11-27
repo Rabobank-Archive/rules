@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
@@ -18,12 +19,11 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitDeleteRepository = 512;
         private const int PermissionBitManagePermissions = 8192;
 
-        string IRule.Description => "Nobody can delete the repository (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
-        bool IRule.IsSox => true;
-        bool IReconcile.RequiresStageId => false;
-
-        string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can delete the repository (SOx)";
+        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
+        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Repository' permission is set to Deny",
             "For all security groups the 'Manage Permissions' permission is set to Deny"

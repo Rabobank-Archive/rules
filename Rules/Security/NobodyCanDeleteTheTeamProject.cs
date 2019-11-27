@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
@@ -17,10 +18,18 @@ namespace SecurePipelineScan.Rules.Security
 
         public NobodyCanDeleteTheTeamProject(IVstsRestClient client) => _client = client;
 
-        public string Description => "Nobody can delete the Team Project (SOx)";
-        public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
-        public bool IsSox => true;
-
+        [ExcludeFromCodeCoverage]public string Description => "Nobody can delete the Team Project (SOx)";
+        [ExcludeFromCodeCoverage]public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
+        [ExcludeFromCodeCoverage]public bool IsSox => true;
+        
+        [ExcludeFromCodeCoverage]string[] IProjectReconcile.Impact => new[]
+        {
+            "Rabobank Project Administrators group is created and added to Project Administrators",
+            "Delete team project permissions of the Rabobank Project Administrators group is set to deny",
+            "Members of the Project Administrators are moved to Rabobank Project Administrators",
+            "Delete team project permission is set to 'not set' for all other groups"
+        };
+        
         public async Task<bool> EvaluateAsync(string projectId)
         {
             return await Permissions(projectId)
@@ -51,14 +60,6 @@ namespace SecurePipelineScan.Rules.Security
 
             return members.All(m => m.FriendlyDisplayName == RabobankProjectAdministrators);
         }
-
-        string[] IProjectReconcile.Impact => new[]
-        {
-            "Rabobank Project Administrators group is created and added to Project Administrators",
-            "Delete team project permissions of the Rabobank Project Administrators group is set to deny",
-            "Members of the Project Administrators are moved to Rabobank Project Administrators",
-            "Delete team project permission is set to 'not set' for all other groups"
-        };
 
         public async Task ReconcileAsync(string projectId)
         {
