@@ -9,7 +9,7 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule
     {
-        [ExcludeFromCodeCoverage] public string Description => "Release pipeline has deployment method";
+        [ExcludeFromCodeCoverage] public string Description => "Release pipeline has valid CMDB link";
         [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
         [ExcludeFromCodeCoverage] public bool IsSox => false;
         [ExcludeFromCodeCoverage] public bool RequiresStageId => true;
