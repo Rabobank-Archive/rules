@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
 
@@ -9,11 +9,11 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule
     {
-        public string Description => "Release pipeline has deployment method";
-        public string Link => "https://confluence.dev.somecompany.nl/x/????"; // TODO 
-        public bool IsSox => false;
-        public bool RequiresStageId => true;
-        public string[] Impact => new string[0];
+        [ExcludeFromCodeCoverage] public string Description => "Release pipeline has deployment method";
+        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
+        [ExcludeFromCodeCoverage] public bool IsSox => false;
+        [ExcludeFromCodeCoverage] public bool RequiresStageId => true;
+        [ExcludeFromCodeCoverage] public string[] Impact => new string[0];
 
         public Task<bool?> EvaluateAsync(string projectId, string stageId, ReleaseDefinition releasePipeline)
         {
