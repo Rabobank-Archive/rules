@@ -145,7 +145,7 @@ namespace SecurePipelineScan.Rules.Security
             var steps = GetSteps(yamlPipeline).ToList();
             var result = steps
                 .Any(s => (s[rule.StepName] != null ||
-                           (s["task"] != null && s["task"].ToString().Contains(rule.TaskName))
+                           (s["task"] != null && ContainsTaskName(s["task"].ToString(), rule.TaskName))
                            && s.SelectToken("enabled", false)?.ToString() != "false"));
 
             if (!result && steps
@@ -153,6 +153,12 @@ namespace SecurePipelineScan.Rules.Security
                 return null;
 
             return result;
+        }
+
+        private static bool ContainsTaskName(string task, string name)
+        {
+            var segments = task.Split('@');
+            return segments[0] == name;
         }
 
         private static IEnumerable<JToken> GetSteps(JToken yamlPipeline)

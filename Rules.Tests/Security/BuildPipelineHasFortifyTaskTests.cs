@@ -295,8 +295,17 @@ namespace SecurePipelineScan.Rules.Tests.Security
             result.ShouldBeNull();
         }
 
-        [Fact]
-        public async Task GivenPipeline_WhenYamlFileWithoutFortifyTask_ThenEvaluatesToFalse()
+        [Theory]
+        [InlineData("Fortify_SCA@5")]
+        [InlineData("_FortifySCA@5")]
+        [InlineData("FortifySCA_@5")]
+        [InlineData("Fortify_SCA")]
+        [InlineData("_FortifySCA")]
+        [InlineData("FortifySCA_")]
+        [InlineData(" ")]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GivenPipeline_WhenYamlFileWithoutFortifyTask_ThenEvaluatesToFalse(string fortifyTask)
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
@@ -307,7 +316,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var gitItem = new JObject
             {
-                { "content", "steps:\r- task: OtherTask" }
+                { "content", $"steps:\r- task: {fortifyTask}" }
             };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
