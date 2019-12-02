@@ -20,6 +20,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private const int ManageApprovalsPermissionBit = 8;
         private const int CreateReleasesPermissionBit = 64;
+        private const string PeoGroupName = "Production Environment Owners";
 
         private static IEnumerable<int> PermissionBits => new[]
         {
@@ -84,22 +85,28 @@ namespace SecurePipelineScan.Rules.Security
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            var projectGroups = (await _client.GetAsync(Request.ApplicationGroup.ApplicationGroups(projectId)).ConfigureAwait(false))
+            var projectGroups = (await _client.GetAsync(Request.ApplicationGroup.ApplicationGroups(projectId))
+                .ConfigureAwait(false))
                 .Identities;
 
-            if (projectGroups.All(g => g.FriendlyDisplayName != "Production Environment Owners"))
-            {
-                await CreateProductionEnvironmentOwnerGroupAsync(projectId).ConfigureAwait(false);
-            }
-
-            var groups = (await _client.GetAsync(Request.ApplicationGroup.ExplicitIdentitiesPipelines(projectId, SecurityNamespaceIds.Release, itemId)).ConfigureAwait(false))
+            var groups = (await _client.GetAsync(Request.ApplicationGroup.ExplicitIdentitiesPipelines(
+                    projectId, SecurityNamespaceIds.Release, itemId)).ConfigureAwait(false))
                 .Identities
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
+            var peoGroup = projectGroups.FirstOrDefault(g => g.FriendlyDisplayName == PeoGroupName);
+            if (peoGroup == default)
+                peoGroup = await CreateProductionEnvironmentOwnerGroupAsync(projectId)
+                    .ConfigureAwait(false);
+            if (!groups.Any(g => g.FriendlyDisplayName == PeoGroupName))
+                await UpdatePermissionsProductionEnvironmentOwnerGroupAsync(projectId, peoGroup)
+                    .ConfigureAwait(false);
+            
             foreach (var group in groups)
             {
-                var permissionSetId = await _client.GetAsync(
-                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, itemId)).ConfigureAwait(false);
+                var permissionSetId = await _client.GetAsync(Request.Permissions.PermissionsGroupSetIdDefinition(
+                        projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, itemId))
+                    .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
                     .ToList();
@@ -107,7 +114,7 @@ namespace SecurePipelineScan.Rules.Security
                 if (permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                     continue;
 
-                var permissionToUpdate = group.FriendlyDisplayName == "Production Environment Owners"
+                var permissionToUpdate = group.FriendlyDisplayName == PeoGroupName
                     ? CreateReleasesPermissionBit
                     : ManageApprovalsPermissionBit;
 
@@ -116,27 +123,33 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private async Task CreateProductionEnvironmentOwnerGroupAsync(string projectId)
-        {
-            var peoGroup = await _client.PostAsync(
-                    Request.Security.ManageGroup(projectId),
-                    new Request.Security.ManageGroupData { Name = "Production Environment Owners" })
+        private async Task<Response.ApplicationGroup> CreateProductionEnvironmentOwnerGroupAsync(string projectId) => 
+            await _client.PostAsync(Request.Security.ManageGroup(projectId),
+                    new Request.Security.ManageGroupData { Name = PeoGroupName })
                 .ConfigureAwait(false);
 
-            var permissions = await _client.GetAsync(Request.Permissions.PermissionsGroupSetId(projectId, SecurityNamespaceIds.Release, peoGroup.TeamFoundationId)).ConfigureAwait(false);
-            await UpdatePermissionAsync(projectId, peoGroup, permissions, CreateReleasesPermissionBit, PermissionId.Deny).ConfigureAwait(false);
-            await UpdatePermissionAsync(projectId, peoGroup, permissions, ManageApprovalsPermissionBit, PermissionId.Allow).ConfigureAwait(false);
+        private async Task UpdatePermissionsProductionEnvironmentOwnerGroupAsync(string projectId, 
+            Response.ApplicationGroup peoGroup)
+        {
+            var permissions = await _client.GetAsync(Request.Permissions.PermissionsGroupSetId(
+                    projectId, SecurityNamespaceIds.Release, peoGroup.TeamFoundationId))
+                .ConfigureAwait(false);
+
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, CreateReleasesPermissionBit, PermissionId.Deny)
+                .ConfigureAwait(false);
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, ManageApprovalsPermissionBit, PermissionId.Allow)
+                .ConfigureAwait(false);
         }
 
-        private async Task UpdatePermissionAsync(string projectId, Response.ApplicationGroup @group, Response.PermissionsSetId permissions, int bit, int to)
+        private async Task UpdatePermissionAsync(string projectId, Response.ApplicationGroup @group, 
+            Response.PermissionsSetId permissions, int bit, int to)
         {
             var permission = permissions.Permissions.Single(p => p.PermissionBit == bit);
             permission.PermissionId = to;
             
-            await _client.PostAsync(
-                    Request.Permissions.ManagePermissions(projectId),
+            await _client.PostAsync(Request.Permissions.ManagePermissions(projectId),
                     new Request.Permissions.ManagePermissionsData(@group.TeamFoundationId, permissions.DescriptorIdentifier,
-                        permissions.DescriptorIdentityType, permission).Wrap())
+                    permissions.DescriptorIdentityType, permission).Wrap())
                 .ConfigureAwait(false);
         }
     }
