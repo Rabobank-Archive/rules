@@ -94,14 +94,9 @@ namespace SecurePipelineScan.Rules.Security
                 .Identities
                 .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
 
-            var peoGroup = projectGroups.FirstOrDefault(g => g.FriendlyDisplayName == PeoGroupName);
-            if (peoGroup == default)
-                peoGroup = await CreateProductionEnvironmentOwnerGroupAsync(projectId)
-                    .ConfigureAwait(false);
-            if (!groups.Any(g => g.FriendlyDisplayName == PeoGroupName))
-                await UpdatePermissionsProductionEnvironmentOwnerGroupAsync(projectId, peoGroup)
-                    .ConfigureAwait(false);
-            
+            await CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(projectId, projectGroups, groups)
+                .ConfigureAwait(false);
+
             foreach (var group in groups)
             {
                 var permissionSetId = await _client.GetAsync(Request.Permissions.PermissionsGroupSetIdDefinition(
@@ -114,7 +109,7 @@ namespace SecurePipelineScan.Rules.Security
                 if (permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                     continue;
 
-                var permissionToUpdate = group.FriendlyDisplayName == PeoGroupName
+                var permissionToUpdate = PeoGroupExists(group)
                     ? CreateReleasesPermissionBit
                     : ManageApprovalsPermissionBit;
 
@@ -122,6 +117,20 @@ namespace SecurePipelineScan.Rules.Security
                     .ConfigureAwait(false);
             }
         }
+
+        private async Task CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(string projectId, 
+            IEnumerable<Response.ApplicationGroup> projectGroups, IEnumerable<Response.ApplicationGroup> groups)
+        {
+            var peoGroup = projectGroups.FirstOrDefault(g => PeoGroupExists(g)) ??
+                await CreateProductionEnvironmentOwnerGroupAsync(projectId)
+                    .ConfigureAwait(false);
+            if (!groups.Any(g => PeoGroupExists(g)))
+                await UpdatePermissionsProductionEnvironmentOwnerGroupAsync(projectId, peoGroup)
+                    .ConfigureAwait(false);
+        }
+
+        private static bool PeoGroupExists(Response.ApplicationGroup group) 
+            => group.FriendlyDisplayName == PeoGroupName;
 
         private async Task<Response.ApplicationGroup> CreateProductionEnvironmentOwnerGroupAsync(string projectId) => 
             await _client.PostAsync(Request.Security.ManageGroup(projectId),
