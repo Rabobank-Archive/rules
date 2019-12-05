@@ -38,9 +38,10 @@ namespace SecurePipelineScan.Rules.Security
             yield return new NobodyCanDeleteReleases(client);
             yield return new NobodyCanManageApprovalsAndCreateReleases(client);
             yield return new PipelineHasRequiredRetentionPolicy(client);
-            yield return new PipelineHasAtLeastOneStageWithApproval();
             yield return new ReleasePipelineUsesBuildArtifact();
             yield return new ProductionStageUsesArtifactFromSecureBranch(client);
+            yield return new PipelineHasAtLeastOneStageWithApproval();
+            yield return new ReleasePipelineHasSm9ChangeTask(client);
             yield return new ReleasePipelineHasDeploymentMethod();
         }
     }

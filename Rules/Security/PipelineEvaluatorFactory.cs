@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 namespace SecurePipelineScan.Rules.Security
 {
-
     public class PipelineEvaluatorFactory
     {
-
         private readonly Dictionary<int, IPipelineEvaluator> _evaluators;
 
         public PipelineEvaluatorFactory(IVstsRestClient client)

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using SecurePipelineScan.VstsService;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -12,71 +13,48 @@ namespace SecurePipelineScan.Rules.Security
         private readonly IVstsRestClient _client;
         private const string MavenTaskId = "ac4ee482-65da-4485-a532-7b085873e532";
 
-        public GuiPipelineEvaluator(IVstsRestClient client)
-        {
-            _client = client;
-        }
+        public GuiPipelineEvaluator(IVstsRestClient client) => _client = client;
 
-        public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline,
-            IPipelineHasTaskRule rule)
+        public async Task<bool?> EvaluateAsync(
+            Project project, BuildDefinition buildPipeline, IPipelineHasTaskRule rule)
         {
             if (project == null)
                 throw new ArgumentNullException(nameof(project));
-
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
-
             if (buildPipeline.Process.Phases == null)
                 throw new ArgumentOutOfRangeException(nameof(buildPipeline));
-
             if (rule == null)
                 throw new ArgumentNullException(nameof(rule));
 
-            bool? result = await DoesPipelineContainTaskAsync(project, buildPipeline, rule.TaskId)
+            bool? result = await BuildPipelineContainsTaskAsync(project.Id, buildPipeline, rule.TaskId)
                 .ConfigureAwait(false);
 
-            if (!result.GetValueOrDefault() &&
-                await DoesPipelineContainTaskAsync(project, buildPipeline, MavenTaskId).ConfigureAwait(false)
-            ) result = null;
+            if (!result.GetValueOrDefault() && 
+                await BuildPipelineContainsTaskAsync(project.Id, buildPipeline, MavenTaskId)
+                    .ConfigureAwait(false))
+                result = null;
 
             return result;
         }
 
-        private async Task<bool> DoesPipelineContainTaskAsync(Project project, BuildDefinition buildPipeline,
-            string taskId) =>
-            await BuildStepsContainsTaskAsync(
-                    project,
-                    buildPipeline.Process.Phases
-                        .Where(p => p.Steps != null)
-                        .SelectMany(p => p.Steps).ToArray(),
-                    taskId)
-                .ConfigureAwait(false);
-
-        private async Task<bool> BuildStepsContainsTaskAsync(Project project, IReadOnlyCollection<BuildStep> steps,
-            string taskId)
+        private async Task<bool> BuildPipelineContainsTaskAsync(
+            string projectId, BuildDefinition buildPipeline, string taskId)
         {
+            var steps = buildPipeline.Process.Phases
+                .Where(p => p.Steps != null)
+                .SelectMany(p => p.Steps)
+                .ToList();
+
             var found = BuildStepsContainTask(steps, taskId);
             var queue = GetTaskGroups(steps).ToList();
-            var done = new HashSet<string>();
 
-            while (!found && queue.Any())
-            {
-                var todo = queue.Where(q => !done.Contains(q)).ToList();
-                var results = await System.Threading.Tasks.Task
-                    .WhenAll(todo.Select(q => GetTaskGroupStepsAsync(project, q)))
-                    .ConfigureAwait(false);
-                var buildSteps = results.SelectMany(r => r).ToArray();
-                found = BuildStepsContainTask(buildSteps, taskId);
-
-                done.UnionWith(queue);
-                queue = GetTaskGroups(buildSteps).ToList();
-            }
-
-            return found;
+            return await EvaluateTaskGroupsAsync(found, queue, projectId, taskId)
+                .ConfigureAwait(false);
         }
 
-        private async Task<IEnumerable<BuildStep>> GetTaskGroupStepsAsync(Project project, string taskGroup) =>
-            (await _client.GetAsync(VstsService.Requests.TaskGroup.TaskGroupById(project.Id, taskGroup))
+        private async Task<IEnumerable<BuildStep>> GetTaskGroupStepsAsync(string projectId, string taskGroup) =>
+            (await _client.GetAsync(VstsService.Requests.TaskGroup.TaskGroupById(projectId, taskGroup))
                 .ConfigureAwait(false)).Value?.FirstOrDefault()?.Tasks ?? new BuildStep[0];
 
         private static IEnumerable<string> GetTaskGroups(IEnumerable<BuildStep> steps) =>
@@ -85,5 +63,23 @@ namespace SecurePipelineScan.Rules.Security
 
         private static bool BuildStepsContainTask(IEnumerable<BuildStep> steps, string taskId) =>
             steps.Any(s => s.Enabled && s.Task.Id == taskId);
+
+        public async Task<bool> EvaluateTaskGroupsAsync(
+            bool found, IList<string> queue, string projectId, string taskId)
+        {
+            var done = new HashSet<string>();
+
+            while (!found && queue.Any())
+            {
+                var todo = queue.Where(q => !done.Contains(q)).ToList();
+                var buildSteps = (await Task.WhenAll(todo.Select(q => GetTaskGroupStepsAsync(projectId, q)))
+                    .ConfigureAwait(false)).SelectMany(s => s).ToList();
+                found = BuildStepsContainTask(buildSteps, taskId);
+                done.UnionWith(queue);
+                queue = GetTaskGroups(buildSteps).ToList();
+            }
+
+            return found;
+        }
     }
 }
