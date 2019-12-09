@@ -7,7 +7,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule
+    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule, IReconcile
     {
         [ExcludeFromCodeCoverage] public string Description => "Release pipeline has valid CMDB link";
         [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
@@ -20,11 +20,18 @@ namespace SecurePipelineScan.Rules.Security
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            var stageExists = stageId == null 
-                ? (bool?) null 
-                : releasePipeline.Environments.Any(e => e.Id == stageId); 
+            var stageExists = stageId == null
+                ? (bool?)null
+                : releasePipeline.Environments.Any(e => e.Id == stageId);
 
             return Task.FromResult(stageExists);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public System.Threading.Tasks.Task ReconcileAsync(string projectId, string itemId, string stageId)
+        {
+            // for now the reconcile happens in frontend
+            return System.Threading.Tasks.Task.FromResult<object>(null);
         }
     }
 }
