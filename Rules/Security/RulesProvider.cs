@@ -31,6 +31,7 @@ namespace SecurePipelineScan.Rules.Security
             yield return new ArtifactIsStoredSecure(client);
             yield return new BuildPipelineHasSonarqubeTask(client);
             yield return new BuildPipelineHasFortifyTask(client);
+            yield return new BuildPipelineHasNexusIqTask(client);
         }
 
         public IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient client)

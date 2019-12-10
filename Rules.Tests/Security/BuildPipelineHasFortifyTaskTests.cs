@@ -19,6 +19,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     {
         private readonly TestConfig _config;
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
+        private const string TaskName = "FortifySCA";
 
         public BuildPipelineHasFortifyTaskTests(TestConfig config)
         {
@@ -77,7 +78,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var gitItem = new JObject
             {
-                { "content", "steps:\r- task: FortifySCA@5" }
+                { "content", $"steps:\r- task: {TaskName}@5" }
             };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
@@ -111,7 +112,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var stepsTemplateGitItem = new JObject
             {
-                { "content", "steps:\r- task: FortifySCA@5" }
+                { "content", $"steps:\r- task: {TaskName}@5" }
             };
 
             var client = Substitute.For<IVstsRestClient>();
@@ -200,7 +201,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var stepsTemplate3GitItem = new JObject
             {
-                {"content", "steps:\r- task: FortifySCA@5"}
+                {"content", $"steps:\r- task: {TaskName}@5"}
             };
 
             var client = Substitute.For<IVstsRestClient>();
@@ -263,7 +264,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var stepsTemplate4GitItem = new JObject
             {
-                {"content", "steps:\r- task: FortifySCA@5"}
+                {"content", $"steps:\r- task: {TaskName}@5"}
             };
 
             var client = Substitute.For<IVstsRestClient>();
