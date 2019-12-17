@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
         public class Completed
         {
             private readonly IFixture _fixture = new Fixture();
-            
+
             [Fact]
             public async Task ApprovalSettingsCorrect()
             {
@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
 
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
-                
+
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasApprovalOptions.ShouldBe(true);
             }
@@ -44,10 +44,10 @@ namespace SecurePipelineScan.Rules.Tests.Events
 
                 _fixture.Customize<Response.Approval>(x => x
                     .With(a => a.IsAutomated, true));
-                    
+
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
-                
+
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasApprovalOptions.ShouldBe(false);
             }
@@ -67,7 +67,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .HasApprovalOptions
                     .ShouldBe(false);
             }
-            
+
             [Fact]
             public async Task NoPreApprovalsSnapshotApprovalOptionsShouldFail()
             {
@@ -83,25 +83,25 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .HasApprovalOptions
                     .ShouldBe(false);
             }
-            
+
             [Fact]
             public async Task NoBranchFilterForAllArtifacts()
             {
                 var input = ReadInput("Completed", "Approved.json");
-                    
+
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
-                
+
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasBranchFilterForAllArtifacts.ShouldBe(false);
             }
-            
+
             [Fact]
             public async Task BranchFilterForAllArtifacts()
             {
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.Release>(x => x
-                    .With(a => a.Artifacts, new []{new Response.ArtifactReference { Alias = "some-build-artifact"}}));
+                    .With(a => a.Artifacts, new[] { new Response.ArtifactReference { Alias = "some-build-artifact" } }));
 
                 _fixture.Customize<Response.Environment>(x =>
                     x.With(v => v.Conditions, new[]
@@ -112,10 +112,10 @@ namespace SecurePipelineScan.Rules.Tests.Events
                             Name = "some-build-artifact"
                         }
                     }));
-                    
+
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
-                
+
                 var report = await scan.GetCompletedReportAsync(input);
                 report.HasBranchFilterForAllArtifacts.ShouldBe(true);
             }
@@ -136,7 +136,6 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 {
                     ctx.Ignore(x => x.HasApprovalOptions);
                     ctx.Ignore(x => x.UsesManagedAgentsOnly);
-                    ctx.Ignore(x => x.RelatedToSm9Change);
                     ctx.Ignore(x => x.AllArtifactsAreFromBuild);
                     ctx.Ignore(x => x.HasBranchFilterForAllArtifacts);
                 });
@@ -154,7 +153,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
             {
                 var expected = new ReleaseDeploymentCompletedReport().ToExpectedObject(ctx =>
                     ctx.Member(x => x.CreatedDate).UsesComparison(Expect.NotDefault<DateTime>()));
-                
+
                 var input = JObject.FromObject(new
                 {
                     createdDate = "2019-01-11T13:34:58.0366887Z",
@@ -193,7 +192,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 _fixture
                     .Customize<Response.DeployPhaseSnapshot>(context =>
                         context.With(x => x.PhaseType, "agentBasedDeployment"));
-                
+
                 var input = ReadInput("Completed", "Approved.json");
 
                 var rest = Substitute.For<IVstsRestClient>();
@@ -208,7 +207,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var deployPhaseSnapshot = _fixture.Create<Response.DeployPhaseSnapshot>();
                 deployPhaseSnapshot.PhaseType = "agentBasedDeployment";
                 var environment = _fixture.Create<Response.Environment>();
-                environment.DeployPhasesSnapshot = new[] {deployPhaseSnapshot}; 
+                environment.DeployPhasesSnapshot = new[] { deployPhaseSnapshot };
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(environment);
@@ -239,7 +238,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var rest = Substitute.For<IVstsRestClient>();
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.AgentQueue>>())
-                    .Returns((Response.AgentQueue) null);
+                    .Returns((Response.AgentQueue)null);
 
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
@@ -269,7 +268,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
             {
                 _fixture.Customize<Response.AgentPool>(context => context.With(
                     x => x.Id, 115));
-                
+
                 _fixture.Customize<Response.DeployPhaseSnapshot>(context => context.With(
                     x => x.PhaseType, "agentBasedDeployment"));
 
@@ -286,7 +285,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                
+
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -310,20 +309,20 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 _fixture
                     .Customize<Response.DeployPhaseSnapshot>(context =>
                         context.With(x => x.PhaseType, "machineGroupBasedDeployment"));
-                
+
                 var input = ReadInput("Completed", "Approved.json");
-    
+
                 var rest = Substitute.For<IVstsRestClient>();
-    
+
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                    
-    
+
+
                 // Act
                 var scan = new ReleaseDeploymentScan(rest);
                 var report = await scan.GetCompletedReportAsync(input);
-    
+
                 // Assert
                 await rest.DidNotReceive()
                     .GetAsync(Arg.Any<IVstsRequest<Response.AgentQueue>>());
@@ -338,7 +337,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                     .Customize<Response.AgentPool>(context => context.With(x => x.Id, 543));
                 _fixture.Customize<Response.DeployPhaseSnapshot>(context =>
                     context.With(x => x.PhaseType, "agentBasedDeployment"));
-                
+
                 var input = ReleaseCompletedInput();
 
                 var rest = Substitute.For<IVstsRestClient>();
@@ -365,7 +364,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
             public async Task AllArtifactAreFromBuild()
             {
                 // Arrange
-                var artifacts = new []
+                var artifacts = new[]
                 {
                     new Response.ArtifactReference() {Alias = "Rianne", Type = "Build"}
                 };
@@ -383,7 +382,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                
+
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -400,7 +399,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
             public async Task ShouldReturnFalseIfArtifactsAreNotFromTypeBuild()
             {
                 // Arrange
-                var artifacts = new []
+                var artifacts = new[]
                 {
                     new Response.ArtifactReference() {Alias = "Rianne2", Type = "repository"}
                 };
@@ -418,7 +417,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                
+
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -445,7 +444,7 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Release>>())
                     .Returns(_fixture.Create<Response.Release>());
-                
+
                 rest
                     .GetAsync(Arg.Any<IVstsRequest<Response.Environment>>())
                     .Returns(_fixture.Create<Response.Environment>());
@@ -476,10 +475,10 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var input = ReadInput("Completed", "Approved2.json");
                 var client = Substitute.For<IVstsRestClient>();
                 client.GetAsync(Arg.Any<IVstsRequest<Response.AgentQueue>>()).Returns(_fixture.Create<Response.AgentQueue>());
-                
+
                 var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
-                
+
                 expected.ShouldEqual(report);
             }
 
@@ -528,15 +527,15 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.Release>(
                     x => x.With(
-                        a => a.Tags, new[] {"SM9ChangeId 12345", "Random tag"}));
-                
+                        a => a.Tags, new[] { "SM9ChangeId 12345", "Random tag" }));
+
                 // Act
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
-                
+
                 // Assert
-                Assert.True(report.RelatedToSm9Change);
+                Assert.Equal("12345", report.SM9ChangeId);
             }
 
             [Fact]
@@ -546,18 +545,18 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.Release>(
                     x => x.With(
-                        a => a.Tags, new[] {"12345", "Random tag"}));
-                
+                        a => a.Tags, new[] { "12345", "Random tag" }));
+
                 // Act
                 var client = new FixtureClient(_fixture);
                 var scan = new ReleaseDeploymentScan(client);
                 var report = await scan.GetCompletedReportAsync(input);
-                
+
                 // Assert
-                Assert.False(report.RelatedToSm9Change);
+                Assert.Null(report.SM9ChangeId);
             }
         }
-                
+
         private static JObject ReadInput(string eventType, string file)
         {
             var dir = Path.Join("Assets", "ReleaseDeployment", eventType);
