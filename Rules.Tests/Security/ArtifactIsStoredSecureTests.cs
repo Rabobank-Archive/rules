@@ -144,6 +144,33 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        public async Task GivenPipeline_WhenYamlFileWithStagesAndPublish_ThenEvaluatesToTrue()
+        {
+            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+                .With(p => p.Type, 2));
+            _fixture.Customize<Response.Project>(ctx => ctx
+                .With(x => x.Name, "projectA"));
+            _fixture.Customize<Response.Repository>(ctx => ctx
+                .With(r => r.Url, new Uri("https://projectA.nl")));
+
+            var gitItem = new JObject
+            {
+                { "content", "stages:\n- jobs:\n  - steps:\n    - task: PublishBuildArtifacts@2\n\n" }
+            };
+
+            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
+            var project = _fixture.Create<Response.Project>();
+
+            var client = Substitute.For<IVstsRestClient>();
+            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+
+            var rule = new ArtifactIsStoredSecure(client);
+            var result = await rule.EvaluateAsync(project, buildPipeline);
+
+            result.ShouldBe(true);
+        }
+
+        [Fact]
         public async Task GivenPipeline_WhenYamlFileWithoutContent_ThenEvaluatesToFalse()
         {
             _fixture.Customize<Response.BuildProcess>(ctx => ctx

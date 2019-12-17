@@ -163,9 +163,12 @@ namespace SecurePipelineScan.Rules.Security
 
         private static IEnumerable<JToken> GetSteps(JToken yamlPipeline)
         {
-            var steps = yamlPipeline.SelectTokens("steps[*]");
+            var steps = new List<JToken>();
+            steps.AddRange(yamlPipeline.SelectTokens("steps[*]"));
             if (yamlPipeline["jobs"] != null)
-                steps = yamlPipeline.SelectTokens("jobs[*].steps[*]");
+                steps.AddRange(yamlPipeline.SelectTokens("jobs[*].steps[*]"));
+            if (yamlPipeline["stages"] != null)
+                steps.AddRange(yamlPipeline.SelectTokens("stages[*].jobs[*].steps[*]"));
             return steps;
         }
     }
