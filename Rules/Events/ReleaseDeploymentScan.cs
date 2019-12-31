@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Events
         }
         private static string GetLatestSm9Change(Response.Release release) => release?.Tags.LastOrDefault(x => x.Contains("SM9ChangeId"));
 
-        private static string GetSm9ChangeTag(string change) => change != null ? change.Split(' ').Last() : null;
+        private static string GetSm9ChangeTag(string change) => change?.Split(' ').Last();
 
         private static bool? CheckArtifacts(Response.Release release)
         {

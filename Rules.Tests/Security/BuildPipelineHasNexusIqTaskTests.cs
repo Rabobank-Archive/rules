@@ -39,7 +39,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
         }
 
-        [Fact]
+        [Fact(Skip = "Nested YAML Pipeline should first be fixed")]
         [Trait("category", "integration")]
         public async Task EvaluateIntegrationTest_yaml()
         {

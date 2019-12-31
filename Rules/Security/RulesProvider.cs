@@ -23,6 +23,7 @@ namespace SecurePipelineScan.Rules.Security
         {
             yield return new NobodyCanDeleteTheRepository(client);
             yield return new ReleaseBranchesProtectedByPolicies(client);
+            yield return new NobodyCanBypassPolicies(client);
         }
 
         public IEnumerable<IBuildPipelineRule> BuildRules(IVstsRestClient client)

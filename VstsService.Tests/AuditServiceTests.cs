@@ -42,8 +42,8 @@ namespace SecurePipelineScan.VstsService.Tests
         [Fact]
         public void TestAuditLogEntryUsingStartAndEndDate()
         {
-            var yesterday = DateTime.UtcNow.Date.AddDays(-1);
-            var today = DateTime.UtcNow.Date;
+            var yesterday = DateTime.Now.Date.AddDays(-1);
+            var today = DateTime.Now.Date;
             
             var result = _client.Get(AuditLog.Query(yesterday, today));
             result.ToList().ForEach(e => e.Timestamp.ShouldBeInRange(yesterday, today));
