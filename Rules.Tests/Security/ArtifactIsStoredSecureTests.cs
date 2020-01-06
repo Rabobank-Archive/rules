@@ -252,10 +252,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenNestedYaml_ThenEvaluatesToNull()
+        public async Task GivenPipeline_WhenNestedYaml_ThenShouldThrowException()
         {
             _fixture.Customize<Response.BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2));
+                .With(p => p.Type, 2)
+                .With(p => p.YamlFilename, "azure-pipelines.yml"));
             _fixture.Customize<Response.Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Response.Repository>(ctx => ctx
@@ -263,19 +264,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             var gitItem = new JObject
             {
-                { "content", "steps:\r- template: OtherYaml" }
+                {"content", "steps:\r- template: OtherYaml"}
             };
 
             var buildPipeline = _fixture.Create<Response.BuildDefinition>();
             var project = _fixture.Create<Response.Project>();
 
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
+                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
+                .Returns(gitItem);
+            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
+                    r => r.QueryParams["path"].ToString() == "OtherYaml"))
+                .Returns((JObject) null);
 
-            var rule = new ArtifactIsStoredSecure(client);
-            var result = await rule.EvaluateAsync(project, buildPipeline);
+            // act
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                new ArtifactIsStoredSecure(client).EvaluateAsync(project, buildPipeline));
 
-            result.ShouldBeNull();
+            // assert
+            exception.Message.ShouldBe("template not found");
         }
 
         [Fact]
