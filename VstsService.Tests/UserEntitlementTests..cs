@@ -58,7 +58,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [InlineData("express")]
         public async Task TestUpdateLicense(string license)
         {
-            const string user = "FU.Tasportal_vsts@somecompany.nl";
+            const string user = "Richard.Oprins@somecompany.nl";
             
             var entitlement = _client
                 .Get(MemberEntitlementManagement.UserEntitlements())
