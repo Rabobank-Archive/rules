@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateBuildIntegrationTest()
+        public async Task EvaluateBuildIntegrationTest_gui()
         {
             var project = (await _client.GetAsync(Project.ProjectById(_config.Project)));
             var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
@@ -249,41 +249,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync(project, buildPipeline);
 
             result.ShouldBe(false);
-        }
-
-        [Fact]
-        public async Task GivenPipeline_WhenNestedYaml_ThenShouldThrowException()
-        {
-            _fixture.Customize<Response.BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Response.Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Response.Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var gitItem = new JObject
-            {
-                {"content", "steps:\r- template: OtherYaml"}
-            };
-
-            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var project = _fixture.Create<Response.Project>();
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(gitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "OtherYaml"))
-                .Returns((JObject) null);
-
-            // act
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                new ArtifactIsStoredSecure(client).EvaluateAsync(project, buildPipeline));
-
-            // assert
-            exception.Message.ShouldBe("template not found");
         }
 
         [Fact]

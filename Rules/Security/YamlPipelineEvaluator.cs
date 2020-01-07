@@ -136,7 +136,7 @@ namespace SecurePipelineScan.Rules.Security
                 actualResourceRef.Parent = parentResourceRef;
                 var yamlTemplate = await GetGitYamlItemAsync(actualResourceRef, level).ConfigureAwait(false);
 
-                if (!YamlTemplateIsValid(yamlTemplate, extResourceRef?.RepoType))
+                if (!yamlTemplate.Any())
                 {
                     continue;
                 }
@@ -174,21 +174,6 @@ namespace SecurePipelineScan.Rules.Security
             return externalRef != null && externalRef.RepoType == RepoGitType
                 ? externalRef
                 : internalRef;
-        }
-
-        private static bool YamlTemplateIsValid(IEnumerable<JToken> yamlTemplate, string repoType)
-        {
-            if (yamlTemplate.Any())
-            {
-                return true;
-            }
-
-            if (repoType != null && repoType != RepoGitType)
-            {
-                return false;
-            }
-
-            throw new InvalidOperationException("template not found");
         }
 
         private static ResourceRef GetResourceRefFromYamlFileName(string yamlFileName, JToken yamlPipeline)

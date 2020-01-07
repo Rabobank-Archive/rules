@@ -353,46 +353,6 @@ jobs:
         }
 
         [Fact]
-        public async Task
-            GivenPipeline_WhenNestedStepsYamlTemplateInSameRepoWithFortifyTaskNotFound_ThenShouldThrowException()
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template.yml"}
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template.yml"))
-                .Returns((JObject) null);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var exception = await Assert
-                .ThrowsAsync<InvalidOperationException>(() => rule.EvaluateAsync(project, buildPipeline))
-                .ConfigureAwait(false);
-
-            // assert
-            exception.Message.ShouldBe("template not found");
-        }
-
-        [Fact]
         public async Task GivenPipeline_WhenMultipleNestedStepsYamlTemplatesInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
         {
             // arrange
@@ -650,12 +610,12 @@ steps:
         [InlineData("steps-template.yml@shared", "shared", "git", "project/repo", true, null)]
         [InlineData("steps-template.yml@shared", "shared", "github", "project/repo", false, null)]
         [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", true, "repo alias not found")]
-        [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", true, "template not found")]
+        [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", false, null)]
         [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", true,
             "yaml name with repo reference should have exactly two segments")]
         [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", true,
             "repo name should have exactly two segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", true, "template not found")]
+        [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", false, null)]
         [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", false, null)]
         public async Task GivenPipeline_WhenNestedStepsYamlTemplateIn»xternalRepoWithFortifyTask_ThenEvaluatesToTrue(
             string stepsTemplate, string repoAlias, string repoType, string repoName, bool expectedResult,

@@ -21,10 +21,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateBuildIntegrationTest()
+        public async Task EvaluateBuildIntegrationTest_gui()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
             var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
+                .ConfigureAwait(false);
+
+            var rule = new NobodyCanDeleteBuilds(_client);
+            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
+        }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public async Task EvaluateBuildIntegrationTest_yaml()
+        {
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "275"))
                 .ConfigureAwait(false);
 
             var rule = new NobodyCanDeleteBuilds(_client);
