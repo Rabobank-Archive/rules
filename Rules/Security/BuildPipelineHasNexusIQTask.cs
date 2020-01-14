@@ -14,7 +14,7 @@ namespace SecurePipelineScan.Rules.Security
         }
         
         public string TaskId => "4f40d1a2-83b0-4ddc-9a77-e7f279eb1802";
-        public string TaskName => "SonatypeIntegrations.nexus-iq-azure-extension.nexus-iq-azure-pipeline-task.NexusIqPipelineTask";
+        public string TaskName => "NexusIqPipelineTask";
         public string StepName => "";
         string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";

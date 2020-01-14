@@ -240,9 +240,11 @@ namespace SecurePipelineScan.Rules.Security
                                             && s.SelectToken("enabled", false)?.ToString() != "false");
         }
 
-        private static bool ContainsTaskName(string task, string name)
+        internal static bool ContainsTaskName(string fullTaskName, string name)
         {
-            return task.Split('@')[0] == name;
+            var taskNameWithPrefix = fullTaskName.Split('@')[0];
+            var taskName = taskNameWithPrefix.Split('.').Last();
+            return taskName == name;
         }
 
         private static IEnumerable<JToken> GetSteps(JToken yamlPipeline)
