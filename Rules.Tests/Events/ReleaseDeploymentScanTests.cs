@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AutoFixture;
 using ExpectedObjects;
 using Newtonsoft.Json.Linq;
@@ -521,13 +522,13 @@ namespace SecurePipelineScan.Rules.Tests.Events
             }
 
             [Fact]
-            public async Task ShouldReturnTrueForReleaseHasSm9ChangeId()
+            public async Task ShouldReturnIdAndUrlWhenReleaseHasChangeTag()
             {
                 // Arrange
                 var input = ReadInput("Completed", "Approved.json");
                 _fixture.Customize<Response.Release>(
                     x => x.With(
-                        a => a.Tags, new[] { "SM9ChangeId 12345", "Random tag" }));
+                        a => a.Tags, new[] { "C000123456 [00aa0a00]", "Random tag" }));
 
                 // Act
                 var client = new FixtureClient(_fixture);
@@ -535,11 +536,13 @@ namespace SecurePipelineScan.Rules.Tests.Events
                 var report = await scan.GetCompletedReportAsync(input);
 
                 // Assert
-                Assert.Equal("12345", report.SM9ChangeId);
+                Assert.Equal("C000123456", report.SM9ChangeId);
+                Assert.Equal(new Uri($"http://itsm.somecompany.nl/SM/index.do?ctx=docEngine&file=cm3r&query=number%3D%22" +
+                    $"C000123456%22&action=&title=Change%20Request%20Details&queryHash=00aa0a00"), report.SM9ChangeUrl);
             }
 
             [Fact]
-            public async Task EvaluateShouldReturnFalseForReleaseHasNoSm9ChangeId()
+            public async Task ShouldReturnNullForReleaseWithNoSm9ChangeTag()
             {
                 // Arrange
                 var input = ReadInput("Completed", "Approved.json");
@@ -554,6 +557,26 @@ namespace SecurePipelineScan.Rules.Tests.Events
 
                 // Assert
                 Assert.Null(report.SM9ChangeId);
+                Assert.Null(report.SM9ChangeUrl);
+            }
+
+            [Fact]
+            public async Task ShouldReturnSolelyIdForReleaseWithNoHashInSm9ChangeTag()
+            {
+                // Arrange
+                var input = ReadInput("Completed", "Approved.json");
+                _fixture.Customize<Response.Release>(
+                    x => x.With(
+                        a => a.Tags, new[] { "Change=C000123456 but no hash", "Random tag" }));
+
+                // Act
+                var client = new FixtureClient(_fixture);
+                var scan = new ReleaseDeploymentScan(client);
+                var report = await scan.GetCompletedReportAsync(input);
+
+                // Assert
+                Assert.Equal("C000123456", report.SM9ChangeId);
+                Assert.Null(report.SM9ChangeUrl);
             }
         }
 

@@ -15,5 +15,6 @@ namespace SecurePipelineScan.Rules.Reports
         public bool? AllArtifactsAreFromBuild { get; set; }
         public bool? UsesManagedAgentsOnly { get; set; }
         public string SM9ChangeId { get; set; }
+        public Uri SM9ChangeUrl { get; set; }
     }
 }
