@@ -65,7 +65,7 @@ namespace SecurePipelineScan.Rules.Events
             var changeId = GetChangeIdFromTag(tag);
             var changeHash = Regex.Match(tag, ChangeHashRegex).Groups[1].Value;
 
-            if (changeId == "" || changeHash == "")
+            if (string.IsNullOrEmpty(changeId) || string.IsNullOrEmpty(changeHash))
                 return null;
 
             return new Uri($"http://itsm.somecompany.nl/SM/index.do?ctx=docEngine&file=cm3r&query=number%3D%22" +
