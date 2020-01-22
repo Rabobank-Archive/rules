@@ -17,11 +17,12 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitDestroyBuilds = 32;
         private const int PermissionBitDeleteBuildDefinition = 4096;
         private const int PermissionBitAdministerBuildPermissions = 16384;
-        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can delete builds (SOx)";
-        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
-        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
-        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
+        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]
+        string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Builds' permission is set to Deny",
             "For all security groups the 'Destroy Builds' permission is set to Deny",
@@ -41,7 +42,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId)
+        public Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -54,7 +55,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private ManagePermissions Permissions(string projectId, string buildPipelineId) =>
             ManagePermissions
-                .ForBuildPipeline(_client, projectId,buildPipelineId)
+                .ForBuildPipeline(_client, projectId, buildPipelineId)
                 .Ignore("Project Collection Administrators", "Project Collection Build Administrators")
                 .Permissions(PermissionBitDeleteBuilds, PermissionBitDestroyBuilds, PermissionBitDeleteBuildDefinition, PermissionBitAdministerBuildPermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited);

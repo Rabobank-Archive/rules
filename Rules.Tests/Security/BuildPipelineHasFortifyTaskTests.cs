@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class BuildPipelineHasFortifyTaskTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private const string TaskName = "FortifySCA";
 
         public BuildPipelineHasFortifyTaskTests(TestConfig config)
@@ -71,8 +71,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup {Tasks = new[] {fortifyStep}};
-            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
+            var taskGroup = new TaskGroup { Tasks = new[] { fortifyStep } };
+            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<VstsService.Response.Project>();
@@ -111,8 +111,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup {Tasks = new[] {circularStep}};
-            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
+            var taskGroup = new TaskGroup { Tasks = new[] { circularStep } };
+            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<VstsService.Response.Project>();
@@ -617,7 +617,7 @@ steps:
             "repo name should have exactly two segments")]
         [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", false, null)]
         [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", false, null)]
-        public async Task GivenPipeline_WhenNestedStepsYamlTemplateIn»xternalRepoWithFortifyTask_ThenEvaluatesToTrue(
+        public async Task GivenPipeline_WhenNestedStepsYamlTemplateInExternalRepoWithFortifyTask_ThenEvaluatesToTrue(
             string stepsTemplate, string repoAlias, string repoType, string repoName, bool expectedResult,
             string exceptionMsg)
         {

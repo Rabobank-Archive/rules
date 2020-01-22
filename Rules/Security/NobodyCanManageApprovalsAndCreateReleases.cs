@@ -74,11 +74,11 @@ namespace SecurePipelineScan.Rules.Security
                 if (!permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                     return false;
             }
-            
+
             return true;
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -118,7 +118,7 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private async Task CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(string projectId, 
+        private async Task CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(string projectId,
             IEnumerable<Response.ApplicationGroup> projectGroups, IEnumerable<Response.ApplicationGroup> groups)
         {
             var peoGroup = projectGroups.FirstOrDefault(g => PeoGroupExists(g)) ??
@@ -129,15 +129,15 @@ namespace SecurePipelineScan.Rules.Security
                     .ConfigureAwait(false);
         }
 
-        private static bool PeoGroupExists(Response.ApplicationGroup group) 
+        private static bool PeoGroupExists(Response.ApplicationGroup group)
             => group.FriendlyDisplayName == PeoGroupName;
 
-        private async Task<Response.ApplicationGroup> CreateProductionEnvironmentOwnerGroupAsync(string projectId) => 
+        private async Task<Response.ApplicationGroup> CreateProductionEnvironmentOwnerGroupAsync(string projectId) =>
             await _client.PostAsync(Request.Security.ManageGroup(projectId),
                     new Request.Security.ManageGroupData { Name = PeoGroupName })
                 .ConfigureAwait(false);
 
-        private async Task UpdatePermissionsProductionEnvironmentOwnerGroupAsync(string projectId, 
+        private async Task UpdatePermissionsProductionEnvironmentOwnerGroupAsync(string projectId,
             Response.ApplicationGroup peoGroup)
         {
             var permissions = await _client.GetAsync(Request.Permissions.PermissionsGroupSetId(
@@ -150,12 +150,12 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        private async Task UpdatePermissionAsync(string projectId, Response.ApplicationGroup @group, 
+        private async Task UpdatePermissionAsync(string projectId, Response.ApplicationGroup @group,
             Response.PermissionsSetId permissions, int bit, int to)
         {
             var permission = permissions.Permissions.Single(p => p.PermissionBit == bit);
             permission.PermissionId = to;
-            
+
             await _client.PostAsync(Request.Permissions.ManagePermissions(projectId),
                     new Request.Permissions.ManagePermissionsData(@group.TeamFoundationId, permissions.DescriptorIdentifier,
                     permissions.DescriptorIdentityType, permission).Wrap())

@@ -39,7 +39,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public void ReleaseRules()
         {
-            var rules = new RulesProvider().ReleaseRules(null);
+            var rules = new RulesProvider().ReleaseRules(null, null);
             rules
                 .OfType<NobodyCanDeleteReleases>()
                 .ShouldNotBeEmpty();
@@ -54,7 +54,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var provider = new RulesProvider();
             var rules =
                 provider.GlobalPermissions(null).Concat(
-                provider.ReleaseRules(null).Concat(
+                provider.ReleaseRules(null, null).Concat(
                 provider.BuildRules(null).Concat<IRule>(
                 provider.RepositoryRules(null))));
 

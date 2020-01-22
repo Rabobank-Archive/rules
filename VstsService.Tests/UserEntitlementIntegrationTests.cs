@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
@@ -8,11 +7,13 @@ using Xunit;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
-    public class UserEntitlementTests : IClassFixture<TestConfig>
+    [Trait("category", "integration")]
+    public class UserEntitlementIntegrationTests : IClassFixture<TestConfig>
     {
         private readonly IVstsRestClient _client;
 
-        public UserEntitlementTests(TestConfig config)
+
+        public UserEntitlementIntegrationTests(TestConfig config)
         {
             _client = new VstsRestClient(config.Organization, config.Token);
         }
@@ -38,7 +39,7 @@ namespace SecurePipelineScan.VstsService.Tests
             msdn.LicenseDisplayName.ShouldNotBeEmpty();
             msdn.MsdnLicenseType.ShouldNotBe("none");
             msdn.AccountLicenseType.ShouldBe("none");
-            
+
             var account = result.First(x => x.AccessLevel.LicensingSource == "account").AccessLevel;
             account.Status.ShouldNotBeEmpty();
             account.MsdnLicenseType.ShouldBe("none");
@@ -59,13 +60,13 @@ namespace SecurePipelineScan.VstsService.Tests
         public async Task TestUpdateLicense(string license)
         {
             const string user = "Richard.Oprins@somecompany.nl";
-            
+
             var entitlement = _client
                 .Get(MemberEntitlementManagement.UserEntitlements())
                 .FirstOrDefault(e => e.User.MailAddress.Equals(user));
 
             entitlement.AccessLevel.AccountLicenseType = license;
-            
+
             var patchDocument = new JsonPatchDocument().Replace("/accessLevel", entitlement.AccessLevel);
             _ = await _client.PatchAsync(MemberEntitlementManagement.PatchUserEntitlements(entitlement.Id), patchDocument);
 

@@ -18,13 +18,20 @@ namespace SecurePipelineScan.VstsService.Requests
                     ["Content-Type"] = "application/json-patch+json"
                 });
 
-        public static IEnumerableRequest<UserEntitlement> UserEntitlements() => 
+        public static IVstsRequest<UserEntitlement> GetUserEntitlement(string entitlementId) =>
+        new VstsRequest<UserEntitlement>(
+            $"_apis/UserEntitlements/{entitlementId}", new Dictionary<string, object>
+            {
+                    {"api-version", "5.0-preview.2"}
+            });
+
+        public static IEnumerableRequest<UserEntitlement> UserEntitlements() =>
             new MemberEntitlementManagementRequest<UserEntitlement>("_apis/UserEntitlements", new Dictionary<string, object>
             {
                 ["api-version"] = "5.1-preview.2"
             }).AsEnumerable();
 
-        public static MemberEntitlementManagementRequest<UserEntitlementSummary> UserEntitlementSummary() => 
+        public static MemberEntitlementManagementRequest<UserEntitlementSummary> UserEntitlementSummary() =>
             new MemberEntitlementManagementRequest<UserEntitlementSummary>("_apis/userentitlementsummary", new Dictionary<string, object>
             {
                 ["api-version"] = "5.0-preview.1"

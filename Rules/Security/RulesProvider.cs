@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SecurePipelineScan.Rules.Security.Cmdb;
+using SecurePipelineScan.Rules.Security.Cmdb.Client;
 using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Security
@@ -8,7 +10,7 @@ namespace SecurePipelineScan.Rules.Security
         IEnumerable<IProjectRule> GlobalPermissions(IVstsRestClient client);
         IEnumerable<IRepositoryRule> RepositoryRules(IVstsRestClient client);
         IEnumerable<IBuildPipelineRule> BuildRules(IVstsRestClient client);
-        IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient client);
+        IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient vstsClient, ICmdbClient cmdbClient);
     }
 
     public class RulesProvider : IRulesProvider
@@ -36,16 +38,16 @@ namespace SecurePipelineScan.Rules.Security
             yield return new BuildPipelineHasCredScanTask(client);
         }
 
-        public IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient client)
+        public IEnumerable<IReleasePipelineRule> ReleaseRules(IVstsRestClient vstsClient, ICmdbClient cmdbClient)
         {
-            yield return new NobodyCanDeleteReleases(client);
-            yield return new NobodyCanManageApprovalsAndCreateReleases(client);
-            yield return new PipelineHasRequiredRetentionPolicy(client);
+            yield return new NobodyCanDeleteReleases(vstsClient);
+            yield return new NobodyCanManageApprovalsAndCreateReleases(vstsClient);
+            yield return new PipelineHasRequiredRetentionPolicy(vstsClient);
             yield return new ReleasePipelineUsesBuildArtifact();
-            yield return new ProductionStageUsesArtifactFromSecureBranch(client);
+            yield return new ProductionStageUsesArtifactFromSecureBranch(vstsClient);
             yield return new PipelineHasAtLeastOneStageWithApproval();
-            yield return new ReleasePipelineHasSm9ChangeTask(client);
-            yield return new ReleasePipelineHasDeploymentMethod();
+            yield return new ReleasePipelineHasSm9ChangeTask(vstsClient);
+            yield return new ReleasePipelineHasDeploymentMethod(vstsClient, cmdbClient);
         }
     }
 }

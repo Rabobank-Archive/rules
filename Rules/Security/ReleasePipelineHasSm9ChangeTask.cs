@@ -12,7 +12,7 @@ namespace SecurePipelineScan.Rules.Security
         private readonly GuiPipelineEvaluator _pipelineEvaluator;
         private const string TaskId = "d0c045b6-d01d-4d69-882a-c21b18a35472";
 
-        public ReleasePipelineHasSm9ChangeTask(IVstsRestClient client) => 
+        public ReleasePipelineHasSm9ChangeTask(IVstsRestClient client) =>
             _pipelineEvaluator = new GuiPipelineEvaluator(client);
 
         string IRule.Description => "Release pipeline contains SM9 Create Change task";

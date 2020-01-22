@@ -20,11 +20,12 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitAdministerReleasePermissions = 512;
         private const int PermissionBitDeleteReleases = 1024;
 
-        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can delete releases (SOx)";
-        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
-        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
-        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
+        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]
+        string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Delete Releases' permission is set to Deny",
             "For all security groups the 'Delete Release Pipeline' permission is set to Deny",
@@ -43,7 +44,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId)
+        public Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

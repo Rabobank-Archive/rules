@@ -1,6 +1,5 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
-using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
@@ -9,6 +8,7 @@ using System;
 using NSubstitute;
 using SecurePipelineScan.VstsService.Response;
 using Task = System.Threading.Tasks.Task;
+using SecurePipelineScan.Rules.Security;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -69,11 +69,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = _fixture.Create<string>();
             var releasePipeline = _fixture.Create<ReleaseDefinition>();
             var client = Substitute.For<IVstsRestClient>();
-            
+
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
             var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
-            
+
             //Assert
             result.ShouldBe(false);
         }
@@ -85,11 +85,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = _fixture.Create<string>();
             var releasePipeline = _fixture.Create<ReleaseDefinition>();
             var client = Substitute.For<IVstsRestClient>();
-            
+
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
             var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
-            
+
             //Assert
             result.ShouldBe(false);
         }

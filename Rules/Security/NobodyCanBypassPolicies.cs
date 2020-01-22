@@ -18,18 +18,19 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitBypassPoliciesCodePush = 128;
         private const int PermissionBitManagePermissions = 8192;
 
-        [ExcludeFromCodeCoverage]string IRule.Description => "Nobody can bypass branch policies (SOx)";
-        [ExcludeFromCodeCoverage]string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
-        [ExcludeFromCodeCoverage]bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage]bool IReconcile.RequiresStageId => false;
-        [ExcludeFromCodeCoverage]string[] IReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
+        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
+        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+        [ExcludeFromCodeCoverage]
+        string[] IReconcile.Impact => new[]
         {
             "For all security groups the 'Bypass policies when completing pull requests' permission is set to Deny",
             "For all security groups the 'Bypass policies when pushing' permission is set to Deny",
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public Task<bool> EvaluateAsync(string projectId, string repositoryId, 
+        public Task<bool> EvaluateAsync(string projectId, string repositoryId,
             IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
         {
             if (projectId == null)
@@ -41,7 +42,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ValidateAsync();
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId)
+        public Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -55,7 +56,7 @@ namespace SecurePipelineScan.Rules.Security
         private ManagePermissions Permissions(string projectId, string repositoryId) =>
             ManagePermissions
                 .ForRepository(_client, projectId, repositoryId)
-                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush, 
+                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
                     PermissionBitManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
