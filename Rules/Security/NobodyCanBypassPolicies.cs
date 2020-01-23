@@ -42,7 +42,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ValidateAsync();
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
+        public Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

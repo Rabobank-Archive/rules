@@ -130,14 +130,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ForRepository(client, projectId, RepositoryId)
                 .Permissions(512)
                 .SetToAsync(PermissionId.Allow);
-            
+
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(false);
-            
-            await rule.ReconcileAsync(projectId, RepositoryId, null);
+
+            await rule.ReconcileAsync(projectId, RepositoryId, null, null);
             await Task.Delay(TimeSpan.FromSeconds(2));
-            
+
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(true);
         }
@@ -149,7 +149,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", null);
+            await rule.ReconcileAsync("TAS", "123", null, null);
 
             await client
                 .Received()
@@ -166,7 +166,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", null);
+            await rule.ReconcileAsync("TAS", "123", null, null);
 
             await client
                 .DidNotReceive()
@@ -181,7 +181,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", null);
+            await rule.ReconcileAsync("TAS", "123", null, null);
 
             await client
                 .DidNotReceive()
@@ -196,7 +196,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            await rule.ReconcileAsync("TAS", "123", null);
+            await rule.ReconcileAsync("TAS", "123", null, null);
 
             await client
                 .DidNotReceive()

@@ -50,9 +50,8 @@ namespace SecurePipelineScan.VstsService.Tests
             result.All(e => e.Settings.AllowDownvotes).ShouldBeFalse();
             result.Any(e => e.Settings.CreatorVoteCounts).ShouldBeTrue();
             result.Any(e => e.Settings.ResetOnSourcePush).ShouldBeTrue();
-
-            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind));
-            result.ShouldAllBe(e => !string.IsNullOrEmpty(e.Settings.Scope[0].RefName));
+            result.Any(e => !string.IsNullOrEmpty(e.Settings.Scope[0].MatchKind)).ShouldBeTrue();
+            result.Any(e => e.Settings.Scope[0].RepositoryId != Guid.Empty).ShouldBeTrue();
             result.ShouldAllBe(e => e.Settings.Scope[0].RepositoryId != Guid.Empty);
         }
 

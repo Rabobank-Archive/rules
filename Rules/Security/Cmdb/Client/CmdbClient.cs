@@ -4,6 +4,9 @@ using SecurePipelineScan.Rules.Security.Cmdb.Model;
 using System.Web;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Flurl.Http.Configuration;
 
 namespace SecurePipelineScan.Rules.Security.Cmdb.Client
 {
@@ -14,6 +17,14 @@ namespace SecurePipelineScan.Rules.Security.Cmdb.Client
         public CmdbClient(CmdbClientConfig config)
         {
             this.Config = config;
+
+            FlurlHttp.Configure(c =>
+                {
+                    c.JsonSerializer = new NewtonsoftJsonSerializer(
+                        new JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore }
+                    );
+                }
+            );
         }
 
         public async Task<CiContentItem> GetCiAsync(string ciIdentifier) =>
@@ -26,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security.Cmdb.Client
                 .Content?
                 .FirstOrDefault();
 
-        public Task UpdateDeploymentMethodAsync(string item, ConfigurationItemModel model) => PostAsync($"{Config.Endpoint}devices?{HttpUtility.UrlEncode(item)}", model);
+        public Task UpdateDeploymentMethodAsync(string item, CiContentItem update) => PostAsync($"{Config.Endpoint}devices/{HttpUtility.UrlEncode(item)}", update);
 
         private Task<GetCiResponse> GetCiResponseAsync(string ciIdentifier) => GetAsync<GetCiResponse>($"{Config.Endpoint}devices?CiIdentifier={ciIdentifier}");
 

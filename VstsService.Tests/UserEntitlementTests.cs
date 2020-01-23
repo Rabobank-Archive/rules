@@ -25,7 +25,7 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var result = await _client.GetAsync(MemberEntitlementManagement.GetUserEntitlement("abc"));
 
-            _httpTest.ShouldHaveCalled("https://dev.azure.com/somecompany-test/_apis/UserEntitlements/abc?api-version=5.0-preview.2");
+            _httpTest.ShouldHaveCalled("https://vsaex.dev.azure.com/somecompany-test/_apis/UserEntitlements/abc?api-version=5.0-preview.2");
         }
     }
 }

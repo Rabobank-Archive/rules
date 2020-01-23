@@ -35,7 +35,7 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
         [ExcludeFromCodeCoverage] public string Description => "Release pipeline has valid CMDB link";
         [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
         [ExcludeFromCodeCoverage] public bool IsSox => false;
-        [ExcludeFromCodeCoverage] public bool RequiresStageId => true;
+        [ExcludeFromCodeCoverage] public bool RequiresStageId => false;
 
         string[] IReconcile.Impact => new[] {
             "In the CMDB the deployment method for the CI is set to Azure DevOps and coupled to this release pipeline",
@@ -53,9 +53,9 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
             return Task.FromResult(stageExists);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
-            (string ciIdentifier, string userId) = GetData(data);
+            (string ciIdentifier, string productionStage) = GetData(data);
 
             var user = await GetUserAsync(userId).ConfigureAwait(false);
             var ci = await GetCiAsync(ciIdentifier).ConfigureAwait(false);
@@ -64,7 +64,7 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
             if (!IsUserEntitledForCi(user, assignmentGroup))
                 return;
 
-            await UpdateDeploymentMethodAsync(projectId, itemId, stageId, ci).ConfigureAwait(false);
+            await UpdateDeploymentMethodAsync(projectId, itemId, productionStage, ci).ConfigureAwait(false);
         }
 
         private static bool IsUserEntitledForCi(UserEntitlement user, AssignmentContentItem assignmentGroup) =>
@@ -88,38 +88,39 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
         private static (string, string) GetData(object data)
         {
             dynamic dynamicData = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data));
-            return ((string)dynamicData.CiIdentifier, (string)dynamicData.User);
+            return ((string)dynamicData.ciIdentifier, (string)dynamicData.environment);
         }
 
-        private async Task UpdateDeploymentMethodAsync(string projectId, string itemId, string stageId, CiContentItem ci)
+        private async Task UpdateDeploymentMethodAsync(string projectId, string itemId, string productionStage, CiContentItem ci)
         {
             var deploymentMethods = ci.Device?.DeploymentInfo ?? new DeploymentInfo[0];
             if (deploymentMethods.Where(x => x.DeploymentMethod == AzureDevOpsDeploymentMethod)
                                  .Select(x => ParseSupplementaryInfo(x.SupplementaryInformation))
                                  .Any(x => x.Project == projectId &&
                                            x.Pipeline == itemId &&
-                                           x.Stage == stageId))
+                                           x.Stage == productionStage))
                 return;
 
-            var newAzDoDeploymentMethod = CreateDeploymentMethod(projectId, itemId, stageId);
+            var newAzDoDeploymentMethod = CreateDeploymentMethod(projectId, itemId, productionStage);
             var update = deploymentMethods.Concat(new[] { newAzDoDeploymentMethod });
 
-            await _cmdbClient.UpdateDeploymentMethodAsync(ci.Device.ConfigurationItem, new ConfigurationItemModel { DeploymentInfo = update })
+            await _cmdbClient.UpdateDeploymentMethodAsync(ci.Device.ConfigurationItem,
+                                    new CiContentItem { Device = new ConfigurationItemModel { DeploymentInfo = update } })
                              .ConfigureAwait(false);
         }
 
-        private DeploymentInfo CreateDeploymentMethod(string projectId, string itemId, string stageId) => new DeploymentInfo
+        private DeploymentInfo CreateDeploymentMethod(string projectId, string itemId, string productionStage) => new DeploymentInfo
         {
             DeploymentMethod = AzureDevOpsDeploymentMethod,
-            SupplementaryInformation = CreateSupplementaryInformation(projectId, itemId, stageId)
+            SupplementaryInformation = CreateSupplementaryInformation(projectId, itemId, productionStage)
         };
 
-        private string CreateSupplementaryInformation(string projectId, string itemId, string stageId) => JsonConvert.SerializeObject(new SupplementaryInformation
+        private string CreateSupplementaryInformation(string projectId, string itemId, string productionStage) => JsonConvert.SerializeObject(new SupplementaryInformation
         {
             Organization = _cmdbClient.Config.Organization,
             Pipeline = itemId,
             Project = projectId,
-            Stage = stageId
+            Stage = productionStage
         }, _serializerSettings);
 
         private SupplementaryInformation ParseSupplementaryInfo(string json)

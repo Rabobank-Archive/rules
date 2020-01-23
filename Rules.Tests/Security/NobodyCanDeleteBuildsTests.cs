@@ -50,7 +50,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteBuilds(_client) as IReconcile;
-            await rule.ReconcileAsync(projectId, "2", null);
+            await rule.ReconcileAsync(projectId, "2", null, null);
         }
 
         [Fact]

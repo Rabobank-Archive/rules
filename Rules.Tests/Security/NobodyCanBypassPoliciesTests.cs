@@ -42,11 +42,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ForRepository(client, projectId, RepositoryId)
                 .Permissions(PermissionBitBypassPoliciesPullRequest)
                 .SetToAsync(PermissionId.Allow);
-            
+
             var rule = new NobodyCanBypassPolicies(client);
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(false);
-            await rule.ReconcileAsync(projectId, RepositoryId, null);
+            await rule.ReconcileAsync(projectId, RepositoryId, null, null);
             await Task.Delay(TimeSpan.FromSeconds(2));
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(true);

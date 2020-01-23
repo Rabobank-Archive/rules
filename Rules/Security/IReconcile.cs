@@ -6,7 +6,7 @@ namespace SecurePipelineScan.Rules.Security
     {
         bool RequiresStageId { get; }
 
-        Task ReconcileAsync(string projectId, string itemId, string stageId, object data = null);
+        Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null);
 
         string[] Impact { get; }
     }

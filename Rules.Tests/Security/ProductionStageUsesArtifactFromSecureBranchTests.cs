@@ -119,7 +119,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
 
             // act
-            await rule.ReconcileAsync("projectId", "1", "1");
+            await rule.ReconcileAsync("projectId", "1", "1", null);
 
             // assert
             await client
@@ -373,7 +373,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var rule = (IReconcile)new ProductionStageUsesArtifactFromSecureBranch(client);
-            await rule.ReconcileAsync(_config.Project, "1", "2").ConfigureAwait(false);
+            await rule.ReconcileAsync(_config.Project, "1", "2", null).ConfigureAwait(false);
         }
 
         [Fact]

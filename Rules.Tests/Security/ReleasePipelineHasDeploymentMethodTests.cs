@@ -81,13 +81,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = new ReleasePipelineHasDeploymentMethod(vstsClient, cmdbClient);
 
             // Act
-            dynamic data = new { User = "2dbe73bd-5f5c-6152-b980-1b9e87449188", CiIdentifier = "CI1234567" };
-            await rule.ReconcileAsync("1", "2", "3", data);
+            dynamic data = new { environment = "2dbe73bd-5f5c-6152-b980-1b9e87449188", ciIdentifier = "CI1234567" };
+            await rule.ReconcileAsync("1", "2", "3", "2dbe73bd-5f5c-6152-b980-1b9e87449188", data);
 
             // Assert
             await cmdbClient.Received().GetCiAsync("CI1234567");
             await cmdbClient.Received().GetAssignmentAsync("TAS");
-            await cmdbClient.Received().UpdateDeploymentMethodAsync("TEST", Arg.Is<ConfigurationItemModel>(c => c.DeploymentInfo.Count() == 1 && c.DeploymentInfo.First().DeploymentMethod == "Azure Devops"));
+            await cmdbClient.Received().UpdateDeploymentMethodAsync("TEST", Arg.Is<CiContentItem>(c => c.Device.DeploymentInfo.Count() == 1 && c.Device.DeploymentInfo.First().DeploymentMethod == "Azure Devops"));
         }
     }
 }

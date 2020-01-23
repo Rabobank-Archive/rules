@@ -18,8 +18,8 @@ namespace SecurePipelineScan.VstsService.Requests
                     ["Content-Type"] = "application/json-patch+json"
                 });
 
-        public static IVstsRequest<UserEntitlement> GetUserEntitlement(string entitlementId) =>
-        new VstsRequest<UserEntitlement>(
+        public static MemberEntitlementManagementRequest<UserEntitlement> GetUserEntitlement(string entitlementId) =>
+        new MemberEntitlementManagementRequest<UserEntitlement>(
             $"_apis/UserEntitlements/{entitlementId}", new Dictionary<string, object>
             {
                     {"api-version", "5.0-preview.2"}

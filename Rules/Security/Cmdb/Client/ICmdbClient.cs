@@ -12,6 +12,6 @@ namespace SecurePipelineScan.Rules.Security.Cmdb.Client
 
         Task<AssignmentContentItem> GetAssignmentAsync(string name);
 
-        Task UpdateDeploymentMethodAsync(string item, ConfigurationItemModel model);
+        Task UpdateDeploymentMethodAsync(string item, CiContentItem update);
     }
 }
