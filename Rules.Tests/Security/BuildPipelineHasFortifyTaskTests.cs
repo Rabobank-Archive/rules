@@ -607,26 +607,28 @@ steps:
         #region [ nested steps templates in external repo ]
 
         [Theory]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo", true, null)]
-        [InlineData("steps-template.yml@shared", "shared", "github", "project/repo", false, null)]
-        [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", true, "repo alias not found")]
-        [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", false, null)]
-        [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", true,
-            "yaml name with repo reference should have exactly two segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", true,
-            "repo name should have exactly two segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", false, null)]
-        [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", false, null)]
+        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo", "project", true, null)]
+        [InlineData("steps-template.yml@shared", "shared", "github", "project/repo", "project", false, null)]
+        [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", "project", true, "repo alias not found")]
+        [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", "project", false, null)]
+        [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", "project", true, "yaml name with repo reference should have exactly two segments")]
+        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", "project", true, "repo name contains an unsupported number of segments")]
+        [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", "project", false, null)]
+        [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", "project", false, null)]
+        [InlineData("steps-template.yml@shared", "shared", "git", "repo", "projectId", true, null)]
         public async Task GivenPipeline_WhenNestedStepsYamlTemplateInExternalRepoWithFortifyTask_ThenEvaluatesToTrue(
-            string stepsTemplate, string repoAlias, string repoType, string repoName, bool expectedResult,
-            string exceptionMsg)
+            string stepsTemplate, string repoAlias, string repoType, string repoName,
+            string expectedProjectId, bool expectedResult, string exceptionMsg)
         {
             // arrange
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
             _fixture.Customize<VstsService.Response.Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
+                .With(x => x.Name, "projectA")
+                .With(x => x.Id, "projectId")
+            );
+
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
@@ -656,7 +658,7 @@ steps:
                 .Returns(azurePipelineGitItem);
             client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
                     r => r.QueryParams["path"].ToString() == "steps-template.yml" &&
-                         r.Resource.Contains("/project/_apis/git/repositories/repo/items")))
+                         r.Resource.Contains($"/{expectedProjectId}/_apis/git/repositories/repo/items")))
                 .Returns(stepsTemplateGitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();

@@ -131,7 +131,7 @@ namespace SecurePipelineScan.Rules.Security
                 var intResourceRef = new ResourceRef(parentResourceRef.ProjectId, parentResourceRef.RepoId)
                     .WithFilePath(item[TemplatePropertyName].Value<string>());
 
-                var extResourceRef = GetResourceRefFromYamlFileName(intResourceRef.GetFilePath(), yamlPipeline);
+                var extResourceRef = GetNextResourceRef(intResourceRef, yamlPipeline);
                 var actualResourceRef = SelectResourceRef(intResourceRef, extResourceRef);
                 actualResourceRef.Parent = parentResourceRef;
                 var yamlTemplate = await GetGitYamlItemAsync(actualResourceRef, level).ConfigureAwait(false);
@@ -176,8 +176,9 @@ namespace SecurePipelineScan.Rules.Security
                 : internalRef;
         }
 
-        private static ResourceRef GetResourceRefFromYamlFileName(string yamlFileName, JToken yamlPipeline)
+        private static ResourceRef GetNextResourceRef(ResourceRef resourceRef, JToken yamlPipeline)
         {
+            var yamlFileName = resourceRef.GetFilePath();
             if (!yamlFileName.Contains('@'))
             {
                 return default;
@@ -193,7 +194,7 @@ namespace SecurePipelineScan.Rules.Security
             var yamlName = segments[0];
             var repoRefAlias = segments[1];
 
-            var repoRefs = GetRepoReferences(yamlPipeline);
+            var repoRefs = GetRepoReferences(resourceRef, yamlPipeline);
             if (!repoRefs.ContainsKey(repoRefAlias))
             {
                 throw new InvalidOperationException("repo alias not found");
@@ -205,7 +206,7 @@ namespace SecurePipelineScan.Rules.Security
                     repoRefs[repoRefAlias].RepoType).WithFilePath(yamlName);
         }
 
-        private static Dictionary<string, ResourceRef> GetRepoReferences(JToken yamlPipeline)
+        private static Dictionary<string, ResourceRef> GetRepoReferences(ResourceRef resourceRef, JToken yamlPipeline)
         {
             var result = new Dictionary<string, ResourceRef>();
             var repos = yamlPipeline["resources"]?["repositories"];
@@ -217,15 +218,29 @@ namespace SecurePipelineScan.Rules.Security
             foreach (var repo in repos)
             {
                 var segments = repo["name"].Value<string>().Split('/');
-                const int maxSegmentCount = 2;
-                if (segments.Length != maxSegmentCount)
+                string projectId;
+                string repoId;
+
+                const int twoMeansWeHaveProjectAndRepo = 2;
+                const int oneMeansWeHaveRepoOnly = 1;
+                if (segments.Length == twoMeansWeHaveProjectAndRepo)
                 {
-                    throw new InvalidOperationException("repo name should have exactly two segments");
+                    projectId = segments[0];
+                    repoId = segments[1];
+                }
+                else if (segments.Length == oneMeansWeHaveRepoOnly)
+                {
+                    projectId = resourceRef.ProjectId;
+                    repoId = segments[0];
+                }
+                else
+                {
+                    throw new InvalidOperationException("repo name contains an unsupported number of segments");
                 }
 
                 result[repo["repository"].Value<string>()] =
-                    new ResourceRef(segments[0],
-                        segments[1],
+                    new ResourceRef(projectId,
+                        repoId,
                         repo["type"].Value<string>());
             }
 
