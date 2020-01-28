@@ -22,7 +22,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var fixture = new Fixture();
             var releasePipeline = fixture.Create<Response.ReleaseDefinition>();
-            var cmdbClient = new CmdbClient(null);
+            var cmdbClient = Substitute.For<ICmdbClient>();
 
             //Act
             var rule = new ReleasePipelineHasDeploymentMethod(null, cmdbClient);
@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var fixture = new Fixture();
             var releasePipeline = fixture.Create<Response.ReleaseDefinition>();
-            var cmdbClient = new CmdbClient(null);
+            var cmdbClient = Substitute.For<ICmdbClient>();
 
             //Act
             var rule = new ReleasePipelineHasDeploymentMethod(null, cmdbClient);
@@ -54,7 +54,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             //Arrange
             var fixture = new Fixture();
             var releasePipeline = fixture.Create<Response.ReleaseDefinition>();
-            var cmdbClient = new CmdbClient(null);
+            var cmdbClient = Substitute.For<ICmdbClient>();
 
             //Act
             var rule = new ReleasePipelineHasDeploymentMethod(null, cmdbClient);

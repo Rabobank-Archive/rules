@@ -5,7 +5,6 @@ using System.Web;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Flurl.Http.Configuration;
 
 namespace SecurePipelineScan.Rules.Security.Cmdb.Client
@@ -16,11 +15,11 @@ namespace SecurePipelineScan.Rules.Security.Cmdb.Client
 
         public CmdbClient(CmdbClientConfig config)
         {
-            this.Config = config;
+            this.Config = config ?? throw new System.ArgumentNullException(nameof(config));
 
-            FlurlHttp.Configure(c =>
+            FlurlHttp.ConfigureClient(config.Endpoint, c =>
                 {
-                    c.JsonSerializer = new NewtonsoftJsonSerializer(
+                    c.Settings.JsonSerializer = new NewtonsoftJsonSerializer(
                         new JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore }
                     );
                 }
