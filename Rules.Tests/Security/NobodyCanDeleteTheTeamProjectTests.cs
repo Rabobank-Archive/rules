@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
 using Requests = SecurePipelineScan.VstsService.Requests;
@@ -315,6 +317,28 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.GetAsync(Arg.Any<IVstsRequest<Response.PermissionsProjectId>>())
                 .Returns(new Response.PermissionsProjectId
                     {Security = new Response.PermissionsSetId {Permissions = permissions}});
+        }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public async Task ReconcileIntegrationTest()
+        {
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+
+            await ManagePermissions
+                .ForTeamProject(client, _config.Project)
+                .Permissions((4, "52d39943-cb85-4d7f-8fa8-c6baac873819"))
+                .SetToAsync(PermissionId.Allow);
+
+            var rule = new NobodyCanDeleteTheTeamProject(client);
+            (await rule.EvaluateAsync(_config.Project))
+                .ShouldBe(false);
+
+            await rule.ReconcileAsync(_config.Project);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            (await rule.EvaluateAsync(_config.Project))
+                .ShouldBe(true);
         }
     }
 }

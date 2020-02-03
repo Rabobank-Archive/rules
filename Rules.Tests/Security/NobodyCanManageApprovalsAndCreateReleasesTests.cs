@@ -9,6 +9,7 @@ using response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using SecurePipelineScan.VstsService.Requests;
+using System;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -51,13 +52,28 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReconcileReleaseIntegrationTest()
+        [Trait("category", "integration")]
+        public async Task ReconcileIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
+                .ConfigureAwait(false);
 
-            var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
-            await rule.ReconcileAsync(projectId, "1", null, null);
+            await ManagePermissions
+                .ForReleasePipeline(client, projectId, releasePipeline.Id)
+                .Permissions(8)
+                .SetToAsync(PermissionId.Allow);
+
+            var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
+            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+                .ShouldBe(false);
+
+            await rule.ReconcileAsync(projectId, releasePipeline.Id, null, null);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+                .ShouldBe(true);
         }
 
         [Fact]

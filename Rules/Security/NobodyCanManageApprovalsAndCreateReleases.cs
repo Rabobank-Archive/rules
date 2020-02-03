@@ -158,7 +158,7 @@ namespace SecurePipelineScan.Rules.Security
 
             await _client.PostAsync(Request.Permissions.ManagePermissions(projectId),
                     new Request.Permissions.ManagePermissionsData(@group.TeamFoundationId, permissions.DescriptorIdentifier,
-                    permissions.DescriptorIdentityType, permission).Wrap())
+                    permissions.DescriptorIdentityType, permission.PermissionToken, permission).Wrap())
                 .ConfigureAwait(false);
         }
     }

@@ -130,7 +130,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 new Requests.Permissions.ManagePermissionsData(
                     "2c12fa83-5bdb-4085-a635-c7cd00cdfba5",
                     "S-1-9-1551374245-50807123-3856808002-2418352955-3620213171-1-1337613045-2794958661-2397635820-2543327080",
-                    "Microsoft.TeamFoundation.Identity",
+                    "Microsoft.TeamFoundation.Identity", "vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3",
                     new Response.Permission
                     {
                         PermissionId = 2,
@@ -139,17 +139,6 @@ namespace SecurePipelineScan.VstsService.Tests
                         PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"
                     }
                 ).Wrap());
-        }
-
-        [Fact]
-        public void ExtractTokenTest()
-        {
-            new Requests.Permissions.ManagePermissionsData(null, null, null,
-                new Response.Permission
-                {
-                    PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"
-                }
-            ).PermissionSetToken.ShouldBe("vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3");
         }
     }
 }

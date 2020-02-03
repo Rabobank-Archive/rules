@@ -3,6 +3,7 @@ using SecurePipelineScan.VstsService.Response;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System;
 
 namespace SecurePipelineScan.VstsService.Requests
 {
@@ -87,10 +88,8 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public class ManagePermissionsData
         {
-            public ManagePermissionsData(string tfid,
-                string descriptorIdentifier,
-                string descriptorIdentityType,
-                params Permission[] permissions)
+            public ManagePermissionsData(string tfid, string descriptorIdentifier,
+                string descriptorIdentityType, string token, params Permission[] permissions)
             {
                 TeamFoundationId = tfid;
                 DescriptorIdentityType = descriptorIdentityType;
@@ -101,17 +100,11 @@ namespace SecurePipelineScan.VstsService.Requests
                     x.PermissionId,
                     x.NamespaceId,
                     x.PermissionBit,
-
                 });
 
                 var first = permissions.First();
                 PermissionSetId = first.NamespaceId;
-                PermissionSetToken = ExtractToken(first.PermissionToken);
-            }
-
-            private static string ExtractToken(string token)
-            {
-                return Regex.Match(token, @"^(?:\$PROJECT:)?(.*?)(?::)?$").Groups[1].Value;
+                PermissionSetToken = token;
             }
 
             public object Updates { get; }

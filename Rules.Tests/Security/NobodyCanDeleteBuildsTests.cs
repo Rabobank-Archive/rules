@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
@@ -45,12 +47,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task ReconcileBuildIntegrationTest()
+        public async Task ReconcileIntegrationTest()
         {
-            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
+                .ConfigureAwait(false);
 
-            var rule = new NobodyCanDeleteBuilds(_client) as IReconcile;
-            await rule.ReconcileAsync(projectId, "2", null, null);
+            await ManagePermissions
+                .ForBuildPipeline(_client, project.Id, buildPipeline.Id)
+                .Permissions(8)
+                .SetToAsync(PermissionId.Allow);
+
+            var rule = new NobodyCanDeleteBuilds(_client);
+            (await rule.EvaluateAsync(project, buildPipeline))
+                .ShouldBe(false);
+
+            await rule.ReconcileAsync(project.Id, buildPipeline.Id, null, null);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            (await rule.EvaluateAsync(project, buildPipeline))
+                .ShouldBe(true);
         }
 
         [Fact]
