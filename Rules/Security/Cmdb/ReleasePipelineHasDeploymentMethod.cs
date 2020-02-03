@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,12 +61,57 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
             var user = await GetUserAsync(userId).ConfigureAwait(false);
             var ci = await GetCiAsync(ciIdentifier).ConfigureAwait(false);
             var assignmentGroup = await GetAssignmentGroupAsync(ci?.Device?.AssignmentGroup).ConfigureAwait(false);
+            var isProdConfigurationItem = IsProdConfigurationItem(ciIdentifier);
 
-            if (!IsUserEntitledForCi(user, assignmentGroup))
+            if (isProdConfigurationItem && !IsUserEntitledForCi(user, assignmentGroup))
                 return;
 
             await UpdateDeploymentMethodAsync(projectId, itemId, productionStage, ci).ConfigureAwait(false);
+
+            if (isProdConfigurationItem)
+                await RemoveDeploymentMethodFromNonProdConfigurationItemAsync(projectId, itemId).ConfigureAwait(false);
         }
+
+        private async Task RemoveDeploymentMethodFromNonProdConfigurationItemAsync(string projectId, string itemId)
+        {
+            var ci = await GetCiAsync(_cmdbClient.Config.NonProdCiIdentifier).ConfigureAwait(false);
+            var deploymentMethods = ci?.Device?.DeploymentInfo ?? new DeploymentInfo[0];
+
+            if (!deploymentMethods.Any())
+                return;
+
+            var index = deploymentMethods.ToList().FindIndex(x =>
+            {
+                if (x.DeploymentMethod != AzureDevOpsDeploymentMethod)
+                    return false;
+
+                var supplementaryInfo = ParseSupplementaryInfo(x.SupplementaryInformation);
+                return supplementaryInfo.Project == projectId && supplementaryInfo.Pipeline == itemId;
+            });
+
+            if (index < 0)
+                return;
+
+            var update = deploymentMethods.Select((x, i) =>
+                i == index ? new DeploymentInfo { SupplementaryInformation = null, DeploymentMethod = null } : x
+            );
+
+            await _cmdbClient.UpdateDeploymentMethodAsync(ci.Device.ConfigurationItem, CreateCiContentItemUpdate(ci, update))
+                             .ConfigureAwait(false);
+        }
+
+        private static CiContentItem CreateCiContentItemUpdate(CiContentItem ci, IEnumerable<DeploymentInfo> update) =>
+            new CiContentItem
+            {
+                Device = new ConfigurationItemModel
+                {
+                    DeploymentInfo = update,
+                    AssignmentGroup = ci.Device.AssignmentGroup,
+                    ConfigurationItem = ci.Device.ConfigurationItem
+                }
+            };
+
+        private bool IsProdConfigurationItem(string ciIdentifier) => !_cmdbClient.Config.NonProdCiIdentifier.Equals(ciIdentifier);
 
         private static bool IsUserEntitledForCi(UserEntitlement user, AssignmentContentItem assignmentGroup) =>
             assignmentGroup?.Assignment?.Operators != null &&
@@ -101,11 +147,10 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
                                            x.Stage == productionStage))
                 return;
 
-            var newAzDoDeploymentMethod = CreateDeploymentMethod(projectId, itemId, productionStage);
-            var update = deploymentMethods.Concat(new[] { newAzDoDeploymentMethod });
+            var newDeploymentMethod = CreateDeploymentMethod(projectId, itemId, productionStage);
+            var update = deploymentMethods.Concat(new[] { newDeploymentMethod });
 
-            await _cmdbClient.UpdateDeploymentMethodAsync(ci.Device.ConfigurationItem,
-                                    new CiContentItem { Device = new ConfigurationItemModel { DeploymentInfo = update } })
+            await _cmdbClient.UpdateDeploymentMethodAsync(ci.Device.ConfigurationItem, CreateCiContentItemUpdate(ci, update))
                              .ConfigureAwait(false);
         }
 

@@ -20,7 +20,7 @@ namespace SecurePipelineScan.Rules.Security.Cmdb.Client
             FlurlHttp.ConfigureClient(config.Endpoint, c =>
                 {
                     c.Settings.JsonSerializer = new NewtonsoftJsonSerializer(
-                        new JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore }
+                        new JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Include }
                     );
                 }
             );
