@@ -35,6 +35,17 @@ namespace SecurePipelineScan.VstsService.Requests
                 });
         }
 
+        public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesMasterBranch(string projectId, string namespaceId, string repositoryId)
+        {
+            return new VstsRequest<Response.ApplicationGroups>(
+                $"/{projectId}/_api/_security/ReadExplicitIdentitiesJson", new Dictionary<string, object>
+                {
+                    {"__v", "5"},
+                    {"permissionSetId", namespaceId},
+                    {"permissionSetToken", $"repoV2/{projectId}/{repositoryId}/refs/heads/master"}
+                });
+        }
+
         public static IVstsRequest<Response.ApplicationGroups> ExplicitIdentitiesPipelines(string projectId, string namespaceId, string pipelineId)
         {
             return new VstsRequest<Response.ApplicationGroups>(

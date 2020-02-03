@@ -3,30 +3,21 @@ using SecurePipelineScan.VstsService;
 
 namespace SecurePipelineScan.Rules.Permissions
 {
-    internal class ForTeamProject : IFor
+    internal class ForTeamProject : ForAll, IFor 
     {
         private readonly IVstsRestClient _client;
-        private readonly string _project;
+        private readonly string _projectId;
 
-        public ForTeamProject(IVstsRestClient client, string project)
+        public ForTeamProject(IVstsRestClient client, string projectId) : base(client, projectId)
         {
             _client = client;
-            _project = project;
+            _projectId = projectId;
         }
 
         public Task<VstsService.Response.ApplicationGroups> IdentitiesAsync() =>
-            _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(_project));
+            _client.GetAsync(VstsService.Requests.ApplicationGroup.ApplicationGroups(_projectId));
 
         public async Task<VstsService.Response.PermissionsSetId> PermissionSetAsync(VstsService.Response.ApplicationGroup identity) =>
-            (await _client.GetAsync(VstsService.Requests.Permissions.PermissionsGroupProjectId(_project, identity.TeamFoundationId)).ConfigureAwait(false)).Security;
-
-        public Task UpdateAsync(VstsService.Response.ApplicationGroup identity, VstsService.Response.PermissionsSetId permissionSet,
-            VstsService.Response.Permission permission) =>
-            _client.PostAsync(VstsService.Requests.Permissions.ManagePermissions(_project),
-                new VstsService.Requests.Permissions.ManagePermissionsData(
-                    identity.TeamFoundationId,
-                    permissionSet.DescriptorIdentifier,
-                    permissionSet.DescriptorIdentityType,
-                    permission).Wrap());
+            (await _client.GetAsync(VstsService.Requests.Permissions.PermissionsGroupProjectId(_projectId, identity.TeamFoundationId)).ConfigureAwait(false)).Security;
     }
 }

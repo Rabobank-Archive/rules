@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public Task<bool> EvaluateAsync(string projectId, string repositoryId,
+        public async Task<bool> EvaluateAsync(string projectId, string repositoryId,
             IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
         {
             if (projectId == null)
@@ -38,24 +38,40 @@ namespace SecurePipelineScan.Rules.Security
             if (repositoryId == null)
                 throw new ArgumentNullException(nameof(repositoryId));
 
-            return Permissions(projectId, repositoryId)
-                .ValidateAsync();
+            return await Permissions(projectId, repositoryId)
+                    .ValidateAsync()
+                    .ConfigureAwait(false) &&
+                await PermissionsMasterBranch(projectId, repositoryId)
+                    .ValidateAsync()
+                    .ConfigureAwait(false);
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            return Permissions(projectId, itemId)
-                .SetToAsync(PermissionId.Deny);
+            await Permissions(projectId, itemId)
+                .SetToAsync(PermissionId.Deny)
+                .ConfigureAwait(false);
+            await PermissionsMasterBranch(projectId, itemId)
+                .SetToAsync(PermissionId.Deny)
+                .ConfigureAwait(false);
         }
 
         private ManagePermissions Permissions(string projectId, string repositoryId) =>
             ManagePermissions
                 .ForRepository(_client, projectId, repositoryId)
+                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
+                    PermissionBitManagePermissions)
+                .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
+                .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
+
+        private ManagePermissions PermissionsMasterBranch(string projectId, string repositoryId) =>
+            ManagePermissions
+                .ForMasterBranch(_client, projectId, repositoryId)
                 .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
                     PermissionBitManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)

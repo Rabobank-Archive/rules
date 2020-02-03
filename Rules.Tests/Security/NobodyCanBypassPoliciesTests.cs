@@ -51,5 +51,26 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(true);
         }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public async Task ReconcileIntegrationTestForMasterBranchPermission()
+        {
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+
+            await ManagePermissions
+                .ForMasterBranch(client, projectId, RepositoryId)
+                .Permissions(PermissionBitBypassPoliciesPullRequest)
+                .SetToAsync(PermissionId.Allow);
+
+            var rule = new NobodyCanBypassPolicies(client);
+            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+                .ShouldBe(false);
+            await rule.ReconcileAsync(projectId, RepositoryId, null, null);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+                .ShouldBe(true);
+        }
     }
 }

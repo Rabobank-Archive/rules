@@ -32,6 +32,18 @@ namespace SecurePipelineScan.VstsService.Requests
                 });
         }
 
+        public static IVstsRequest<PermissionsSetId> PermissionsGroupMasterBranch(string projectId, string permissionSetId, string applicationGroupId, string repositoryId)
+        {
+            return new VstsRequest<PermissionsSetId>(
+                $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, object>
+                {
+                    {"__v","5"},
+                    {"tfid", applicationGroupId},
+                    {"permissionSetId", permissionSetId},
+                    {"permissionSetToken", $"repoV2/{projectId}/{repositoryId}/refs/heads/master"}
+                });
+        }
+
         public static IVstsRequest<PermissionsSetId> PermissionsGroupSetId(string projectId,string permissionSetId, string applicationGroupId)
         {
             return new VstsRequest<PermissionsSetId>(
@@ -88,7 +100,8 @@ namespace SecurePipelineScan.VstsService.Requests
                     Token = x.PermissionToken,
                     x.PermissionId,
                     x.NamespaceId,
-                    x.PermissionBit
+                    x.PermissionBit,
+
                 });
 
                 var first = permissions.First();

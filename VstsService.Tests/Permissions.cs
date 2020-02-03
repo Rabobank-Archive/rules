@@ -60,6 +60,29 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
+        public async Task QueryPermissionsGroupBranchReturnsPermissions()
+        {
+            var namespaceId = _client.Get(SecurityNamespace.SecurityNamespaces())
+                .First(ns => ns.DisplayName == "Git Repositories").NamespaceId;
+
+            var applicationGroupId = (await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project))).Identities
+                .First(gi => gi.DisplayName == $"[{_config.Project}]\\Project Administrators").TeamFoundationId;
+
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+
+            var repositories = _client.Get(Requests.Repository.Repositories(_config.Project));
+
+            foreach (var repository in repositories)
+            {
+                var permissionsMasterBranch = (await _client.GetAsync(Requests.Permissions.PermissionsGroupMasterBranch(
+                    projectId, namespaceId, applicationGroupId, repository.Id)));
+
+                permissionsMasterBranch.ShouldNotBeNull();
+                permissionsMasterBranch.Permissions.First().ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
         public async Task QueryPermissionsGroupSetIdReturnsPermissionsForSetId()
         {
             var permissionSetId = _client.Get(SecurityNamespace.SecurityNamespaces())

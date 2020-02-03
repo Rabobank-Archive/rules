@@ -87,6 +87,9 @@ namespace SecurePipelineScan.Rules.Permissions
         public static ManagePermissions ForTeamProject(IVstsRestClient client, string project)
             => new ManagePermissions(new ForTeamProject(client, project));
 
+        public static ManagePermissions ForMasterBranch(IVstsRestClient client, string projectId, string itemId)
+            => new ManagePermissions(new ForMasterBranch(client, projectId, itemId));
+
         private async Task SetAsync(VstsService.Response.ApplicationGroup identity, int to)
         {
             var permissionSet = await _item
