@@ -77,13 +77,12 @@ namespace SecurePipelineScan.VstsService
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            var response = PostInternalAsync(request, body);
-            return response;
+            return PostInternalAsync(request, body);
         }
 
         private async Task<TResponse> PostInternalAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()
         {
-            var response = await new Url(request.BaseUri(_organization))
+            return await new Url(request.BaseUri(_organization))
                 .AppendPathSegment(request.Resource)
                 .WithBasicAuth(string.Empty, _token)
                 .SetQueryParams(request.QueryParams)
@@ -91,7 +90,6 @@ namespace SecurePipelineScan.VstsService
                 .PostJsonAsync(body)
                 .ReceiveJson<TResponse>()
                 .ConfigureAwait(false);
-            return response;
         }
 
         public Task<TResponse> PatchAsync<TInput, TResponse>(IVstsRequest<TInput, TResponse> request, TInput body) where TResponse : new()

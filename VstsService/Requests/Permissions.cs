@@ -99,7 +99,7 @@ namespace SecurePipelineScan.VstsService.Requests
                     Token = x.PermissionToken,
                     x.PermissionId,
                     x.NamespaceId,
-                    x.PermissionBit,
+                    x.PermissionBit
                 });
 
                 var first = permissions.First();
