@@ -7,6 +7,9 @@ namespace SecurePipelineScan.Rules.Permissions
 {
     internal class ForMasterBranch : IFor
     {
+        private const string MasterBranchId = "6d0061007300740065007200";
+        private const string MasterBranchName = "master";
+
         private readonly IVstsRestClient _client;
         private readonly string _projectId;
         private readonly string _itemId;
@@ -32,6 +35,6 @@ namespace SecurePipelineScan.Rules.Permissions
                 ExtractToken(permission.PermissionToken), permission).Wrap());
 
         private static string ExtractToken(string token) => 
-            token.Replace("6d0061007300740065007200", "master", StringComparison.CurrentCulture);
+            token.Replace(MasterBranchId, MasterBranchName, StringComparison.CurrentCulture);
     }
 }
