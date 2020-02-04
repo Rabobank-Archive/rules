@@ -147,8 +147,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = new ReleasePipelineHasDeploymentMethod(vstsClient, cmdbClient);
 
             // Act
-            dynamic data = new { ciIdentifier = "CI1234" };
-            await rule.ReconcileAsync("1", "2", "3", "2dbe73bd-5f5c-6152-b980-1b9e87449188", data);
+            await rule.ReconcileAsync("1", "2", "3", "2dbe73bd-5f5c-6152-b980-1b9e87449188");
 
             // Assert
             await cmdbClient.Received().GetCiAsync("CI1234");
@@ -183,8 +182,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = new ReleasePipelineHasDeploymentMethod(vstsClient, cmdbClient);
 
             // Act
-            dynamic data = new { ciIdentifier = "CI1234" };
-            await rule.ReconcileAsync("1", "2", "3", "2dbe73bd-5f5c-6152-b980-1b9e87449188", data);
+            await rule.ReconcileAsync("1", "2", "3", "2dbe73bd-5f5c-6152-b980-1b9e87449188");
 
             // Assert
             await cmdbClient.Received().GetCiAsync("CI1234");

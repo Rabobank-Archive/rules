@@ -56,7 +56,7 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
 
         public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
-            (string ciIdentifier, string productionStage) = GetData(data);
+            (string ciIdentifier, string productionStage) = GetData(data ?? new { });
 
             var user = await GetUserAsync(userId).ConfigureAwait(false);
             var ci = await GetCiAsync(ciIdentifier).ConfigureAwait(false);
@@ -131,10 +131,12 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
                 await _vstsClient.GetAsync(MemberEntitlementManagement.GetUserEntitlement(userId))
                                  .ConfigureAwait(false);
 
-        private static (string, string) GetData(object data)
+        private (string, string) GetData(object data)
         {
             dynamic dynamicData = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data));
-            return ((string)dynamicData.ciIdentifier, (string)dynamicData.environment);
+            var ciIdentifier = (string)dynamicData.ciIdentifier ?? _cmdbClient.Config.NonProdCiIdentifier;
+
+            return (ciIdentifier, (string)dynamicData.environment);
         }
 
         private async Task UpdateDeploymentMethodAsync(string projectId, string itemId, string productionStage, CiContentItem ci)
