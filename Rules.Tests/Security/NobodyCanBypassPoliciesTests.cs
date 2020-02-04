@@ -47,7 +47,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(false);
             await rule.ReconcileAsync(projectId, RepositoryId, null, null);
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(5));
             (await rule.EvaluateAsync(projectId, RepositoryId, null))
                 .ShouldBe(true);
         }

@@ -47,11 +47,8 @@ namespace SecurePipelineScan.Rules.Security.Cmdb
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            var stageExists = stageId == null
-                ? (bool?)null
-                : releasePipeline.Environments.Any(e => e.Id == stageId);
-
-            return Task.FromResult(stageExists);
+            // TODO evaluate rule based on the configuration items in the next sprint (starting 6-feb-2020)
+            return Task.FromResult<bool?>(stageId == "NON-PROD" || releasePipeline.Environments.Any(e => e.Id == stageId));
         }
 
         public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)

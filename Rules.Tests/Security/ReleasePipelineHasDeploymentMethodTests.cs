@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     public class ReleasePipelineHasDeploymentMethodTests : IClassFixture<TestConfig>
     {
         [Fact]
-        public async Task WhenReleasePipelineHasNoDeploymentMethodsThenShouldReturnNull()
+        public async Task WhenReleasePipelineHasNoDeploymentMethodsThenShouldReturnFalse()
         {
             //Arrange
             var fixture = new Fixture();
@@ -30,7 +30,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var result = await rule.EvaluateAsync("TAS", null, releasePipeline);
 
             //Assert
-            result.ShouldBe(null);
+            result.ShouldBe(false);
         }
 
         [Fact]
@@ -63,6 +63,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Assert
             result.ShouldBe(false);
+        }
+
+        [Fact]
+        public async Task WhenNonProdReleasePipelineThenShouldReturnTrue()
+        {
+            //Arrange
+            var fixture = new Fixture();
+            var releasePipeline = fixture.Create<Response.ReleaseDefinition>();
+            var cmdbClient = Substitute.For<ICmdbClient>();
+
+            //Act
+            var rule = new ReleasePipelineHasDeploymentMethod(null, cmdbClient);
+            var result = await rule.EvaluateAsync("TAS", "NON-PROD", releasePipeline);
+
+            //Assert
+            result.ShouldBe(true);
         }
 
         [Fact]
