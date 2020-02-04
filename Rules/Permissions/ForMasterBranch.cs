@@ -30,9 +30,8 @@ namespace SecurePipelineScan.Rules.Permissions
         public Task UpdateAsync(VstsService.Response.ApplicationGroup identity,
                 VstsService.Response.PermissionsSetId permissionSet, VstsService.Response.Permission permission) =>
             _client.PostAsync(VstsService.Requests.Permissions.ManagePermissions(_projectId),
-                new VstsService.Requests.Permissions.ManagePermissionsData(identity.TeamFoundationId,
-                permissionSet.DescriptorIdentifier, permissionSet.DescriptorIdentityType, 
-                ExtractToken(permission.PermissionToken), permission).Wrap());
+                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
+                permissionSet.DescriptorIdentityType, ExtractToken(permission.PermissionToken), permission).Wrap());
 
         private static string ExtractToken(string token) => 
             token.Replace(MasterBranchId, MasterBranchName, StringComparison.CurrentCulture);

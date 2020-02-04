@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Security
             if (repositoryId == null)
                 throw new ArgumentNullException(nameof(repositoryId));
 
-            return await Permissions(projectId, repositoryId)
+            return await PermissionsRepository(projectId, repositoryId)
                     .ValidateAsync()
                     .ConfigureAwait(false) &&
                 await PermissionsMasterBranch(projectId, repositoryId)
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Security
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            await Permissions(projectId, itemId)
+            await PermissionsRepository(projectId, itemId)
                 .SetToAsync(PermissionId.Deny)
                 .ConfigureAwait(false);
             await PermissionsMasterBranch(projectId, itemId)
@@ -61,20 +61,27 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        private ManagePermissions Permissions(string projectId, string repositoryId) =>
-            ManagePermissions
-                .ForRepository(_client, projectId, repositoryId)
-                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
-                    PermissionBitManagePermissions)
-                .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
-                .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
+        private ManagePermissions PermissionsRepository(string projectId, string repositoryId)
+        {
+            var manage = ManagePermissions
+                .ForRepository(_client, projectId, repositoryId);
+            return Permissions(manage);
+        }
 
-        private ManagePermissions PermissionsMasterBranch(string projectId, string repositoryId) =>
-            ManagePermissions
-                .ForMasterBranch(_client, projectId, repositoryId)
+        private ManagePermissions PermissionsMasterBranch(string projectId, string repositoryId)
+        {
+            var manage = ManagePermissions
+                .ForMasterBranch(_client, projectId, repositoryId);
+            return Permissions(manage);
+        }
+
+        private static ManagePermissions Permissions(ManagePermissions response)
+        {
+            return response
                 .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
                     PermissionBitManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
+        }
     }
 }

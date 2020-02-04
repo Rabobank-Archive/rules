@@ -127,7 +127,7 @@ namespace SecurePipelineScan.VstsService.Tests
         public async Task SetPermissionsAsync()
         {
             await _client.PostAsync(Requests.Permissions.ManagePermissions(_config.Project),
-                new Requests.Permissions.ManagePermissionsData(
+                new Requests.ManagePermissionsData(
                     "2c12fa83-5bdb-4085-a635-c7cd00cdfba5",
                     "S-1-9-1551374245-50807123-3856808002-2418352955-3620213171-1-1337613045-2794958661-2397635820-2543327080",
                     "Microsoft.TeamFoundation.Identity", "vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3",

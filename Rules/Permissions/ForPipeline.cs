@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 
 namespace SecurePipelineScan.Rules.Permissions
 {
@@ -27,8 +28,7 @@ namespace SecurePipelineScan.Rules.Permissions
         public Task UpdateAsync(VstsService.Response.ApplicationGroup identity,
                 VstsService.Response.PermissionsSetId permissionSet, VstsService.Response.Permission permission) =>
             _client.PostAsync(VstsService.Requests.Permissions.ManagePermissions(_projectId),
-                new VstsService.Requests.Permissions.ManagePermissionsData(identity.TeamFoundationId,
-                permissionSet.DescriptorIdentifier, permissionSet.DescriptorIdentityType,
-                permission.PermissionToken, permission).Wrap());
+                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
+                permissionSet.DescriptorIdentityType, permission.PermissionToken, permission).Wrap());
     }
 }
