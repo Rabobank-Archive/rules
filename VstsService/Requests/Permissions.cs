@@ -54,7 +54,7 @@ namespace SecurePipelineScan.VstsService.Requests
         }
 
         public static IVstsRequest<PermissionsSetId> PermissionsGroupSetIdDefinition(string projectId,
-            string permissionSetId, string applicationGroupId, string definitionId)
+            string permissionSetId, string applicationGroupId, string permissionSetToken)
         {
             return new VstsRequest<PermissionsSetId>(
                 $"{projectId}/_api/_security/DisplayPermissions", new Dictionary<string, object>
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.VstsService.Requests
                     {"__v","5"},
                     {"tfid", applicationGroupId},
                     {"permissionSetId", permissionSetId},
-                    {"permissionSetToken", $"{projectId}/{definitionId}"}
+                    {"permissionSetToken", permissionSetToken}
                 });
         }
         

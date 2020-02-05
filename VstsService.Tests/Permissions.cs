@@ -116,7 +116,7 @@ namespace SecurePipelineScan.VstsService.Tests
             foreach (var buildDefinition in buildDefinitions)
             {
                 var permissionsGroupSetId = (await _client.GetAsync(Requests.Permissions.PermissionsGroupSetIdDefinition(
-                    projectId, permissionSetId, applicationGroupId, buildDefinition.Id)));
+                    projectId, permissionSetId, applicationGroupId, $"{projectId}/{buildDefinition.Id}")));
 
                 permissionsGroupSetId.ShouldNotBeNull();
                 permissionsGroupSetId.Permissions.First().PermissionId.ShouldNotBeNull();

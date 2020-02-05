@@ -41,7 +41,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             await ManagePermissions
-                .ForReleasePipeline(client, projectId, releasePipeline.Id)
+                .ForReleasePipeline(client, projectId, releasePipeline.Id, releasePipeline.Path)
                 .Permissions(4)
                 .SetToAsync(PermissionId.Allow);
 

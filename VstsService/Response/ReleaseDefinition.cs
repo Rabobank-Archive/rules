@@ -10,6 +10,7 @@ namespace SecurePipelineScan.VstsService.Response
         public IList<ReleaseDefinitionEnvironment> Environments { get; set; }
         public TeamProjectReference ProjectReference { get; set; }
         public IList<Artifact> Artifacts { get; set; }
+        public string Path { get; set; }
 
         [JsonProperty("_links")]
         public Links Links { get; set; }

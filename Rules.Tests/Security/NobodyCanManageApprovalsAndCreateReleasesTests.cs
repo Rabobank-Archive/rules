@@ -31,8 +31,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             int createReleasesPermissionId, int manageReleasesPermissionId, bool result)
         {
             var client = Substitute.For<IVstsRestClient>();
-            var releasePipeline = Substitute.For<response.ReleaseDefinition>();
-
+            var releasePipeline = new Fixture().Create<response.ReleaseDefinition>();
+            
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
@@ -61,7 +61,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             await ManagePermissions
-                .ForReleasePipeline(client, projectId, releasePipeline.Id)
+                .ForReleasePipeline(client, projectId, releasePipeline.Id, releasePipeline.Path)
                 .Permissions(8)
                 .SetToAsync(PermissionId.Allow);
 

@@ -75,11 +75,11 @@ namespace SecurePipelineScan.Rules.Permissions
             return this;
         }
 
-        public static ManagePermissions ForBuildPipeline(IVstsRestClient client, string projectId, string itemId)
-            => new ManagePermissions(new ForPipeline(client, projectId, SecurityNamespaceIds.Build, itemId));
+        public static ManagePermissions ForBuildPipeline(IVstsRestClient client, string projectId, string itemId, string itemPath)
+            => new ManagePermissions(new ForPipeline(client, projectId, SecurityNamespaceIds.Build, itemId, itemPath));
 
-        public static ManagePermissions ForReleasePipeline(IVstsRestClient client, string projectId, string itemId)
-            => new ManagePermissions(new ForPipeline(client, projectId, SecurityNamespaceIds.Release, itemId));
+        public static ManagePermissions ForReleasePipeline(IVstsRestClient client, string projectId, string itemId, string itemPath)
+            => new ManagePermissions(new ForPipeline(client, projectId, SecurityNamespaceIds.Release, itemId, itemPath));
 
         public static ManagePermissions ForRepository(IVstsRestClient client, string projectId, string itemId)
             => new ManagePermissions(new ForRepository(client, projectId, itemId));

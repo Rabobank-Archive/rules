@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
@@ -37,25 +38,29 @@ namespace SecurePipelineScan.Rules.Security
             if (buildPipeline == null)
                 throw new ArgumentNullException(nameof(buildPipeline));
 
-            return await Permissions(project.Id, buildPipeline.Id)
+            return await Permissions(project.Id, buildPipeline.Id, buildPipeline.Path)
                 .ValidateAsync()
                 .ConfigureAwait(false);
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            return Permissions(projectId, itemId)
-                .SetToAsync(PermissionId.Deny);
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(projectId, itemId))
+                .ConfigureAwait(false);
+
+            await Permissions(projectId, itemId, buildPipeline.Path)
+                .SetToAsync(PermissionId.Deny)
+                .ConfigureAwait(false);
         }
 
-        private ManagePermissions Permissions(string projectId, string buildPipelineId) =>
+        private ManagePermissions Permissions(string projectId, string itemId, string itemPath) =>
             ManagePermissions
-                .ForBuildPipeline(_client, projectId, buildPipelineId)
+                .ForBuildPipeline(_client, projectId, itemId, itemPath)
                 .Ignore("Project Collection Administrators", "Project Collection Build Administrators")
                 .Permissions(PermissionBitDeleteBuilds, PermissionBitDestroyBuilds, PermissionBitDeleteBuildDefinition, PermissionBitAdministerBuildPermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited);

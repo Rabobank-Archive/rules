@@ -66,8 +66,10 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups)
             {
-                var permissionSetId = await _client.GetAsync(
-                    Request.Permissions.PermissionsGroupSetIdDefinition(projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, releasePipeline.Id)).ConfigureAwait(false);
+                var permissionSetToken = ExtractToken(projectId, releasePipeline.Id, releasePipeline.Path);
+                var permissionSetId = await _client.GetAsync(Request.Permissions.PermissionsGroupSetIdDefinition(
+                        projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, permissionSetToken))
+                    .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit));
 
@@ -85,6 +87,9 @@ namespace SecurePipelineScan.Rules.Security
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
+            var releasePipeline = await _client.GetAsync(Request.ReleaseManagement.Definition(projectId, itemId))
+                .ConfigureAwait(false);
+
             var projectGroups = (await _client.GetAsync(Request.ApplicationGroup.ApplicationGroups(projectId))
                 .ConfigureAwait(false))
                 .Identities;
@@ -99,8 +104,9 @@ namespace SecurePipelineScan.Rules.Security
 
             foreach (var group in groups)
             {
+                var permissionSetToken = ExtractToken(projectId, releasePipeline.Id, releasePipeline.Path);
                 var permissionSetId = await _client.GetAsync(Request.Permissions.PermissionsGroupSetIdDefinition(
-                        projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, itemId))
+                        projectId, SecurityNamespaceIds.Release, group.TeamFoundationId, permissionSetToken))
                     .ConfigureAwait(false);
                 var permissions = permissionSetId.Permissions
                     .Where(p => PermissionBits.Contains(p.PermissionBit))
@@ -161,5 +167,10 @@ namespace SecurePipelineScan.Rules.Security
                     permissions.DescriptorIdentityType, permission.PermissionToken, permission).Wrap())
                 .ConfigureAwait(false);
         }
+
+        private static string ExtractToken(string projectId, string releasePipelineId, string releasePipelinePath) =>
+            releasePipelinePath == "\\"
+                ? $"{projectId}/{releasePipelineId}"
+                : $"{projectId}{releasePipelinePath.Replace("\\", "/")}/{releasePipelineId}";
     }
 }

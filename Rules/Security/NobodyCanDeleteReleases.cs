@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
@@ -39,25 +40,30 @@ namespace SecurePipelineScan.Rules.Security
             if (releasePipeline == null)
                 throw new ArgumentNullException(nameof(releasePipeline));
 
-            return await Permissions(projectId, releasePipeline.Id)
+            return await Permissions(projectId, releasePipeline.Id, releasePipeline.Path)
                 .ValidateAsync()
                 .ConfigureAwait(false);
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
-            return Permissions(projectId, itemId)
-                .SetToAsync(PermissionId.Deny);
+            var releasePipeline = await _client.GetAsync(ReleaseManagement.Definition(projectId, itemId))
+                .ConfigureAwait(false);
+
+            await Permissions(projectId, itemId, releasePipeline.Path)
+                .SetToAsync(PermissionId.Deny)
+                .ConfigureAwait(false);
+
         }
 
-        private ManagePermissions Permissions(string projectId, string itemId) =>
+        private ManagePermissions Permissions(string projectId, string itemId, string itemPath) =>
             ManagePermissions
-                .ForReleasePipeline(_client, projectId, itemId)
+                .ForReleasePipeline(_client, projectId, itemId, itemPath)
                 .Permissions(PermissionBitDeleteReleasePipelines, PermissionBitAdministerReleasePermissions, PermissionBitDeleteReleases)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators");

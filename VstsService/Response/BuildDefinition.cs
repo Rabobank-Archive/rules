@@ -7,5 +7,6 @@ namespace SecurePipelineScan.VstsService.Response
         public BuildProcess Process { get; set; }
         public TeamProjectReference Project { get; set; }
         public Repository Repository { get; set; }
+        public string Path { get; set; }
     }
 }
