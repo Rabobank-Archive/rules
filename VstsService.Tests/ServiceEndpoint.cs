@@ -32,17 +32,23 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-
-        public async Task CreateEndpoint()
+        [Trait("category","integration")]
+        public async Task CreateAndDeleteEndpoint()
         {
             var endpoint = await _vsts.PostAsync(Requests.ServiceEndpoint.Endpoint(_config.Project), new Response.ServiceEndpoint
             {
-                Name = "Test105",
+                Name = "Test110",
                 Type = "generic",
                 Url = new Uri ("https://localhost"),
                 Authorization = new Response.UsernamePassword("", null)
             });
+            endpoint.Name.ShouldBe("Test110");
+            endpoint.Type.ShouldBe("generic");
+            endpoint.Url.ToString().ShouldBe("https://localhost/");
+            
             await _vsts.DeleteAsync(Requests.ServiceEndpoint.Endpoint(_config.Project, endpoint.Id));
+            var deletedEndpoint = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoint(_config.Project,endpoint.Id));
+            deletedEndpoint.ShouldBeNull();
         }
     }
 }
