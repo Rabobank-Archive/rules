@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Shouldly;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -28,6 +29,20 @@ namespace SecurePipelineScan.VstsService.Tests
             endpoint.Id.ShouldNotBe(Guid.Empty);
             endpoint.Type.ShouldNotBeNullOrEmpty();
             endpoint.Url.ToString().ShouldNotBeNullOrEmpty();
+        }
+
+        [Fact]
+
+        public async Task CreateEndpoint()
+        {
+            var endpoint = await _vsts.PostAsync(Requests.ServiceEndpoint.Endpoint(_config.Project), new Response.ServiceEndpoint
+            {
+                Name = "Test105",
+                Type = "generic",
+                Url = new Uri ("https://localhost"),
+                Authorization = new Response.UsernamePassword("", null)
+            });
+            await _vsts.DeleteAsync(Requests.ServiceEndpoint.Endpoint(_config.Project, endpoint.Id));
         }
     }
 }

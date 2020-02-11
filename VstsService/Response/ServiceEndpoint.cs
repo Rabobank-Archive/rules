@@ -1,4 +1,6 @@
 using System;
+using Newtonsoft.Json;
+using SecurePipelineScan.VstsService.Converters;
 
 namespace SecurePipelineScan.VstsService.Response
 {
@@ -8,6 +10,9 @@ namespace SecurePipelineScan.VstsService.Response
         public Guid Id { get; set; }
         public string Type { get; set; }
         public Uri Url { get; set; }
+
+        [JsonConverter(typeof(ServiceEndpointAuthorizationConverter))]
+        public IServiceEndpointAuthorization Authorization { get; set; }
     }
 }
 

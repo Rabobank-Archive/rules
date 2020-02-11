@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace SecurePipelineScan.VstsService.Requests
 {
     public static class ServiceEndpoint
@@ -8,5 +10,8 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IEnumerableRequest<Response.ServiceEndpoint> Endpoints(string project) => 
             new VstsRequest<Response.ServiceEndpoint>($"{project}/_apis/serviceendpoint/endpoints/").AsEnumerable();
+
+        public static IVstsRequest<Response.ServiceEndpoint> Endpoint(string project, System.Guid? id = null) => 
+            new VstsRequest<Response.ServiceEndpoint>($"{project}/_apis/serviceendpoint/endpoints/{id}",new Dictionary<string,object>{["api-version"]="5.1-preview.2"});
     }
 }
