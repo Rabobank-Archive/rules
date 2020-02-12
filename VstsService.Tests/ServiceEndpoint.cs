@@ -3,6 +3,7 @@ using Xunit;
 using Shouldly;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
@@ -32,22 +33,26 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        [Trait("category","integration")]
+        [Trait("category", "integration")]
         public async Task CreateAndDeleteEndpoint()
         {
+            var fixture = new Fixture();
+            var name = fixture.Create<string>().Substring(0, 10);
             var endpoint = await _vsts.PostAsync(Requests.ServiceEndpoint.Endpoint(_config.Project), new Response.ServiceEndpoint
             {
-                Name = "Test110",
+                Name = name,
                 Type = "generic",
-                Url = new Uri ("https://localhost"),
+                Url = new Uri("https://localhost"),
                 Authorization = new Response.UsernamePassword("", null)
             });
-            endpoint.Name.ShouldBe("Test110");
+            endpoint.Name.ShouldBe(name);
             endpoint.Type.ShouldBe("generic");
             endpoint.Url.ToString().ShouldBe("https://localhost/");
-            
+
             await _vsts.DeleteAsync(Requests.ServiceEndpoint.Endpoint(_config.Project, endpoint.Id));
-            var deletedEndpoint = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoint(_config.Project,endpoint.Id));
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
+            var deletedEndpoint = await _vsts.GetAsync(Requests.ServiceEndpoint.Endpoint(_config.Project, endpoint.Id));
             deletedEndpoint.ShouldBeNull();
         }
     }
