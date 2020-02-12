@@ -22,17 +22,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-
-            var rule = new NobodyCanBypassPolicies(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBeTrue();
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
         public async Task ReconcileIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);

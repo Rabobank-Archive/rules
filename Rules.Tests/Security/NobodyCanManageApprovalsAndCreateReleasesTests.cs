@@ -32,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = Substitute.For<IVstsRestClient>();
             var releasePipeline = new Fixture().Create<response.ReleaseDefinition>();
-            
+
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
@@ -70,7 +70,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ShouldBe(false);
 
             await rule.ReconcileAsync(projectId, releasePipeline.Id);
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(10));
 
             (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(true);

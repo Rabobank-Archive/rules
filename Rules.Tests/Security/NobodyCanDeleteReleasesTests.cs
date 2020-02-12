@@ -20,18 +20,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task EvaluateReleaseIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
-                .ConfigureAwait(false);
-
-            var rule = new NobodyCanDeleteReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBe(true);
-        }
-
-        [Fact]
         [Trait("category", "integration")]
         public async Task ReconcileIntegrationTest()
         {
@@ -50,7 +38,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ShouldBe(false);
 
             await rule.ReconcileAsync(projectId, releasePipeline.Id);
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(10));
 
             (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(true);

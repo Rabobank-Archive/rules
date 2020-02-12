@@ -134,10 +134,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = new NobodyCanDeleteTheRepository(client);
             (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(false);
-            
+
             await rule.ReconcileAsync(projectId, RepositoryId);
-            await Task.Delay(TimeSpan.FromSeconds(2));
-            
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
             (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(true);
         }
