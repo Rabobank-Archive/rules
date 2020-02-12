@@ -280,3 +280,5 @@ cobertura.xml
 coverage.*.xml
 /tools/
 nuget.config
+
+.editorconfig

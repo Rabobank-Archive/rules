@@ -20,8 +20,7 @@ namespace SecurePipelineScan.Rules.Security
 
         [ExcludeFromCodeCoverage]public string Description => "Nobody can delete the Team Project (SOx)";
         [ExcludeFromCodeCoverage]public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
-        [ExcludeFromCodeCoverage]public bool IsSox => true;
-        
+
         [ExcludeFromCodeCoverage]string[] IProjectReconcile.Impact => new[]
         {
             "Rabobank Project Administrators group is created and added to Project Administrators",

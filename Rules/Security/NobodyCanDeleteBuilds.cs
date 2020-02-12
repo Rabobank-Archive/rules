@@ -20,8 +20,7 @@ namespace SecurePipelineScan.Rules.Security
         private const int PermissionBitAdministerBuildPermissions = 16384;
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
-        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]
         {
@@ -43,7 +42,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

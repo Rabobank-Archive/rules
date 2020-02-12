@@ -19,7 +19,6 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
-        bool IRule.IsSox => true;
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

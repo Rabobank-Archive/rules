@@ -62,19 +62,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(project, buildPipeline))
                 .ShouldBe(false);
 
-            await rule.ReconcileAsync(project.Id, buildPipeline.Id, null, null);
+            await rule.ReconcileAsync(project.Id, buildPipeline.Id);
             await Task.Delay(TimeSpan.FromSeconds(2));
 
             (await rule.EvaluateAsync(project, buildPipeline))
                 .ShouldBe(true);
-        }
-
-        [Fact]
-        public void RequiresStageId_ShouldBeFalse()
-        {
-            var client = Substitute.For<IVstsRestClient>();
-            var rule = new NobodyCanDeleteBuilds(client) as IReconcile;
-            rule.RequiresStageId.ShouldBe(false);
         }
     }
 }

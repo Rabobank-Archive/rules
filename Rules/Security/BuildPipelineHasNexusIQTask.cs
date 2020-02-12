@@ -18,7 +18,6 @@ namespace SecurePipelineScan.Rules.Security
         public string StepName => "";
         string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";
-        bool IRule.IsSox => false;
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

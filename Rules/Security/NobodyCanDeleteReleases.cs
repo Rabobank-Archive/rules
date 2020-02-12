@@ -23,8 +23,7 @@ namespace SecurePipelineScan.Rules.Security
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
-        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]
         {
@@ -33,7 +32,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Administer Release Permissions' permission is set to Deny"
         };
 
-        public async Task<bool?> EvaluateAsync(string projectId, string stageId, Response.ReleaseDefinition releasePipeline)
+        public async Task<bool?> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -45,7 +44,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

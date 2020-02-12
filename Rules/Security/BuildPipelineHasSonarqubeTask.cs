@@ -19,7 +19,6 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "Build pipeline contains an enabled SonarQube task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/RShFD";
-        bool IRule.IsSox => false;
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

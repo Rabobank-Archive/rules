@@ -63,7 +63,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             Assert.Equal("Build pipeline contains credential scan task", ((IRule) rule).Description);
             Assert.Equal("https://confluence.dev.somecompany.nl/x/LorHDQ", ((IRule) rule).Link);
-            Assert.False(((IRule) rule).IsSox);
         }
 
         [Theory]

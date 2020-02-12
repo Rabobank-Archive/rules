@@ -31,7 +31,6 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "Build pipeline contains credential scan task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/LorHDQ";
-        bool IRule.IsSox => false;
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

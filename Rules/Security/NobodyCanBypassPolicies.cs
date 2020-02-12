@@ -20,8 +20,7 @@ namespace SecurePipelineScan.Rules.Security
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
-        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]
         {
@@ -30,8 +29,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public async Task<bool> EvaluateAsync(string projectId, string repositoryId,
-            IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
+        public async Task<bool> EvaluateAsync(string projectId, string repositoryId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -46,7 +44,7 @@ namespace SecurePipelineScan.Rules.Security
                     .ConfigureAwait(false);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

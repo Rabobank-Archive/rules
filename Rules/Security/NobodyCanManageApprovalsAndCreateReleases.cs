@@ -42,8 +42,7 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "Nobody can both manage approvals and create releases (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
-        bool IRule.IsSox => true;
-        bool IReconcile.RequiresStageId => false;
+
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +
@@ -52,7 +51,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all other security groups where the 'Create Releases' permission is set to Allow, " +
             "the 'Manage Release Approvers' permission is set to Deny",
         };
-        public async Task<bool?> EvaluateAsync(string projectId, string stageId, Response.ReleaseDefinition releasePipeline)
+        public async Task<bool?> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -80,7 +79,7 @@ namespace SecurePipelineScan.Rules.Security
             return true;
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

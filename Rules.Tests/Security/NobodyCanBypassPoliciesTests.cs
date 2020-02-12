@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanBypassPolicies(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId, null)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBeTrue();
         }
 
         [Fact]
@@ -44,11 +44,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanBypassPolicies(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+            (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(false);
-            await rule.ReconcileAsync(projectId, RepositoryId, null, null);
+            await rule.ReconcileAsync(projectId, RepositoryId);
             await Task.Delay(TimeSpan.FromSeconds(5));
-            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+            (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(true);
         }
 
@@ -65,11 +65,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanBypassPolicies(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+            (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(false);
-            await rule.ReconcileAsync(projectId, RepositoryId, null, null);
+            await rule.ReconcileAsync(projectId, RepositoryId);
             await Task.Delay(TimeSpan.FromSeconds(2));
-            (await rule.EvaluateAsync(projectId, RepositoryId, null))
+            (await rule.EvaluateAsync(projectId, RepositoryId))
                 .ShouldBe(true);
         }
     }

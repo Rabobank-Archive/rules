@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline)).ShouldBe(result);
+            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(result);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline)).ShouldBe(true);
+            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBe(true);
         }
 
         [Fact]
@@ -66,22 +66,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+            (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(false);
 
-            await rule.ReconcileAsync(projectId, releasePipeline.Id, null, null);
+            await rule.ReconcileAsync(projectId, releasePipeline.Id);
             await Task.Delay(TimeSpan.FromSeconds(2));
 
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+            (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(true);
-        }
-
-        [Fact]
-        public void RequiresStageId_ShouldBeFalse()
-        {
-            var client = Substitute.For<IVstsRestClient>();
-            var rule = new NobodyCanManageApprovalsAndCreateReleases(client) as IReconcile;
-            rule.RequiresStageId.ShouldBe(false);
         }
 
         private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId, int manageApproversPermissionId)

@@ -10,9 +10,8 @@ namespace SecurePipelineScan.Rules.Security
     {
         string IRule.Description => "Release pipeline contains 4-eyes approval (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/DGjlCw";
-        bool IRule.IsSox => true;
 
-        public Task<bool?> EvaluateAsync(string projectId, string stageId,
+        public Task<bool?> EvaluateAsync(string projectId,
             ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)

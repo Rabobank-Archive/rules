@@ -19,15 +19,14 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "All releases are retained for at least 15 months (SOx)";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
-        bool IRule.IsSox => true;
-        bool IReconcile.RequiresStageId => false;
+
         string[] IReconcile.Impact => new[] {
             "In project settings the maximum retention policy is set to 450 days.",
             "On the pipeline the days to retain a release is set to 450 days for every stage.",
             "On the pipeline the checkbox to retain associated artifacts is enabled for every stage."
         };
 
-        public Task<bool?> EvaluateAsync(string projectId, string stageId,
+        public Task<bool?> EvaluateAsync(string projectId,
             ReleaseDefinition releasePipeline)
         {
             if (releasePipeline == null)
@@ -41,7 +40,7 @@ namespace SecurePipelineScan.Rules.Security
             return Task.FromResult(result);
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             var releaseSettings = await _client.GetAsync(Requests.ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);

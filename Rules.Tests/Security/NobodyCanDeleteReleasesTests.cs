@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ConfigureAwait(false);
 
             var rule = new NobodyCanDeleteReleases(client);
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline)).ShouldBe(true);
+            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBe(true);
         }
 
         [Fact]
@@ -46,22 +46,14 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanDeleteReleases(client);
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+            (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(false);
 
-            await rule.ReconcileAsync(projectId, releasePipeline.Id, null, null);
+            await rule.ReconcileAsync(projectId, releasePipeline.Id);
             await Task.Delay(TimeSpan.FromSeconds(2));
 
-            (await rule.EvaluateAsync(projectId, _config.stageId, releasePipeline))
+            (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(true);
-        }
-
-        [Fact]
-        public void RequiresStageId_ShouldBeFalse()
-        {
-            var client = Substitute.For<IVstsRestClient>();
-            var rule = new NobodyCanDeleteReleases(client) as IReconcile;
-            rule.RequiresStageId.ShouldBe(false);
         }
     }
 }

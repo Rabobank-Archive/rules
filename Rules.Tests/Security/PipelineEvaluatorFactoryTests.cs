@@ -1,9 +1,5 @@
 using System;
-using System.Threading.Tasks;
-using NSubstitute;
 using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;

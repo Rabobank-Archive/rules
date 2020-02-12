@@ -21,8 +21,7 @@ namespace SecurePipelineScan.Rules.Security
 
         public string Description => "Release branches are protected by policies (SOx)";
         public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
-        public bool IsSox => true;
-        public bool RequiresStageId => false;
+
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",
@@ -30,13 +29,13 @@ namespace SecurePipelineScan.Rules.Security
             "Policy is blocking the PR."
         };
 
-        public Task<bool> EvaluateAsync(
-            string projectId, string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
+        public Task<bool> EvaluateAsync(string projectId, string repositoryId)
         {
+            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
-        public async Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public async Task ReconcileAsync(string projectId, string itemId)
         {
             var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
             var policy = Find(policies, itemId).SingleOrDefault();

@@ -17,10 +17,9 @@ namespace SecurePipelineScan.Rules.Security
 
         string IRule.Description => "Release pipeline contains SM9 Create Change task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/NRV1D";
-        bool IRule.IsSox => false;
 
         public async Task<bool?> EvaluateAsync(
-            string projectId, string stageId, ReleaseDefinition releasePipeline)
+            string projectId, ReleaseDefinition releasePipeline)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

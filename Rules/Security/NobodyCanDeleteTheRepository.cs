@@ -21,8 +21,7 @@ namespace SecurePipelineScan.Rules.Security
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete the repository (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
-        [ExcludeFromCodeCoverage] bool IRule.IsSox => true;
-        [ExcludeFromCodeCoverage] bool IReconcile.RequiresStageId => false;
+
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]
         {
@@ -30,7 +29,7 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public Task<bool> EvaluateAsync(string projectId, string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies)
+        public Task<bool> EvaluateAsync(string projectId, string repositoryId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
@@ -41,7 +40,7 @@ namespace SecurePipelineScan.Rules.Security
                 .ValidateAsync();
         }
 
-        public Task ReconcileAsync(string projectId, string itemId, string stageId, string userId, object data = null)
+        public Task ReconcileAsync(string projectId, string itemId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));

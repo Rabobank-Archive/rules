@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client);
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -73,7 +73,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert 
             Assert.False(result);
@@ -90,7 +90,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -106,7 +106,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client);
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -120,7 +120,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, null, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, null, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
 
             // Assert
             await _client
@@ -149,20 +149,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasRequiredRetentionPolicy(_client) as IReconcile;
-            await rule.ReconcileAsync(_config.Project, PipelineId, null, null);
+            await rule.ReconcileAsync(_config.Project, PipelineId);
 
             // Assert
             await _client
                 .Received()
                 .PutAsync(Arg.Any<IVstsRequest<object>>(), Arg.Any<JObject>());
-        }
-
-        [Fact]
-        public void RequiresStageId_ShouldBeFalse()
-        {
-            var client = Substitute.For<IVstsRestClient>();
-            var rule = new PipelineHasRequiredRetentionPolicy(client) as IReconcile;
-            rule.RequiresStageId.ShouldBe(false);
         }
 
         private static void CustomizePolicySettings(IFixture fixture, int daysToKeep = 450,

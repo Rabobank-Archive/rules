@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            (await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline)).ShouldBe(true);
+            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(true);
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(compliant);
@@ -62,7 +62,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(false);
@@ -79,7 +79,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
             
             //Assert
             result.ShouldBe(false);

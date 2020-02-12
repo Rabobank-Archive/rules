@@ -34,7 +34,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(_config.Project, null, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -53,7 +53,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -72,7 +72,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -88,7 +88,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -115,7 +115,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -142,7 +142,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -167,7 +167,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineHasSm9ChangeTask(client);
-            var result = await rule.EvaluateAsync(projectId, null, releasePipeline);
+            var result = await rule.EvaluateAsync(projectId, releasePipeline);
 
             //Assert
             result.ShouldBe(false);

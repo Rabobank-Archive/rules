@@ -28,7 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineUsesBuildArtifact();
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(true);
@@ -44,7 +44,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineUsesBuildArtifact();
-            var result = await rule.EvaluateAsync(_config.Project, _config.stageId, releasePipeline);
+            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
             result.ShouldBe(false);

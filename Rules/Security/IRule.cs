@@ -4,6 +4,5 @@ namespace SecurePipelineScan.Rules.Security
     {
         string Description { get; }
         string Link { get; }
-        bool IsSox { get; }
     }
 }
