@@ -35,18 +35,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateBuildIntegrationTest_yaml()
-        {
-            var project = await _client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "275"))
-                .ConfigureAwait(false);
-
-            var rule = new NobodyCanDeleteBuilds(_client);
-            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
         public async Task ReconcileIntegrationTest()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
@@ -63,7 +51,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .ShouldBe(false);
 
             await rule.ReconcileAsync(project.Id, buildPipeline.Id);
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(10));
 
             (await rule.EvaluateAsync(project, buildPipeline))
                 .ShouldBe(true);
