@@ -18,7 +18,18 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
-        public async Task QueryApplicationGroups()
+        public async Task QueryApplicationGroupsOrganization()
+        {
+            var identity = await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups());
+            identity.ShouldNotBeNull();
+            identity.Identities.ShouldNotBeEmpty();
+
+            var group = identity.Identities.First();
+            group.DisplayName.ShouldNotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task QueryApplicationGroupsProject()
         {
             var identity = await _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_config.Project));
             identity.ShouldNotBeNull();

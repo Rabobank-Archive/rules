@@ -5,6 +5,13 @@ namespace SecurePipelineScan.VstsService.Requests
 {
     public static class ApplicationGroup
     {
+        public static IVstsRequest<Response.ApplicationGroups> ApplicationGroups() =>
+            new VstsRequest<Response.ApplicationGroups>(
+                $"_api/_identity/ReadScopedApplicationGroupsJson", new Dictionary<string, object>
+                {
+                    {"__v", "5"}
+                });
+        
         public static IVstsRequest<Response.ApplicationGroups> ApplicationGroups(string project) => 
             new VstsRequest<Response.ApplicationGroups>(
                 $"{project}/_api/_identity/ReadScopedApplicationGroupsJson", new Dictionary<string, object>
