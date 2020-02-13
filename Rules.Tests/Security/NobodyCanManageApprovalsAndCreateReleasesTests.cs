@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
-using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using response = SecurePipelineScan.VstsService.Response;
@@ -10,6 +9,7 @@ using Shouldly;
 using Xunit;
 using SecurePipelineScan.VstsService.Requests;
 using System;
+using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {

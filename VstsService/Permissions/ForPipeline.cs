@@ -1,11 +1,8 @@
-using System;
 using System.Threading.Tasks;
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 
-namespace SecurePipelineScan.Rules.Permissions
+namespace SecurePipelineScan.VstsService.Permissions
 {
-    internal class ForPipeline : IFor
+    public class ForPipeline : IFor
     {
         private readonly IVstsRestClient _client;
         private readonly string _projectId;
@@ -22,16 +19,16 @@ namespace SecurePipelineScan.Rules.Permissions
             _itemPath = itemPath;
         }
         
-        public Task<VstsService.Response.ApplicationGroups> IdentitiesAsync() => 
-            _client.GetAsync(VstsService.Requests.ApplicationGroup.ExplicitIdentitiesPipelines(_projectId, _namespaceId, _itemId));
+        public Task<Response.ApplicationGroups> IdentitiesAsync() => 
+            _client.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesPipelines(_projectId, _namespaceId, _itemId));
         
-        public Task<VstsService.Response.PermissionsSetId> PermissionSetAsync(VstsService.Response.ApplicationGroup identity) =>
-            _client.GetAsync(VstsService.Requests.Permissions.PermissionsGroupSetIdDefinition(
+        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity) =>
+            _client.GetAsync(Requests.Permissions.PermissionsGroupSetIdDefinition(
             _projectId, _namespaceId,identity.TeamFoundationId, ExtractToken()));
 
-        public Task UpdateAsync(VstsService.Response.ApplicationGroup identity,
-                VstsService.Response.PermissionsSetId permissionSet, VstsService.Response.Permission permission) =>
-            _client.PostAsync(VstsService.Requests.Permissions.ManagePermissions(_projectId),
+        public Task UpdateAsync(Response.ApplicationGroup identity,
+                Response.PermissionsSetId permissionSet, Response.Permission permission) =>
+            _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
                 new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
                 permissionSet.DescriptorIdentityType, permission.PermissionToken, permission).Wrap());
 

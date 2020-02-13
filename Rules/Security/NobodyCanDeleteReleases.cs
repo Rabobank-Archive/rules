@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Permissions;
 using SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 

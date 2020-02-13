@@ -3,7 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using static SecurePipelineScan.VstsService.Requests.Permissions;
 
-namespace SecurePipelineScan.VstsService.Requests
+namespace SecurePipelineScan.VstsService.Permissions
 {
     public class ManagePermissionsData
     {

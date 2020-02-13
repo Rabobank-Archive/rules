@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.VstsService;
 using Response = SecurePipelineScan.VstsService.Response;
 using ApplicationGroup = SecurePipelineScan.VstsService.Response.ApplicationGroup;
+using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.Rules.Security
 {

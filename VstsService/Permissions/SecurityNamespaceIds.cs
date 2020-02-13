@@ -1,9 +1,9 @@
-namespace SecurePipelineScan.Rules.Permissions
+namespace SecurePipelineScan.VstsService.Permissions
 {
     /// <summary>
     /// https://dev.azure.com/somecompany/_apis/securitynamespaces/
     /// </summary>
-    internal static class SecurityNamespaceIds
+    public static class SecurityNamespaceIds
     {
         public const string Build = "33344d9c-fc72-4d6f-aba5-fa317101a7e9";
         public const string Release = "c788c23e-1b46-4162-8f5e-d7585343b5de";

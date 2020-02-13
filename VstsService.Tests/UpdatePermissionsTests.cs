@@ -1,13 +1,12 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
-using SecurePipelineScan.Rules.Permissions;
-using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
 using System.Threading.Tasks;
+using SecurePipelineScan.VstsService.Permissions;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace SecurePipelineScan.VstsService.Tests
 {
     public static class UpdatePermissionsTests
     {

@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using SecurePipelineScan.Rules.Permissions;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
+using SecurePipelineScan.VstsService.Permissions;
 using Shouldly;
 using Xunit;
 using Requests = SecurePipelineScan.VstsService.Requests;

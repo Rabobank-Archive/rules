@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Response = SecurePipelineScan.VstsService.Response;
 using Request = SecurePipelineScan.VstsService.Requests;
 using System;
-using SecurePipelineScan.Rules.Permissions;
+using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -162,7 +162,7 @@ namespace SecurePipelineScan.Rules.Security
             permission.PermissionId = to;
 
             await _client.PostAsync(Request.Permissions.ManagePermissions(projectId),
-                    new Request.ManagePermissionsData(@group.TeamFoundationId, permissions.DescriptorIdentifier,
+                    new ManagePermissionsData(@group.TeamFoundationId, permissions.DescriptorIdentifier,
                     permissions.DescriptorIdentityType, permission.PermissionToken, permission).Wrap())
                 .ConfigureAwait(false);
         }

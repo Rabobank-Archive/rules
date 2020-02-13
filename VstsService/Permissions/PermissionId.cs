@@ -1,6 +1,6 @@
-namespace SecurePipelineScan.Rules.Permissions
+namespace SecurePipelineScan.VstsService.Permissions
 {
-    internal static class PermissionId
+    public static class PermissionId
     {
         public const int NotSet = 0;
         public const int Allow = 1;

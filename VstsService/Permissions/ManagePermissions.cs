@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SecurePipelineScan.VstsService;
 
-namespace SecurePipelineScan.Rules.Permissions
+namespace SecurePipelineScan.VstsService.Permissions
 {
-    internal class ManagePermissions
+    public class ManagePermissions
     {
         private readonly IFor _item;
         private Func<(int bit, string namespaceId), bool> _check = p => true;
         private IEnumerable<int> _allow = new int[0];
-        private Func<VstsService.Response.ApplicationGroup, bool> _filter = g => true;
+        private Func<Response.ApplicationGroup, bool> _filter = g => true;
 
         public ManagePermissions(IFor item) => _item = item;
 
@@ -90,7 +89,7 @@ namespace SecurePipelineScan.Rules.Permissions
         public static ManagePermissions ForMasterBranch(IVstsRestClient client, string projectId, string itemId)
             => new ManagePermissions(new ForMasterBranch(client, projectId, itemId));
 
-        private async Task SetAsync(VstsService.Response.ApplicationGroup identity, int to)
+        private async Task SetAsync(Response.ApplicationGroup identity, int to)
         {
             var permissionSet = await _item
                 .PermissionSetAsync(identity)
