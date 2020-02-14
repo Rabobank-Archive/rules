@@ -19,6 +19,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
+        private readonly IPoliciesResolver _policiesResolver = Substitute.For<IPoliciesResolver>();
 
         public ReleaseBranchesProtectedByPoliciesTests(TestConfig config)
         {
@@ -31,9 +32,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
-            var policies = client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
 
-            var rule = new ReleaseBranchesProtectedByPolicies(client);
+            var rule = new ReleaseBranchesProtectedByPolicies(client, _policiesResolver);
             await rule.EvaluateAsync(projectId, RepositoryId);
         }
 
@@ -44,13 +44,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
-
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -61,12 +58,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
             //Arrange
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -83,12 +78,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // ReSharper disable once ArgumentsStyleLiteral
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
 
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -103,12 +96,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
             CustomizePolicySettings(_fixture);
 
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -123,12 +114,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, isBlocking: false);
             CustomizePolicySettings(_fixture);
 
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -143,12 +132,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
 
-            SetupClient(_client, _fixture);
-            var policies = new List<MinimumNumberOfReviewersPolicy>
-                { _fixture.Create<MinimumNumberOfReviewersPolicy>() };
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client);
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync(_config.Project, RepositoryId);
 
             //Assert
@@ -159,7 +146,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public void Reconcile()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var rule = new ReleaseBranchesProtectedByPolicies(client) as IReconcile;
+            var rule = new ReleaseBranchesProtectedByPolicies(client, null) as IReconcile;
             rule.ReconcileAsync(_config.Project, RepositoryId);
         }
 
@@ -168,10 +155,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             // Arrange
             CustomizeScope(_fixture, refName: "some/other/branch");
-            SetupClient(_client, _fixture);
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver) as IReconcile;
             await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
@@ -185,10 +172,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             // Arrange
             CustomizeScope(_fixture);
-            SetupClient(_client, _fixture);
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver) as IReconcile;
             await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
@@ -202,10 +189,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             // Arrange
             CustomizeScope(_fixture);
-            SetupClient(_client, _fixture);
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver) as IReconcile;
             await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
@@ -220,10 +207,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Arrange
             CustomizeScope(_fixture);
             CustomizePolicySettings(_fixture, 3);
-            SetupClient(_client, _fixture);
+            SetupPoliciesResolver(_policiesResolver, _fixture);
 
             // Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client) as IReconcile;
+            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver) as IReconcile;
             await rule.ReconcileAsync(_config.Project, RepositoryId);
 
             // Assert
@@ -264,10 +251,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
 
-        private static void SetupClient(IVstsRestClient client, IFixture fixture)
+        private static void SetupPoliciesResolver(IPoliciesResolver resolver, IFixture fixture)
         {
-            client
-                .Get(Arg.Any<IEnumerableRequest<MinimumNumberOfReviewersPolicy>>())
+            resolver
+                .Resolve(Arg.Any<string>())
                 .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
         }
     }

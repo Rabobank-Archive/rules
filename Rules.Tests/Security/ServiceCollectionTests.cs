@@ -28,6 +28,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var service = new ServiceCollection()
                 .AddDefaultRules()
                 .AddSingleton(Substitute.For<IVstsRestClient>())
+                .AddSingleton(Substitute.For<IPoliciesResolver>())
                 .BuildServiceProvider();
 
             var rules = service.GetServices<IRepositoryRule>().ToList();

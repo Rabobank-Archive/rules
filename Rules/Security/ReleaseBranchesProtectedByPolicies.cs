@@ -11,9 +11,11 @@ namespace SecurePipelineScan.Rules.Security
     public class ReleaseBranchesProtectedByPolicies : IRepositoryRule, IReconcile
     {
         private readonly IVstsRestClient _client;
+        private readonly IPoliciesResolver _policiesResolver;
 
-        public ReleaseBranchesProtectedByPolicies(IVstsRestClient client)
+        public ReleaseBranchesProtectedByPolicies(IVstsRestClient client, IPoliciesResolver policiesResolver)
         {
+            _policiesResolver = policiesResolver;
             _client = client;
         }
 
@@ -31,13 +33,13 @@ namespace SecurePipelineScan.Rules.Security
 
         public Task<bool> EvaluateAsync(string projectId, string repositoryId)
         {
-            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
+            var policies = _policiesResolver.Resolve(projectId);
             return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
         }
 
         public async Task ReconcileAsync(string projectId, string itemId)
         {
-            var policies = _client.Get(Requests.Policies.MinimumNumberOfReviewersPolicies(projectId));
+            var policies = _policiesResolver.Resolve(projectId);
             var policy = Find(policies, itemId).SingleOrDefault();
 
             if (policy != null)
