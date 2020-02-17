@@ -6,5 +6,7 @@ namespace SecurePipelineScan.Rules.Security
     public interface IPoliciesResolver
     {
         IEnumerable<MinimumNumberOfReviewersPolicy> Resolve(string projectId);
+
+        void Clear(string projectId);
     }
 }

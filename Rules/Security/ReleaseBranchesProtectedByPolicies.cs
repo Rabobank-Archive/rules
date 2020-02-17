@@ -61,7 +61,7 @@ namespace SecurePipelineScan.Rules.Security
                                                   p.Settings.MinimumApproverCount >= MinimumApproverCount);
 
         private static IEnumerable<Response.MinimumNumberOfReviewersPolicy> Find(IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies, string repositoryId) =>
-            policies.Where(p => p.Settings.Scope.Any(scope => scope.RepositoryId.ToString() == repositoryId &&
+            policies.Where(p => p.Settings.Scope.Any(scope => scope.RepositoryId?.ToString() == repositoryId &&
                                                               scope.RefName == "refs/heads/master"));
 
         private static Response.MinimumNumberOfReviewersPolicy UpdatePolicy(Response.MinimumNumberOfReviewersPolicy policy)
