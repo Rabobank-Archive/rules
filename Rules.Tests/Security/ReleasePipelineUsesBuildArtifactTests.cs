@@ -8,15 +8,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ReleasePipelineUsesBuildArtifactTests : IClassFixture<TestConfig>
+    public class ReleasePipelineUsesBuildArtifactTests
     {
-        private readonly TestConfig _config;
-
-        public ReleasePipelineUsesBuildArtifactTests(TestConfig config)
-        {
-            _config = config;
-        }
-
         [Fact]
         public async Task ReturnFalseForReleasePipelineWithoutArtifacts()
         {
@@ -27,7 +20,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new ReleasePipelineUsesBuildArtifact();
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync(fixture.Create<string>(), releasePipeline);
 
             //Assert
             result.ShouldBe(false);

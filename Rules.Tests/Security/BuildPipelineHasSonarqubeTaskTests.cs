@@ -12,7 +12,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class BuildPipelineHasSonarqubeTaskTests : IClassFixture<TestConfig>
+    public class BuildPipelineHasSonarqubeTaskTests
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 

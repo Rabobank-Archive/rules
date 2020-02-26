@@ -14,17 +14,11 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class NobodyCanDeleteTheRepositoryTests : IClassFixture<TestConfig>
+    public class NobodyCanDeleteTheRepositoryTests
     {
-        private readonly TestConfig _config;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
 
-
-        public NobodyCanDeleteTheRepositoryTests(TestConfig config)
-        {
-            _config = config;
-        }
-
+        
         [Fact]
         public async Task GivenAnApplicationGroupHasPermissionToDeleteRepoWithAllow_WhenEvaluating_ThenFalse()
         {
@@ -33,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
         }
 
         [Fact]
@@ -44,7 +38,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.AllowInherited);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
         }
 
         [Fact]
@@ -55,7 +49,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
         }
 
         [Fact]
@@ -92,7 +86,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
 
 
             await client

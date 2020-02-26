@@ -10,15 +10,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ProductionStageUsesArtifactFromSecureBranchTests : IClassFixture<TestConfig>
+    public class ProductionStageUsesArtifactFromSecureBranchTests
     {
-        private readonly TestConfig _config;
-
-        public ProductionStageUsesArtifactFromSecureBranchTests(TestConfig config)
-        {
-            _config = config;
-        }
-
         [Fact]
         public async Task ReconcileAsync_WithBuildArtifactAndEmptyConditions_OneConditionShouldBeAdded()
         {
@@ -49,12 +42,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 .Returns(definition);
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, "1").Returns(new[] {"1"});
+            productionItems.ResolveAsync("", "1").Returns(new[] {"1"});
 
             var rule = (IReconcile) new ProductionStageUsesArtifactFromSecureBranch(client, productionItems);
 
             // act
-            await rule.ReconcileAsync(_config.Project, "1");
+            await rule.ReconcileAsync("", "1");
 
             // assert
             await client
@@ -107,12 +100,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, "1").Returns(new[] {"1"});
+            productionItems.ResolveAsync("", "1").Returns(new[] {"1"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 
@@ -159,12 +152,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, "1").Returns(new[] {"1"});
+            productionItems.ResolveAsync("", "1").Returns(new[] {"1"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 
@@ -206,12 +199,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, "1").Returns(new[] {"1"});
+            productionItems.ResolveAsync("", "1").Returns(new[] {"1"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 
@@ -242,12 +235,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, Arg.Any<string>()).Returns(new[] {"2"});
+            productionItems.ResolveAsync("", Arg.Any<string>()).Returns(new[] {"2"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 
@@ -289,12 +282,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, "1").Returns(new[] {"1"});
+            productionItems.ResolveAsync("", "1").Returns(new[] {"1"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 
@@ -318,12 +311,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var productionItems = Substitute.For<IProductionItemsResolver>();
-            productionItems.ResolveAsync(_config.Project, Arg.Any<string>()).Returns(new[] {"1"});
+            productionItems.ResolveAsync("", Arg.Any<string>()).Returns(new[] {"1"});
 
             // Act
             var rule = new ProductionStageUsesArtifactFromSecureBranch(Substitute.For<IVstsRestClient>(),
                 productionItems);
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             // Assert
 

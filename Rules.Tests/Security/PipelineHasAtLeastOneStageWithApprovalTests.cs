@@ -7,15 +7,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class PipelineHasAtLeastOneStageWithApprovalTests : IClassFixture<TestConfig>
+    public class PipelineHasAtLeastOneStageWithApprovalTests
     {
-        private readonly TestConfig _config;
-
-        public PipelineHasAtLeastOneStageWithApprovalTests(TestConfig config)
-        {
-            _config = config;
-        }
-
         [Theory]
         [InlineData(false, true)]
         [InlineData(true, false)]
@@ -30,7 +23,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             //Assert
             result.ShouldBe(compliant);
@@ -47,7 +40,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             //Assert
             result.ShouldBe(false);
@@ -64,7 +57,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Act
             var rule = new PipelineHasAtLeastOneStageWithApproval();
-            var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
+            var result = await rule.EvaluateAsync("", releasePipeline);
 
             //Assert
             result.ShouldBe(false);

@@ -10,7 +10,7 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ReleasePipelineHasDeploymentMethodTests : IClassFixture<TestConfig>
+    public class ReleasePipelineHasDeploymentMethodTests
     {
         [Fact]
         public async Task WhenReleasePipelineHasNoDeploymentMethodsThenShouldReturnFalse()

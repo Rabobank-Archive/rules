@@ -15,7 +15,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Events
 {
-    public class BuildScanTests : IClassFixture<TestConfig>
+    public class BuildScanTests
     {
         private readonly IFixture _fixture = new Fixture();
         

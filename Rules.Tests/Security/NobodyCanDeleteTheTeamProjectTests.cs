@@ -11,10 +11,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class NobodyCanDeleteTheTeamProjectTests : IClassFixture<TestConfig>
+    public class NobodyCanDeleteTheTeamProjectTests
     {
-        private readonly TestConfig _config;
-
         private readonly ApplicationGroup _pa = new ApplicationGroup
             {FriendlyDisplayName = "Project Administrators", TeamFoundationId = "1234"};
 
@@ -28,11 +26,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
             PermissionToken = "$PROJECT:vstfs:///Classification/TeamProject/53410703-e2e5-4238-9025-233bd7c811b3:"
         };
 
-        public NobodyCanDeleteTheTeamProjectTests(TestConfig config)
-        {
-            _config = config;
-        }
-
         [Fact]
         public async Task GivenProjectAdministratorsMembersEmpty_WhenEvaluating_ThenTrue()
         {
@@ -42,7 +35,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeTrue();
+            (await rule.EvaluateAsync("")).ShouldBeTrue();
         }
 
         [Fact]
@@ -54,7 +47,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, _rpa);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeTrue();
+            (await rule.EvaluateAsync("")).ShouldBeTrue();
         }
 
         [Fact]
@@ -66,7 +59,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, new ApplicationGroup());
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeFalse();
+            (await rule.EvaluateAsync("")).ShouldBeFalse();
         }
 
         [Fact]
@@ -78,7 +71,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeTrue();
+            (await rule.EvaluateAsync("")).ShouldBeTrue();
         }
 
         [Fact]
@@ -90,7 +83,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeFalse();
+            (await rule.EvaluateAsync("")).ShouldBeFalse();
         }
 
         [Fact]
@@ -102,7 +95,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            (await rule.EvaluateAsync(_config.Project)).ShouldBeTrue();
+            (await rule.EvaluateAsync("")).ShouldBeTrue();
         }
 
         [Fact]
@@ -116,7 +109,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new ApplicationGroup {TeamFoundationId = "gsdgs"});
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .Received()
@@ -140,7 +133,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 new ApplicationGroup {TeamFoundationId = "gsdgs"});
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .Received()
@@ -161,7 +154,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client, _rpa);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .DidNotReceive()
@@ -180,7 +173,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .Received()
@@ -201,7 +194,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             // Assert
             await client
@@ -227,7 +220,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             // Act
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             // Assert
             await client
@@ -248,7 +241,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .Received()
@@ -269,7 +262,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeMembersLookup(client);
 
             var rule = new NobodyCanDeleteTheTeamProject(client);
-            await rule.ReconcileAsync(_config.Project);
+            await rule.ReconcileAsync("");
 
             await client
                 .Received()

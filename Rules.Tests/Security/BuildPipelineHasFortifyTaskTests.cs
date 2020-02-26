@@ -13,7 +13,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class BuildPipelineHasFortifyTaskTests : IClassFixture<TestConfig>
+    public class BuildPipelineHasFortifyTaskTests
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
         private const string TaskName = "FortifySCA";

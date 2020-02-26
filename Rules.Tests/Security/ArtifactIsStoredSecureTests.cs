@@ -12,7 +12,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ArtifactIsStoredSecureTests : IClassFixture<TestConfig>
+    public class ArtifactIsStoredSecureTests 
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 

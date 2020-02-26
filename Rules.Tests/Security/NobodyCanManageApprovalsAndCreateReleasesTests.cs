@@ -11,15 +11,8 @@ using response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class NobodyCanManageApprovalsAndCreateReleasesTests : IClassFixture<TestConfig>
+    public class NobodyCanManageApprovalsAndCreateReleasesTests
     {
-        private readonly TestConfig _config;
-
-        public NobodyCanManageApprovalsAndCreateReleasesTests(TestConfig config)
-        {
-            _config = config;
-        }
-
         [Theory]
         [InlineData(PermissionId.Allow, PermissionId.Allow, false)]
         [InlineData(PermissionId.Allow, PermissionId.Deny, true)]
@@ -34,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, createReleasesPermissionId, manageReleasesPermissionId);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(result);
+            (await rule.EvaluateAsync("", releasePipeline)).ShouldBe(result);
         }
 
         private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId,

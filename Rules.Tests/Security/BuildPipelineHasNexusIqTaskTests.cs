@@ -12,7 +12,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class BuildPipelineHasNexusIqTaskTests : IClassFixture<TestConfig>
+    public class BuildPipelineHasNexusIqTaskTests
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 

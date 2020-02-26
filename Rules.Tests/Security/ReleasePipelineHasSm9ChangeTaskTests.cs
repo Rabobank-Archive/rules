@@ -11,7 +11,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ReleasePipelineHasSm9ChangeTaskTests : IClassFixture<TestConfig>
+    public class ReleasePipelineHasSm9ChangeTaskTests
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 

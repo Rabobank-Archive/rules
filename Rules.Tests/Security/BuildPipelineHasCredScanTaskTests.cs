@@ -13,7 +13,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class BuildPipelineHasCredScanTaskTests : IClassFixture<TestConfig>
+    public class BuildPipelineHasCredScanTaskTests
     {
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 
