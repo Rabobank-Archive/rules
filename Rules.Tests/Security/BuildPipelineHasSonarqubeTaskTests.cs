@@ -1,72 +1,43 @@
-using System.Threading.Tasks;
+using System;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
-using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
-using Response = SecurePipelineScan.VstsService.Response;
-using Shouldly;
-using Xunit;
-using System;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
+using SecurePipelineScan.Rules.Security;
+using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Response;
+using Shouldly;
+using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasSonarqubeTaskTests : IClassFixture<TestConfig>
     {
-        private readonly TestConfig _config;
-        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
+        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
 
-        public BuildPipelineHasSonarqubeTaskTests(TestConfig config)
+        public BuildPipelineHasSonarqubeTaskTests()
         {
-            _config = config;
             _fixture.Customize(new AutoNSubstituteCustomization());
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task EvaluateIntegrationTest_gui()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var project = await client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
-                .ConfigureAwait(false);
-
-            var rule = new BuildPipelineHasSonarqubeTask(client);
-            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeTrue();
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task EvaluateIntegrationTest_yaml()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var project = await client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
-                .ConfigureAwait(false);
-
-            var rule = new BuildPipelineHasSonarqubeTask(client);
-            (await rule.EvaluateAsync(project, buildPipeline)).GetValueOrDefault().ShouldBeFalse();
         }
 
         [Fact]
         public async Task GivenPipeline_WhenYamlFileWithFortifyTask_ThenEvaluatesToTrue()
         {
-            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+            _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
-            _fixture.Customize<Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
-            _fixture.Customize<Response.Repository>(ctx => ctx
+            _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
             var gitItem = new JObject
             {
-                { "content", "steps:\r- task: SonarQubeAnalyze@3" }
+                {"content", "steps:\r- task: SonarQubeAnalyze@3"}
             };
 
-            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var project = _fixture.Create<Response.Project>();
+            var buildPipeline = _fixture.Create<BuildDefinition>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
@@ -80,20 +51,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
         [Fact]
         public async Task GivenPipeline_WhenYamlFileWithoutFortifyTask_ThenEvaluatesToFalse()
         {
-            _fixture.Customize<Response.BuildProcess>(ctx => ctx
+            _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
-            _fixture.Customize<Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
-            _fixture.Customize<Response.Repository>(ctx => ctx
+            _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
             var gitItem = new JObject
             {
-                { "content", "steps:\r- task: OtherTask" }
+                {"content", "steps:\r- task: OtherTask"}
             };
 
-            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var project = _fixture.Create<Response.Project>();
+            var buildPipeline = _fixture.Create<BuildDefinition>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);

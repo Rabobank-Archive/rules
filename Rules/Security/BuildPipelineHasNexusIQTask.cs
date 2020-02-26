@@ -1,5 +1,6 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
@@ -16,6 +17,8 @@ namespace SecurePipelineScan.Rules.Security
         public string TaskId => "4f40d1a2-83b0-4ddc-9a77-e7f279eb1802";
         public string TaskName => "NexusIqPipelineTask";
         public string StepName => "";
+        public Dictionary<string, object> Inputs => new Dictionary<string, object>();
+
         string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";
 

@@ -1,13 +1,14 @@
 using System;
-using SecurePipelineScan.VstsService;
+using System.Threading.Tasks;
+using Polly;
 using SecurePipelineScan.Rules.Security;
+using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Permissions;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
-using System.Threading.Tasks;
-using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Permissions;
 
-namespace SecurePipelineScan.Rules.Tests.Security
+namespace Rules.Tests.Integration.Security
 {
     public class NobodyCanBypassPoliciesTests : IClassFixture<TestConfig>
     {
@@ -36,9 +37,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(projectId, repositoryId))
                 .ShouldBe(false);
             await rule.ReconcileAsync(projectId, repositoryId);
-            await Task.Delay(TimeSpan.FromSeconds(10));
-            (await rule.EvaluateAsync(projectId, repositoryId))
-                .ShouldBe(true);
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
+                .ExecuteAsync(async () =>
+            {
+                    (await rule.EvaluateAsync(projectId, repositoryId)).ShouldBe(true);
+            });
         }
 
         [Fact]
@@ -58,9 +63,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(projectId, repositoryId))
                 .ShouldBe(false);
             await rule.ReconcileAsync(projectId, repositoryId);
-            await Task.Delay(TimeSpan.FromSeconds(10));
-            (await rule.EvaluateAsync(projectId, repositoryId))
-                .ShouldBe(true);
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
+                .ExecuteAsync(async () =>
+            {
+                    (await rule.EvaluateAsync(projectId, repositoryId)).ShouldBe(true);
+            });
         }
     }
 }

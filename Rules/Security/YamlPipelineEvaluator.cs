@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
         private const int MaxLevel = 5;
         private const string RepoGitType = "git";
         private const string TemplatePropertyName = "template";
-        
+
         public YamlPipelineEvaluator(IVstsRestClient client)
         {
             _client = client;
@@ -57,7 +57,7 @@ namespace SecurePipelineScan.Rules.Security
             var yamlPipeline = await GetGitYamlItemAsync(new ResourceRef(project.Id, buildPipeline.Repository.Id)
                 .WithFilePath(buildPipeline.Process.YamlFilename)
             ).ConfigureAwait(false);
-            return yamlPipeline.Any() ? PipelineContainsTask(yamlPipeline, rule) : false;
+            return yamlPipeline.Any() ? PipelineContainsValidTask(yamlPipeline, rule) : false;
         }
 
         private async Task<JToken> GetGitYamlItemAsync(ResourceRef resourceRef, int nestingLevel = 0)
@@ -201,9 +201,9 @@ namespace SecurePipelineScan.Rules.Security
             }
 
             return new ResourceRef(
-                    repoRefs[repoRefAlias].ProjectId,
-                    repoRefs[repoRefAlias].RepoId,
-                    repoRefs[repoRefAlias].RepoType).WithFilePath(yamlName);
+                repoRefs[repoRefAlias].ProjectId,
+                repoRefs[repoRefAlias].RepoId,
+                repoRefs[repoRefAlias].RepoType).WithFilePath(yamlName);
         }
 
         private static Dictionary<string, ResourceRef> GetRepoReferences(ResourceRef resourceRef, JToken yamlPipeline)
@@ -247,12 +247,30 @@ namespace SecurePipelineScan.Rules.Security
             return result;
         }
 
-        private static bool? PipelineContainsTask(JToken yamlPipeline, IPipelineHasTaskRule rule)
+        private static bool PipelineContainsValidTask(JToken yamlPipeline, IPipelineHasTaskRule rule)
         {
-            return GetSteps(yamlPipeline)
-                .Any(s => s[rule.StepName] != null ||
-                          s["task"] != null && ContainsTaskName(s["task"].ToString(), rule.TaskName)
-                                            && s.SelectToken("enabled", false)?.ToString() != "false");
+            foreach (var step in GetSteps(yamlPipeline))
+            {
+                if (!string.IsNullOrWhiteSpace(rule.StepName) && step[rule.StepName] != null)
+                {
+                    return true;
+                }
+
+                if (!GetTaskFromStep(step, rule.TaskName))
+                {
+                    continue;
+                }
+
+                if (rule.Inputs == null || !rule.Inputs.Any())
+                {
+                    return true;
+                }
+
+                var pipelineInputs = step["inputs"];
+                return pipelineInputs != null && VerifyRuleInputs(rule.Inputs, pipelineInputs);
+            }
+
+            return false;
         }
 
         internal static bool ContainsTaskName(string fullTaskName, string name)
@@ -260,6 +278,51 @@ namespace SecurePipelineScan.Rules.Security
             var taskNameWithPrefix = fullTaskName.Split('@')[0];
             var taskName = taskNameWithPrefix.Split('.').Last();
             return taskName == name;
+        }
+
+        private static bool VerifyRuleInputs(Dictionary<string, object> inputs, JToken pipelineInputs)
+        {
+            foreach (var (ruleInputKey, ruleInputValue) in inputs)
+            {
+                var pipelineInput = pipelineInputs[ruleInputKey];
+                if (pipelineInput == null)
+                {
+                    return false;
+                }
+
+                var value = pipelineInput.ToString();
+                if (!TryParse(value, out var result))
+                {
+                    return false;
+                }
+
+                if (!result.Equals(ruleInputValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool GetTaskFromStep(JToken step, string taskName)
+        {
+            var task = step["task"];
+            return task != null &&
+                   ContainsTaskName(task.ToString(), taskName) &&
+                   step.SelectToken("enabled", false)?.ToString() != "false";
+        }
+
+        private static bool TryParse(string value, out object result)
+        {
+            if (bool.TryParse(value, out var result2))
+            {
+                result = result2;
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 
         private static IEnumerable<JToken> GetSteps(JToken yamlPipeline)

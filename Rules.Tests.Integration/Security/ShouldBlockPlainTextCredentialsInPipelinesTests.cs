@@ -4,7 +4,7 @@ using SecurePipelineScan.VstsService;
 using Shouldly;
 using Xunit;
 
-namespace SecurePipelineScan.Rules.Tests.Security
+namespace Rules.Tests.Integration.Security
 {
     public class ShouldBlockPlainTextCredentialsInPipelinesTests : IClassFixture<TestConfig>
     {
@@ -16,20 +16,22 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public async Task EvaluateIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(SecurePipelineScan.VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ShouldBlockPlainTextCredentialsInPipelines(client);
             (await rule.EvaluateAsync(projectId)).ShouldBeTrue();
         }
 
         [Fact]
+        [Trait("category", "integration")]
         public async Task ReconcileIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(VstsService.Requests.Project.Properties(_config.Project))).Id;
+            var projectId = (await client.GetAsync(SecurePipelineScan.VstsService.Requests.Project.Properties(_config.Project))).Id;
 
             var rule = new ShouldBlockPlainTextCredentialsInPipelines(client) as IProjectReconcile;
             await rule.ReconcileAsync(projectId);

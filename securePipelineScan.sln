@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rules", "Rules\Rules.csproj", "{488D73F8-4667-4616-8945-B04AF604DC02}"
 EndProject
@@ -18,17 +18,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogAnalytics.Client", "LogAnalytics.Client\LogAnalytics.Client.csproj", "{0E94E151-EAC6-425E-9626-9A313CE408F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogAnalytics.Client", "LogAnalytics.Client\LogAnalytics.Client.csproj", "{0E94E151-EAC6-425E-9626-9A313CE408F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogAnalytics.Client.Tests", "LogAnalytics.Client.Tests\LogAnalytics.Client.Tests.csproj", "{ADA751CD-6B9C-41F2-BCCF-DF056268014B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogAnalytics.Client.Tests", "LogAnalytics.Client.Tests\LogAnalytics.Client.Tests.csproj", "{ADA751CD-6B9C-41F2-BCCF-DF056268014B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpHelpers", "HttpHelpers\HttpHelpers.csproj", "{84075D54-EE34-44BD-ADB7-F897D90BBF3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpHelpers", "HttpHelpers\HttpHelpers.csproj", "{84075D54-EE34-44BD-ADB7-F897D90BBF3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpHelpers.Tests", "HttpHelpers.Tests\HttpHelpers.Tests.csproj", "{3E5F7A09-7069-4072-97AC-99B0686C205A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpHelpers.Tests", "HttpHelpers.Tests\HttpHelpers.Tests.csproj", "{3E5F7A09-7069-4072-97AC-99B0686C205A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDoCompliancy.CustomStatus", "AzDoCompliancy.CustomStatus\AzDoCompliancy.CustomStatus.csproj", "{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzDoCompliancy.CustomStatus", "AzDoCompliancy.CustomStatus\AzDoCompliancy.CustomStatus.csproj", "{7EFDBE4B-2450-4237-B6A3-F05B39B66CD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDoCompliancy.CustomStatus.Tests", "AzDoCompliancy.CustomStatus.Tests\AzDoCompliancy.CustomStatus.Tests.csproj", "{937390EE-E314-4E6D-BC52-C86A4B64EC35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzDoCompliancy.CustomStatus.Tests", "AzDoCompliancy.CustomStatus.Tests\AzDoCompliancy.CustomStatus.Tests.csproj", "{937390EE-E314-4E6D-BC52-C86A4B64EC35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rules.Tests.Integration", "Rules.Tests.Integration\Rules.Tests.Integration.csproj", "{504EDCBB-1A47-465E-9025-465343AC1125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{937390EE-E314-4E6D-BC52-C86A4B64EC35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{937390EE-E314-4E6D-BC52-C86A4B64EC35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{937390EE-E314-4E6D-BC52-C86A4B64EC35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{504EDCBB-1A47-465E-9025-465343AC1125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{504EDCBB-1A47-465E-9025-465343AC1125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{504EDCBB-1A47-465E-9025-465343AC1125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{504EDCBB-1A47-465E-9025-465343AC1125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

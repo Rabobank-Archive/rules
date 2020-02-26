@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using AutoFixture;
+﻿using System.Threading.Tasks;
 using SecurePipelineScan.Rules.Security;
-using SecurePipelineScan.VstsService.Response;
+using SecurePipelineScan.VstsService;
+using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
-using Task = System.Threading.Tasks.Task;
 
-namespace SecurePipelineScan.Rules.Tests.Security
+namespace Rules.Tests.Integration.Security
 {
     public class ReleasePipelineUsesBuildArtifactTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
+        private const string PipelineId = "1";
 
         public ReleasePipelineUsesBuildArtifactTests(TestConfig config)
         {
@@ -18,19 +18,20 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task ReturnFalseForReleasePipelineWithoutArtifacts()
+        [Trait("category", "integration")]
+        public async Task EvaluateIntegrationTest()
         {
             //Arrange
-            var fixture = new Fixture();
-            var releasePipeline = fixture.Create<ReleaseDefinition>();
-            releasePipeline.Artifacts = new List<Artifact>();
+            var client = new VstsRestClient(_config.Organization, _config.Token);
+            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, PipelineId))
+                .ConfigureAwait(false);
 
             //Act
             var rule = new ReleasePipelineUsesBuildArtifact();
             var result = await rule.EvaluateAsync(_config.Project, releasePipeline);
 
             //Assert
-            result.ShouldBe(false);
+            result.ShouldBe(true);
         }
     }
 }

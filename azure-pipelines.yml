@@ -1,5 +1,5 @@
 name: $(Build.BuildId)
-pool: 'Rabo-Build-Azure-Windows-Preview'
+pool: 'Rabo-Build-Azure-Windows'
 trigger:
   - master
 variables:

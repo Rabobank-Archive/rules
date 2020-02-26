@@ -4,12 +4,10 @@ using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using response = SecurePipelineScan.VstsService.Response;
+using SecurePipelineScan.VstsService.Permissions;
 using Shouldly;
 using Xunit;
-using SecurePipelineScan.VstsService.Requests;
-using System;
-using SecurePipelineScan.VstsService.Permissions;
+using response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -39,52 +37,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
             (await rule.EvaluateAsync(_config.Project, releasePipeline)).ShouldBe(result);
         }
 
-        [Fact]
-        public async Task EvaluateReleaseIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
-                .ConfigureAwait(false);
-
-            var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBe(true);
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task ReconcileIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
-                .ConfigureAwait(false);
-
-            await ManagePermissions
-                .ForReleasePipeline(client, projectId, releasePipeline.Id, releasePipeline.Path)
-                .Permissions(8)
-                .SetToAsync(PermissionId.Allow);
-
-            var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline))
-                .ShouldBe(false);
-
-            await rule.ReconcileAsync(projectId, releasePipeline.Id);
-            await Task.Delay(TimeSpan.FromSeconds(10));
-
-            (await rule.EvaluateAsync(projectId, releasePipeline))
-                .ShouldBe(true);
-        }
-
-        private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId, int manageApproversPermissionId)
+        private void InitializeLookupData(IVstsRestClient client, int createReleasesPermissionId,
+            int manageApproversPermissionId)
         {
             var fixture = new Fixture();
             fixture.Customize(new AutoNSubstituteCustomization());
 
-            client.GetAsync(Arg.Any<IVstsRequest<response.ProjectProperties>>()).Returns(fixture.Create<response.ProjectProperties>());
-            client.GetAsync(Arg.Any<IVstsRequest<response.ApplicationGroups>>()).Returns(fixture.Create<response.ApplicationGroups>());
+            client.GetAsync(Arg.Any<IVstsRequest<response.ProjectProperties>>())
+                .Returns(fixture.Create<response.ProjectProperties>());
+            client.GetAsync(Arg.Any<IVstsRequest<response.ApplicationGroups>>())
+                .Returns(fixture.Create<response.ApplicationGroups>());
 
-            client.GetAsync(Arg.Any<IVstsRequest<response.PermissionsSetId>>()).Returns(new response.PermissionsSetId()
+            client.GetAsync(Arg.Any<IVstsRequest<response.PermissionsSetId>>()).Returns(new response.PermissionsSetId
             {
                 Permissions = new[]
                 {
@@ -99,7 +63,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
                         DisplayName = "Manage release approvers",
                         PermissionBit = 8,
                         PermissionId = manageApproversPermissionId
-                    },
+                    }
                 }
             });
         }

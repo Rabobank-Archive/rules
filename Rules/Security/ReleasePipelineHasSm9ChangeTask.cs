@@ -36,7 +36,7 @@ namespace SecurePipelineScan.Rules.Security
             var found = PipelineContainsTask(tasks);
             var queue = GetTaskGroups(tasks).ToList();
 
-            return await _pipelineEvaluator.EvaluateTaskGroupsAsync(found, queue, projectId, TaskId)
+            return await _pipelineEvaluator.EvaluateTaskGroupsAsync(found, queue, projectId, new PipelineHasTaskRule(TaskId))
                 .ConfigureAwait(false);
         }
 
@@ -46,5 +46,17 @@ namespace SecurePipelineScan.Rules.Security
         private static IEnumerable<string> GetTaskGroups(IEnumerable<WorkflowTask> tasks) =>
             tasks.Where(t => t.Enabled && t.DefinitionType == "metaTask")
                 .Select(t => t.TaskId.ToString());
+        public class PipelineHasTaskRule : IPipelineHasTaskRule
+        {
+            public PipelineHasTaskRule(string taskId)
+            {
+                TaskId = taskId;
+            }
+
+            public string TaskId { get; }
+            public string TaskName { get; }
+            public string StepName { get; }
+            public Dictionary<string, object> Inputs { get; }
+        }
     }
 }

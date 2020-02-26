@@ -6,44 +6,24 @@ using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
-using Project = SecurePipelineScan.VstsService.Requests.Project;
-using Repository = SecurePipelineScan.VstsService.Response.Repository;
 using Task = System.Threading.Tasks.Task;
-using TaskGroup = SecurePipelineScan.VstsService.Response.TaskGroup;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasFortifyTaskTests : IClassFixture<TestConfig>
     {
-        private readonly TestConfig _config;
-        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
+        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
         private const string TaskName = "FortifySCA";
 
-        public BuildPipelineHasFortifyTaskTests(TestConfig config)
+        public BuildPipelineHasFortifyTaskTests()
         {
-            _config = config;
             _fixture.Customize(new AutoNSubstituteCustomization());
         }
 
         #region [ gui ]
-
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task EvaluateGuiIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var project = await client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(project.Id, "2"))
-                .ConfigureAwait(false);
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-            (await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false))
-                .GetValueOrDefault().ShouldBeTrue();
-        }
 
         #region [ nested taskgroup ]
 
@@ -52,7 +32,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 1));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -71,11 +51,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup { Tasks = new[] { fortifyStep } };
-            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
+            var taskGroup = new TaskGroup {Tasks = new[] {fortifyStep}};
+            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<TaskGroupResponse>>()).Returns(taskGroupResponse);
@@ -91,7 +71,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 1));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -111,11 +91,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup { Tasks = new[] { circularStep } };
-            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
+            var taskGroup = new TaskGroup {Tasks = new[] {circularStep}};
+            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<TaskGroupResponse>>()).Returns(taskGroupResponse);
@@ -133,39 +113,11 @@ namespace SecurePipelineScan.Rules.Tests.Security
         #region [ yaml ]
 
         [Fact]
-        [Trait("category", "integration")]
-        public async Task EvaluateYamlIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var project = await client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
-                .ConfigureAwait(false);
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-            (await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false))
-                .GetValueOrDefault().ShouldBeFalse();
-        }
-
-        [Fact(Skip = "Nested YAML Pipeline should first be fixed")]
-        [Trait("category", "integration")]
-        public async Task EvaluateNestedYamlTemplatesIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var project = await client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await client.GetAsync(Builds.BuildDefinition(project.Id, "275"))
-                .ConfigureAwait(false);
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-            (await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false))
-                .GetValueOrDefault().ShouldBeTrue();
-        }
-
-        [Fact]
         public async Task GivenPipeline_WhenStepsYamlFileWithFortifyTask_ThenEvaluatesToTrue()
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -176,7 +128,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
@@ -192,7 +144,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -209,7 +161,7 @@ jobs:
             };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
@@ -234,7 +186,7 @@ jobs:
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -245,7 +197,7 @@ jobs:
             };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var client = Substitute.For<IVstsRestClient>();
             client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
@@ -265,7 +217,7 @@ jobs:
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -289,7 +241,7 @@ jobs:
                 .Returns(stepsTemplateGitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var rule = new BuildPipelineHasFortifyTask(client);
 
@@ -307,7 +259,7 @@ jobs:
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -341,7 +293,7 @@ jobs:
                 .Returns(jobsTemplateGitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var rule = new BuildPipelineHasFortifyTask(client);
 
@@ -353,13 +305,14 @@ jobs:
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenMultipleNestedStepsYamlTemplatesInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
+        public async Task
+            GivenPipeline_WhenMultipleNestedStepsYamlTemplatesInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
         {
             // arrange
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -401,7 +354,7 @@ jobs:
                 .Returns(stepsTemplate3GitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var rule = new BuildPipelineHasFortifyTask(client);
 
@@ -422,7 +375,7 @@ jobs:
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Id, projectId)
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
@@ -508,7 +461,7 @@ steps:
                 });
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
             var rule = new BuildPipelineHasFortifyTask(client);
 
             // act
@@ -519,13 +472,14 @@ steps:
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenTooManyNestedStepsYamlTemplateInSameRepoLevelsWithFortifyTask_ThenShouldThrowException()
+        public async Task
+            GivenPipeline_WhenTooManyNestedStepsYamlTemplateInSameRepoLevelsWithFortifyTask_ThenShouldThrowException()
         {
             // arrange
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA"));
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
@@ -589,7 +543,7 @@ steps:
                 .Returns(stepsTemplate6GitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var rule = new BuildPipelineHasFortifyTask(client);
 
@@ -609,10 +563,13 @@ steps:
         [Theory]
         [InlineData("steps-template.yml@shared", "shared", "git", "project/repo", "project", true, null)]
         [InlineData("steps-template.yml@shared", "shared", "github", "project/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", "project", true, "repo alias not found")]
+        [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", "project", true,
+            "repo alias not found")]
         [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", "project", true, "yaml name with repo reference should have exactly two segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", "project", true, "repo name contains an unsupported number of segments")]
+        [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", "project", true,
+            "yaml name with repo reference should have exactly two segments")]
+        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", "project", true,
+            "repo name contains an unsupported number of segments")]
         [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", "project", false, null)]
         [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", "project", false, null)]
         [InlineData("steps-template.yml@shared", "shared", "git", "repo", "projectId", true, null)]
@@ -624,7 +581,7 @@ steps:
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2)
                 .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<VstsService.Response.Project>(ctx => ctx
+            _fixture.Customize<Project>(ctx => ctx
                 .With(x => x.Name, "projectA")
                 .With(x => x.Id, "projectId")
             );
@@ -662,7 +619,7 @@ steps:
                 .Returns(stepsTemplateGitItem);
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<VstsService.Response.Project>();
+            var project = _fixture.Create<Project>();
 
             var rule = new BuildPipelineHasFortifyTask(client);
 

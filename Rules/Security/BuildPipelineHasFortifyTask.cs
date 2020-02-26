@@ -1,5 +1,6 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
@@ -17,6 +18,7 @@ namespace SecurePipelineScan.Rules.Security
         public string TaskId => "818386e5-c8a5-46c3-822d-954b3c8fb130";
         public string TaskName => "FortifySCA";
         public string StepName => "";
+        public Dictionary<string, object> Inputs => new Dictionary<string, object>();
 
         string IRule.Description => "Build pipeline contains an enabled Fortify task";
         string IRule.Link => "https://confluence.dev.somecompany.nl/x/9w1TD";

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 
@@ -25,7 +26,8 @@ namespace SecurePipelineScan.Rules.Security
             {
                 TaskId = "dbe519ee-a2e4-43f5-8e1a-949bd935b736",
                 TaskName = "PostAnalysis",
-                StepName = ""
+                StepName = "",
+                Inputs = new Dictionary<string, object>{{"CredScan", true}}
             }
         };
 
@@ -59,6 +61,7 @@ namespace SecurePipelineScan.Rules.Security
             public string TaskId { get; set; }
             public string TaskName { get; set; }
             public string StepName { get; set; }
+            public Dictionary<string, object> Inputs { get; set; }
         }
     }
 }

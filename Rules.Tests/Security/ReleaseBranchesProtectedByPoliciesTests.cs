@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
-using Requests = SecurePipelineScan.VstsService.Requests;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
@@ -17,7 +15,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
     {
         private readonly TestConfig _config;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
-        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
+        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
         private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
         private readonly IPoliciesResolver _policiesResolver = Substitute.For<IPoliciesResolver>();
 
@@ -25,16 +23,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             _config = config;
             _fixture.Customize(new AutoNSubstituteCustomization());
-        }
-
-        [Fact]
-        public async Task EvaluateIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Requests.Project.Properties(_config.Project))).Id;
-
-            var rule = new ReleaseBranchesProtectedByPolicies(client, _policiesResolver);
-            await rule.EvaluateAsync(projectId, RepositoryId);
         }
 
         [Fact]
@@ -111,7 +99,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
-            CustomizeMinimumNumberOfReviewersPolicy(_fixture, isBlocking: false);
+            CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
             CustomizePolicySettings(_fixture);
 
             SetupPoliciesResolver(_policiesResolver, _fixture);
@@ -140,14 +128,6 @@ namespace SecurePipelineScan.Rules.Tests.Security
 
             //Assert
             evaluatedRule.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Reconcile()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var rule = new ReleaseBranchesProtectedByPolicies(client, null) as IReconcile;
-            rule.ReconcileAsync(_config.Project, RepositoryId);
         }
 
         [Fact]
@@ -181,7 +161,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             await _client
                 .Received()
-                .PutAsync(Arg.Any<IVstsRequest<Policy, Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(p => !p.IsDeleted && p.IsBlocking && p.IsEnabled));
+                .PutAsync(Arg.Any<IVstsRequest<Policy, Policy>>(),
+                    Arg.Is<MinimumNumberOfReviewersPolicy>(p => !p.IsDeleted && p.IsBlocking && p.IsEnabled));
         }
 
         [Fact]
@@ -216,7 +197,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             await _client
                 .Received()
-                .PutAsync(Arg.Any<IVstsRequest<Policy>>(), Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
+                .PutAsync(Arg.Any<IVstsRequest<Policy>>(),
+                    Arg.Is<MinimumNumberOfReviewersPolicy>(x => x.Settings.MinimumApproverCount == 3));
         }
 
         private static void CustomizeScope(IFixture fixture,
