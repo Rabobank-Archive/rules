@@ -44,14 +44,22 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForReleasePipeline(client, projectId, releasePipeline.Id, releasePipeline.Path)
-                .Permissions(8)
+                .For("Contributors")
+                .Permissions(8, 64)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline))
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
+                .ExecuteAsync(async () =>
+            {
+                (await rule.EvaluateAsync(projectId, releasePipeline))
                 .ShouldBe(false);
+            });
 
             await rule.ReconcileAsync(projectId, releasePipeline.Id);
+            
             await Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
