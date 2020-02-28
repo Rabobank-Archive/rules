@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
@@ -31,8 +32,8 @@ namespace SecurePipelineScan.Rules.Security
             }
         };
 
-        string IRule.Description => "Build pipeline contains credential scan task";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/LorHDQ";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Build pipeline contains credential scan task";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/LorHDQ";
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

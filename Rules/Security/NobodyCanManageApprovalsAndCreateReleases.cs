@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Response = SecurePipelineScan.VstsService.Response;
 using Request = SecurePipelineScan.VstsService.Requests;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.Rules.Security
@@ -40,9 +41,10 @@ namespace SecurePipelineScan.Rules.Security
             "Project Collection Administrators"
         };
 
-        string IRule.Description => "Nobody can both manage approvals and create releases (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can both manage approvals and create releases (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
 
+        [ExcludeFromCodeCoverage] 
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +

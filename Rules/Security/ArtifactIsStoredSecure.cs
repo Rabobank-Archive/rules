@@ -1,6 +1,7 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
@@ -19,8 +20,8 @@ namespace SecurePipelineScan.Rules.Security
         public string StepName => "publish";
         public Dictionary<string, object> Inputs => new Dictionary<string, object>();
 
-        string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

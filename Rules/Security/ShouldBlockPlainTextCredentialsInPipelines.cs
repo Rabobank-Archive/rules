@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
-using SecurePipelineScan.VstsService.Response;
-using Task = System.Threading.Tasks.Task;
+using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
@@ -15,8 +15,9 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        public string Description => "Plain text credentials are blocked in pipelines.";
-        public string Link => "https://confluence.dev.somecompany.nl/x/OxV1D";
+        [ExcludeFromCodeCoverage] public string Description => "Plain text credentials are blocked in pipelines.";
+        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/OxV1D";
+        [ExcludeFromCodeCoverage] 
         public string[] Impact => new[]
         {
             "In project settings, 'Block release definition edits that contain plaintext " +
@@ -36,7 +37,7 @@ namespace SecurePipelineScan.Rules.Security
             var settings = await _client.GetAsync(ReleaseManagement.Settings(projectId))
                 .ConfigureAwait(false);
             if (settings.ComplianceSettings == null)
-                settings.ComplianceSettings = new ComplianceSettings();
+                settings.ComplianceSettings = new Response.ComplianceSettings();
             
             settings.ComplianceSettings.CheckForCredentialsAndOtherSecrets = true;
             

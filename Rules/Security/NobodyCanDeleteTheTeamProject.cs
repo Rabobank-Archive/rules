@@ -18,10 +18,11 @@ namespace SecurePipelineScan.Rules.Security
 
         public NobodyCanDeleteTheTeamProject(IVstsRestClient client) => _client = client;
 
-        [ExcludeFromCodeCoverage]public string Description => "Nobody can delete the Team Project (SOx)";
-        [ExcludeFromCodeCoverage]public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
+        [ExcludeFromCodeCoverage] public string Description => "Nobody can delete the Team Project (SOx)";
+        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
 
-        [ExcludeFromCodeCoverage]string[] IProjectReconcile.Impact => new[]
+        [ExcludeFromCodeCoverage] 
+        string[] IProjectReconcile.Impact => new[]
         {
             "Rabobank Project Administrators group is created and added to Project Administrators",
             "Delete team project permissions of the Rabobank Project Administrators group is set to deny",

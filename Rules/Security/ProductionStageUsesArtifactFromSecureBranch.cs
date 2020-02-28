@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -21,9 +22,10 @@ namespace SecurePipelineScan.Rules.Security
             _productionItemsResolver = productionItemsResolver;
         }
 
-        public string Description => "Production stage uses artifact from secure branch (SOx)";
-        public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
+        [ExcludeFromCodeCoverage] public string Description => "Production stage uses artifact from secure branch (SOx)";
+        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/YY8AD";
 
+        [ExcludeFromCodeCoverage]
         public string[] Impact => new[]
         {
             "For each production stage (as stored in ITSM) ...",

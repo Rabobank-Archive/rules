@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Security
         [ExcludeFromCodeCoverage] public string Description => "Release pipeline has valid CMDB link";
         [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
 
-        public string[] Impact => new string[] { "In the CMDB the deployment method for the CI is set to Azure DevOps and coupled to this release pipeline" };
+        [ExcludeFromCodeCoverage] public string[] Impact => new string[] { "In the CMDB the deployment method for the CI is set to Azure DevOps and coupled to this release pipeline" };
 
         public async Task<bool?> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
         {

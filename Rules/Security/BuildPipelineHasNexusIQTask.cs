@@ -1,6 +1,7 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
@@ -19,8 +20,8 @@ namespace SecurePipelineScan.Rules.Security
         public string StepName => "";
         public Dictionary<string, object> Inputs => new Dictionary<string, object>();
 
-        string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {

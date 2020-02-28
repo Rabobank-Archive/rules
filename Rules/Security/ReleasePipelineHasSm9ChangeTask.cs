@@ -2,6 +2,7 @@ using SecurePipelineScan.VstsService.Response;
 using SecurePipelineScan.VstsService;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,8 +16,8 @@ namespace SecurePipelineScan.Rules.Security
         public ReleasePipelineHasSm9ChangeTask(IVstsRestClient client) =>
             _pipelineEvaluator = new GuiPipelineEvaluator(client);
 
-        string IRule.Description => "Release pipeline contains SM9 Create Change task";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/NRV1D";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Release pipeline contains SM9 Create Change task";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/NRV1D";
 
         public async Task<bool?> EvaluateAsync(
             string projectId, ReleaseDefinition releasePipeline)

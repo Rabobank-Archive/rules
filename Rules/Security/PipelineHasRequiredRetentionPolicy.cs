@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -17,9 +18,10 @@ namespace SecurePipelineScan.Rules.Security
 
         public PipelineHasRequiredRetentionPolicy(IVstsRestClient client) => _client = client;
 
-        string IRule.Description => "All releases are retained for at least 15 months (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "All releases are retained for at least 15 months (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
 
+        [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[] {
             "In project settings the maximum retention policy is set to 450 days.",
             "On the pipeline the days to retain a release is set to 450 days for every stage.",

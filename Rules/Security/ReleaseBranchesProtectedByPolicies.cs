@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService;
@@ -21,9 +22,10 @@ namespace SecurePipelineScan.Rules.Security
 
         private const int MinimumApproverCount = 2;
 
-        public string Description => "Release branches are protected by policies (SOx)";
-        public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
+        [ExcludeFromCodeCoverage] public string Description => "Release branches are protected by policies (SOx)";
+        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
 
+        [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[] {
             "Require a minimum number of reviewers policy is created or updated.",
             "Minimum number of reviewers is set to at least 2",

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -8,8 +9,8 @@ namespace SecurePipelineScan.Rules.Security
 {
     public class ReleasePipelineUsesBuildArtifact : IReleasePipelineRule
     {
-        string IRule.Description => "Release pipeline uses solely build artifacts (SOx)";
-        string IRule.Link => "https://confluence.dev.somecompany.nl/x/aY8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Release pipeline uses solely build artifacts (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/aY8AD";
 
         public Task<bool?> EvaluateAsync(string projectId,
             ReleaseDefinition releasePipeline)
