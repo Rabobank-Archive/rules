@@ -20,7 +20,7 @@ namespace SecurePipelineScan.VstsService.Tests
             ReleaseDefinitionId = configuration["releaseDefinitionId"] ?? "1";
             ReleaseDefinitionName = configuration["releaseDefinitionName"] ?? "AZDO-COMPLIANCY-FUNCTION (Green)";
             BuildDefinitionId = configuration["buildDefinitionId"] ?? "2";
-            BuildId = configuration["buildId"] ?? "4";
+            BuildId = configuration["buildId"] ?? "20997";
             RepositoryId = configuration["repositoryId"] ?? "6435e3f0-15b7-4302-814d-4ab586e61f8b";
             GitItemFilePath = configuration["gitItemFilePath"] ?? "/azure-pipelines.yml";
 
