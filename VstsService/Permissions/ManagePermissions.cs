@@ -41,7 +41,8 @@ namespace SecurePipelineScan.VstsService.Permissions
             
             return permissions
                 .SelectMany(p => p.Permissions)
-                .All(p => !_check((p.PermissionBit, p.NamespaceId)) || _allow.Contains(p.PermissionId));
+                .Where(p => _check((p.PermissionBit, p.NamespaceId)))
+                .All(p => _allow.Contains(p.PermissionId));
         }
 
         public ManagePermissions For(params string[] names)

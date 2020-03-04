@@ -8,7 +8,7 @@ using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.VstsService.Tests
 {
-    public static class UpdatePermissionsTests
+    public static class ManagePermissionsTests
     {
         [Fact]
         public static async Task Update()
