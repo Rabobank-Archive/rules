@@ -17,9 +17,9 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        private const int PermissionBitDeleteReleasePipelines = 4;
-        private const int PermissionBitAdministerReleasePermissions = 512;
-        private const int PermissionBitDeleteReleases = 1024;
+        public const int PermissionBitDeleteReleasePipelines = 4;
+        public const int PermissionBitAdministerReleasePermissions = 512;
+        public const int PermissionBitDeleteReleases = 1024;
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";

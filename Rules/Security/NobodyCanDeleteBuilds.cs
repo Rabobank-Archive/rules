@@ -14,10 +14,10 @@ namespace SecurePipelineScan.Rules.Security
 
         public NobodyCanDeleteBuilds(IVstsRestClient client) => _client = client;
 
-        private const int PermissionBitDeleteBuilds = 8;
-        private const int PermissionBitDestroyBuilds = 32;
-        private const int PermissionBitDeleteBuildDefinition = 4096;
-        private const int PermissionBitAdministerBuildPermissions = 16384;
+        public const int PermissionBitDeleteBuilds = 8;
+        public const int PermissionBitDestroyBuilds = 32;
+        public const int PermissionBitDeleteBuildDefinition = 4096;
+        public const int PermissionBitAdministerBuildPermissions = 16384;
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
 

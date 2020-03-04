@@ -12,9 +12,9 @@ namespace SecurePipelineScan.Rules.Security
 
         public NobodyCanBypassPolicies(IVstsRestClient client) => _client = client;
 
-        private const int PermissionBitBypassPoliciesPullRequest = 32768;
-        private const int PermissionBitBypassPoliciesCodePush = 128;
-        private const int PermissionBitManagePermissions = 8192;
+        public const int PermissionBitBypassPoliciesPullRequest = 32768;
+        public const int PermissionBitBypassPoliciesCodePush = 128;
+        public const int PermissionBitManagePermissions = 8192;
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
@@ -57,27 +57,16 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
         }
 
-        private ManagePermissions PermissionsRepository(string projectId, string repositoryId)
-        {
-            var manage = ManagePermissions
-                .ForRepository(_client, projectId, repositoryId);
-            return Permissions(manage);
-        }
+        private ManagePermissions PermissionsRepository(string projectId, string repositoryId) => 
+            Permissions(ManagePermissions.ForRepository(_client, projectId, repositoryId));
 
-        private ManagePermissions PermissionsMasterBranch(string projectId, string repositoryId)
-        {
-            var manage = ManagePermissions
-                .ForMasterBranch(_client, projectId, repositoryId);
-            return Permissions(manage);
-        }
+        private ManagePermissions PermissionsMasterBranch(string projectId, string repositoryId) =>
+            Permissions(ManagePermissions.ForMasterBranch(_client, projectId, repositoryId));
 
-        private static ManagePermissions Permissions(ManagePermissions response)
-        {
-            return response
-                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush,
-                    PermissionBitManagePermissions)
+        private static ManagePermissions Permissions(ManagePermissions manage) =>
+            manage
+                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush, PermissionBitManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
-        }
     }
 }
