@@ -12,5 +12,6 @@ namespace SecurePipelineScan.VstsService.Response
         public DateTime QueueTime { get; set; }
         public DateTime StartTime { get; set; }
         public AgentQueue Queue { get; set; }
+        public RequestedFor RequestedFor { get; set; }
     }
 }

@@ -45,6 +45,14 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
+        public async Task QueryLongRunningBuilds()
+        {
+            var build =  _client.Get(Requests.Builds.LongRunningBuilds(_config.Project)).ToList(); 
+            build.ShouldNotBeNull();
+        }
+
+        [Fact]
+        [Trait("category", "integration")]
         public async Task QueryBuildDefinition()
         {
             var buildDefinition = 

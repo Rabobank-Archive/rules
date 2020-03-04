@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SecurePipelineScan.VstsService.Response;
 
@@ -27,6 +28,14 @@ namespace SecurePipelineScan.VstsService.Requests
 
         public static IVstsRequest<Build> Build(string project, string id) => 
             new VstsRequest<Build>($"{project}/_apis/build/builds/{id}");
+
+        public static IEnumerableRequest<Build> LongRunningBuilds(string project) =>
+            new VstsRequest<Build>($"{project}/_apis/build/builds/", new Dictionary<string, object>
+        {
+            {"queryOrder", "startTimeAscending"},
+            { "minTime", $"{DateTime.UtcNow.AddHours(-6).ToString("O")}"},
+            {"api-version", "5.1"}
+        }).AsEnumerable();
 
         public static IEnumerableRequest<Build> All(string project) => 
             new VstsRequest<Build>($"{project}/_apis/build/builds").AsEnumerable();
