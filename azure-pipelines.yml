@@ -6,7 +6,7 @@ resources:
     - repository: templates
       type: git
       name: TAS/azdo-pipeline-templates
-      ref: refs/heads/parameters
+      ref: refs/heads/master
 
 variables:
   agentPool: "Rabo-Build-Azure-Windows"
