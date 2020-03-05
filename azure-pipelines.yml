@@ -57,11 +57,11 @@ jobs:
   - template: /steps/build-step.yml@templates
     parameters:
       vstsFeed: $(vstsFeed)
-  - template: /steps/publish-dotnet-step.yml@templates
-  - template: /steps/publish-artifact-step.yml@templates
   - task: DotNetCoreCLI@2
     displayName: 'dotnet push'
     inputs:
       command: push
       publishVstsFeed: '$(vstsFeed)'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  - template: /steps/publish-dotnet-step.yml@templates
+  - template: /steps/publish-artifact-step.yml@templates
