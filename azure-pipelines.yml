@@ -57,7 +57,7 @@ jobs:
   - template: /steps/build-step.yml@templates
     parameters:
       vstsFeed: $(vstsFeed)
-  - template: /steps/publish-artifact-step.yml@templates
+  #- template: /steps/publish-artifact-step.yml@templates
   - task: DotNetCoreCLI@2
     displayName: Dotnet pack
     inputs:
