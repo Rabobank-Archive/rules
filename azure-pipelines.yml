@@ -62,7 +62,7 @@ jobs:
     displayName: Dotnet pack
     inputs:
       command: pack
-      arguments: '--configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error'
+      arguments: '--configuration release --skip-duplicate --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error'
   - task: DotNetCoreCLI@2
     displayName: 'Dotnet push'
     inputs:
