@@ -64,9 +64,9 @@ jobs:
       exit /b 0
       :error
       exit /b %errorlevel%
-    displayName: Build & Pack'
+    displayName: Dotnet Build & Pack
   - task: DotNetCoreCLI@2
-    displayName: 'Dotnet push'
+    displayName: Dotnet Push
     inputs:
       command: push
       publishVstsFeed: '$(vstsFeed)'
