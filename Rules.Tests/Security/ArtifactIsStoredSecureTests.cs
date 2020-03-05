@@ -7,14 +7,16 @@ using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using VstsService.Response;
 using Xunit;
+using static SecurePipelineScan.VstsService.Requests.YamlPipeline;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
-    public class ArtifactIsStoredSecureTests 
+    public class ArtifactIsStoredSecureTests
     {
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
 
         public ArtifactIsStoredSecureTests()
         {
@@ -31,16 +33,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "steps:\r- publish: drop"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- publish: drop" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -58,16 +56,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "jobs:\n- steps:\n  - task: PublishBuildArtifacts@2\n\n"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "jobs:\n- steps:\n  - task: PublishBuildArtifacts@2\n\n" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -85,16 +79,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "stages:\n- jobs:\n  - steps:\n    - task: PublishBuildArtifacts@2\n\n"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "stages:\n- jobs:\n  - steps:\n    - task: PublishBuildArtifacts@2\n\n" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -112,16 +102,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"something", "something"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -139,16 +125,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "something"}
-            };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "invalid" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -166,16 +149,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://urlwithotherproject.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "steps:\r- task: PublishBuildArtifacts@1\r enabled: false"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- task: PublishBuildArtifacts@1\r enabled: false" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new ArtifactIsStoredSecure(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);

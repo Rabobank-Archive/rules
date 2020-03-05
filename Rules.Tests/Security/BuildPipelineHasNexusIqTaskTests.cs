@@ -7,14 +7,16 @@ using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using VstsService.Response;
 using Xunit;
+using static SecurePipelineScan.VstsService.Requests.YamlPipeline;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasNexusIqTaskTests
     {
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
 
         public BuildPipelineHasNexusIqTaskTests()
         {
@@ -82,16 +84,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {taskName}"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $"steps:\r- task: {taskName}" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasNexusIqTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);

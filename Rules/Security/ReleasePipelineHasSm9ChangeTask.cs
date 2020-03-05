@@ -47,17 +47,5 @@ namespace SecurePipelineScan.Rules.Security
         private static IEnumerable<string> GetTaskGroups(IEnumerable<WorkflowTask> tasks) =>
             tasks.Where(t => t.Enabled && t.DefinitionType == "metaTask")
                 .Select(t => t.TaskId.ToString());
-        public class PipelineHasTaskRule : IPipelineHasTaskRule
-        {
-            public PipelineHasTaskRule(string taskId)
-            {
-                TaskId = taskId;
-            }
-
-            public string TaskId { get; }
-            public string TaskName { get; }
-            public string StepName { get; }
-            public Dictionary<string, object> Inputs { get; }
-        }
     }
 }

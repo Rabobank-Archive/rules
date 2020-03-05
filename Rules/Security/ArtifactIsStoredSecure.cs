@@ -18,7 +18,7 @@ namespace SecurePipelineScan.Rules.Security
         public string TaskId => "2ff763a7-ce83-4e1f-bc89-0ae63477cebe";
         public string TaskName => "PublishBuildArtifacts";
         public string StepName => "publish";
-        public Dictionary<string, object> Inputs => new Dictionary<string, object>();
+        public Dictionary<string, string> Inputs => new Dictionary<string, string>();
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";

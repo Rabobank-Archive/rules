@@ -7,14 +7,16 @@ using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using VstsService.Response;
 using Xunit;
+using static SecurePipelineScan.VstsService.Requests.YamlPipeline;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasSonarqubeTaskTests
     {
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
 
         public BuildPipelineHasSonarqubeTaskTests()
         {
@@ -22,7 +24,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenYamlFileWithFortifyTask_ThenEvaluatesToTrue()
+        public async Task GivenPipeline_WhenYamlFileWithSonarTask_ThenEvaluatesToTrue()
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
@@ -31,16 +33,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "steps:\r- task: SonarQubeAnalyze@3"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- task: SonarQubeAnalyze@3" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasSonarqubeTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -49,7 +47,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         [Fact]
-        public async Task GivenPipeline_WhenYamlFileWithoutFortifyTask_ThenEvaluatesToFalse()
+        public async Task GivenPipeline_WhenYamlFileWithoutSonarTask_ThenEvaluatesToFalse()
         {
             _fixture.Customize<BuildProcess>(ctx => ctx
                 .With(p => p.Type, 2));
@@ -58,16 +56,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", "steps:\r- task: OtherTask"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- task: OtherTask" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasSonarqubeTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);

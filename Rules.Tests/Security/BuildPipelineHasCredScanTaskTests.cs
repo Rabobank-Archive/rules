@@ -8,14 +8,16 @@ using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using VstsService.Response;
 using Xunit;
+using static SecurePipelineScan.VstsService.Requests.YamlPipeline;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasCredScanTaskTests
     {
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
 
         public BuildPipelineHasCredScanTaskTests()
         {
@@ -30,8 +32,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var rule = new BuildPipelineHasCredScanTask(client);
 
             // Assert
-            Assert.Equal("Build pipeline contains credential scan task", ((IRule) rule).Description);
-            Assert.Equal("https://confluence.dev.somecompany.nl/x/LorHDQ", ((IRule) rule).Link);
+            Assert.Equal("Build pipeline contains credential scan task", ((IRule)rule).Description);
+            Assert.Equal("https://confluence.dev.somecompany.nl/x/LorHDQ", ((IRule)rule).Link);
         }
 
         [Theory]
@@ -80,16 +82,13 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {credScanTaskName}\r- task: {postAnalysisTaskName}"}
-            };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $"steps:\r- task: {credScanTaskName}\r- task: {postAnalysisTaskName}" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasCredScanTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);
@@ -111,24 +110,19 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {
-                    "content", @$"
+            var buildPipeline = _fixture.Create<BuildDefinition>();
+            var project = _fixture.Create<Project>();
+
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $@"
 steps:
 - task: CredScan
 - task: PostAnalysis
   inputs:
       CredScan: {propertyValue}
-      ToolLogsNotFoundAction: 'Error'"
-                }
-            };
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
+      ToolLogsNotFoundAction: 'Error'" };
 
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasCredScanTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline);

@@ -14,11 +14,11 @@ namespace SecurePipelineScan.Rules.Security
         {
             this._pipelineEvaluatorFactory = new PipelineEvaluatorFactory(client);
         }
-        
+
         public string TaskId => "4f40d1a2-83b0-4ddc-9a77-e7f279eb1802";
         public string TaskName => "NexusIqPipelineTask";
         public string StepName => "";
-        public Dictionary<string, object> Inputs => new Dictionary<string, object>();
+        public Dictionary<string, string> Inputs => new Dictionary<string, string>();
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/JSNFD";

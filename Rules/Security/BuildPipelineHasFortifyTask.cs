@@ -19,7 +19,7 @@ namespace SecurePipelineScan.Rules.Security
         public string TaskId => "818386e5-c8a5-46c3-822d-954b3c8fb130";
         public string TaskName => "FortifySCA";
         public string StepName => "";
-        public Dictionary<string, object> Inputs => new Dictionary<string, object>();
+        public Dictionary<string, string> Inputs => new Dictionary<string, string>();
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Build pipeline contains an enabled Fortify task";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9w1TD";

@@ -109,7 +109,7 @@ namespace SecurePipelineScan.Rules.Security
                 }
 
                 var stepInput = step.Inputs[ruleInput.Key];
-                if (stepInput == null && ruleInput.Value == null || stepInput.Equals(ruleInput.Value.ToString(),
+                if (stepInput == null && ruleInput.Value == null || stepInput.Equals(ruleInput.Value,
                         StringComparison.InvariantCultureIgnoreCase))
                 {
                     return true;
@@ -135,22 +135,6 @@ namespace SecurePipelineScan.Rules.Security
             }
 
             return found;
-        }
-
-        public class PipelineHasTaskRule : IPipelineHasTaskRule
-        {
-            public PipelineHasTaskRule(string taskId)
-            {
-                TaskId = taskId;
-            }
-
-            public string TaskId { get; }
-
-            public string TaskName => throw new NotImplementedException();
-
-            public string StepName => throw new NotImplementedException();
-
-            public Dictionary<string, object> Inputs => null;
         }
     }
 }

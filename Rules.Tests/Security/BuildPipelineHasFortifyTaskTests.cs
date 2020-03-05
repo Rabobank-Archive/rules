@@ -2,20 +2,21 @@ using System;
 using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
-using Newtonsoft.Json.Linq;
 using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
 using Shouldly;
+using VstsService.Response;
 using Xunit;
+using static SecurePipelineScan.VstsService.Requests.YamlPipeline;
 using Task = System.Threading.Tasks.Task;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
     public class BuildPipelineHasFortifyTaskTests
     {
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private const string TaskName = "FortifySCA";
 
         public BuildPipelineHasFortifyTaskTests()
@@ -51,8 +52,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup {Tasks = new[] {fortifyStep}};
-            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
+            var taskGroup = new TaskGroup { Tasks = new[] { fortifyStep } };
+            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
@@ -91,8 +92,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
                 }
             };
 
-            var taskGroup = new TaskGroup {Tasks = new[] {circularStep}};
-            var taskGroupResponse = new TaskGroupResponse {Value = new List<TaskGroup> {taskGroup}};
+            var taskGroup = new TaskGroup { Tasks = new[] { circularStep } };
+            var taskGroupResponse = new TaskGroupResponse { Value = new List<TaskGroup> { taskGroup } };
 
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
@@ -122,16 +123,12 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {TaskName}@5"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $"steps:\r- task: {TaskName}@5" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasFortifyTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
@@ -149,22 +146,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {
-                    "content", $@"
-jobs:
-- job: JobName
-  steps:
-  - task: {TaskName}@5"
-                }
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $@"
+jobs:
+- job: JobName
+  steps:
+  - task: {TaskName}@5" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasFortifyTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
@@ -191,459 +182,18 @@ jobs:
             _fixture.Customize<Repository>(ctx => ctx
                 .With(r => r.Url, new Uri("https://projectA.nl")));
 
-            var gitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {fortifyTask}"}
-            };
-
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = $"steps:\r- task: {fortifyTask}" };
             var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Any<IVstsRequest<JObject>>()).Returns(gitItem);
+            client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 
             var rule = new BuildPipelineHasFortifyTask(client);
             var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
 
             result.ShouldBe(false);
         }
-
-        #region [ nested steps templates in same repo ]
-
-        [Fact]
-        public async Task GivenPipeline_WhenNestedStepsYamlTemplateInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template.yml"}
-            };
-
-            var stepsTemplateGitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {TaskName}@5"}
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template.yml"))
-                .Returns(stepsTemplateGitItem);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
-
-            // assert
-            result.ShouldBe(true);
-        }
-
-        [Fact]
-        public async Task GivenPipeline_WhenNestedJobsYamlTemplateInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {
-                    "content", @"
-jobs:
-- template: jobs-template.yml"
-                }
-            };
-
-            var jobsTemplateGitItem = new JObject
-            {
-                {
-                    "content", $@"
-jobs:
-- job:
-  steps:
-  - task: {TaskName}@5"
-                }
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "jobs-template.yml"))
-                .Returns(jobsTemplateGitItem);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
-
-            // assert
-            result.ShouldBe(true);
-        }
-
-        [Fact]
-        public async Task
-            GivenPipeline_WhenMultipleNestedStepsYamlTemplatesInSameRepoWithFortifyTask_ThenEvaluatesToTrue()
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {"content", "steps:\r- template: YamlTemplates/steps-template1.yml"}
-            };
-
-            var stepsTemplate1GitItem = new JObject
-            {
-                // template 2 and 3 are in the same folder as template 1 so from template
-                // 1 they should be referenced without the path prefix.
-                {"content", "steps:\r- template: steps-template2.yml"}
-            };
-
-            var stepsTemplate2GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template3.yml"}
-            };
-
-            var stepsTemplate3GitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {TaskName}@5"}
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates/steps-template1.yml"))
-                .Returns(stepsTemplate1GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates/steps-template2.yml"))
-                .Returns(stepsTemplate2GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates/steps-template3.yml"))
-                .Returns(stepsTemplate3GitItem);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
-
-            // assert
-            result.ShouldBe(true);
-        }
-
-        [Fact]
-        public async Task GivenPipeline_WhenNestedJobsWithNestedStepsYamlTemplatesWithFortifyTask_ThenEvaluatesToTrue()
-        {
-            // arrange
-            const string projectId = "Idd48fb56b-b2c0-454a-9d6b-4cd7175c8665";
-            const string repoId = "Id47fefefe-013a-465b-8977-bfecc355bee0";
-
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Id, projectId)
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Id, "Id47fefefe-013a-465b-8977-bfecc355bee0")
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var client = Substitute.For<IVstsRestClient>();
-
-            // If azure-pipelines.yml is requested in the current project and repo context we will return a yaml
-            // that references a jobs template in a subfolder of the current repo
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml" &&
-                         r.Resource.Contains($"/{projectId}/_apis/git/repositories/{repoId}/items")))
-                .Returns(new JObject
-                {
-                    {
-                        "content", @"
-jobs:
-  - template: YamlTemplates1/jobs-template.yml"
-                    }
-                });
-
-            // The jobs template references a steps template in a subfolder of the current folder in the current repo
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates1/jobs-template.yml" &&
-                         r.Resource.Contains($"/{projectId}/_apis/git/repositories/{repoId}/items")))
-                .Returns(new JObject
-                {
-                    // template 2 and 3 are in the same folder as template 1 so from template
-                    // 1 they should be referenced without the path prefix.
-                    {
-                        "content", @"
-jobs:
-- job: JobName
-  steps:
-  - template: SubFolder/steps-template1.yml"
-                    }
-                });
-
-            // This steps template references a yaml steps template in a subfolder in another repo. If we reference to
-            // another repo the path should start from the root again.
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates1/SubFolder/steps-template1.yml" &&
-                         r.Resource.Contains($"/{projectId}/_apis/git/repositories/{repoId}/items")))
-                .Returns(new JObject
-                {
-                    {
-                        "content", @"
-resources:
-  repositories:
-    - repository: shared
-      type: git
-      name: project/repo
-
-steps:
-- template: YamlTemplates2/steps-template2.yml@shared"
-                    }
-                });
-
-            // This steps template references a yaml in the same folder
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates2/steps-template2.yml" &&
-                         r.Resource.Contains("/project/_apis/git/repositories/repo/items")))
-                .Returns(new JObject
-                {
-                    {
-                        "content", @"
-steps:
-- template: steps-template3.yml"
-                    }
-                });
-
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "YamlTemplates2/steps-template3.yml" &&
-                         r.Resource.Contains("/project/_apis/git/repositories/repo/items")))
-                .Returns(new JObject
-                {
-                    {
-                        "content", $@"
-steps:
-- task: {TaskName}@5"
-                    }
-                });
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
-
-            // assert
-            result.ShouldBe(true);
-        }
-
-        [Fact]
-        public async Task
-            GivenPipeline_WhenTooManyNestedStepsYamlTemplateInSameRepoLevelsWithFortifyTask_ThenShouldThrowException()
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Name, "projectA"));
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template1.yml"}
-            };
-
-            var stepsTemplate1GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template2.yml"}
-            };
-
-            var stepsTemplate2GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template3.yml"}
-            };
-
-            var stepsTemplate3GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template4.yml"}
-            };
-
-            var stepsTemplate4GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template5.yml"}
-            };
-
-            var stepsTemplate5GitItem = new JObject
-            {
-                {"content", "steps:\r- template: steps-template6.yml"}
-            };
-
-            var stepsTemplate6GitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {TaskName}@5"}
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template1.yml"))
-                .Returns(stepsTemplate1GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template2.yml"))
-                .Returns(stepsTemplate2GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template3.yml"))
-                .Returns(stepsTemplate3GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template4.yml"))
-                .Returns(stepsTemplate4GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template5.yml"))
-                .Returns(stepsTemplate5GitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template6.yml"))
-                .Returns(stepsTemplate6GitItem);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            // act
-            var exception = await Assert
-                .ThrowsAsync<InvalidOperationException>(() => rule.EvaluateAsync(project, buildPipeline))
-                .ConfigureAwait(false);
-
-            // assert
-            exception.Message.ShouldBe("template nesting level overflow");
-        }
-
-        #endregion
-
-        #region [ nested steps templates in external repo ]
-
-        [Theory]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo", "project", true, null)]
-        [InlineData("steps-template.yml@shared", "shared", "github", "project/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shaarredd", "shared", "git", "project/repo", "project", true,
-            "repo alias not found")]
-        [InlineData("steps-template.yml-shared", "shared", "git", "project/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shared@1", "shared", "git", "project/repo", "project", true,
-            "yaml name with repo reference should have exactly two segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project/repo/subRepo", "project", true,
-            "repo name contains an unsupported number of segments")]
-        [InlineData("steps-template.yml@shared", "shared", "git", "project1/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shared", "shared", "github", "project1/repo", "project", false, null)]
-        [InlineData("steps-template.yml@shared", "shared", "git", "repo", "projectId", true, null)]
-        public async Task GivenPipeline_WhenNestedStepsYamlTemplateInExternalRepoWithFortifyTask_ThenEvaluatesToTrue(
-            string stepsTemplate, string repoAlias, string repoType, string repoName,
-            string expectedProjectId, bool expectedResult, string exceptionMsg)
-        {
-            // arrange
-            _fixture.Customize<BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2)
-                .With(p => p.YamlFilename, "azure-pipelines.yml"));
-            _fixture.Customize<Project>(ctx => ctx
-                .With(x => x.Name, "projectA")
-                .With(x => x.Id, "projectId")
-            );
-
-            _fixture.Customize<Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://projectA.nl")));
-
-            var azurePipelineGitItem = new JObject
-            {
-                {
-                    "content", $@"
-resources:
-  repositories:
-    - repository: {repoAlias}
-      type: {repoType}
-      name: {repoName}
-
-steps:
-  - template: {stepsTemplate}"
-                }
-            };
-
-            var stepsTemplateGitItem = new JObject
-            {
-                {"content", $"steps:\r- task: {TaskName}@5"}
-            };
-
-            var client = Substitute.For<IVstsRestClient>();
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "azure-pipelines.yml"))
-                .Returns(azurePipelineGitItem);
-            client.GetAsync(Arg.Is<IVstsRequest<JObject>>(
-                    r => r.QueryParams["path"].ToString() == "steps-template.yml" &&
-                         r.Resource.Contains($"/{expectedProjectId}/_apis/git/repositories/repo/items")))
-                .Returns(stepsTemplateGitItem);
-
-            var buildPipeline = _fixture.Create<BuildDefinition>();
-            var project = _fixture.Create<Project>();
-
-            var rule = new BuildPipelineHasFortifyTask(client);
-
-            if (exceptionMsg == null)
-            {
-                // act
-                var result = await rule.EvaluateAsync(project, buildPipeline).ConfigureAwait(false);
-
-                // assert
-                result.ShouldBe(expectedResult);
-            }
-            else
-            {
-                //act
-                var exception = await Assert
-                    .ThrowsAsync<InvalidOperationException>(() => rule.EvaluateAsync(project, buildPipeline))
-                    .ConfigureAwait(false);
-
-                // assert
-                exception.Message.ShouldBe(exceptionMsg);
-            }
-        }
-
-        #endregion
 
         #endregion
     }

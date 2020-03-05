@@ -71,26 +71,6 @@ namespace Rules.Tests.Integration.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task GivenPipeline_WhenYamlFileInOtherProject_ThenEvaluatesToFalse()
-        {
-            _fixture.Customize<Response.BuildProcess>(ctx => ctx
-                .With(p => p.Type, 2));
-            _fixture.Customize<Response.Project>(ctx => ctx
-                .With(x => x.Name, "project A"));
-            _fixture.Customize<Response.Repository>(ctx => ctx
-                .With(r => r.Url, new Uri("https://urlwithotherproject.nl")));
-
-            var buildPipeline = _fixture.Create<Response.BuildDefinition>();
-            var project = _fixture.Create<Response.Project>();
-
-            var rule = new ArtifactIsStoredSecure(_client);
-            var result = await rule.EvaluateAsync(project, buildPipeline);
-
-            result.ShouldBe(false);
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
         public async Task GivenPipeline_WhenGuiAndNoPhases_ThenEvaluatesToException()
         {
             _fixture.Customize<Response.BuildProcess>(ctx => ctx

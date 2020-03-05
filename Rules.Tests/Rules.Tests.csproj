@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>SecurePipelineScan.Rules.Tests</RootNamespace>
     <Version>1.0.0.0</Version>
+    <LanguageVersion>latest</LanguageVersion>
   </PropertyGroup>
 
   <ItemGroup>

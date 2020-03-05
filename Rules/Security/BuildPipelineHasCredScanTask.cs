@@ -6,7 +6,7 @@ using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class BuildPipelineHasCredScanTask : IBuildPipelineRule
+    public partial class BuildPipelineHasCredScanTask : IBuildPipelineRule
     {
         private readonly PipelineEvaluatorFactory _pipelineEvaluatorFactory;
 
@@ -17,18 +17,16 @@ namespace SecurePipelineScan.Rules.Security
 
         private readonly IPipelineHasTaskRule[] _rules =
         {
-            new PipelineHasTaskRule
+            new PipelineHasTaskRule("f0462eae-4df1-45e9-a754-8184da95ed01")
             {
-                TaskId = "f0462eae-4df1-45e9-a754-8184da95ed01",
                 TaskName = "CredScan",
                 StepName = ""
             },
-            new PipelineHasTaskRule
+            new PipelineHasTaskRule("dbe519ee-a2e4-43f5-8e1a-949bd935b736")
             {
-                TaskId = "dbe519ee-a2e4-43f5-8e1a-949bd935b736",
                 TaskName = "PostAnalysis",
                 StepName = "",
-                Inputs = new Dictionary<string, object>{{"CredScan", true}}
+                Inputs = new Dictionary<string, string>{{"CredScan", "true"}}
             }
         };
 
@@ -55,14 +53,6 @@ namespace SecurePipelineScan.Rules.Security
             }
 
             return true;
-        }
-
-        public class PipelineHasTaskRule : IPipelineHasTaskRule
-        {
-            public string TaskId { get; set; }
-            public string TaskName { get; set; }
-            public string StepName { get; set; }
-            public Dictionary<string, object> Inputs { get; set; }
         }
     }
 }
