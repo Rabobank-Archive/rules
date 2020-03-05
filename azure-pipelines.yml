@@ -54,19 +54,31 @@ jobs:
 - job: Publish
   pool: $(agentPool)
   steps:
-  - template: /steps/build-step.yml@templates
-    parameters:
-      vstsFeed: $(vstsFeed)
-  #- template: /steps/publish-artifact-step.yml@templates
-  - task: DotNetCoreCLI@2
-    displayName: Dotnet pack
-    inputs:
-      command: pack
-      arguments: '--configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error'
+  - script: |
+      #!/bin/bash 2> nul
+      :; set -o errexit
+      :; function goto() { return $?; }
+      dotnet build --configuration release || goto :error
+      dotnet pack --configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error
+      :; exit 0
+      exit /b 0
+      :error
+      exit /b %errorlevel%
+    displayName: Build & Pack'
+
+#  - template: /steps/build-step.yml@templates
+#    parameters:
+#      vstsFeed: $(vstsFeed)
+#  - template: /steps/publish-artifact-step.yml@templates
+#  - task: DotNetCoreCLI@2
+#    displayName: Dotnet pack
+#    inputs:
+#      command: pack
+#      arguments: '--configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error'
   - task: DotNetCoreCLI@2
     displayName: 'Dotnet push'
     inputs:
       command: push
       publishVstsFeed: '$(vstsFeed)'
-      arguments: '--skip-duplicate'
+#      arguments: '--skip-duplicate'
     #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
