@@ -6,32 +6,30 @@ resources:
     - repository: templates
       type: git
       name: TAS/azdo-pipeline-templates
-      ref: refs/heads/master
+      ref: refs/heads/parameters
 
 variables:
   agentPool: "Rabo-Build-Azure-Windows"
   vstsFeed: 'ea1adc59-f67e-40d5-8539-4c897a894647'
-  configuration: Release
   token: $(PAT)
   code: $(functionsMasterKey)
   secret: $(clientSecret)
   key: $(logAnalyticsWorkspaceKey)
-  fortifyBuildId: "test"
   fortifyServiceEndPoint: "Fortify SSC TAS"
   fortifyApplicationName: "TAS.SecurePipelineScanner"
-  fortifyApplicationVersion: "1.0"
   nexusIQServiceEndPoint: "Nexus IQ - Production"
   nexusIQApplicationId: "azdo-compliancy-rules"
   sonarQubeEndpoint: "SonarQube Production On Prem - with token"
   sonarQubeProjectKey: "TAS.SecurePipelineScanner"
   sonarQubeProjectName: "TAS.SecurePipelineScanner"
-  artifactName: "azdo-compliancy-rules"
 
 jobs:
 - job: Test
   pool: $(agentPool)
   steps:
   - template: /steps/build-step.yml@templates
+    parameters:
+      vstsFeed: $(vstsFeed)
   - task: DotNetCoreCLI@2
     displayName: Test
     inputs:
@@ -44,10 +42,21 @@ jobs:
       key: $(key)
   - template: /steps/code-coverage-step.yml@templates
 - template: /jobs/static-analysis-job.yml@templates
+  parameters:
+    fortifyServiceEndPoint: $(fortifyServiceEndPoint)
+    fortifyApplicationName: $(fortifyApplicationName)
+    vstsFeed: $(vstsFeed)
+    nexusIQServiceEndPoint: $(nexusIQServiceEndPoint)
+    nexusIQApplicationId: $(nexusIQApplicationId)
+    sonarQubeEndpoint: $(sonarQubeEndpoint)
+    sonarQubeProjectKey: $(sonarQubeProjectKey)
+    sonarQubeProjectName: $(sonarQubeProjectName)
 - job: Publish
   pool: $(agentPool)
   steps:
   - template: /steps/build-step.yml@templates
+    parameters:
+      vstsFeed: $(vstsFeed)
   - template: /steps/publish-dotnet-step.yml@templates
   - template: /steps/publish-artifact-step.yml@templates
   - task: DotNetCoreCLI@2
