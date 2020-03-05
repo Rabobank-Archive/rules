@@ -59,9 +59,13 @@ jobs:
       vstsFeed: $(vstsFeed)
   - template: /steps/publish-artifact-step.yml@templates
   - task: DotNetCoreCLI@2
-    displayName: 'dotnet push'
+    displayName: Dotnet pack
+    inputs:
+      command: pack
+      arguments: '--configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error'
+  - task: DotNetCoreCLI@2
+    displayName: 'Dotnet push'
     inputs:
       command: push
       publishVstsFeed: '$(vstsFeed)'
     #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
- # - template: /steps/publish-dotnet-step.yml@templates
