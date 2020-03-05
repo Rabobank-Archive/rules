@@ -34,7 +34,7 @@ jobs:
     displayName: Test
     inputs:
       command: test
-      arguments: '--configuration $(configuration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*" --logger trx'
+      arguments: '--configuration release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*" --logger trx'
     env:
       token: $(token)
       code: $(code)
