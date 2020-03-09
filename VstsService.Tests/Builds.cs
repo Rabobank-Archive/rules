@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService.Requests;
@@ -45,9 +46,11 @@ namespace SecurePipelineScan.VstsService.Tests
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task QueryLongRunningBuilds()
+        public void QueryLongRunningBuilds()
         {
-            var build =  _client.Get(Requests.Builds.LongRunningBuilds(_config.Project)).ToList(); 
+            var queryOrder = "startTimeAscending";
+            var minTime = DateTime.UtcNow.AddHours(-6).ToString("O");
+            var build = _client.Get(Requests.Builds.LongRunningBuilds(_config.Project, queryOrder, minTime)).ToList();
             build.ShouldNotBeNull();
         }
 
@@ -55,7 +58,7 @@ namespace SecurePipelineScan.VstsService.Tests
         [Trait("category", "integration")]
         public async Task QueryBuildDefinition()
         {
-            var buildDefinition = 
+            var buildDefinition =
                 await _client.GetAsync(Requests.Builds.BuildDefinition(_config.Project, _config.BuildDefinitionId));
 
             buildDefinition.ShouldNotBeNull();
