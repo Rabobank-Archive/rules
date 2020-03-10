@@ -37,8 +37,7 @@
     <PackageTags>pipellines; build; release; azure devops; vsts; sox; compliance</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://dev.azure.com/somecompany/TAS/_git/ProjectScanner</RepositoryUrl>
-    <Version>0.0.1</Version>
+    <RepositoryUrl>https://dev.azure.com/somecompany/TAS/_git/azdo-compliancy-rules</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

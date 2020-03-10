@@ -30,7 +30,6 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://dev.azure.com/somecompany/TAS/_git/ProjectScanner</RepositoryUrl>
-    <Version>0.0.1</Version>
     <RootNamespace>SecurePipelineScan.VstsService</RootNamespace>
   </PropertyGroup>
   

@@ -8,9 +8,12 @@ resources:
       name: TAS/azdo-pipeline-templates
       ref: refs/heads/master
 
+name: 1.0.$(Rev:r)
+
 variables:
   agentPool: "Rabo-Build-Azure-Windows"
   vstsFeed: 'ea1adc59-f67e-40d5-8539-4c897a894647'
+  configuration: Release
   token: $(PAT)
   code: $(functionsMasterKey)
   secret: $(clientSecret)
@@ -34,7 +37,7 @@ jobs:
     displayName: Test
     inputs:
       command: test
-      arguments: '--configuration release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*" --logger trx'
+      arguments: '--configuration $(configuration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[xunit*]*" --logger trx'
     env:
       token: $(token)
       code: $(code)
@@ -51,24 +54,10 @@ jobs:
     sonarQubeEndpoint: $(sonarQubeEndpoint)
     sonarQubeProjectKey: $(sonarQubeProjectKey)
     sonarQubeProjectName: $(sonarQubeProjectName)
-- job: Publish
-  pool: $(agentPool)
-  steps:
-  - script: |
-      #!/bin/bash 2> nul
-      :; set -o errexit
-      :; function goto() { return $?; }
-      dotnet build --configuration release || goto :error
-      dotnet pack --configuration release --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=0.0.1.$(Build.BuildId) || goto :error
-      :; exit 0
-      exit /b 0
-      :error
-      exit /b %errorlevel%
-    displayName: Dotnet Build & Pack
-  - task: DotNetCoreCLI@2
-    displayName: Dotnet Push
-    inputs:
-      command: push
-      publishVstsFeed: '$(vstsFeed)'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  - template: /steps/publish-artifact-step.yml@templates
+- template: /jobs/publish-package-job.yml@templates
+  parameters:
+    vstsFeed: $(vstsFeed)
+    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+      packageVersion: $(Build.BuildNumber)
+    ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
+      packageVersion: $(Build.BuildNumber)-rc

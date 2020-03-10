@@ -12,7 +12,7 @@ namespace Rules.Tests.Integration.Security
     public class BuildPipelineHasFortifyTaskTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
         private const string TaskName = "FortifySCA";
 
         public BuildPipelineHasFortifyTaskTests(TestConfig config)
@@ -55,7 +55,7 @@ namespace Rules.Tests.Integration.Security
                 .GetValueOrDefault().ShouldBeFalse();
         }
 
-        [Fact(Skip = "Nested YAML Pipeline should first be fixed")]
+        [Fact]
         [Trait("category", "integration")]
         public async Task EvaluateNestedYamlTemplatesIntegrationTest()
         {
