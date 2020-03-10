@@ -90,25 +90,15 @@ namespace SecurePipelineScan.Rules.Security
         {
             foreach (var step in GetSteps(yamlPipeline))
             {
-                if (!string.IsNullOrWhiteSpace(rule.StepName) && step[rule.StepName] != null)
-                {
-                    return true;
-                }
-
-                if (!GetTaskFromStep(step, rule.TaskName))
-                {
+                if (!GetTaskFromStep(step, rule.TaskName) && !GetTaskFromStep(step, rule.TaskId))
                     continue;
-                }
 
                 if (rule.Inputs == null || !rule.Inputs.Any())
-                {
                     return true;
-                }
 
                 var pipelineInputs = step["inputs"];
                 return pipelineInputs != null && VerifyRuleInputs(rule.Inputs, pipelineInputs);
             }
-
             return false;
         }
 

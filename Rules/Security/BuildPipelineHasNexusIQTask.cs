@@ -17,7 +17,6 @@ namespace SecurePipelineScan.Rules.Security
 
         public string TaskId => "4f40d1a2-83b0-4ddc-9a77-e7f279eb1802";
         public string TaskName => "NexusIqPipelineTask";
-        public string StepName => "";
         public Dictionary<string, string> Inputs => new Dictionary<string, string>();
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Build pipeline contains an enabled Nexus IQ task";

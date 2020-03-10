@@ -6,7 +6,6 @@ namespace SecurePipelineScan.Rules.Security
     {
         string TaskId { get; }
         string TaskName { get; }
-        string StepName { get; }
         Dictionary<string, string> Inputs { get; }
     }
 }

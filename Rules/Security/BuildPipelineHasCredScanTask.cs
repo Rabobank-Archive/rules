@@ -20,12 +20,10 @@ namespace SecurePipelineScan.Rules.Security
             new PipelineHasTaskRule("f0462eae-4df1-45e9-a754-8184da95ed01")
             {
                 TaskName = "CredScan",
-                StepName = ""
             },
             new PipelineHasTaskRule("dbe519ee-a2e4-43f5-8e1a-949bd935b736")
             {
                 TaskName = "PostAnalysis",
-                StepName = "",
                 Inputs = new Dictionary<string, string>{{"CredScan", "true"}}
             }
         };

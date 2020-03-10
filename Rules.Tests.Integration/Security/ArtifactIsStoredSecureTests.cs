@@ -46,7 +46,7 @@ namespace Rules.Tests.Integration.Security
         public async Task EvaluateBuildIntegrationTest_Yaml()
         {
             var project = await _client.GetAsync(Project.ProjectById(_config.Project));
-            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "197"))
+            var buildPipeline = await _client.GetAsync(Builds.BuildDefinition(project.Id, "275"))
                 .ConfigureAwait(false);
 
             var rule = new ArtifactIsStoredSecure(_client);

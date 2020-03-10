@@ -36,7 +36,8 @@ namespace SecurePipelineScan.Rules.Tests.Security
             var buildPipeline = _fixture.Create<BuildDefinition>();
             var project = _fixture.Create<Project>();
 
-            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- publish: drop" };
+            var yamlResponse = new YamlPipelineResponse { FinalYaml = "steps:\r- task: ecdc45f6-832d-4ad9-b52b-ee49e94659be@1" };
+
             var client = Substitute.For<IVstsRestClient>();
             client.PostAsync(Arg.Any<IVstsRequest<YamlPipelineRequest, YamlPipelineResponse>>(), Arg.Any<YamlPipelineRequest>()).Returns(yamlResponse);
 

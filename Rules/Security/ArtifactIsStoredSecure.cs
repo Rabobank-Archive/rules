@@ -1,12 +1,11 @@
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Response;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ArtifactIsStoredSecure : IPipelineHasTaskRule, IBuildPipelineRule
+    public class ArtifactIsStoredSecure : IBuildPipelineRule
     {
         private readonly PipelineEvaluatorFactory _pipelineEvaluatorFactory;
 
@@ -15,17 +14,36 @@ namespace SecurePipelineScan.Rules.Security
             this._pipelineEvaluatorFactory = new PipelineEvaluatorFactory(client);
         }
 
-        public string TaskId => "2ff763a7-ce83-4e1f-bc89-0ae63477cebe";
-        public string TaskName => "PublishBuildArtifacts";
-        public string StepName => "publish";
-        public Dictionary<string, string> Inputs => new Dictionary<string, string>();
+        private readonly IPipelineHasTaskRule[] _rules =
+        {
+            new PipelineHasTaskRule("2ff763a7-ce83-4e1f-bc89-0ae63477cebe")
+            {
+                TaskName = "PublishBuildArtifacts",
+            },
+            new PipelineHasTaskRule("ecdc45f6-832d-4ad9-b52b-ee49e94659be")
+            {
+                TaskName = "PublishPipelineArtifact",
+            }
+        };
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Artifact is stored in secure artifactory (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/TI8AD";
 
         public async Task<bool?> EvaluateAsync(Project project, BuildDefinition buildPipeline)
         {
-            return await this._pipelineEvaluatorFactory.Create(buildPipeline).EvaluateAsync(project, buildPipeline, this).ConfigureAwait(false);
+            foreach (var rule in _rules)
+            {
+                var result = await _pipelineEvaluatorFactory.Create(buildPipeline)
+                    .EvaluateAsync(project, buildPipeline, rule)
+                    .ConfigureAwait(false);
+                
+                if (result == null)
+                    return null;
+
+                if (result.Value)
+                    return true;
+            }
+            return false; 
         }
     }
 }
