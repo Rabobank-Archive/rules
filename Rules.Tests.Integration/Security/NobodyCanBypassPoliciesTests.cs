@@ -7,13 +7,13 @@ using SecurePipelineScan.VstsService.Permissions;
 using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
+using Permissions = SecurePipelineScan.Rules.PermissionBits.Repository;
 
 namespace Rules.Tests.Integration.Security
 {
     public class NobodyCanBypassPoliciesTests : IClassFixture<TestConfig>
     {
         private readonly TestConfig _config;
-        private const int PermissionBitBypassPoliciesPullRequest = 32768;
 
         public NobodyCanBypassPoliciesTests(TestConfig config)
         {
@@ -30,7 +30,7 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForRepository(client, projectId, repositoryId)
-                .Permissions(PermissionBitBypassPoliciesPullRequest)
+                .Permissions(Permissions.BypassPoliciesPullRequest)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanBypassPolicies(client);
@@ -56,7 +56,7 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForMasterBranch(client, projectId, repositoryId)
-                .Permissions(PermissionBitBypassPoliciesPullRequest)
+                .Permissions(Permissions.BypassPoliciesPullRequest)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanBypassPolicies(client);

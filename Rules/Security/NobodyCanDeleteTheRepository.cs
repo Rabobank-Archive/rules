@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
 
@@ -11,10 +12,7 @@ namespace SecurePipelineScan.Rules.Security
         private readonly IVstsRestClient _client;
 
         public NobodyCanDeleteTheRepository(IVstsRestClient client) => _client = client;
-
-        private const int PermissionBitDeleteRepository = 512;
-        private const int PermissionBitManagePermissions = 8192;
-
+        
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete the repository (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
 
@@ -50,7 +48,7 @@ namespace SecurePipelineScan.Rules.Security
         private ManagePermissions Permissions(string projectId, string itemId) =>
             ManagePermissions
                 .ForRepository(_client, projectId, itemId)
-                .Permissions(PermissionBitDeleteRepository, PermissionBitManagePermissions)
+                .Permissions(Repository.DeleteRepository, Repository.ManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
     }

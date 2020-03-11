@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
@@ -20,10 +21,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateFalse(
             [CombinatorialValues(PermissionId.Allow, PermissionId.AllowInherited)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanDeleteBuilds.PermissionBitDestroyBuilds, 
-                NobodyCanDeleteBuilds.PermissionBitDestroyBuilds, 
-                NobodyCanDeleteBuilds.PermissionBitAdministerBuildPermissions, 
-                NobodyCanDeleteBuilds.PermissionBitDeleteBuildDefinition)] int permissionBit)
+                Build.DestroyBuilds, 
+                Build.DestroyBuilds, 
+                Build.AdministerBuildPermissions, 
+                Build.DeleteBuildDefinition)] int permissionBit)
         {
             // Arrange 
             CustomizePermission(permissionId, permissionBit);
@@ -42,10 +43,10 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateTrue(
             [CombinatorialValues(PermissionId.Deny, PermissionId.DenyInherited, PermissionId.NotSet)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanDeleteBuilds.PermissionBitDestroyBuilds, 
-                NobodyCanDeleteBuilds.PermissionBitDestroyBuilds, 
-                NobodyCanDeleteBuilds.PermissionBitAdministerBuildPermissions, 
-                NobodyCanDeleteBuilds.PermissionBitDeleteBuildDefinition)] int permissionBit)
+                Build.DestroyBuilds, 
+                Build.DestroyBuilds, 
+                Build.AdministerBuildPermissions, 
+                Build.DeleteBuildDefinition)] int permissionBit)
         {
             // Arrange 
             CustomizePermission(permissionId, permissionBit);
@@ -67,7 +68,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Exclude(string group, bool expected)
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanDeleteBuilds.PermissionBitDestroyBuilds);
+            CustomizePermission(PermissionId.Allow, Build.DestroyBuilds);
             CustomizeApplicationGroup(group);
 
             // Act
@@ -84,7 +85,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Reconcile()
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanDeleteBuilds.PermissionBitDestroyBuilds);
+            CustomizePermission(PermissionId.Allow, Build.DestroyBuilds);
             var client = _fixture.Create<IVstsRestClient>();
 
             // Act

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
 using SecurePipelineScan.VstsService.Requests;
@@ -14,10 +15,6 @@ namespace SecurePipelineScan.Rules.Security
 
         public NobodyCanDeleteBuilds(IVstsRestClient client) => _client = client;
 
-        public const int PermissionBitDeleteBuilds = 8;
-        public const int PermissionBitDestroyBuilds = 32;
-        public const int PermissionBitDeleteBuildDefinition = 4096;
-        public const int PermissionBitAdministerBuildPermissions = 16384;
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
 
@@ -61,7 +58,7 @@ namespace SecurePipelineScan.Rules.Security
             ManagePermissions
                 .ForBuildPipeline(_client, projectId, itemId, itemPath)
                 .Ignore("Project Collection Administrators", "Project Collection Build Administrators")
-                .Permissions(PermissionBitDeleteBuilds, PermissionBitDestroyBuilds, PermissionBitDeleteBuildDefinition, PermissionBitAdministerBuildPermissions)
+                .Permissions(Build.DeleteBuilds, Build.DestroyBuilds, Build.DeleteBuildDefinition, Build.AdministerBuildPermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited);
     }
 }

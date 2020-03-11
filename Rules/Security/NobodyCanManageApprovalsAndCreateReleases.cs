@@ -6,6 +6,7 @@ using Response = SecurePipelineScan.VstsService.Response;
 using Request = SecurePipelineScan.VstsService.Requests;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.VstsService.Permissions;
 
 namespace SecurePipelineScan.Rules.Security
@@ -19,14 +20,12 @@ namespace SecurePipelineScan.Rules.Security
             _client = client;
         }
 
-        private const int ManageApprovalsPermissionBit = 8;
-        private const int CreateReleasesPermissionBit = 64;
         private const string PeoGroupName = "Production Environment Owners";
 
         private static IEnumerable<int> PermissionBits => new[]
         {
-            ManageApprovalsPermissionBit,
-            CreateReleasesPermissionBit
+            Release.ManageApprovalsPermissionBit,
+            Release.CreateReleasesPermissionBit
         };
 
         private static IEnumerable<int> AllowedPermissions => new[]
@@ -98,7 +97,8 @@ namespace SecurePipelineScan.Rules.Security
             var groups = (await _client.GetAsync(Request.ApplicationGroup.ExplicitIdentitiesPipelines(
                     projectId, SecurityNamespaceIds.Release, itemId)).ConfigureAwait(false))
                 .Identities
-                .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName));
+                .Where(g => !IgnoredIdentitiesDisplayNames.Contains(g.FriendlyDisplayName))
+                .ToList();
 
             await CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(projectId, projectGroups, groups)
                 .ConfigureAwait(false);
@@ -117,8 +117,8 @@ namespace SecurePipelineScan.Rules.Security
                     continue;
 
                 var permissionToUpdate = PeoGroupExists(group)
-                    ? CreateReleasesPermissionBit
-                    : ManageApprovalsPermissionBit;
+                    ? Release.CreateReleasesPermissionBit
+                    : Release.ManageApprovalsPermissionBit;
 
                 await UpdatePermissionAsync(projectId, group, permissionSetId, permissionToUpdate, PermissionId.Deny)
                     .ConfigureAwait(false);
@@ -151,9 +151,9 @@ namespace SecurePipelineScan.Rules.Security
                     projectId, SecurityNamespaceIds.Release, peoGroup.TeamFoundationId))
                 .ConfigureAwait(false);
 
-            await UpdatePermissionAsync(projectId, peoGroup, permissions, CreateReleasesPermissionBit, PermissionId.Deny)
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.CreateReleasesPermissionBit, PermissionId.Deny)
                 .ConfigureAwait(false);
-            await UpdatePermissionAsync(projectId, peoGroup, permissions, ManageApprovalsPermissionBit, PermissionId.Allow)
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.ManageApprovalsPermissionBit, PermissionId.Allow)
                 .ConfigureAwait(false);
         }
 

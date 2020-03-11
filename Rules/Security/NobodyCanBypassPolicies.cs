@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
 
@@ -11,10 +12,6 @@ namespace SecurePipelineScan.Rules.Security
         private readonly IVstsRestClient _client;
 
         public NobodyCanBypassPolicies(IVstsRestClient client) => _client = client;
-
-        public const int PermissionBitBypassPoliciesPullRequest = 32768;
-        public const int PermissionBitBypassPoliciesCodePush = 128;
-        public const int PermissionBitManagePermissions = 8192;
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
@@ -65,7 +62,7 @@ namespace SecurePipelineScan.Rules.Security
 
         private static ManagePermissions Permissions(ManagePermissions manage) =>
             manage
-                .Permissions(PermissionBitBypassPoliciesPullRequest, PermissionBitBypassPoliciesCodePush, PermissionBitManagePermissions)
+                .Permissions(Repository.BypassPoliciesPullRequest, Repository.BypassPoliciesCodePush, Repository.ManagePermissions)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators", "Project Collection Service Accounts");
     }

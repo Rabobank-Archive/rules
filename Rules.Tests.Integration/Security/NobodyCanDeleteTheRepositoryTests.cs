@@ -7,6 +7,7 @@ using SecurePipelineScan.VstsService.Permissions;
 using SecurePipelineScan.VstsService.Requests;
 using Shouldly;
 using Xunit;
+using Permissions = SecurePipelineScan.Rules.PermissionBits.Repository;
 
 namespace Rules.Tests.Integration.Security
 {
@@ -41,7 +42,7 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForRepository(client, projectId, RepositoryId)
-                .Permissions(512)
+                .Permissions(Permissions.DeleteRepository)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);

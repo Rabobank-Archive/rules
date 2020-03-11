@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Polly;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
@@ -30,7 +31,7 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForReleasePipeline(client, projectId, releasePipeline.Id, releasePipeline.Path)
-                .Permissions(4)
+                .Permissions(Release.DeleteReleasePipelines)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanDeleteReleases(client);

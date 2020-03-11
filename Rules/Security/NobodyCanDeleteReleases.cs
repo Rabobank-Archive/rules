@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
 using SecurePipelineScan.VstsService.Requests;
@@ -16,10 +17,6 @@ namespace SecurePipelineScan.Rules.Security
         {
             _client = client;
         }
-
-        public const int PermissionBitDeleteReleasePipelines = 4;
-        public const int PermissionBitAdministerReleasePermissions = 512;
-        public const int PermissionBitDeleteReleases = 1024;
 
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
@@ -63,7 +60,7 @@ namespace SecurePipelineScan.Rules.Security
         private ManagePermissions Permissions(string projectId, string itemId, string itemPath) =>
             ManagePermissions
                 .ForReleasePipeline(_client, projectId, itemId, itemPath)
-                .Permissions(PermissionBitDeleteReleasePipelines, PermissionBitAdministerReleasePermissions, PermissionBitDeleteReleases)
+                .Permissions(Release.DeleteReleasePipelines, Release.AdministerReleasePermissions, Release.DeleteReleases)
                 .Allow(PermissionId.NotSet, PermissionId.Deny, PermissionId.DenyInherited)
                 .Ignore("Project Collection Administrators");
     }

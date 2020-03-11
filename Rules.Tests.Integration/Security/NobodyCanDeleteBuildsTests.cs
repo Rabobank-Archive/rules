@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Polly;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
@@ -31,7 +32,7 @@ namespace Rules.Tests.Integration.Security
 
             await ManagePermissions
                 .ForBuildPipeline(_client, project.Id, buildPipeline.Id, buildPipeline.Path)
-                .Permissions(8)
+                .Permissions(Build.DeleteBuilds)
                 .SetToAsync(PermissionId.Allow);
 
             var rule = new NobodyCanDeleteBuilds(_client);

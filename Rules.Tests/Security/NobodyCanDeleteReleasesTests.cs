@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using NSubstitute;
+using SecurePipelineScan.Rules.PermissionBits;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
@@ -20,9 +21,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateFalse(
             [CombinatorialValues(PermissionId.Allow, PermissionId.AllowInherited)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanDeleteReleases.PermissionBitDeleteReleases, 
-                NobodyCanDeleteReleases.PermissionBitAdministerReleasePermissions, 
-                NobodyCanDeleteReleases.PermissionBitDeleteReleasePipelines)] int permissionBit)
+                Release.DeleteReleases, 
+                Release.AdministerReleasePermissions, 
+                Release.DeleteReleasePipelines)] int permissionBit)
         {
             // Arrange 
             CustomizePermission(permissionId, permissionBit);
@@ -41,9 +42,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateTrue(
             [CombinatorialValues(PermissionId.Deny, PermissionId.DenyInherited, PermissionId.NotSet)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanDeleteReleases.PermissionBitDeleteReleases, 
-                NobodyCanDeleteReleases.PermissionBitAdministerReleasePermissions, 
-                NobodyCanDeleteReleases.PermissionBitDeleteReleasePipelines)] int permissionBit)
+                Release.DeleteReleases, 
+                Release.AdministerReleasePermissions, 
+                Release.DeleteReleasePipelines)] int permissionBit)
         {
             // Arrange 
             CustomizePermission(permissionId, permissionBit);
@@ -63,7 +64,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Exclude(string group)
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanDeleteReleases.PermissionBitAdministerReleasePermissions);
+            CustomizePermission(PermissionId.Allow, Release.AdministerReleasePermissions);
             CustomizeApplicationGroup(group);
 
             // Act
@@ -80,7 +81,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Reconcile()
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanDeleteReleases.PermissionBitDeleteReleases);
+            CustomizePermission(PermissionId.Allow, Release.DeleteReleases);
             var client = _fixture.Create<IVstsRestClient>();
 
             // Act

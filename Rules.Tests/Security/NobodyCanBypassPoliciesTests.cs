@@ -5,10 +5,11 @@ using NSubstitute;
 using SecurePipelineScan.Rules.Security;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Permissions;
-using SecurePipelineScan.VstsService.Requests;
+using Requests = SecurePipelineScan.VstsService.Requests;
 using Response = SecurePipelineScan.VstsService.Response;
 using Shouldly;
 using Xunit;
+using Permissions = SecurePipelineScan.Rules.PermissionBits.Repository;
 
 namespace SecurePipelineScan.Rules.Tests.Security
 {
@@ -20,9 +21,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateFalse(
             [CombinatorialValues(PermissionId.Allow, PermissionId.AllowInherited)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanBypassPolicies.PermissionBitManagePermissions,
-                NobodyCanBypassPolicies.PermissionBitBypassPoliciesCodePush,
-                NobodyCanBypassPolicies.PermissionBitBypassPoliciesPullRequest)] int permissionBit)
+                Permissions.ManagePermissions,
+                Permissions.BypassPoliciesCodePush,
+                Permissions.BypassPoliciesPullRequest)] int permissionBit)
         {
             // Arrange
             CustomizePermission(permissionId, permissionBit);
@@ -39,9 +40,9 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task EvaluateTrue(
             [CombinatorialValues(PermissionId.Deny, PermissionId.DenyInherited, PermissionId.NotSet)] int permissionId, 
             [CombinatorialValues(
-                NobodyCanBypassPolicies.PermissionBitManagePermissions,
-                NobodyCanBypassPolicies.PermissionBitBypassPoliciesCodePush,
-                NobodyCanBypassPolicies.PermissionBitBypassPoliciesPullRequest)] int permissionBit)
+                Permissions.ManagePermissions,
+                Permissions.BypassPoliciesCodePush,
+                Permissions.BypassPoliciesPullRequest)] int permissionBit)
         {
             // Arrange
             CustomizePermission(permissionId, permissionBit);
@@ -60,7 +61,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Exclude(string group)
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanBypassPolicies.PermissionBitBypassPoliciesPullRequest);
+            CustomizePermission(PermissionId.Allow, Permissions.BypassPoliciesPullRequest);
             CustomizeApplicationGroup(group);
 
             var client = _fixture.Create<IVstsRestClient>();
@@ -81,7 +82,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
         public async Task Reconcile()
         {
             // Arrange
-            CustomizePermission(PermissionId.Allow, NobodyCanBypassPolicies.PermissionBitBypassPoliciesPullRequest);
+            CustomizePermission(PermissionId.Allow, Permissions.BypassPoliciesPullRequest);
             var client = _fixture.Create<IVstsRestClient>();
 
             // Act
@@ -91,7 +92,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             // Assert
             await client
                 .Received(_fixture.RepeatCount * _fixture.RepeatCount * 2) // identities * permissions * 2 for repository and master branch
-                .PostAsync(Arg.Any<IVstsRequest<Permissions.UpdateWrapper, object>>(),Arg.Any<Permissions.UpdateWrapper>());
+                .PostAsync(Arg.Any<IVstsRequest<Requests.Permissions.UpdateWrapper, object>>(),Arg.Any<Requests.Permissions.UpdateWrapper>());
         }
         
         private void CustomizeApplicationGroup(string group) =>
