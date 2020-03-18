@@ -13,8 +13,8 @@ namespace AzureDevOps.Compliance.Rules
 
         public NobodyCanDeleteTheRepository(IVstsRestClient client) => _client = client;
         
-        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete the repository (SOx)";
-        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/RI8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete the repository";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-NobodyCanDeleteTheRepository";
 
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]

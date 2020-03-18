@@ -15,8 +15,7 @@ namespace AzureDevOps.Compliance.Rules
 
         public static IServiceCollection AddGlobalPermissions(this IServiceCollection collection) =>
             collection
-                .AddSingleton<IProjectRule, NobodyCanDeleteTheTeamProject>()
-                .AddSingleton<IProjectRule, ShouldBlockPlainTextCredentialsInPipelines>();
+                .AddSingleton<IProjectRule, NobodyCanDeleteTheTeamProject>();
 
         public static IServiceCollection AddRepositoryRules(this IServiceCollection collection) =>
             collection
@@ -26,22 +25,11 @@ namespace AzureDevOps.Compliance.Rules
 
         public static IServiceCollection AddBuildRules(this IServiceCollection collection) =>
             collection
-                .AddSingleton<IBuildPipelineRule, NobodyCanDeleteBuilds>()
-                .AddSingleton<IBuildPipelineRule, ArtifactIsStoredSecure>()
-                .AddSingleton<IBuildPipelineRule, BuildPipelineHasSonarqubeTask>()
-                .AddSingleton<IBuildPipelineRule, BuildPipelineHasFortifyTask>()
-                .AddSingleton<IBuildPipelineRule, BuildPipelineHasNexusIqTask>()
-                .AddSingleton<IBuildPipelineRule, BuildPipelineHasCredScanTask>();
+                .AddSingleton<IBuildPipelineRule, NobodyCanDeleteBuilds>();
 
         public static IServiceCollection AddReleaseRules(this IServiceCollection collection) =>
             collection
                 .AddSingleton<IReleasePipelineRule, NobodyCanDeleteReleases>()
-                .AddSingleton<IReleasePipelineRule, NobodyCanManageApprovalsAndCreateReleases>()
-                .AddSingleton<IReleasePipelineRule, PipelineHasRequiredRetentionPolicy>()
-                .AddSingleton<IReleasePipelineRule, ReleasePipelineUsesBuildArtifact>()
-                .AddSingleton<IReleasePipelineRule, ProductionStageUsesArtifactFromSecureBranch>()
-                .AddSingleton<IReleasePipelineRule, PipelineHasAtLeastOneStageWithApproval>()
-                .AddSingleton<IReleasePipelineRule, ReleasePipelineHasSm9ChangeTask>()
-                .AddSingleton<IReleasePipelineRule, ReleasePipelineHasDeploymentMethod>();
+                .AddSingleton<IReleasePipelineRule, PipelineHasRequiredRetentionPolicy>();
     }
 }

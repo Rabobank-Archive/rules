@@ -19,8 +19,8 @@ namespace AzureDevOps.Compliance.Rules
 
         public NobodyCanDeleteTheTeamProject(IVstsRestClient client) => _client = client;
 
-        [ExcludeFromCodeCoverage] public string Description => "Nobody can delete the Team Project (SOx)";
-        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/NY8AD";
+        [ExcludeFromCodeCoverage] public string Description => "Nobody can delete the Team Project";
+        [ExcludeFromCodeCoverage] public string Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-NobodyCanDeleteTheRepository";
 
         [ExcludeFromCodeCoverage] 
         string[] IProjectReconcile.Impact => new[]

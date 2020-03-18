@@ -60,7 +60,6 @@ namespace AzureDevOps.Compliance.Rules.Tests
             var service = new ServiceCollection()
                 .AddDefaultRules()
                 .AddSingleton(Substitute.For<IVstsRestClient>())
-                .AddSingleton(Substitute.For<IProductionItemsResolver>())
                 .BuildServiceProvider();
 
             var rules = service.GetServices<IReleasePipelineRule>().ToList();

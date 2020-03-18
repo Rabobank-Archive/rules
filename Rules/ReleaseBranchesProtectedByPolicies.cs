@@ -23,8 +23,8 @@ namespace AzureDevOps.Compliance.Rules
 
         private const int MinimumApproverCount = 2;
 
-        [ExcludeFromCodeCoverage] public string Description => "Release branches are protected by policies (SOx)";
-        [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/Po8AD";
+        [ExcludeFromCodeCoverage] public string Description => "Release branches are protected by policies";
+        [ExcludeFromCodeCoverage] public string Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-ReleaseBranchesProtectedByPolicies";
 
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[] {

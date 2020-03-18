@@ -16,8 +16,8 @@ namespace AzureDevOps.Compliance.Rules
 
         public NobodyCanDeleteBuilds(IVstsRestClient client) => _client = client;
 
-        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds (SOx)";
-        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/V48AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete builds";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-NobodyCanDeleteBuilds";
 
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]

@@ -19,8 +19,8 @@ namespace AzureDevOps.Compliance.Rules
             _client = client;
         }
 
-        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases (SOx)";
-        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9I8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can delete releases";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-NobodyCanDeleteReleases";
 
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]

@@ -13,7 +13,7 @@ namespace AzureDevOps.Compliance.Rules
 
         public NobodyCanBypassPolicies(IVstsRestClient client) => _client = client;
 
-        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies (SOx)";
+        [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can bypass branch policies";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/fRN7DQ";
 
         [ExcludeFromCodeCoverage]

@@ -18,8 +18,8 @@ namespace AzureDevOps.Compliance.Rules
 
         public PipelineHasRequiredRetentionPolicy(IVstsRestClient client) => _client = client;
 
-        [ExcludeFromCodeCoverage] string IRule.Description => "All releases are retained for at least 15 months (SOx)";
-        [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/9o8AD";
+        [ExcludeFromCodeCoverage] string IRule.Description => "All releases are retained for at least 15 months";
+        [ExcludeFromCodeCoverage] string IRule.Link => "https://github.com/azure-devops-compliance/rules/wiki/Rules-PipelineHasRequiredRetentionPolicy";
 
         [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[] {
