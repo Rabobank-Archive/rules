@@ -1,0 +1,31 @@
+name: nuget
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-18.04   
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.100'
+          source-url: https://nuget.pkg.github.com/azure-devops-compliance/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: dotnet build -c release
+      - run: dotnet test -c release
+        env:
+          TOKEN: ${{secrets.AZURE_DEVOPS_TOKEN}}
+      - name: dotnet pack
+        run: |
+          export VERSION=$(git rev-list --count HEAD)
+          dotnet pack -c release -o out -p:PackageVersion=1.0.0.$VERSION
+      - name: dotnet nuget push
+        run: dotnet nuget push ./out/*.nupkg --skip-duplicate --api-key $key
+        env:
+          key: ${{secrets.GITHUB_TOKEN}}
+          
