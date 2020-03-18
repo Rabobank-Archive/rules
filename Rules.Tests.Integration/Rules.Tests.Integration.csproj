@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rules\Rules.csproj" />
-    <ProjectReference Include="..\VstsService\VstsService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
