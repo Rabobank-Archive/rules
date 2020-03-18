@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>SecurePipelineScan.Rules</RootNamespace>
+    <RootNamespace>AzureDevOps.Compliance.Rules</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

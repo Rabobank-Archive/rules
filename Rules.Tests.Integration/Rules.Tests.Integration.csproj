@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
+    <RootNamespace>AzureDevOps.Compliance.Rules.Tests.Integration</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

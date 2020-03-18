@@ -5,7 +5,7 @@ using AutoFixture;
 using SecurePipelineScan.VstsService;
 using Task = System.Threading.Tasks.Task;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace AzureDevOps.Compliance.Rules.Tests
 {
     public class FixtureClient : IVstsRestClient
     {

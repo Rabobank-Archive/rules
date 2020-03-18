@@ -1,6 +1,6 @@
 using System;
 
-namespace SecurePipelineScan.Rules
+namespace AzureDevOps.Compliancy.Rules
 {
     public interface IProjectScan<out TReport>
     {

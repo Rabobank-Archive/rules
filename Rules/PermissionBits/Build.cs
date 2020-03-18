@@ -1,4 +1,4 @@
-namespace SecurePipelineScan.Rules.PermissionBits
+namespace AzureDevOps.Compliance.Rules.PermissionBits
 {
     public static class Build
     {

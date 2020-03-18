@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
 
-namespace SecurePipelineScan.Rules.Tests
+namespace AzureDevOps.Compliancy.Rules.Tests
 {
     public class ReleaseDefinitionHelperTests
     {

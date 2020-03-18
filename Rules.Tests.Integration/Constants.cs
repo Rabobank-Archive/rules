@@ -1,4 +1,4 @@
-﻿namespace Rules.Tests.Integration
+﻿namespace AzureDevOps.Compliance.Rules.Tests.Integration
 {
     public static class Constants
     {
