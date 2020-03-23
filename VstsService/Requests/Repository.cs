@@ -13,6 +13,9 @@ namespace SecurePipelineScan.VstsService.Requests
         public static IVstsRequest<Response.Repository> Repo(string project, string repositoryId) =>
             new VstsRequest<Response.Repository>($"/{project}/_apis/git/repositories/{repositoryId}");
 
+        public static IEnumerableRequest<GitRef> Refs(string project, string repositoryId) =>
+            new VstsRequest<GitRef>($"/{project}/_apis/git/repositories/{repositoryId}/refs").AsEnumerable();
+
         public static IEnumerableRequest<Push> Pushes(string project, string repositoryId) => 
             new VstsRequest<Push>($"/{project}/_apis/git/repositories/{repositoryId}/pushes").AsEnumerable();
 

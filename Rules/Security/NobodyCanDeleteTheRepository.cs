@@ -23,15 +23,16 @@ namespace SecurePipelineScan.Rules.Security
             "For all security groups the 'Manage Permissions' permission is set to Deny"
         };
 
-        public Task<bool> EvaluateAsync(string projectId, string repositoryId)
+        public Task<bool?> EvaluateAsync(string projectId, string repositoryId)
         {
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
             if (repositoryId == null)
                 throw new ArgumentNullException(nameof(repositoryId));
 
-            return Permissions(projectId, repositoryId)
+            var result = Permissions(projectId, repositoryId)
                 .ValidateAsync();
+            return result;
         }
 
         public Task ReconcileAsync(string projectId, string itemId)

@@ -24,12 +24,10 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = new VstsRequest<int>("/delete/some/data");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 500);
-                var client = new VstsRestClient("dummy", "pat");
-                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 500);
+            var client = new VstsRestClient("dummy", "pat");
+            await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.DeleteAsync(request));
         }
 
         [Fact]
@@ -37,12 +35,10 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = new VstsRequest<int,int>("/get/some/data");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 500);
-                var client = new VstsRestClient("dummy", "pat");
-                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PostAsync(request, 3));
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 500);
+            var client = new VstsRestClient("dummy", "pat");
+            await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PostAsync(request, 3));
         }
         
         [Fact]
@@ -50,12 +46,10 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = new VstsRequest<int,int>("/put/some/data");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 500);
-                var client = new VstsRestClient("dummy", "pat");
-                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PutAsync(request, 3));
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 500);
+            var client = new VstsRestClient("dummy", "pat");
+            await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.PutAsync(request, 3));
         }
 
         [Fact]
@@ -63,13 +57,11 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var url = new Uri("http://www.bla.nl");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 200, body: "{}");
-                var client = new VstsRestClient("dummy", "token");
-                await client.GetAsync<Response.Build>(url);
-                httpTest.ShouldHaveCalled(url.ToString());
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: "{}");
+            var client = new VstsRestClient("dummy", "token");
+            await client.GetAsync<Response.Build>(url);
+            httpTest.ShouldHaveCalled(url.ToString());
         }
         
         [Fact]
@@ -77,12 +69,10 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = new VstsRequest<int>("/get/some/data");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 500);
-                var client = new VstsRestClient("dummy", "pat");
-                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 500);
+            var client = new VstsRestClient("dummy", "pat");
+            await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
         }
 
         [Fact]
@@ -90,12 +80,10 @@ namespace SecurePipelineScan.VstsService.Tests
         {
             var request = new VstsRequest<JObject>("/get/some/data");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 500);
-                var client = new VstsRestClient("dummy", "pat");
-                await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 500);
+            var client = new VstsRestClient("dummy", "pat");
+            await Assert.ThrowsAsync<FlurlHttpException>(async () => await client.GetAsync(request));
         }
         
         [Fact]

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace SecurePipelineScan.VstsService.Permissions
@@ -21,20 +22,33 @@ namespace SecurePipelineScan.VstsService.Permissions
         
         public Task<Response.ApplicationGroups> IdentitiesAsync() => 
             _client.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesPipelines(_projectId, _namespaceId, _itemId));
-        
-        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity) =>
-            _client.GetAsync(Requests.Permissions.PermissionsGroupSetIdDefinition(
-            _projectId, _namespaceId,identity.TeamFoundationId, ExtractToken()));
 
+        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+
+            return _client.GetAsync(Requests.Permissions.PermissionsGroupSetIdDefinition(
+                _projectId, _namespaceId, identity.TeamFoundationId, ExtractToken()));
+        }
         public Task UpdateAsync(Response.ApplicationGroup identity,
-                Response.PermissionsSetId permissionSet, Response.Permission permission) =>
-            _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
-                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
+                Response.PermissionsSetId permissionSet, Response.Permission permission)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+            if (permissionSet == null)
+                throw new ArgumentNullException(nameof(permissionSet)); 
+            if (permission == null)
+                throw new ArgumentNullException(nameof(permission)); 
+            
+            return _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
+                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier,
                 permissionSet.DescriptorIdentityType, permission.PermissionToken, permission).Wrap());
+        }
 
         private string ExtractToken() => 
             _itemPath == "\\"
                 ? $"{_projectId}/{_itemId}"
-                : $"{_projectId}{_itemPath.Replace("\\", "/")}/{_itemId}";
+                : $"{_projectId}{_itemPath.Replace("\\", "/", StringComparison.InvariantCulture)}/{_itemId}";
     }
 }

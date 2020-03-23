@@ -37,51 +37,49 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var request = new VstsRequest<Response.Release>("/keeas");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 200, body: response);
-                var client = new VstsRestClient("dummy", "pat");
-                var release = await client.GetAsync(request);
-                release.Id.ShouldBe(id);
-                release.Environments.ShouldNotBeEmpty();
-                release.Tags.ShouldNotBeEmpty();
-                var env = release.Environments.Skip(1).First();
-                env.Id.ShouldNotBe(0);
-                env.PreDeployApprovals.ShouldNotBeEmpty();
-                env.DeploySteps.ShouldNotBeEmpty();
-                env.Name.ShouldNotBeNullOrEmpty();
-                env.DeployPhasesSnapshot.ShouldNotBeEmpty();
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: response);
+            var client = new VstsRestClient("dummy", "pat");
+            var release = await client.GetAsync(request);
+            release.Id.ShouldBe(id);
+            release.Environments.ShouldNotBeEmpty();
+            release.Tags.ShouldNotBeEmpty();
+            var env = release.Environments.Skip(1).First();
+            env.Id.ShouldNotBe(0);
+            env.PreDeployApprovals.ShouldNotBeEmpty();
+            env.DeploySteps.ShouldNotBeEmpty();
+            env.Name.ShouldNotBeNullOrEmpty();
+            env.DeployPhasesSnapshot.ShouldNotBeEmpty();
 
-                var phaseSnapshot = env.DeployPhasesSnapshot.First();
-                phaseSnapshot.PhaseType.ShouldNotBeEmpty();
-                phaseSnapshot.DeploymentInput.ShouldNotBeNull();
-                phaseSnapshot.DeploymentInput.QueueId.ShouldNotBe(0);
+            var phaseSnapshot = env.DeployPhasesSnapshot.First();
+            phaseSnapshot.PhaseType.ShouldNotBeEmpty();
+            phaseSnapshot.DeploymentInput.ShouldNotBeNull();
+            phaseSnapshot.DeploymentInput.QueueId.ShouldNotBe(0);
 
-                var deploy = env.DeploySteps.First();
-                deploy.RequestedFor.ShouldNotBeNull();
-                deploy.RequestedFor.Id.ShouldNotBeNull();
-                deploy.LastModifiedBy.ShouldNotBeNull();
+            var deploy = env.DeploySteps.First();
+            deploy.RequestedFor.ShouldNotBeNull();
+            deploy.RequestedFor.Id.ShouldNotBeNull();
+            deploy.LastModifiedBy.ShouldNotBeNull();
 
-                var predeploy = env.PreDeployApprovals.First();
-                predeploy.Status.ShouldNotBeNullOrEmpty();
-                predeploy.ApprovalType.ShouldNotBeNullOrEmpty();
-                predeploy.IsAutomated.ShouldBe(false);
-                predeploy.ApprovedBy.ShouldNotBeNull();
-                predeploy.ApprovedBy.DisplayName.ShouldNotBeNullOrEmpty();
+            var predeploy = env.PreDeployApprovals.First();
+            predeploy.Status.ShouldNotBeNullOrEmpty();
+            predeploy.ApprovalType.ShouldNotBeNullOrEmpty();
+            predeploy.IsAutomated.ShouldBe(false);
+            predeploy.ApprovedBy.ShouldNotBeNull();
+            predeploy.ApprovedBy.DisplayName.ShouldNotBeNullOrEmpty();
 
-                var conditions = env.Conditions.ToList();
-                conditions.ShouldNotBeEmpty();
+            var conditions = env.Conditions.ToList();
+            conditions.ShouldNotBeEmpty();
 
-                var condition = conditions.First();
-                condition.Result.ShouldBe(false);
-                condition.Name.ShouldNotBeNullOrEmpty();
-                condition.ConditionType.ShouldNotBeEmpty();
-                condition.Value.ShouldNotBeNull();
+            var condition = conditions.First();
+            condition.Result.ShouldBe(false);
+            condition.Name.ShouldNotBeNullOrEmpty();
+            condition.ConditionType.ShouldNotBeEmpty();
+            condition.Value.ShouldNotBeNull();
 
-                var artifact = release.Artifacts.First();
-                artifact.Type.ShouldNotBeNull();
-                artifact.Alias.ShouldNotBeNull();
-            }
+            var artifact = release.Artifacts.First();
+            artifact.Type.ShouldNotBeNull();
+            artifact.Alias.ShouldNotBeNull();
         }
 
         [Fact]
@@ -141,12 +139,10 @@ namespace SecurePipelineScan.VstsService.Tests
 
             var request = new VstsRequest<Environment>("/keeas");
 
-            using (var httpTest = new HttpTest())
-            {
-                httpTest.RespondWith(status: 200, body: response);
-                var client = new VstsRestClient("dummy", "pat");
-                await client.GetAsync(request);
-            }
+            using var httpTest = new HttpTest();
+            httpTest.RespondWith(status: 200, body: response);
+            var client = new VstsRestClient("dummy", "pat");
+            await client.GetAsync(request);
         }
     }
 }

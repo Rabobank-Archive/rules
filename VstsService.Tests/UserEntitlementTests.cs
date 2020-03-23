@@ -7,7 +7,7 @@ namespace SecurePipelineScan.VstsService.Tests
 {
     public class UserEntitlementTests : IClassFixture<TestConfig>
     {
-        private HttpTest _httpTest = new HttpTest();
+        private readonly HttpTest _httpTest = new HttpTest();
         private readonly IVstsRestClient _client;
 
         public UserEntitlementTests(TestConfig config)
@@ -15,15 +15,10 @@ namespace SecurePipelineScan.VstsService.Tests
             _client = new VstsRestClient(config.Organization, config.Token);
         }
 
-        private void Dispose()
-        {
-            _httpTest.Dispose();
-        }
-
         [Fact]
         public async Task TestGetUserEntitlement()
         {
-            var result = await _client.GetAsync(MemberEntitlementManagement.GetUserEntitlement("abc"));
+            await _client.GetAsync(MemberEntitlementManagement.GetUserEntitlement("abc"));
 
             _httpTest.ShouldHaveCalled("https://vsaex.dev.azure.com/somecompany-test/_apis/UserEntitlements/abc?api-version=5.0-preview.2");
         }

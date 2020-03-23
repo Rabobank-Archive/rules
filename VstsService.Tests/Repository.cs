@@ -51,6 +51,21 @@ namespace SecurePipelineScan.VstsService.Tests
         }
 
         [Fact]
+        public void GetGitRefs()
+        {
+            //Arrange
+            var repository = _client.Get(Requests.Repository.Repositories(_config.Project)).First();
+            
+            //Act
+            var gitRefs = _client.Get(Requests.Repository.Refs(_config.Project, repository.Id)).ToList();
+
+            //Assert
+            gitRefs.ShouldNotBeEmpty();
+            var gitref = gitRefs.First();
+            gitref.Name.ShouldNotBeNull();
+        }
+
+        [Fact]
         public async Task GetGitItem()
         {
             var gitItem = await _client.GetAsync(Requests.Repository.GitItem(_config.Project,

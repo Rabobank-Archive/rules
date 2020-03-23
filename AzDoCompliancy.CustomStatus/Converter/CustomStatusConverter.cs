@@ -21,15 +21,12 @@ namespace AzDoCompliancy.CustomStatus.Converter
 
             if (jo.TryGetValue("TypeId", StringComparison.CurrentCulture, out var typeId))
             {
-                switch (typeId.Value<string>())
+                return (typeId.Value<string>()) switch
                 {
-                    case TypeIds.ScanOrchestrationStatusId:
-                        return jo.ToObject<ScanOrchestrationStatus>();
-                    case TypeIds.SupervisorOrchestrationStatusId:
-                        return jo.ToObject<SupervisorOrchestrationStatus>();
-                    default:
-                        return jo.ToObject<CustomStatusBase>();
-                }
+                    TypeIds.ScanOrchestrationStatusId => jo.ToObject<ScanOrchestrationStatus>(),
+                    TypeIds.SupervisorOrchestrationStatusId => jo.ToObject<SupervisorOrchestrationStatus>(),
+                    _ => jo.ToObject<CustomStatusBase>(),
+                };
             }
 
             return null;

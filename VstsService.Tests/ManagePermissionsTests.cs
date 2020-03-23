@@ -176,7 +176,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 .ValidateAsync();
 
             // Assert
-            result.ShouldBeTrue();
+            result.ShouldBe(true);
         }
         
         [Fact]
@@ -196,7 +196,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 .ValidateAsync();
 
             // Assert
-            result.ShouldBeFalse();
+            result.ShouldBe(false);
         }
         
         [Fact]
@@ -220,7 +220,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 .ValidateAsync();
 
             // Assert
-            result.ShouldBeTrue();
+            result.ShouldBe(true);
         }
         
         [Fact]
@@ -243,7 +243,7 @@ namespace SecurePipelineScan.VstsService.Tests
                 .ValidateAsync();
 
             // Assert
-            result.ShouldBeTrue();
+            result.ShouldBe(true);
         }
     }
 }

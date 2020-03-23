@@ -27,7 +27,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(false);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.AllowInherited);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(false);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(true);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace SecurePipelineScan.Rules.Tests.Security
             client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(true);
 
 
             await client

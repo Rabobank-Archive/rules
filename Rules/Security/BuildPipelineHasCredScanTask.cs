@@ -6,7 +6,7 @@ using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public partial class BuildPipelineHasCredScanTask : IBuildPipelineRule
+    public class BuildPipelineHasCredScanTask : IBuildPipelineRule
     {
         private readonly PipelineEvaluatorFactory _pipelineEvaluatorFactory;
 

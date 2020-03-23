@@ -10,14 +10,11 @@ namespace SecurePipelineScan.VstsService.Converters
         public override IServiceEndpointAuthorization ReadJson(JsonReader reader, Type objectType, IServiceEndpointAuthorization existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-            switch (jo["scheme"].Value<string>())
+            return (jo["scheme"].Value<string>()) switch
             {
-                case "UsernamePassword":
-                    return new UsernamePassword(null, null);
-                default:
-                    return null;
-            }
-
+                "UsernamePassword" => new UsernamePassword(null, null),
+                _ => null,
+            };
         }
 
         public override void WriteJson(JsonWriter writer, IServiceEndpointAuthorization value, JsonSerializer serializer) =>

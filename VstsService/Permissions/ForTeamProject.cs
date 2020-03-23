@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -17,14 +18,27 @@ namespace SecurePipelineScan.VstsService.Permissions
         public Task<Response.ApplicationGroups> IdentitiesAsync() =>
             _client.GetAsync(Requests.ApplicationGroup.ApplicationGroups(_projectId));
 
-        public async Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity) =>
-            (await _client.GetAsync(Requests.Permissions.PermissionsGroupProjectId(_projectId, identity.TeamFoundationId)).ConfigureAwait(false)).Security;
+        public async Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+            return (await _client.GetAsync(Requests.Permissions.PermissionsGroupProjectId(_projectId, identity.TeamFoundationId)).ConfigureAwait(false)).Security;
+        }
 
         public Task UpdateAsync(Response.ApplicationGroup identity,
-                Response.PermissionsSetId permissionSet, Response.Permission permission) =>
-            _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
-                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
+                Response.PermissionsSetId permissionSet, Response.Permission permission)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+            if (permissionSet == null)
+                throw new ArgumentNullException(nameof(permissionSet));
+            if (permission == null)
+                throw new ArgumentNullException(nameof(permission));
+
+            return _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
+                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier,
                 permissionSet.DescriptorIdentityType, ExtractToken(permission.PermissionToken), permission).Wrap());
+        }
 
         private static string ExtractToken(string token) => 
             Regex.Match(token, @"^(?:\$PROJECT:)?(.*?)(?::)?$").Groups[1].Value;

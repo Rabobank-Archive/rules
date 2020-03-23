@@ -41,7 +41,8 @@ namespace SecurePipelineScan.Rules.Security
                 throw new ArgumentNullException(nameof(releasePipeline));
             }
 
-            var stages = await _productionItemsResolver.ResolveAsync(projectId, releasePipeline.Id);
+            var stages = await _productionItemsResolver.ResolveAsync(projectId, releasePipeline.Id)
+                .ConfigureAwait(false);
 
             var results = stages.Select(stageId =>
             {
@@ -67,12 +68,18 @@ namespace SecurePipelineScan.Rules.Security
                 return result;
             });
 
-            return results.Any(x => x == false) ? false : results.All(x => x == null) ? (bool?)null : true;
+            if (results.Any(x => x == false))
+                return false;
+
+            return results.All(x => x == null) 
+                ? (bool?)null 
+                : true;
         }
 
         public async Task ReconcileAsync(string projectId, string itemId)
         {
-            var stages = await _productionItemsResolver.ResolveAsync(projectId, itemId);
+            var stages = await _productionItemsResolver.ResolveAsync(projectId, itemId)
+                .ConfigureAwait(false);
             var definition = await _client.GetAsync(
                     ReleaseManagement.Definition(projectId, itemId).AsJson())
                 .ConfigureAwait(false);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -20,7 +21,7 @@ namespace SecurePipelineScan.Rules
                 var conditions = environment["conditions"].ToList();
 
                 if (conditions.Any(c =>
-                    (string) c["name"] == artifact && c["value"].Value<string>().Contains("master")))
+                    (string) c["name"] == artifact && c["value"].Value<string>().Contains("master", StringComparison.InvariantCulture)))
                 {
                     continue;
                 }

@@ -34,10 +34,10 @@ namespace SecurePipelineScan.Rules.Security
         {
             return await Permissions(projectId)
                        .ValidateAsync()
-                       .ConfigureAwait(false)
+                       .ConfigureAwait(false) == true
                    && await PermissionsForRaboProjectAdministrators(projectId)
                        .ValidateAsync()
-                       .ConfigureAwait(false)
+                       .ConfigureAwait(false) == true
                    && await CheckProjectAdministratorsGroupOnlyContainsRabobankAdministratorsAsync(projectId)
                        .ConfigureAwait(false);
         }

@@ -75,11 +75,9 @@ namespace LogAnalytics.Client
             var encoding = new ASCIIEncoding();
             byte[] keyByte = Convert.FromBase64String(secret);
             byte[] messageBytes = encoding.GetBytes(message);
-            using (var hmacsha256 = new HMACSHA256(keyByte))
-            {
-                byte[] hash = hmacsha256.ComputeHash(messageBytes);
-                return Convert.ToBase64String(hash);
-            }
+            using var hmacsha256 = new HMACSHA256(keyByte);
+            byte[] hash = hmacsha256.ComputeHash(messageBytes);
+            return Convert.ToBase64String(hash);
         }
 
         // Send a request to the POST API endpoint

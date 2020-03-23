@@ -6,6 +6,6 @@ namespace SecurePipelineScan.Rules.Security
 {
     public interface IRepositoryRule : IRule
     {
-        Task<bool> EvaluateAsync(string projectId, string repositoryId);
+        Task<bool?> EvaluateAsync(string projectId, string repositoryId);
     }
 }

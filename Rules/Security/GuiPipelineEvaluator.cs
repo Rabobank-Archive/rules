@@ -86,36 +86,30 @@ namespace SecurePipelineScan.Rules.Security
         {
             var step = steps.FirstOrDefault(s => s.Enabled && s.Task.Id == rule.TaskId);
             if (step == null)
-            {
                 return false;
-            }
 
             var ruleInputs = rule.Inputs;
             if (ruleInputs == null || !ruleInputs.Any())
-            {
                 return true;
-            }
 
+            return BuildStepContainsRequiredInput(step, ruleInputs);
+        }
+
+        private static bool BuildStepContainsRequiredInput(BuildStep step, Dictionary<string, string> ruleInputs)
+        {
             if (step.Inputs == null)
-            {
                 return false;
-            }
 
             foreach (var ruleInput in ruleInputs)
             {
                 if (!step.Inputs.ContainsKey(ruleInput.Key))
-                {
                     return false;
-                }
 
                 var stepInput = step.Inputs[ruleInput.Key];
-                if (stepInput == null && ruleInput.Value == null || stepInput.Equals(ruleInput.Value,
+                if (stepInput == null && ruleInput.Value == null || stepInput != null && stepInput.Equals(ruleInput.Value,
                         StringComparison.InvariantCultureIgnoreCase))
-                {
                     return true;
-                }
             }
-
             return false;
         }
 

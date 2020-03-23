@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService.Requests;
 
@@ -19,13 +20,27 @@ namespace SecurePipelineScan.VstsService.Permissions
         public Task<Response.ApplicationGroups> IdentitiesAsync() =>
             _client.GetAsync(ApplicationGroup.ExplicitIdentitiesRepos(_projectId, SecurityNamespaceIds.GitRepositories, _itemId));
 
-        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity) =>
-            _client.GetAsync(Requests.Permissions.PermissionsGroupRepository(_projectId, SecurityNamespaceIds.GitRepositories,identity.TeamFoundationId, _itemId));
+        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+        
+            return _client.GetAsync(Requests.Permissions.PermissionsGroupRepository(_projectId, SecurityNamespaceIds.GitRepositories, identity.TeamFoundationId, _itemId));
+        }
 
         public Task UpdateAsync(Response.ApplicationGroup identity,
-                Response.PermissionsSetId permissionSet, Response.Permission permission) =>
-            _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
-                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier, 
+                Response.PermissionsSetId permissionSet, Response.Permission permission)
+        {
+            if (identity == null)
+                throw new ArgumentNullException(nameof(identity));
+            if (permissionSet == null)
+                throw new ArgumentNullException(nameof(permissionSet));
+            if (permission == null)
+                throw new ArgumentNullException(nameof(permission)); 
+            
+            return _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
+                new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier,
                 permissionSet.DescriptorIdentityType, permission.PermissionToken, permission).Wrap());
+        }
     }
 }

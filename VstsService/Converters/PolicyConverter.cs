@@ -12,17 +12,12 @@ namespace SecurePipelineScan.VstsService.Converters
         {
             if (value != null)
             {
-                switch (value)
+                value.Type = value switch
                 {
-                    case MinimumNumberOfReviewersPolicy _:
-                        value.Type = new PolicyType { Id = new Guid("fa4e907d-c16b-4a4c-9dfa-4906e5d171dd") };
-                        break;
-                    case RequiredReviewersPolicy _:
-                        value.Type = new PolicyType { Id = new Guid("fd2167ab-b0be-447a-8ec8-39368250530e") };
-                        break;
-                    default:
-                        throw new ArgumentException("Unknown policy type");
-                }
+                    MinimumNumberOfReviewersPolicy _ => new PolicyType { Id = new Guid("fa4e907d-c16b-4a4c-9dfa-4906e5d171dd") },
+                    RequiredReviewersPolicy _ => new PolicyType { Id = new Guid("fd2167ab-b0be-447a-8ec8-39368250530e") },
+                    _ => throw new ArgumentException("Unknown policy type"),
+                };
             }
             JToken.FromObject(value,new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver()}).WriteTo(writer);
         }
@@ -31,15 +26,12 @@ namespace SecurePipelineScan.VstsService.Converters
             JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
-            switch (jo["type"]["id"].Value<string>())
+            return (jo["type"]["id"].Value<string>()) switch
             {
-                case "fa4e907d-c16b-4a4c-9dfa-4906e5d171dd":
-                    return jo.ToObject<MinimumNumberOfReviewersPolicy>();
-                case "fd2167ab-b0be-447a-8ec8-39368250530e":
-                    return jo.ToObject<RequiredReviewersPolicy>();
-                default:
-                    return jo.ToObject<Policy>();
-            }
+                "fa4e907d-c16b-4a4c-9dfa-4906e5d171dd" => jo.ToObject<MinimumNumberOfReviewersPolicy>(),
+                "fd2167ab-b0be-447a-8ec8-39368250530e" => jo.ToObject<RequiredReviewersPolicy>(),
+                _ => jo.ToObject<Policy>(),
+            };
         }
     }
 }

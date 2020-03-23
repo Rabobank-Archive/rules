@@ -26,7 +26,7 @@ namespace SecurePipelineScan.VstsService.Permissions
             }
         }
 
-        public async Task<bool> ValidateAsync()
+        public async Task<bool?> ValidateAsync()
         {
             var group = await _item
                 .IdentitiesAsync()

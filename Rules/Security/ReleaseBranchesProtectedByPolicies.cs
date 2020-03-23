@@ -33,11 +33,10 @@ namespace SecurePipelineScan.Rules.Security
             "Policy is blocking the PR."
         };
 
-        public Task<bool> EvaluateAsync(string projectId, string repositoryId)
-        {
-            var policies = _policiesResolver.Resolve(projectId);
-            return Task.FromResult(HasRequiredReviewerPolicy(repositoryId, policies));
-        }
+        public Task<bool?> EvaluateAsync(string projectId, string repositoryId) =>
+            HasMasterBranch(projectId, repositoryId)
+                ? Task.FromResult(HasRequiredReviewerPolicy(repositoryId, _policiesResolver.Resolve(projectId)))
+                : Task.FromResult<bool?>(null);
 
         public async Task ReconcileAsync(string projectId, string itemId)
         {
@@ -56,7 +55,13 @@ namespace SecurePipelineScan.Rules.Security
             }
         }
 
-        private static bool HasRequiredReviewerPolicy(string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies) =>
+        private bool HasMasterBranch(string projectId, string repositoryId)
+        {
+            var gitRefs = _client.Get(Requests.Repository.Refs(projectId, repositoryId)).ToList();
+            return gitRefs.Any(r => r.Name == "refs/heads/master");
+        }
+        
+        private static bool? HasRequiredReviewerPolicy(string repositoryId, IEnumerable<Response.MinimumNumberOfReviewersPolicy> policies) =>
             Find(policies, repositoryId).Any(p => p.IsEnabled &&
                                                   p.IsBlocking &&
                                                   p.Settings.ResetOnSourcePush &&

@@ -32,17 +32,15 @@ namespace LogAnalytics.Client.Tests
         public async Task TestRequiredHeadersForPostToLogAnalytics()
         {
             var client = new LogAnalyticsClient("sdpfj", "", Substitute.For<IAzureTokenProvider>());
-            using (var test = new HttpTest())
-            {
-                await client.AddCustomLogJsonAsync("bla", "", "asdf");
-                test
-                    .ShouldHaveCalled("https://sdpfj.ods.opinsights.azure.com/api/logs?api-version=2016-04-01")
-                    .WithHeader("Authorization")
-                    .WithHeader("Log-Type", "bla")
-                    .WithHeader("x-ms-date")
-                    .WithHeader("time-generated-field", "asdf")
-                    .WithContentType("application/json");
-            }
+            using var test = new HttpTest();
+            await client.AddCustomLogJsonAsync("bla", "", "asdf");
+            test
+                .ShouldHaveCalled("https://sdpfj.ods.opinsights.azure.com/api/logs?api-version=2016-04-01")
+                .WithHeader("Authorization")
+                .WithHeader("Log-Type", "bla")
+                .WithHeader("x-ms-date")
+                .WithHeader("time-generated-field", "asdf")
+                .WithContentType("application/json");
         }
 
         [Fact]
@@ -52,11 +50,9 @@ namespace LogAnalytics.Client.Tests
             tokenProvider.GetAccessTokenAsync().Returns("dummyToken");
             var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
 
-            using (var httpTest = new HttpTest())
-            {
-                await client.QueryAsync("some query");
-                httpTest.ShouldHaveMadeACall().WithOAuthBearerToken("dummyToken");
-            }
+            using var httpTest = new HttpTest();
+            await client.QueryAsync("some query");
+            httpTest.ShouldHaveMadeACall().WithOAuthBearerToken("dummyToken");
         }
         
         [Fact]
@@ -66,13 +62,11 @@ namespace LogAnalytics.Client.Tests
             tokenProvider.GetAccessTokenAsync().Returns("dummyToken");
             var client = new LogAnalyticsClient("sdpfj", "", tokenProvider);
 
-            using (var httpTest = new HttpTest())
-            {
-                await client.QueryAsync("some query");
-                httpTest.ShouldHaveMadeACall()
-                    .WithVerb(HttpMethod.Post)
-                    .WithRequestJson(new LogAnalyticsQuery {query = "some query"});
-            }
+            using var httpTest = new HttpTest();
+            await client.QueryAsync("some query");
+            httpTest.ShouldHaveMadeACall()
+                .WithVerb(HttpMethod.Post)
+                .WithRequestJson(new LogAnalyticsQuery { query = "some query" });
         }
 
         [Fact]

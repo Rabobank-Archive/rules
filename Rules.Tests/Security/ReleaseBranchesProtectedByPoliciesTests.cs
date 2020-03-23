@@ -26,28 +26,32 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
+            CustomizeGitRef(_fixture);
             SetupPoliciesResolver(_policiesResolver, _fixture);
+            SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
 
             //Assert
-            evaluatedRule.ShouldBeTrue();
+            evaluatedRule.ShouldBe(true);
         }
 
         [Fact]
         public async Task EvaluateShouldReturnFalseForRepoNotMatchingPolicies()
         {
             //Arrange
+            CustomizeGitRef(_fixture);
             SetupPoliciesResolver(_policiesResolver, _fixture);
+            SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            evaluatedRule.ShouldBe(false);
         }
 
         [Fact]
@@ -55,19 +59,18 @@ namespace SecurePipelineScan.Rules.Tests.Security
         {
             //Arrange
             CustomizeScope(_fixture, RepositoryId);
-            // ReSharper disable once RedundantArgumentDefaultValue
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, true);
-            // ReSharper disable once ArgumentsStyleLiteral
             CustomizePolicySettings(_fixture, minimumApproverCount: 1);
-
+            CustomizeGitRef(_fixture);
             SetupPoliciesResolver(_policiesResolver, _fixture);
+            SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            evaluatedRule.ShouldBe(false);
         }
 
         [Fact]
@@ -77,33 +80,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeScope(_fixture, RepositoryId);
             CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
             CustomizePolicySettings(_fixture);
-
+            CustomizeGitRef(_fixture);
             SetupPoliciesResolver(_policiesResolver, _fixture);
+            SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
-        }
-
-        [Fact]
-        public async Task EvaluateShouldReturnFalseWhenPolicyIsNotBlocking()
-        {
-            //Arrange
-            CustomizeScope(_fixture, RepositoryId);
-            CustomizeMinimumNumberOfReviewersPolicy(_fixture, false);
-            CustomizePolicySettings(_fixture);
-
-            SetupPoliciesResolver(_policiesResolver, _fixture);
-
-            //Act
-            var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
-            var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
-
-            //Assert
-            evaluatedRule.ShouldBeFalse();
+            evaluatedRule.ShouldBe(false);
         }
 
         [Fact]
@@ -113,15 +99,16 @@ namespace SecurePipelineScan.Rules.Tests.Security
             CustomizeScope(_fixture, refName: "ref/heads/not-master");
             CustomizeMinimumNumberOfReviewersPolicy(_fixture);
             CustomizePolicySettings(_fixture);
-
+            CustomizeGitRef(_fixture);
             SetupPoliciesResolver(_policiesResolver, _fixture);
+            SetupClient(_client, _fixture);
 
             //Act
             var rule = new ReleaseBranchesProtectedByPolicies(_client, _policiesResolver);
             var evaluatedRule = await rule.EvaluateAsync("", RepositoryId);
 
             //Assert
-            evaluatedRule.ShouldBeFalse();
+            evaluatedRule.ShouldBe(false);
         }
 
         [Fact]
@@ -196,42 +183,37 @@ namespace SecurePipelineScan.Rules.Tests.Security
         }
 
         private static void CustomizeScope(IFixture fixture,
-            string id = null,
-            string refName = "refs/heads/master")
-        {
+                string id = null, string refName = "refs/heads/master") => 
             fixture.Customize<Scope>(ctx => ctx
                 .With(r => r.RepositoryId, new Guid(id ?? RepositoryId))
                 .With(r => r.RefName, refName));
-        }
 
         private static void CustomizePolicySettings(IFixture fixture,
-            int minimumApproverCount = 2,
-            bool resetOnSourcePush = true,
-            bool creatorVoteCounts = true)
-        {
+            int minimumApproverCount = 2, bool resetOnSourcePush = true, bool creatorVoteCounts = true) => 
             fixture.Customize<MinimumNumberOfReviewersPolicySettings>(ctx => ctx
                 .With(r => r.MinimumApproverCount, minimumApproverCount)
                 .With(r => r.ResetOnSourcePush, resetOnSourcePush)
                 .With(r => r.CreatorVoteCounts, creatorVoteCounts));
-        }
 
         private static void CustomizeMinimumNumberOfReviewersPolicy(IFixture fixture,
-            bool isBlocking = true,
-            bool isDeleted = true,
-            bool isEnabled = true)
-        {
+                bool isBlocking = true, bool isDeleted = true, bool isEnabled = true) => 
             fixture.Customize<MinimumNumberOfReviewersPolicy>(ctx => ctx
-                .With(r => r.IsEnabled, isEnabled)
-                .With(r => r.IsDeleted, isDeleted)
-                .With(r => r.IsBlocking, isBlocking));
-        }
+                                        .With(r => r.IsEnabled, isEnabled)
+                                        .With(r => r.IsDeleted, isDeleted)
+                                        .With(r => r.IsBlocking, isBlocking));
 
+        private static void CustomizeGitRef(IFixture fixture, string refName = "refs/heads/master") => 
+            fixture.Customize<GitRef>(ctx => ctx
+                .With(r => r.Name, refName));
 
-        private static void SetupPoliciesResolver(IPoliciesResolver resolver, IFixture fixture)
-        {
+        private static void SetupPoliciesResolver(IPoliciesResolver resolver, IFixture fixture) => 
             resolver
                 .Resolve(Arg.Any<string>())
                 .Returns(fixture.CreateMany<MinimumNumberOfReviewersPolicy>());
-        }
+
+        private static void SetupClient(IVstsRestClient client, IFixture fixture) => 
+            client
+                .Get(Arg.Any<IEnumerableRequest<GitRef>>())
+                .Returns(fixture.CreateMany<GitRef>());
     }
 }

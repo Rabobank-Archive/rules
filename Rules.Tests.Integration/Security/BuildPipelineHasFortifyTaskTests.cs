@@ -13,7 +13,6 @@ namespace Rules.Tests.Integration.Security
     {
         private readonly TestConfig _config;
         private readonly Fixture _fixture = new Fixture { RepeatCount = 1 };
-        private const string TaskName = "FortifySCA";
 
         public BuildPipelineHasFortifyTaskTests(TestConfig config)
         {
