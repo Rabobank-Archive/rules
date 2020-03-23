@@ -10,6 +10,6 @@ namespace SecurePipelineScan.VstsService.Response
             Parameters["password"]=password;
         }
         public IDictionary<string,object> Parameters { get; } = new Dictionary<string,object>();
-        public static string Scheme => "UsernamePassword";
+        public string Scheme => "UsernamePassword";
     }
 }
