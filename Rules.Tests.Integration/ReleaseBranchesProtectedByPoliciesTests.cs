@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -13,8 +14,6 @@ namespace AzureDevOps.Compliance.Rules.Tests.Integration
         private readonly TestConfig _config;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
         private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
-        private readonly IVstsRestClient _client = Substitute.For<IVstsRestClient>();
-        private readonly IPoliciesResolver _policiesResolver = Substitute.For<IPoliciesResolver>();
 
         public ReleaseBranchesProtectedByPoliciesTests(TestConfig config)
         {
@@ -29,17 +28,23 @@ namespace AzureDevOps.Compliance.Rules.Tests.Integration
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
-            var rule = new ReleaseBranchesProtectedByPolicies(client, _policiesResolver);
+            var rule = new ReleaseBranchesProtectedByPolicies(client, Substitute.For<IPoliciesResolver>());
             await rule.EvaluateAsync(projectId, RepositoryId);
         }
 
         [Fact]
         [Trait("category", "integration")]
-        public void Reconcile()
+        public async Task Reconcile()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var rule = new ReleaseBranchesProtectedByPolicies(client, null) as IReconcile;
-            rule.ReconcileAsync(_config.Project, RepositoryId);
+            var resolver = Substitute.For<IPoliciesResolver>();
+            var policies = client.Get(Policies.MinimumNumberOfReviewersPolicies(_config.Project)).ToList();
+            
+            resolver.Resolve(_config.Project)
+                .Returns(policies);
+            
+            var rule = new ReleaseBranchesProtectedByPolicies(client, resolver) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
         }
     }
 }
