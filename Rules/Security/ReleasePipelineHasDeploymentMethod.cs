@@ -6,7 +6,7 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule, IReconcile
+    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule
     {
         private readonly IProductionItemsResolver _productionItemsResolver;
 
@@ -17,7 +17,6 @@ namespace SecurePipelineScan.Rules.Security
 
         [ExcludeFromCodeCoverage] public string Description => "Release pipeline has valid CMDB link";
         [ExcludeFromCodeCoverage] public string Link => "https://confluence.dev.somecompany.nl/x/PqKbD";
-
         [ExcludeFromCodeCoverage] public string[] Impact => new [] { "In the CMDB the deployment method for the CI is set to Azure DevOps and coupled to this release pipeline" };
 
         public async Task<bool?> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
@@ -28,11 +27,6 @@ namespace SecurePipelineScan.Rules.Security
             var stages = await _productionItemsResolver.ResolveAsync(projectId, releasePipeline.Id)
                 .ConfigureAwait(false);
             return stages != null && (stages.Any(s => s == "NON-PROD" || releasePipeline.Environments.Any(e => e.Id == s)));
-        }
-
-        public Task ReconcileAsync(string projectId, string itemId)
-        {
-            throw new NotSupportedException();
         }
     }
 }

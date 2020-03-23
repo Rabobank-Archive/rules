@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using SecurePipelineScan.VstsService.Requests;
+using SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.VstsService.Permissions
 {
@@ -20,10 +21,10 @@ namespace SecurePipelineScan.VstsService.Permissions
             _itemId = itemId;
         }
 
-        public Task<Response.ApplicationGroups> IdentitiesAsync() =>
-            _client.GetAsync(ApplicationGroup.ExplicitIdentitiesMasterBranch(_projectId, SecurityNamespaceIds.GitRepositories, _itemId));
+        public Task<ApplicationGroups> IdentitiesAsync() =>
+            _client.GetAsync(Requests.ApplicationGroup.ExplicitIdentitiesMasterBranch(_projectId, SecurityNamespaceIds.GitRepositories, _itemId));
 
-        public Task<Response.PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity)
+        public Task<PermissionsSetId> PermissionSetAsync(Response.ApplicationGroup identity)
         {
             if (identity == null)
                 throw new ArgumentNullException(nameof(identity));
@@ -31,15 +32,11 @@ namespace SecurePipelineScan.VstsService.Permissions
             return _client.GetAsync(Requests.Permissions.PermissionsGroupMasterBranch(_projectId, SecurityNamespaceIds.GitRepositories, identity.TeamFoundationId, _itemId));
         }
 
-        public Task UpdateAsync(Response.ApplicationGroup identity,
+        public System.Threading.Tasks.Task UpdateAsync(Response.ApplicationGroup identity,
                 Response.PermissionsSetId permissionSet, VstsService.Response.Permission permission)
         {
             if (identity == null)
                 throw new ArgumentNullException(nameof(identity));
-            if (permissionSet == null)
-                throw new ArgumentNullException(nameof(permissionSet));
-            if (permission == null)
-                throw new ArgumentNullException(nameof(permission));
 
             return _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
                     new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier,

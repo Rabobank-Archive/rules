@@ -95,6 +95,7 @@ namespace SecurePipelineScan.VstsService.Permissions
             var permissionSet = await _item
                 .PermissionSetAsync(identity)
                 .ConfigureAwait(false);
+
             var permissions = permissionSet
                 .Permissions
                 .Where(p => _check((p.PermissionBit, p.NamespaceId)) && !_allow.Contains(p.PermissionId));

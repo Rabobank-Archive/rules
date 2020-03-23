@@ -30,10 +30,6 @@ namespace SecurePipelineScan.VstsService.Permissions
         {
             if (identity == null)
                 throw new ArgumentNullException(nameof(identity));
-            if (permissionSet == null)
-                throw new ArgumentNullException(nameof(permissionSet));
-            if (permission == null)
-                throw new ArgumentNullException(nameof(permission));
 
             return _client.PostAsync(Requests.Permissions.ManagePermissions(_projectId),
                 new ManagePermissionsData(identity.TeamFoundationId, permissionSet.DescriptorIdentifier,

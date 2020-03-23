@@ -106,8 +106,8 @@ namespace SecurePipelineScan.Rules.Security
                     return false;
 
                 var stepInput = step.Inputs[ruleInput.Key];
-                if (stepInput == null && ruleInput.Value == null || stepInput != null && stepInput.Equals(ruleInput.Value,
-                        StringComparison.InvariantCultureIgnoreCase))
+                if ((stepInput == null && ruleInput.Value == null) || 
+                        (stepInput != null && stepInput.Equals(ruleInput.Value, StringComparison.InvariantCultureIgnoreCase)))
                     return true;
             }
             return false;
