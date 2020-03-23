@@ -28,7 +28,7 @@
     <Authors>Rabobank</Authors>
     <Company>Rabobank</Company>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <AssemblyName>AzureDevOps.Compliance.Ruless</AssemblyName>
+    <AssemblyName>AzureDevOps.Compliance.Rules</AssemblyName>
     <Description>Rules to check for compliance setup of Azure DevOps projects.</Description>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageTags>pipellines; build; release; azure devops; vsts; sox; compliance</PackageTags>
