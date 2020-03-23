@@ -39,11 +39,13 @@ namespace Rules.Tests.Integration.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public void Reconcile()
+        public async Task Reconcile()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var rule = new ReleaseBranchesProtectedByPolicies(client, null) as IReconcile;
-            rule.ReconcileAsync(_config.Project, RepositoryId);
+            SetupPoliciesResolver(_policiesResolver, client, _config.Project);
+
+            var rule = new ReleaseBranchesProtectedByPolicies(client, _policiesResolver) as IReconcile;
+            await rule.ReconcileAsync(_config.Project, RepositoryId);
         }
 
         private static void SetupPoliciesResolver(IPoliciesResolver resolver, IVstsRestClient client, string projectId) => 
