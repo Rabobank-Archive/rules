@@ -22,20 +22,7 @@ namespace Rules.Tests.Integration.Security
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateReleaseIntegrationTest()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
-            var releasePipeline = await client.GetAsync(ReleaseManagement.Definition(_config.Project, "1"))
-                .ConfigureAwait(false);
-
-            var rule = new NobodyCanManageApprovalsAndCreateReleases(client);
-            (await rule.EvaluateAsync(projectId, releasePipeline)).ShouldBe(true);
-        }
-
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task ReconcileIntegrationTest()
+        public async Task EvaluateAndReconcileIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
