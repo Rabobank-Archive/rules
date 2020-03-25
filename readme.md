@@ -1,22 +1,32 @@
-## What it does ##
+[![build](https://github.com/azure-devops-compliance/rules/workflows/nuget/badge.svg)](https://github.com/azure-devops-compliance/rules/actions)
+[![codecov](https://codecov.io/gh/azure-devops-compliance/rules/branch/master/graph/badge.svg)](https://codecov.io/gh/azure-devops-compliance/rules)
 
-It scans a Azure DevOps project.
+# Azure DevOps Compliance - Rules
 
-## Things you need ##
+This repo is the heart of the azure devops compliance solution containing
+the default rules that are used to inspect projects in an organization.
 
-You need to configure the organization, team project and PAT for your project. 
-The organization is the part of the url dev.azure.com/<organization> or <organization>.visualstudio.com. For example: **somecompany** for https://somecompany.visualstudio.com. 
-Another thing is your PAT, the Personal Access Token. This needs to  be _unencoded_ and configured in appsettings.user.json in the test projects:
+Example rules are:
 
-```
-{
-  "token": "asdfjlkjasdf834234lkadf234us02sdf3"
-}
-```
+ * NobodyCanDeleteTheTeamProject
+ * NobodyCanDeleteReleases
+ * NobodyCanDeleteTheRepository
+ * ReleaseBranchesAreProtectedByPolicies
+ * etc.
+ 
+## Evaluate 
+ 
+These rules are primarily evaluated in an [azure function](https://github.com/azure-devops-compliance/azure-functions)
+and the reports are uploaded into Azure DevOps and accessible via this [extension](https://github.com/azure-devops-compliance/extension).
 
-You can also override the organization and/or project from there.
-LEON is my machinename btw.
+## Reconcile
 
-## How to use ##
+Most rules also implement functionality to reconcile [[ rek-*uhn*-sahyl ]](https://www.dictionary.com/browse/reconcile?s=t)
+meaning it will bring your project or item into the desired state.
 
-By running the Web application the default project will be scanned. It shows the Releasedefinitions found with the Environments and the Builds from the Artifacts.
+For example, reconciling the `ReleaseBranchesAreProtectedByPolicies` does:
+
+ * Require a minimum number of reviewers policy is created or updated.
+ * Minimum number of reviewers is set to at least 2
+ * Reset code reviewer votes when there are new changes is enabled.
+ * Policy is blocking the PR.
