@@ -17,9 +17,11 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: dotnet build -c release
-      - run: dotnet test -c release
+      - name: dotnet test
+        run: dotnet test -c release  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         env:
           TOKEN: ${{secrets.AZURE_DEVOPS_TOKEN}}
+      - uses: codecov/codecov-action@v1
       - name: dotnet pack
         run: |
           export VERSION=$(git rev-list --count HEAD)
