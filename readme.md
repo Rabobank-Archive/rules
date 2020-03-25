@@ -1,5 +1,6 @@
 [![build](https://github.com/azure-devops-compliance/rules/workflows/nuget/badge.svg)](https://github.com/azure-devops-compliance/rules/actions)
 [![codecov](https://codecov.io/gh/azure-devops-compliance/rules/branch/master/graph/badge.svg)](https://codecov.io/gh/azure-devops-compliance/rules)
+[![stryker](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fazure-devops-compliance%2Frules%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/azure-devops-compliance/rules/master)
 
 # Azure DevOps Compliance - Rules
 
