@@ -14,6 +14,14 @@ namespace SecurePipelineScan.VstsService.Requests
                     {"api-version", "5.0-preview.7"}
                 }).AsEnumerable();
 
+        public static IEnumerableRequest<BuildDefinition> BuildDefinitions(string projectId, int processType) =>
+            new VstsRequest<BuildDefinition>(
+                $"{projectId}/_apis/build/definitions", new Dictionary<string, object>
+                {
+                    {"processType", $"{processType}"},
+                    {"api-version", "5.0-preview.7"}
+                }).AsEnumerable();
+
         public static IEnumerableRequest<BuildDefinition> BuildDefinitions(string projectId) =>
             BuildDefinitions(projectId, false);
 

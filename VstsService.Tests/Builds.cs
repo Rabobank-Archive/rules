@@ -93,5 +93,18 @@ namespace SecurePipelineScan.VstsService.Tests
             buildDefinitions.ShouldNotBeNull();
             buildDefinitions.SelectTokens("value[*].process").Count().ShouldBeGreaterThan(0);
         }
+
+        [Fact]
+        [Trait("category", "integration")]
+        public async Task CanQueryBuildDefinitionsByProcessType()
+        {
+            var projectId = (await _client.GetAsync(Project.Properties(_config.Project))).Id;
+
+            var buildDefinitions = _client.Get(Requests.Builds.BuildDefinitions(projectId, 2)).ToList();
+
+            buildDefinitions.ShouldNotBeNull();
+            buildDefinitions.First().Id.ShouldNotBeNull();
+            buildDefinitions.First().Project.Id.ShouldNotBeNull();
+        }
     }
 }
