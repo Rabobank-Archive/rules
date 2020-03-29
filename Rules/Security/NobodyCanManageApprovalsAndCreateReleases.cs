@@ -43,14 +43,14 @@ namespace SecurePipelineScan.Rules.Security
         [ExcludeFromCodeCoverage] string IRule.Description => "Nobody can both manage approvals and create releases (SOx)";
         [ExcludeFromCodeCoverage] string IRule.Link => "https://confluence.dev.somecompany.nl/x/1o8AD";
 
-        [ExcludeFromCodeCoverage] 
+        [ExcludeFromCodeCoverage]
         string[] IReconcile.Impact => new[]
         {
             "If the Production Environment Owner group does not exist, this group will be created with " +
             "the 'Create Releases' permission set to Deny and the 'Manage Release Approvers' permission set to Allow",
             "Please note that user(s) should be added manually to the Production Environment Owner group",
             "For all other security groups where the 'Create Releases' permission is set to Allow, " +
-            "the 'Manage Release Approvers' permission is set to Deny",
+            "the 'Manage Release Approvers' permission is set to NotSet",
         };
         public async Task<bool?> EvaluateAsync(string projectId, Response.ReleaseDefinition releasePipeline)
         {
@@ -116,27 +116,29 @@ namespace SecurePipelineScan.Rules.Security
                 if (permissions.Any(p => AllowedPermissions.Contains(p.PermissionId)))
                     continue;
 
-                var permissionToUpdate = PeoGroupExists(group)
-                    ? Release.CreateReleasesPermissionBit
-                    : Release.ManageApprovalsPermissionBit;
-
-                await UpdatePermissionAsync(projectId, group, permissionSetId, permissionToUpdate, PermissionId.Deny)
-                    .ConfigureAwait(false);
+                if (IsPeoGroup(group))
+                    await UpdatePermissionAsync(projectId, group, permissionSetId,
+                            Release.CreateReleasesPermissionBit, PermissionId.Deny)
+                        .ConfigureAwait(false);
+                else
+                    await UpdatePermissionAsync(projectId, group, permissionSetId,
+                            Release.ManageApprovalsPermissionBit, PermissionId.NotSet)
+                        .ConfigureAwait(false);
             }
         }
 
         private async Task CreateProductionEnvironmentOwnerGroupIfNotExistsAsync(string projectId,
             IEnumerable<Response.ApplicationGroup> projectGroups, IEnumerable<Response.ApplicationGroup> groups)
         {
-            var peoGroup = projectGroups.FirstOrDefault(g => PeoGroupExists(g)) ??
+            var peoGroup = projectGroups.FirstOrDefault(g => IsPeoGroup(g)) ??
                 await CreateProductionEnvironmentOwnerGroupAsync(projectId)
                     .ConfigureAwait(false);
-            if (!groups.Any(g => PeoGroupExists(g)))
+            if (!groups.Any(g => IsPeoGroup(g)))
                 await UpdatePermissionsProductionEnvironmentOwnerGroupAsync(projectId, peoGroup)
                     .ConfigureAwait(false);
         }
 
-        private static bool PeoGroupExists(Response.ApplicationGroup group)
+        private static bool IsPeoGroup(Response.ApplicationGroup group)
             => group.FriendlyDisplayName == PeoGroupName;
 
         private async Task<Response.ApplicationGroup> CreateProductionEnvironmentOwnerGroupAsync(string projectId) =>
@@ -154,6 +156,12 @@ namespace SecurePipelineScan.Rules.Security
             await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.CreateReleasesPermissionBit, PermissionId.Deny)
                 .ConfigureAwait(false);
             await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.ManageApprovalsPermissionBit, PermissionId.Allow)
+                .ConfigureAwait(false);
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.ViewReleasePipeline, PermissionId.Allow)
+                .ConfigureAwait(false);
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.EditReleasePipeline, PermissionId.Allow)
+                .ConfigureAwait(false);
+            await UpdatePermissionAsync(projectId, peoGroup, permissions, Release.EditReleaseStage, PermissionId.Allow)
                 .ConfigureAwait(false);
         }
 
