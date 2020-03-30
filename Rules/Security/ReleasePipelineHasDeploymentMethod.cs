@@ -6,7 +6,7 @@ using Response = SecurePipelineScan.VstsService.Response;
 
 namespace SecurePipelineScan.Rules.Security
 {
-    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule
+    public class ReleasePipelineHasDeploymentMethod : IReleasePipelineRule, IReconcile
     {
         private readonly IProductionItemsResolver _productionItemsResolver;
 
@@ -28,6 +28,8 @@ namespace SecurePipelineScan.Rules.Security
                 .ConfigureAwait(false);
             return stages != null && (stages.Any(s => s == "NON-PROD" || releasePipeline.Environments.Any(e => e.Id == s)));
         }
+
+        public Task ReconcileAsync(string projectId, string itemId) => throw new NotSupportedException();
     }
 }
 
