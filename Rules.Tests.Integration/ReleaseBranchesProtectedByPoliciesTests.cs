@@ -1,10 +1,11 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using NSubstitute;
+using Polly;
 using SecurePipelineScan.VstsService;
 using SecurePipelineScan.VstsService.Requests;
+using Shouldly;
 using Xunit;
 
 namespace AzureDevOps.Compliance.Rules.Tests.Integration
@@ -13,38 +14,46 @@ namespace AzureDevOps.Compliance.Rules.Tests.Integration
     {
         private readonly TestConfig _config;
         private const string RepositoryId = "3167b64e-c72b-4c55-84eb-986ac62d0dec";
-        private readonly Fixture _fixture = new Fixture {RepeatCount = 1};
+        private readonly IPoliciesResolver _policiesResolver = Substitute.For<IPoliciesResolver>();
 
-        public ReleaseBranchesProtectedByPoliciesTests(TestConfig config)
-        {
-            _config = config;
-            _fixture.Customize(new AutoNSubstituteCustomization());
-        }
+        public ReleaseBranchesProtectedByPoliciesTests(TestConfig config) => _config = config;
 
         [Fact]
         [Trait("category", "integration")]
-        public async Task EvaluateIntegrationTest()
+        public async Task EvaluateAndReconcileIntegrationTest()
         {
             var client = new VstsRestClient(_config.Organization, _config.Token);
-            var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
+            SetupPoliciesResolver(_policiesResolver, client, _config.Project);
+            var rule = new ReleaseBranchesProtectedByPolicies(client, _policiesResolver);
 
-            var rule = new ReleaseBranchesProtectedByPolicies(client, Substitute.For<IPoliciesResolver>());
-            await rule.EvaluateAsync(projectId, RepositoryId);
-        }
+            var policy = client.Get(Policies.MinimumNumberOfReviewersPolicies(_config.Project))
+                .FirstOrDefault(p => p.Settings.Scope
+                    .Any(s => s.RepositoryId?.ToString() == RepositoryId && s.RefName == "refs/heads/master"));
+            if (policy != default)
+                await client.DeleteAsync(Policies.Policy(_config.Project, policy.Id));
 
-        [Fact]
-        [Trait("category", "integration")]
-        public async Task Reconcile()
-        {
-            var client = new VstsRestClient(_config.Organization, _config.Token);
-            var resolver = Substitute.For<IPoliciesResolver>();
-            var policies = client.Get(Policies.MinimumNumberOfReviewersPolicies(_config.Project)).ToList();
-            
-            resolver.Resolve(_config.Project)
-                .Returns(policies);
-            
-            var rule = new ReleaseBranchesProtectedByPolicies(client, resolver) as IReconcile;
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
+                .ExecuteAsync(async () =>
+                {
+                    (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBe(false);
+                });
+
             await rule.ReconcileAsync(_config.Project, RepositoryId);
+
+            await Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
+                .ExecuteAsync(async () =>
+                {
+                    (await rule.EvaluateAsync(_config.Project, RepositoryId)).ShouldBe(true);
+                });
         }
+
+        private static void SetupPoliciesResolver(IPoliciesResolver resolver, IVstsRestClient client, string projectId) => 
+            resolver
+                .Resolve(projectId)
+                .Returns(client.Get(Policies.MinimumNumberOfReviewersPolicies(projectId)));
     }
 }

@@ -29,7 +29,7 @@ namespace AzureDevOps.Compliance.Rules.Tests.Integration
             var projectId = (await client.GetAsync(Project.Properties(_config.Project))).Id;
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBe(true);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace AzureDevOps.Compliance.Rules.Tests.Integration
                 .WaitAndRetryAsync(Constants.NumRetries, t => TimeSpan.FromSeconds(t))
                 .ExecuteAsync(async () =>
             {
-                    (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBeTrue();
+                    (await rule.EvaluateAsync(projectId, RepositoryId)).ShouldBe(true);
             });
         }
     }

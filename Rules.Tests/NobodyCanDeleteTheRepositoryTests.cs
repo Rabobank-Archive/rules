@@ -26,7 +26,7 @@ namespace AzureDevOps.Compliance.Rules.Tests
             InitializeLookupData(client, PermissionId.Allow);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(false);
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace AzureDevOps.Compliance.Rules.Tests
             InitializeLookupData(client, PermissionId.AllowInherited);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeFalse();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(false);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace AzureDevOps.Compliance.Rules.Tests
             InitializeLookupData(client, PermissionId.Deny);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(true);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace AzureDevOps.Compliance.Rules.Tests
             client.GetAsync(Arg.Any<IVstsRequest<ApplicationGroups>>()).Returns(applicationGroups);
 
             var rule = new NobodyCanDeleteTheRepository(client);
-            (await rule.EvaluateAsync("", RepositoryId)).ShouldBeTrue();
+            (await rule.EvaluateAsync("", RepositoryId)).ShouldBe(true);
 
 
             await client

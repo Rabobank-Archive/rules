@@ -4,6 +4,6 @@ namespace AzureDevOps.Compliance.Rules
 {
     public interface IRepositoryRule : IRule
     {
-        Task<bool> EvaluateAsync(string projectId, string repositoryId);
+        Task<bool?> EvaluateAsync(string projectId, string repositoryId);
     }
 }

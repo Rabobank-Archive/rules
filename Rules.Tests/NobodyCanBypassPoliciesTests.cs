@@ -32,7 +32,7 @@ namespace AzureDevOps.Compliance.Rules.Tests
             var result = await rule.EvaluateAsync(_fixture.Create<string>(), _fixture.Create<string>());
             
             // Assert
-            result.ShouldBeFalse();
+            result.ShouldBe(false);
         }
         
         [Theory, CombinatorialData]
@@ -49,11 +49,11 @@ namespace AzureDevOps.Compliance.Rules.Tests
             // Act
             var rule = new NobodyCanBypassPolicies(_fixture.Create<IVstsRestClient>());
             var result = await rule.EvaluateAsync(_fixture.Create<string>(), _fixture.Create<string>());
-            
+
             // Assert
-            result.ShouldBeTrue();
+            result.ShouldBe(true);
         }
-        
+
         [Theory]
         [InlineData("Project Collection Administrators")]
         [InlineData("Project Collection Service Accounts")]
@@ -74,9 +74,9 @@ namespace AzureDevOps.Compliance.Rules.Tests
                 .Received(2)
                 .GetAsync(Arg.Any<IVstsRequest<Response.ApplicationGroups>>()); // for both repository and master branch
 
-            result.ShouldBeTrue();
+            result.ShouldBe(true);
         }
-        
+
         [Fact]
         public async Task Reconcile()
         {
